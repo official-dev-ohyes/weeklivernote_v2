@@ -18,7 +18,7 @@
 # ✨ Feat: 기능 추가/수정
 # 🐛 Fix: 버그 수정
 # 💄 Design: CSS 등 사용자 UI 디자인 추가/수정
-# 📝 Docs: 문서 수정
+# 📝 Docs: README.md 내용 추가
 # 💩 Poo: 똥 싼 코드
 # 🍻 Drunk: 술 취해서 쓴 코드
 # 👽 External: 외부 API 변화로 인한 수정
