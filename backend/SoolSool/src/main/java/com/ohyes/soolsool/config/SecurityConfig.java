@@ -15,6 +15,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CorsFilter corsFilter;
 
     // Spring Security 검사 비활성화
     @Bean
@@ -27,6 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+            .addFilter(corsFilter)
             .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -39,5 +41,4 @@ public class SecurityConfig {
 //                .anyRequest().authenticated()   // 모든 요청에 대해 인증 필요
             .and().build();
     }
-
 }
