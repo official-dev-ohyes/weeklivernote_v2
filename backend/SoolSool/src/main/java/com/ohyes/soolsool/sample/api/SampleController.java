@@ -1,5 +1,6 @@
 package com.ohyes.soolsool.sample.api;
 
+import com.ohyes.soolsool.config.aop.TimeTrace;
 import com.ohyes.soolsool.sample.application.SampleService;
 import com.ohyes.soolsool.sample.dto.SampleResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
@@ -22,13 +23,14 @@ public class SampleController {
 
     private final SampleService sampleService;
 
-    /**
-     * ResponseEntity를 이용 - HttpStatus 사용 + message 구분 가능
-     */
+    // ResponseEntity를 이용 - HttpStatus 사용 + message 구분 가능
+    @TimeTrace
     @GetMapping("/http/{sample_pk}")
     @Operation(summary = "HttpStatus 사용", description = "Sample 응답값을 확인 할 수 있습니다.")
     public ResponseEntity<?> test(
-        @PathVariable @Parameter(example = "1") Long sample_pk) {
+        @PathVariable @Parameter(example = "1") Long sample_pk) throws InterruptedException {
+        // 시간 측정을 위해 추가
+        Thread.sleep(1000);
 
         if (sample_pk != 1) {
             return new ResponseEntity<>(new MessageResponse("조회를 실패 했습니다."),
