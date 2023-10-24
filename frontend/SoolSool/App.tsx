@@ -1,8 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
+import {
+  MD3LightTheme as DefaultTheme,
+  PaperProvider,
+} from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-
+import { QueryClient, QueryClientProvider } from "react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,6 +21,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
   return (
@@ -65,29 +70,43 @@ function BottomTabNavigator() {
   );
 }
 
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    // 커스텀 색상 설정
+    // primary: 'tomato',
+  },
+};
+
 export default function App() {
   return (
-    <SafeAreaView style={styles.rootScreen}>
-      <StatusBar style="auto" />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-          <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-          <Stack.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{
-              headerShown: true,
+    <PaperProvider theme={theme}>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={styles.rootScreen}>
+        <StatusBar style="auto" />
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
             }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+          >
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+            <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                headerShown: true,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
+    </QueryClientProvider>
+    </PaperProvider>
+
   );
 }
 
