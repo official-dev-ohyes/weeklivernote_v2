@@ -8,5 +8,5 @@ function MyPageButton({ onPress }) {
     </Pressable>
   );
 }
-
+//
 export default MyPageButton;
