@@ -6,7 +6,7 @@ import {
 } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-
+import { QueryClient, QueryClientProvider } from "react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -21,6 +21,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
   return (
@@ -81,6 +82,7 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
+    <QueryClientProvider client={queryClient}>
       <SafeAreaView style={styles.rootScreen}>
         <StatusBar style="auto" />
         <NavigationContainer>
@@ -102,7 +104,9 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>
+    </QueryClientProvider>
     </PaperProvider>
+
   );
 }
 
