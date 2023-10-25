@@ -6,6 +6,7 @@ import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,5 +53,37 @@ public class DrinkService {
             .build();
 
         drinkRepository.save(drink);
+    }
+
+    public void drinkModify(DrinkRequestDto drinkRequestDto) {
+        // 해당 날짜의 일기 찾기
+        Diary existingDiary = diaryRepository.findByDrinkDate(drinkRequestDto.getDrinkDate());
+
+        // [1] 일기 관련 정보 수정
+        if (existingDiary != null) {
+            if (drinkRequestDto.getMemo() != null) {
+                existingDiary.setMemo(drinkRequestDto.getMemo());
+            }
+            if (drinkRequestDto.getImgUrl() != null) {
+                existingDiary.setImg(drinkRequestDto.getImgUrl());
+            }
+            if (drinkRequestDto.getHangover() != null) {
+                existingDiary.setHangover(drinkRequestDto.getHangover());
+            }
+            diaryRepository.save(existingDiary);
+        }
+
+        // [2] 음주 관련 정보 수정
+        List<Drink> drinks = existingDiary.getDrinks();
+
+        // 주종과 단위가 일치하는 음주 기록을 찾는다면 Amount 수정
+        drinks.forEach(e -> {
+            if (e.getCategory() == categoryRepository.findByCategoryName(
+                drinkRequestDto.getCategory())
+                && e.getDrinkUnit().equals(drinkRequestDto.getDrinkUnit())) {
+                e.setDrinkAmount(drinkRequestDto.getDrinkAmount());
+                drinkRepository.save(e);
+            }
+        });
     }
 }
