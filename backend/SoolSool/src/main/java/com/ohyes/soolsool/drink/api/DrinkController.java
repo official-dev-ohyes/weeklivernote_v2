@@ -33,8 +33,9 @@ public class DrinkController {
     }
 
     @DeleteMapping("/v1/drink-one")
-    public void drinkDelete() {
-
+    public ResponseEntity<Object> drinkDelete(@RequestBody DrinkRequestDto drinkRequestDto) {
+        drinkService.drinkDelete(drinkRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/v1/drink")
@@ -58,7 +59,8 @@ public class DrinkController {
     }
 
     @DeleteMapping("/v1/drink/daily")
-    public void drinkEventDelete() {
-
+    public ResponseEntity<Object> drinkEventDelete(@RequestBody DrinkRequestDto drinkRequestDto) {
+        drinkService.drinkEventDelete(drinkRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,5 +86,41 @@ public class DrinkService {
                 drinkRepository.save(e);
             }
         });
+    }
+
+    public void drinkDelete(DrinkRequestDto drinkRequestDto) {
+        // 해당 날짜 일기의 음주 기록 찾기
+        Diary existingDiary = diaryRepository.findByDrinkDate(drinkRequestDto.getDrinkDate());
+        List<Drink> drinks = existingDiary.getDrinks();
+        List<Drink> deletedDrinks = new ArrayList<>();
+
+        // 주종과 단위가 일치하는 음주 기록을 찾는다면 해당 기록 삭제
+        drinks.forEach(e -> {
+            if (e.getCategory() == categoryRepository.findByCategoryName(
+                drinkRequestDto.getCategory())
+                && e.getDrinkUnit().equals(drinkRequestDto.getDrinkUnit())) {
+                deletedDrinks.add(e);
+                drinkRepository.delete(e);
+            }
+        });
+
+        // 삭제한 후에 해당 날짜 일기의 음주 기록이 없다면 일기 전체 삭제
+        if (drinks.size() == deletedDrinks.size()) {
+            diaryRepository.delete(existingDiary);
+        }
+    }
+
+    public void drinkEventDelete(DrinkRequestDto drinkRequestDto) {
+        // 해당 날짜 일기 찾기
+        Diary existingDiary = diaryRepository.findByDrinkDate(drinkRequestDto.getDrinkDate());
+        List<Drink> drinks = existingDiary.getDrinks();
+
+        // 음주 기록 전체 삭제
+        drinks.forEach(e -> {
+            drinkRepository.delete(e);
+        });
+
+        // 일기 삭제
+        diaryRepository.delete(existingDiary);
     }
 }
