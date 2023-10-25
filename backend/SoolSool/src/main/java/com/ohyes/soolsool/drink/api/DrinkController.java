@@ -1,6 +1,5 @@
 package com.ohyes.soolsool.drink.api;
 
-import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DrinkController {
 
-    private final DrinkGetService drinkGetService;
     private final DrinkService drinkService;
 
     @PostMapping("/v1/drink")
