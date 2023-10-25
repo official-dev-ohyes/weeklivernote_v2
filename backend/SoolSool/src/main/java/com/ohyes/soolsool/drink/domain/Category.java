@@ -1,5 +1,6 @@
 package com.ohyes.soolsool.drink.domain;
 
+import com.ohyes.soolsool.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,9 +13,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 public class Category {
@@ -33,6 +36,9 @@ public class Category {
     // 연관 관계
     @OneToMany(mappedBy = "category")
     private List<Drink> drinks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<User> users = new ArrayList<>();
 
     // 생성자
     @Builder
