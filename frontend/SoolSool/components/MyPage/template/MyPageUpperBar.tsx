@@ -19,7 +19,7 @@ function MyPageUpperBar() {
     </View>
   );
 }
-
+//
 const styles = StyleSheet.create({
   upperBar: {
     flexDirection: "row",
