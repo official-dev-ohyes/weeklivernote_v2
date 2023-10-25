@@ -2,13 +2,39 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
+import { calculateTimeDifference } from "../utils/timeUtils";
 
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import UserStatus from "../components/Home/UserStatus";
 import DrinkController from "../components/Home/DrinkController";
+import UserStatus from "../components/Home/UserStatus";
 
 function HomeScreen() {
+  const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
+
+  const date = new Date("2023-10-24T15:30:00");
+
+  useEffect(() => {
+    setDrinkToday(
+      new DrinkToday({
+        drinkTotal: 1000,
+        // alcoholAmount: 35.8,
+        alcoholAmount: 0,
+        drinkStartTime: date.toDateString(),
+        height: 157,
+        weight: 58,
+        gender: "female",
+      })
+    );
+  }, []);
+
+  const timeSinceDrink = calculateTimeDifference(date);
+
+  // console.log(
+  //   "what are you..I mean seriously",
+  //   typeof drinkToday.intoxicationImage
+  // );
+
   // const fetchDrinkTodayData = async () => {
   //   try {
   //     const response = await axios.get("/api/v1/drink");
@@ -22,8 +48,6 @@ function HomeScreen() {
   //   "drinkToday",
   //   fetchDrinkTodayData
   // );
-
-  // const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
 
   // useEffect(() => {
   //   if (data) {
@@ -45,10 +69,24 @@ function HomeScreen() {
   //   return <Text>Error!!!</Text>;
   // }
 
+  if (!drinkToday) {
+    return (
+      <View>
+        {/* <ActivityIndicator animating={true} color={}/> */}
+        <ActivityIndicator animating={true} />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.rootScreen}>
-      <UserStatus measurementUnit="ml" amount={1000} period={2} />
-      {/* <UserStatus measurementUnit="g" amount={35.8} period={5} /> */}
+      <UserStatus
+        measurementUnit="ml"
+        amount={drinkToday.drinkTotal}
+        period={timeSinceDrink}
+        imageSource={drinkToday.intoxicationImage}
+      />
       <DrinkController />
     </View>
   );

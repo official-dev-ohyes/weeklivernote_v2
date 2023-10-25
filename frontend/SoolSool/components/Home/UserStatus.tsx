@@ -1,12 +1,22 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
+
+export const SLIDER_WIDTH = Dimensions.get("window").width + 80;
+export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 interface UserStatusProps {
   measurementUnit: "ml" | "g";
   amount: number;
   period: number;
+  imageSource: number;
 }
 
-function UserStatus({ measurementUnit, amount, period }: UserStatusProps) {
+function UserStatus({
+  measurementUnit,
+  amount,
+  period,
+  imageSource,
+}: UserStatusProps) {
   if (measurementUnit === "ml") {
     return (
       <View style={styles.statusContainer}>
@@ -16,7 +26,7 @@ function UserStatus({ measurementUnit, amount, period }: UserStatusProps) {
           <Text style={styles.periodContainer}>{period}</Text>
           시간 째
         </Text>
-        <Image source={require("../../assets/Home/drunken-level-01.png")} />
+        <Image source={imageSource} />
       </View>
     );
   }
