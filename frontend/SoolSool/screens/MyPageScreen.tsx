@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
-import { StyleSheet, Text, View } from "react-native";
-import SettingsIconButton from "../components/MyPage/SettingsIconButton";
-import UserProfile from "../components/MyPage/UserProfile";
-import UserStatistics from "../components/MyPage/UserStatistics";
+import {
+  StyleSheet,
+  Text,
+  ImageBackground,
+  View,
+  Dimensions,
+} from "react-native";
+import UserProfile from "../components/MyPage/template/UserProfile";
+import UserStatistics from "../components/MyPage/template/UserStatistics";
+import { background_mypage } from "../assets";
+import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -14,9 +21,25 @@ import UserStatistics from "../components/MyPage/UserStatistics";
 //   drinkYearAmount: string;
 // }
 
+interface UserData {
+  weight: number;
+  gender: string;
+  address: string;
+  nickname: string;
+  profileImage: string;
+  alcoholAmount: number;
+}
+
 function MyPageScreen({ navigation }) {
   // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
-
+  const [userData, setUserData] = useState<UserData>({
+    weight: 70,
+    gender: "남자",
+    address: "부산시 녹산 어쩌구 SSAFY",
+    profileImage: "#",
+    nickname: "오예스",
+    alcoholAmount: 30,
+  });
   //유저프로필 정보를 불러오는 함수
   const fetchUserProfileData = async () => {
     try {
@@ -27,34 +50,37 @@ function MyPageScreen({ navigation }) {
     }
   };
 
-  const {
-    data: userData,
-    isLoading,
-    isError,
-  } = useQuery("userProfile", fetchUserProfileData);
+  // const {
+  //   data: userData,
+  //   isLoading,
+  //   isError,
+  // } = useQuery("userProfile", fetchUserProfileData);
 
-  function handleHeaderButtonPressed() {
-    navigation.navigate("Settings");
-  }
+  // if (isLoading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (isError) {
-    return <Text>Error...</Text>;
-  }
+  // if (isError) {
+  //   return <Text>Error...</Text>;
+  // }
 
   return (
-    <View>
-      <Text>My Page</Text>
-      <SettingsIconButton onPress={handleHeaderButtonPressed} />
+    <ImageBackground
+      source={background_mypage} // 이미지 파일 경로
+      style={styles.backgroundImage}
+    >
+      <MyPageUpperBar />
       <UserProfile userData={userData} />
-      {/* <UserStatistics userStatistics={userStatistics} /> */}
-    </View>
+      <UserStatistics />
+    </ImageBackground>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    // resizeMode: "center",
+  },
+});
 
 export default MyPageScreen;

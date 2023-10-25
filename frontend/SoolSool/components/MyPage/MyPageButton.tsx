@@ -1,12 +1,15 @@
-import { Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Pressable, Image, StyleSheet, Text, View } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
+import { iconImage } from "../../assets";
 
-function MyPageButton({ onPress }) {
+function MyPageButton({}) {
   return (
-    <Pressable onPress={onPress}>
-      <Ionicons name="md-settings-outline" size={24} />
-    </Pressable>
+    <View>
+      <Pressable>
+        <Text>버튼</Text>
+      </Pressable>
+    </View>
   );
 }
-//
+
 export default MyPageButton;
