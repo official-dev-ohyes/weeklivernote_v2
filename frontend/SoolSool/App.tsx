@@ -82,31 +82,30 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaView style={styles.rootScreen}>
-        <StatusBar style="auto" />
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-            <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-            <Stack.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: true,
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaView style={styles.rootScreen}>
+          <StatusBar style="auto" />
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
               }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </QueryClientProvider>
+            >
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: true,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </QueryClientProvider>
     </PaperProvider>
-
   );
 }
 
