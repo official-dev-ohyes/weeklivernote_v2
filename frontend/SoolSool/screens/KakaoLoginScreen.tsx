@@ -2,7 +2,7 @@ import { StyleSheet, View, ImageBackground, Button } from "react-native";
 import axios from "axios";
 import { WebView } from "react-native-webview";
 
-const CLIENT_ID = "24e024b40fae60991200f1a8475bdd5f";
+const CLIENT_ID = process.env.REACT_APP_API_KEY;
 const REDIRECT_URI = "https://kauth.kakao.com/oauth/token";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
@@ -23,6 +23,7 @@ function KakaoLoginScreen({ navigation }) {
     }
   };
 
+  //url에서 인가코드를 파싱해오는 함수
   const getCode = (target: string) => {
     const exp = "code=";
     const condition = target.indexOf(exp);
