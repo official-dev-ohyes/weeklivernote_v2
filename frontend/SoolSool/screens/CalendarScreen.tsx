@@ -13,7 +13,8 @@ function CalendarScreen() {
   return (
     <View>
       <Text>Calendar</Text>
-      {/* <CalendarMain /> */}
+      {/* 주 별 간격 조정
+      <CalendarMain /> */}
       <CalendarSixWeeks />
     </View>
   );
