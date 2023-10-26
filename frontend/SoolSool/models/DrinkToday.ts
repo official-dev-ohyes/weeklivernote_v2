@@ -75,6 +75,10 @@ export class DrinkToday {
     return IntoxicationImageMap[level];
   }
 
+  get requiredTimeForDetox(): number {
+    return 100;
+  }
+
   constructor(data: DrinkTodayData) {
     this.drinkTotal = data.drinkTotal;
     this.alcoholAmount = data.alcoholAmount;

@@ -1,55 +1,43 @@
 import React from "react";
-import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
-
-export const SLIDER_WIDTH = Dimensions.get("window").width + 80;
-export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
+import { View } from "react-native";
+import DrinkingStatus from "./DrinkingStatus";
+import DetoxingStatus from "./DetoxingStatus";
 
 interface UserStatusProps {
-  measurementUnit: "ml" | "g";
-  amount: number;
+  index: number;
+  drinkInVolume: number;
+  alcoholInGrams: number;
+  requiredTimeForDetox: number;
   period: number;
   imageSource: number;
 }
 
-function UserStatus({
-  measurementUnit,
-  amount,
+const UserStatus: React.FC<UserStatusProps> = ({
+  index,
+  drinkInVolume,
+  alcoholInGrams,
+  requiredTimeForDetox,
   period,
   imageSource,
-}: UserStatusProps) {
-  if (measurementUnit === "ml") {
-    return (
-      <View style={styles.statusContainer}>
-        <Text style={styles.titleContainer}>{amount}ml</Text>
-        <Text style={styles.subtitleContainer}>
-          마신 지{"  "}
-          <Text style={styles.periodContainer}>{period}</Text>
-          시간 째
-        </Text>
-        <Image source={imageSource} />
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  statusContainer: {
-    width: "80%",
-    marginVertical: 24,
-    padding: 12,
-    display: "flex",
-    alignItems: "center",
-  },
-  titleContainer: {
-    fontWeight: "bold",
-    fontSize: 36,
-  },
-  subtitleContainer: {
-    fontSize: 20,
-  },
-  periodContainer: {
-    fontWeight: "bold",
-  },
-});
+}) => {
+  return (
+    <>
+      {index === 0 && (
+        <DrinkingStatus
+          drinkInVolume={drinkInVolume}
+          drinkingFor={period}
+          imageSource={imageSource}
+        />
+      )}
+      {index === 1 && (
+        <DetoxingStatus
+          alcoholInGrams={alcoholInGrams}
+          requiredTimeForDetox={requiredTimeForDetox}
+          detoxingFor={period}
+        />
+      )}
+    </>
+  );
+};
 
 export default UserStatus;

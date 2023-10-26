@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
@@ -11,15 +11,15 @@ import UserStatus from "../components/Home/UserStatus";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const date = new Date("2023-10-24T15:30:00");
+  const isCarousel: any = useRef(null);
 
   useEffect(() => {
     setDrinkToday(
       new DrinkToday({
         drinkTotal: 1000,
-        // alcoholAmount: 35.8,
-        alcoholAmount: 0,
+        alcoholAmount: 35.8,
         drinkStartTime: date.toDateString(),
         height: 157,
         weight: 58,
@@ -29,11 +29,8 @@ function HomeScreen() {
   }, []);
 
   const timeSinceDrink = calculateTimeDifference(date);
-
-  // console.log(
-  //   "what are you..I mean seriously",
-  //   typeof drinkToday.intoxicationImage
-  // );
+  // const data: DrinkToday[] = [drinkToday, drinkToday];
+  const data = [drinkToday, drinkToday];
 
   // const fetchDrinkTodayData = async () => {
   //   try {
@@ -82,11 +79,21 @@ function HomeScreen() {
   return (
     <View style={styles.rootScreen}>
       <UserStatus
-        measurementUnit="ml"
-        amount={drinkToday.drinkTotal}
+        index={0}
+        drinkInVolume={drinkToday.drinkTotal}
+        alcoholInGrams={drinkToday.alcoholAmount}
+        requiredTimeForDetox={drinkToday.requiredTimeForDetox}
         period={timeSinceDrink}
         imageSource={drinkToday.intoxicationImage}
       />
+      {/* <UserStatus
+        index={1}
+        drinkInVolume={drinkToday.drinkTotal}
+        alcoholInGrams={drinkToday.alcoholAmount}
+        requiredTimeForDetox={drinkToday.requiredTimeForDetox}
+        period={timeSinceDrink}
+        imageSource={drinkToday.intoxicationImage}
+      /> */}
       <DrinkController />
     </View>
   );
