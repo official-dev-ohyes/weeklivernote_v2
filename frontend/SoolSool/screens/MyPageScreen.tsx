@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useQuery } from "react-query";
-import {
-  StyleSheet,
-  Text,
-  ImageBackground,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, ImageBackground, View } from "react-native";
 import UserProfile from "../components/MyPage/template/UserProfile";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { background_mypage } from "../assets";
 import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
 import { fetchUserProfile } from "../api/mypageApi";
+import { createDrink } from "../api/drinkRecordApi";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -55,7 +49,23 @@ function MyPageScreen({ navigation }) {
   // if (isError) {
   //   return <Text>Error...</Text>;
   // }
+  const drinkData = {
+    drinks: [
+      {
+        category: "소주",
+        drinkUnit: "잔",
+        drinkAmount: 1,
+      },
+    ],
+    drinkDate: "2023-10-26",
+    memo: "많이 마신 날",
+    imgUrl: "#",
+    hangover: "숙취",
+    alcoholConc: 10,
+  };
 
+  const tempres = createDrink(drinkData);
+  console.log("제발 나와줘", tempres);
   return (
     <ImageBackground
       source={background_mypage} // 이미지 파일 경로
