@@ -2,6 +2,7 @@ package com.ohyes.soolsool.drink.api;
 
 import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
+import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,9 +75,15 @@ public class DrinkController {
 
     }
 
-    @GetMapping("/v1/drink/daily")
-    public void dailyDrinkGet() {
+    @GetMapping("/v1/drink/daily/{drinkDate}")
+    @Operation(summary = "해당 날짜의 음주 요약 조회",
+        description = "주종과 음주량을 모아둔 리스트, 총 음주량, 최고 혈중 알코올 농도를 반환합니다.")
+    public ResponseEntity<Object> dailyDrinkGet(@PathVariable LocalDate drinkDate) {
+        // 토큰 로직 추가 필요
+        Long socialId = 1L;
 
+        DailyDrinkDto dailyDrinkDto = drinkGetService.dailyDrinkGet(drinkDate, socialId);
+        return new ResponseEntity<>(dailyDrinkDto, HttpStatus.OK);
     }
 
     /* 일단 보류
