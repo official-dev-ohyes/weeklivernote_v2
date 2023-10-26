@@ -18,6 +18,7 @@ import CalendarScreen from "./screens/CalendarScreen";
 import MapScreen from "./screens/MapScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -92,6 +93,10 @@ export default function App() {
               }}
             >
               <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen
+                name="KakaoLoginScreen"
+                component={KakaoLoginScreen}
+              />
               <Stack.Screen name="AddInfo" component={AddInfoScreen} />
               <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
               <Stack.Screen
