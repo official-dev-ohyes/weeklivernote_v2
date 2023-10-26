@@ -13,11 +13,21 @@ function CalendarScreen() {
   return (
     <View>
       <Text>Calendar</Text>
-      {/* 주 별 간격 조정
-      <CalendarMain /> */}
+      {/* 주 별 간격 조정 */}
+      {/* <CalendarMain /> */}
+      {/* 주 별 간격 미조정 */}
       <CalendarSixWeeks />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  mainBackground: {
+    flex: 1,
+    backgroundColor: "black",
+    borderWidth: 20,
+    borderColor: "red",
+  },
+});
 
 export default CalendarScreen;

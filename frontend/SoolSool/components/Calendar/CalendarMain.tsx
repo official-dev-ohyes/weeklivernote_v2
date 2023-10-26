@@ -42,6 +42,16 @@ function CalendarMain({}) {
   console.log(`높이는? ${height}, 높이 90%는? ${height * 0.9} `);
   console.log(`한 주 높이는? ${height / (totalWeeks + 1)}`);
 
+  let weekHeight: number = 0;
+
+  if (totalWeeks < 5) {
+    weekHeight = (height * 0.9) / 6;
+  } else if (totalWeeks > 5) {
+    weekHeight = (height * 0.9) / 10;
+  } else {
+    weekHeight = (height * 0.9) / 7.8;
+  }
+
   if (totalWeeks) {
     return (
       <View style={{ height: height * 0.9 }}>
@@ -60,7 +70,7 @@ function CalendarMain({}) {
                 //     width: "100%",
                 //   },
                 base: {
-                  height: (height * 0.9) / (totalWeeks + 1),
+                  height: weekHeight,
                 },
               },
             }}
