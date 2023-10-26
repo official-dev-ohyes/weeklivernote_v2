@@ -150,9 +150,7 @@ public class DrinkService {
         List<Drink> drinks = existingDiary.getDrinks();
 
         // 음주 기록 전체 삭제
-        drinks.forEach(e -> {
-            drinkRepository.delete(e);
-        });
+        drinkRepository.deleteAll(drinks);
 
         // 일기 삭제
         diaryRepository.delete(existingDiary);
