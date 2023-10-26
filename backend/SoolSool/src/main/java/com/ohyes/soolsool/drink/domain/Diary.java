@@ -10,8 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class Diary {
     private int diaryPk;
 
     @Column(name = "drink_date", columnDefinition = "DATE")
-    private String drinkDate;
+    private LocalDate drinkDate;
 
     @Column(name = "memo")
     private String memo;
@@ -52,11 +53,11 @@ public class Diary {
 
     @CreatedDate
     @Column(name = "created_at")
-    private Date createAt;
+    private LocalDateTime createAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     // 연관 관계
     @OneToMany(mappedBy = "diary")
@@ -68,11 +69,12 @@ public class Diary {
 
     // 생성자
     @Builder
-    public Diary(String drinkDate, String memo, String img, String hangover, float alcoholConc) {
+    public Diary(LocalDate drinkDate, String memo, String img, String hangover, float alcoholConc, User user) {
         this.drinkDate = drinkDate;
         this.memo = memo;
         this.img = img;
         this.hangover = hangover;
         this.alcoholConc = alcoholConc;
+        this.user = user;
     }
 }

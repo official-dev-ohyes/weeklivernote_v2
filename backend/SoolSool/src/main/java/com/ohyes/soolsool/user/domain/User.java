@@ -5,12 +5,11 @@ import com.ohyes.soolsool.drink.domain.Diary;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "social_id")
     private Long socialId;
 
@@ -56,7 +54,7 @@ public class User {
     private int weight;
 
     @Column(name = "alcohol_limit")
-    private int alcoholLimit;
+    private float alcoholLimit;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -65,7 +63,7 @@ public class User {
     private int maxNonalcoholPeriod;
 
     @Column(name = "start_nonalcohol_date")
-    private LocalDateTime startNonalcoholDate;
+    private LocalDate startNonalcoholDate;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -85,10 +83,11 @@ public class User {
 
     // 생성자
     @Builder
-    public User(Category category, String nickname, String profileImg, String address,
-        String gender, int height, int weight, int alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod) {
+    public User(Long socialId, Category category, String nickname, String profileImg, String address,
+        String gender, int height, int weight, float alcoholLimit, String refreshToken,
+        int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
 
+        this.socialId = socialId;
         this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
@@ -99,6 +98,6 @@ public class User {
         this.alcoholLimit = alcoholLimit;
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
-
+        this.startNonalcoholDate = startNonalcoholDate;
     }
 }
