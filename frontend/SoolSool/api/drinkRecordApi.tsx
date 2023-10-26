@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosConfig";
-
+//
 export const fetchDrink = async () => {
   try {
     const res = await axiosInstance.get(`/api/v1/drink`);
