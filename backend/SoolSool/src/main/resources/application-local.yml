@@ -10,3 +10,8 @@ spring:
     url: ${LOCAL_DB_URL}
     username: ${LOCAL_DB_USERNAME}
     password: ${LOCAL_DB_PASSWORD}
+
+kakao:
+  client-id: ${CLIENT_ID}
+  redirect-uri: ${REDIRECT_URI}
+  client-secret: ${CLIENT_SECRET}
