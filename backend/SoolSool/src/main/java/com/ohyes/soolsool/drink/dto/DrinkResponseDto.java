@@ -1,6 +1,5 @@
 package com.ohyes.soolsool.drink.dto;
 
-import java.util.HashMap;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

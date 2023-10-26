@@ -1,27 +1,31 @@
 package com.ohyes.soolsool.drink.domain;
 
+import com.ohyes.soolsool.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -33,7 +37,7 @@ public class Diary {
     private int diaryPk;
 
     @Column(name = "drink_date", columnDefinition = "DATE")
-    private String drinkDate;
+    private LocalDate drinkDate;
 
     @Column(name = "memo")
     private String memo;
@@ -49,23 +53,28 @@ public class Diary {
 
     @CreatedDate
     @Column(name = "created_at")
-    private Date createAt;
+    private LocalDateTime createAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-    // 연관 관계 (유저 추가 필요)
+    // 연관 관계
     @OneToMany(mappedBy = "diary")
     private List<Drink> drinks = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "social_id")
+    private User user;
+
     // 생성자
     @Builder
-    public Diary(String drinkDate, String memo, String img, String hangover, float alcoholConc) {
+    public Diary(LocalDate drinkDate, String memo, String img, String hangover, float alcoholConc, User user) {
         this.drinkDate = drinkDate;
         this.memo = memo;
         this.img = img;
         this.hangover = hangover;
         this.alcoholConc = alcoholConc;
+        this.user = user;
     }
 }
