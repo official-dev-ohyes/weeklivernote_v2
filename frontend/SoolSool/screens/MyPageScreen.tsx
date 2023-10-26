@@ -12,6 +12,7 @@ import UserProfile from "../components/MyPage/template/UserProfile";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { background_mypage } from "../assets";
 import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
+import { fetchUserProfile } from "../api/mypageApi";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -40,21 +41,12 @@ function MyPageScreen({ navigation }) {
     nickname: "오예스",
     alcoholAmount: 30,
   });
-  //유저프로필 정보를 불러오는 함수
-  const fetchUserProfileData = async () => {
-    try {
-      const response = await axios.get("/api/v1/user/info");
-      return response.data;
-    } catch (error) {
-      throw new Error("user profile data를 가져오는데 실패");
-    }
-  };
 
   // const {
   //   data: userData,
   //   isLoading,
   //   isError,
-  // } = useQuery("userProfile", fetchUserProfileData);
+  // } = useQuery("userProfile", fetchUserProfile);
 
   // if (isLoading) {
   //   return <Text>Loading...</Text>;

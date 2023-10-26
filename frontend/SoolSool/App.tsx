@@ -18,6 +18,9 @@ import CalendarScreen from "./screens/CalendarScreen";
 import MapScreen from "./screens/MapScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import KakaoLoginScreen from "./screens/KakaoLoginScreen";
+
+import { RecoilRoot } from "recoil";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -82,31 +85,36 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaView style={styles.rootScreen}>
-        <StatusBar style="auto" />
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-            <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-            <Stack.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: true,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaView style={styles.rootScreen}>
+          <StatusBar style="auto" />
+          <NavigationContainer>
+            <RecoilRoot>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen
+                  name="KakaoLoginScreen"
+                  component={KakaoLoginScreen}
+                />
+                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+                <Stack.Screen
+                  name="Settings"
+                  component={SettingsScreen}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+              </Stack.Navigator>
+            </RecoilRoot>
+          </NavigationContainer>
+        </SafeAreaView>
+      </QueryClientProvider>
     </PaperProvider>
-
   );
 }
 

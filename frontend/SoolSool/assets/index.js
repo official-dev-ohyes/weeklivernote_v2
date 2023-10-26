@@ -1,6 +1,8 @@
 import iconImage from "./icon.png";
 import background_mypage from "./background_mypage.png";
+import Back_bright_2 from "./Back_bright_2.png";
 import cheeseDuck from "./cheeseDuck.jpg";
+import kakaoLoginButton from "./kakao_login_button.png";
 import soberImage from "./Home/drunken-level-00.png";
 import mildImage from "./Home/drunken-level-01.png";
 import moderateImage from "./Home/drunken-level-02.png";
@@ -17,4 +19,6 @@ export {
   highImage,
   veryHighImage,
   severeImage,
+  Back_bright_2,
+  kakaoLoginButton,
 };
