@@ -1,6 +1,6 @@
 package com.ohyes.soolsool.drink.dto;
 
-import java.util.HashMap;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +10,8 @@ import lombok.Setter;
 public class DrinkRequestDto {
 
     // 음주 관련 부분
-    private String category;
-    private String drinkUnit;
-    private byte drinkAmount;
-    
+    private List<DrinkInfo> drinks;
+
     // 일기 관련 부분
     private String drinkDate;
     private String memo;
@@ -22,10 +20,8 @@ public class DrinkRequestDto {
     private float alcoholConc;
 
     @Builder
-    private DrinkRequestDto(String category, String drinkUnit, byte drinkAmount, String drinkDate, String memo, String imgUrl, String hangover, float alcoholConc) {
-        this.category = category;
-        this.drinkUnit = drinkUnit;
-        this.drinkAmount = drinkAmount;
+    private DrinkRequestDto(List<DrinkInfo> drinks, String drinkDate, String memo, String imgUrl, String hangover, float alcoholConc) {
+        this.drinks = drinks;
         this.drinkDate = drinkDate;
         this.memo = memo;
         this.imgUrl = imgUrl;
@@ -33,3 +29,4 @@ public class DrinkRequestDto {
         this.alcoholConc = alcoholConc;
     }
 }
+
