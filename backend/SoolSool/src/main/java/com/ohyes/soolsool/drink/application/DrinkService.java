@@ -9,6 +9,7 @@ import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +29,7 @@ public class DrinkService {
 
     public void drinkAdd(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 해당 날짜의 일기 및 유저 검색
-        String date = drinkRequestDto.getDrinkDate();
+        LocalDate date = drinkRequestDto.getDrinkDate();
         User user = userRepository.findBySocialId(socialId);
         int pk;
 
@@ -142,10 +143,10 @@ public class DrinkService {
         }
     }
 
-    public void drinkEventDelete(DrinkRequestDto drinkRequestDto, Long socialId) {
+    public void drinkEventDelete(LocalDate drinkDate, Long socialId) {
         // 해당 날짜 일기 찾기
         User user = userRepository.findBySocialId(socialId);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user);
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
         List<Drink> drinks = existingDiary.getDrinks();
 
         // 음주 기록 전체 삭제

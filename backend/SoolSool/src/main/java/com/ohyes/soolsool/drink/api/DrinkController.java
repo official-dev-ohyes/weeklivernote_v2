@@ -4,6 +4,7 @@ import com.ohyes.soolsool.drink.application.DrinkService;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,13 +75,13 @@ public class DrinkController {
 
     }
 
-    @DeleteMapping("/v1/drink/daily")
+    @DeleteMapping("/v1/drink/daily/{drinkDate}")
     @Operation(summary = "음주 기록 및 일기 전체 삭제", description = "날짜만 보내면 해당 날짜의 모든 기록을 삭제합니다.")
-    public ResponseEntity<Object> drinkEventDelete(@RequestBody DrinkRequestDto drinkRequestDto) {
+    public ResponseEntity<Object> drinkEventDelete(@PathVariable LocalDate drinkDate) {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
 
-        drinkService.drinkEventDelete(drinkRequestDto, socialId);
+        drinkService.drinkEventDelete(drinkDate, socialId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

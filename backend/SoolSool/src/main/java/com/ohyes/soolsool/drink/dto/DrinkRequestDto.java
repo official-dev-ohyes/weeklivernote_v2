@@ -1,5 +1,6 @@
 package com.ohyes.soolsool.drink.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,14 +14,14 @@ public class DrinkRequestDto {
     private List<DrinkInfo> drinks;
 
     // 일기 관련 부분
-    private String drinkDate;
+    private LocalDate drinkDate;
     private String memo;
     private String imgUrl;
     private String hangover;
     private float alcoholConc;
 
     @Builder
-    private DrinkRequestDto(List<DrinkInfo> drinks, String drinkDate, String memo, String imgUrl, String hangover, float alcoholConc) {
+    private DrinkRequestDto(List<DrinkInfo> drinks, LocalDate drinkDate, String memo, String imgUrl, String hangover, float alcoholConc) {
         this.drinks = drinks;
         this.drinkDate = drinkDate;
         this.memo = memo;

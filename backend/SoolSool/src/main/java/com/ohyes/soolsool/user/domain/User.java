@@ -5,12 +5,11 @@ import com.ohyes.soolsool.drink.domain.Diary;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class User {
     private int maxNonalcoholPeriod;
 
     @Column(name = "start_nonalcohol_date")
-    private LocalDateTime startNonalcoholDate;
+    private LocalDate startNonalcoholDate;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -86,7 +85,7 @@ public class User {
     @Builder
     public User(Long socialId, Category category, String nickname, String profileImg, String address,
         String gender, int height, int weight, float alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod, LocalDateTime startNonalcoholDate) {
+        int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
 
         this.socialId = socialId;
         this.category = category;
