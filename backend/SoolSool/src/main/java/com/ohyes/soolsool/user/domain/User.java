@@ -55,7 +55,7 @@ public class User {
     private int weight;
 
     @Column(name = "alcohol_limit")
-    private int alcoholLimit;
+    private float alcoholLimit;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -85,7 +85,7 @@ public class User {
     // 생성자
     @Builder
     public User(Long socialId, Category category, String nickname, String profileImg, String address,
-        String gender, int height, int weight, int alcoholLimit, String refreshToken,
+        String gender, int height, int weight, float alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod, LocalDateTime startNonalcoholDate) {
 
         this.socialId = socialId;

@@ -24,7 +24,7 @@ public class UserTest {
             .gender("여")
             .height(158)
             .weight(48)
-            .alcoholLimit(8)
+            .alcoholLimit(8.2F)
             .maxNonalcoholPeriod(12)
             .build();
         userRepository.save(user);

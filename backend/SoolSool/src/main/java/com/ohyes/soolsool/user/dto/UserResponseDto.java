@@ -19,14 +19,14 @@ public class UserResponseDto {
     private String gender;
     private int height;
     private int weight;
-    private int alcoholLimit;
+    private float alcoholLimit;
     private String refreshToken;
     private int maxNonalcoholPeriod;
 
 
     @Builder
     private UserResponseDto (Long socialId, Category category, String nickname, String profileImg, String address,
-        String gender, int height, int weight, int alcoholLimit, String refreshToken,
+        String gender, int height, int weight, float alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod) {
 
         this.socialId = socialId;
