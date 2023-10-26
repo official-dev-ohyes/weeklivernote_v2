@@ -45,50 +45,50 @@ function CalendarMain({}) {
   if (totalWeeks) {
     return (
       <View style={{ height: height * 0.9 }}>
-        <Calendar
-          style={{ height: "100%" }}
-          theme={{
-            "stylesheet.day.basic": {
-              // container: {
-              //   flexDirection: "column",
-              //   justifyContent: "space-between",
-              // },
-              //   baseGroup: {
-              //     flexDirection: "row",
-              //     justifyContent: "space-between",
-              //     width: "100%",
-              //   },
-              base: {
-                height: (height * 0.9) / (totalWeeks + 1),
+        <>
+          <Calendar
+            style={{ height: "100%" }}
+            theme={{
+              "stylesheet.day.basic": {
+                // container: {
+                //   flexDirection: "column",
+                //   justifyContent: "space-between",
+                // },
+                //   baseGroup: {
+                //     flexDirection: "row",
+                //     justifyContent: "space-between",
+                //     width: "100%",
+                //   },
+                base: {
+                  height: (height * 0.9) / (totalWeeks + 1),
+                },
               },
-            },
-          }}
-          onDayPress={(day) => {
-            isSelectDay = true;
-            selectDay = `${day.year}-${day.month}-${day.day}`;
-            console.log(`누른 날짜는? ${selectDay}일!`);
-          }}
-          onPressArrowLeft={(goToPreviousMonth) => {
-            const previousMonth = new Date(
-              today.getFullYear(),
-              today.getMonth() - 1,
-              1
-            );
-            setToday(previousMonth); // 'today' 상태 업데이트
-            goToPreviousMonth();
-            //setTotalWeeks(0);
-          }}
-          onPressArrowRight={(goToNextMonth) => {
-            const NextMonth = new Date(
-              today.getFullYear(),
-              today.getMonth() + 1,
-              1
-            );
-            setTotalWeeks(0);
-            setToday(NextMonth); // 'today' 상태 업데이트
-            goToNextMonth();
-          }}
-        />
+            }}
+            onDayPress={(day) => {
+              isSelectDay = true;
+              selectDay = `${day.year}-${day.month}-${day.day}`;
+              console.log(`누른 날짜는? ${selectDay}일!`);
+            }}
+            onPressArrowLeft={(goToPreviousMonth) => {
+              const previousMonth = new Date(
+                today.getFullYear(),
+                today.getMonth() - 1,
+                1
+              );
+              setToday(previousMonth); // 'today' 상태 업데이트
+              goToPreviousMonth();
+            }}
+            onPressArrowRight={(goToNextMonth) => {
+              const NextMonth = new Date(
+                today.getFullYear(),
+                today.getMonth() + 1,
+                1
+              );
+              setToday(NextMonth); // 'today' 상태 업데이트
+              goToNextMonth();
+            }}
+          />
+        </>
       </View>
     );
   } else {
