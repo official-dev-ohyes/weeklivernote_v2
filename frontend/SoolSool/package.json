@@ -24,7 +24,9 @@
     "react-native-screens": "~3.22.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-webview": "^13.6.2",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "recoil": "^0.7.7",
+    "recoil-persist": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

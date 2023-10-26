@@ -20,6 +20,8 @@ import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 
+import { RecoilRoot } from "recoil";
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
@@ -87,26 +89,28 @@ export default function App() {
         <SafeAreaView style={styles.rootScreen}>
           <StatusBar style="auto" />
           <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen
-                name="KakaoLoginScreen"
-                component={KakaoLoginScreen}
-              />
-              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-              <Stack.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={{
-                  headerShown: true,
+            <RecoilRoot>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
                 }}
-              />
-            </Stack.Navigator>
+              >
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen
+                  name="KakaoLoginScreen"
+                  component={KakaoLoginScreen}
+                />
+                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+                <Stack.Screen
+                  name="Settings"
+                  component={SettingsScreen}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+              </Stack.Navigator>
+            </RecoilRoot>
           </NavigationContainer>
         </SafeAreaView>
       </QueryClientProvider>

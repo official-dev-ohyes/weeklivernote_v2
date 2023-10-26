@@ -1,10 +1,9 @@
 import { StyleSheet, View, ImageBackground, Button } from "react-native";
 import axios from "axios";
 import { WebView } from "react-native-webview";
-import qs from "qs";
 
 const CLIENT_ID = "24e024b40fae60991200f1a8475bdd5f";
-const REDIRECT_URI = "https://soolsool.life/oauth";
+const REDIRECT_URI = "https://kauth.kakao.com/oauth/token";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 function KakaoLoginScreen({ navigation }) {
