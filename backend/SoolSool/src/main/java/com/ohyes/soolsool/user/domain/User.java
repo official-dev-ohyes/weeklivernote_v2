@@ -33,7 +33,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "social_id")
     private Long socialId;
 
@@ -85,10 +84,11 @@ public class User {
 
     // 생성자
     @Builder
-    public User(Category category, String nickname, String profileImg, String address,
+    public User(Long socialId, Category category, String nickname, String profileImg, String address,
         String gender, int height, int weight, int alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod) {
+        int maxNonalcoholPeriod, LocalDateTime startNonalcoholDate) {
 
+        this.socialId = socialId;
         this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
@@ -99,6 +99,6 @@ public class User {
         this.alcoholLimit = alcoholLimit;
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
-
+        this.startNonalcoholDate = startNonalcoholDate;
     }
 }

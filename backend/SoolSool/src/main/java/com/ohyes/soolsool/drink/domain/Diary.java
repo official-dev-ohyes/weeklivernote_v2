@@ -68,11 +68,12 @@ public class Diary {
 
     // 생성자
     @Builder
-    public Diary(String drinkDate, String memo, String img, String hangover, float alcoholConc) {
+    public Diary(String drinkDate, String memo, String img, String hangover, float alcoholConc, User user) {
         this.drinkDate = drinkDate;
         this.memo = memo;
         this.img = img;
         this.hangover = hangover;
         this.alcoholConc = alcoholConc;
+        this.user = user;
     }
 }
