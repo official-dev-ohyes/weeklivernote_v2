@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @ToString
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Drink {
 
@@ -36,9 +35,8 @@ public class Drink {
     @Column(name = "drink_unit")
     private String drinkUnit;
 
-    @CreatedDate
     @Column(name = "record_time")
-    private LocalTime recordTime; // 음주 기록 생성 시간
+    private LocalDateTime recordTime; // 음주 기록 생성 시간
 
     // 연관 관계
     @ManyToOne
@@ -51,9 +49,10 @@ public class Drink {
 
     // 생성자
     @Builder
-    public Drink(String drinkUnit, byte drinkAmount, Diary diary, Category category) {
+    public Drink(String drinkUnit, byte drinkAmount, LocalDateTime recordTime, Diary diary, Category category) {
         this.drinkUnit = drinkUnit;
         this.drinkAmount = drinkAmount;
+        this.recordTime = recordTime;
         this.diary = diary;
         this.category = category;
     }
