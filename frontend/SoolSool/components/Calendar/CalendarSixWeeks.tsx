@@ -44,7 +44,7 @@ function CalendarSixWeeks({}) {
             />
           </View>
           <View style={styles.dailySummaryComponent}>
-            <DailySummary summaryText={`Selected day: ${selectDay}`} />
+            <DailySummary summaryText={selectDay} />
           </View>
         </View>
       ) : (
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     // justifyContent: "space-between",
   },
   smallCalendar: {
-    height: "77.5%",
+    height: "80%",
     borderWidth: 2,
     borderColor: "orange",
   },
