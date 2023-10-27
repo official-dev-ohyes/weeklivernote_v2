@@ -11,9 +11,7 @@ import UserStatus from "../components/Home/UserStatus";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
   const date = new Date("2023-10-24T15:30:00");
-  const isCarousel: any = useRef(null);
 
   useEffect(() => {
     setDrinkToday(
