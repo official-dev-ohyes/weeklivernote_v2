@@ -2,6 +2,7 @@ package com.ohyes.soolsool.drink.api;
 
 import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
+import com.ohyes.soolsool.drink.dto.DailyDetailDrinkDto;
 import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
@@ -31,7 +32,8 @@ public class DrinkController {
     private final DrinkGetService drinkGetService;
 
     @PostMapping("/v1/drink")
-    @Operation(summary = "음주 기록 추가", description = "음주 기록, 메모, 숙취 등을 저장합니다.")
+    @Operation(summary = "음주 기록 추가",
+        description = "음주 기록, 메모, 숙취 등을 저장합니다.(startTime 없으면 현재 시간으로 음주 기록 저장)")
     public ResponseEntity<Object> drinkAdd(@RequestBody DrinkRequestDto drinkRequestDto) {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
@@ -93,16 +95,14 @@ public class DrinkController {
         return new ResponseEntity<>(dailyDrinkDto, HttpStatus.OK);
     }
 
-    /* 일단 보류
-    @GetMapping("/v1/drink/daily-detail/{drinkDate}")
-    public ResponseEntity<Object> dailyDetailDrinkGet(@PathVariable LocalDate drinkDate) {
-        // 토큰 로직 추가 필요
-        Long socialId = 1L;
-
-        drinkGetService.dailyDetailDrinkGet(drinkDate, socialId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-    */
+//    @GetMapping("/v1/drink/daily-detail/{drinkDate}")
+//    public ResponseEntity<Object> dailyDetailDrinkGet(@PathVariable LocalDate drinkDate) {
+//        // 토큰 로직 추가 필요
+//        Long socialId = 1L;
+//
+//        DailyDetailDrinkDto dailyDetailDrinkDto = drinkGetService.dailyDetailDrinkGet(drinkDate, socialId);
+//        return new ResponseEntity<>(dailyDetailDrinkDto, HttpStatus.OK);
+//    }
 
     @DeleteMapping("/v1/drink/daily/{drinkDate}")
     @Operation(summary = "음주 기록 및 일기 전체 삭제", description = "날짜만 보내면 해당 날짜의 모든 기록을 삭제합니다.")
