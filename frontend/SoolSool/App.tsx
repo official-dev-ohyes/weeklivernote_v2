@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
@@ -82,37 +82,37 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaView style={styles.rootScreen}>
-        <StatusBar style="auto" />
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-            <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-            <Stack.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: true,
+      <QueryClientProvider client={queryClient}>
+        {/* <SafeAreaView style={styles.rootScreen}> */}
+        <View style={styles.rootScreen}>
+          <StatusBar style="dark" />
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
               }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </QueryClientProvider>
+            >
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: true,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </QueryClientProvider>
     </PaperProvider>
-
   );
 }
 
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
+    marginTop: Constants.statusBarHeight,
   },
 });

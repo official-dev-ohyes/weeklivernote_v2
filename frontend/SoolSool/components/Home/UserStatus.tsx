@@ -1,39 +1,49 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
 import DrinkingStatus from "./DrinkingStatus";
 import DetoxingStatus from "./DetoxingStatus";
+import { DrinkToday } from "../../models/DrinkToday";
+import { calculateTimeDifference } from "../../utils/timeUtils";
 
 interface UserStatusProps {
-  index: number;
-  drinkInVolume: number;
-  alcoholInGrams: number;
-  requiredTimeForDetox: number;
-  period: number;
-  imageSource: number;
+  identifier: string;
 }
 
-const UserStatus: React.FC<UserStatusProps> = ({
-  index,
-  drinkInVolume,
-  alcoholInGrams,
-  requiredTimeForDetox,
-  period,
-  imageSource,
-}) => {
+const UserStatus: React.FC<UserStatusProps> = ({ identifier }) => {
+  const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
+  const date = new Date("2023-10-27T15:30:00");
+
+  useEffect(() => {
+    setDrinkToday(
+      new DrinkToday({
+        drinkTotal: 1000,
+        alcoholAmount: 35.8,
+        drinkStartTime: date.toDateString(),
+        height: 157,
+        weight: 58,
+        gender: "female",
+      })
+    );
+  }, []);
+  const timeSinceDrink = calculateTimeDifference(date);
+
+  if (!drinkToday) {
+    return;
+  }
+
   return (
     <>
-      {index === 0 && (
+      {identifier === "0" && (
         <DrinkingStatus
-          drinkInVolume={drinkInVolume}
-          drinkingFor={period}
-          imageSource={imageSource}
+          drinkInVolume={drinkToday.drinkTotal}
+          drinkingFor={timeSinceDrink}
+          imageSource={drinkToday.intoxicationImage}
         />
       )}
-      {index === 1 && (
+      {identifier === "1" && (
         <DetoxingStatus
-          alcoholInGrams={alcoholInGrams}
-          requiredTimeForDetox={requiredTimeForDetox}
-          detoxingFor={period}
+          alcoholInGrams={drinkToday.alcoholAmount}
+          requiredTimeForDetox={drinkToday.requiredTimeForDetox}
+          detoxingFor={timeSinceDrink}
         />
       )}
     </>
