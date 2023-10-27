@@ -4,7 +4,9 @@ import com.ohyes.soolsool.drink.dao.DiaryRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
+import com.ohyes.soolsool.drink.dto.DailyMainDrink;
 import com.ohyes.soolsool.drink.dto.DrinkCount;
+import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
@@ -66,6 +68,49 @@ public class DrinkGetService {
             .build();
     }
 
+    public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, Long socialId) {
+        User user = userRepository.findBySocialId(socialId);
+        List<DailyMainDrink> dailyMainDrinks = new ArrayList<>();
+
+        // 년, 월이 일치하는 일기들 검색
+        int year = drinkDate.getYear();
+        int month = drinkDate.getMonthValue();
+        List<Diary> diaries = diaryRepository.findAllByUserAndDrinkDateYearAndDrinkDateMonth(user, year, month);
+
+        // 각 일기의 drinks마다 가장 많은 양의 주종 저장
+        diaries.forEach(d -> {
+            AtomicInteger maxAmount = new AtomicInteger(0);
+            AtomicReference<String> mainDrink = new AtomicReference<>(null);
+
+            // 양을 계산한 후 최댓값 갱신
+            d.getDrinks().forEach(e -> {
+                int amount;
+                if (e.getDrinkUnit().equals("잔")) {
+                    amount = e.getCategory().getGlass() * e.getDrinkAmount();
+                } else {
+                    amount = e.getCategory().getBottle() * e.getDrinkAmount();
+                }
+
+                if (amount > maxAmount.get()) {
+                    maxAmount.set(amount);
+                    mainDrink.set(e.getCategory().getCategoryName());
+                }
+            });
+
+            DailyMainDrink dailyMainDrink = DailyMainDrink.builder()
+                .date(d.getDrinkDate())
+                .mainDrink(String.valueOf(mainDrink))
+                .build();
+
+            dailyMainDrinks.add(dailyMainDrink);
+        });
+
+        // Dto에 담아서 반환
+        return MonthlyDrinkInfoDto.builder()
+            .drinks(dailyMainDrinks)
+            .build();
+    }
+
     public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
         User user = userRepository.findBySocialId(socialId);
@@ -111,6 +156,8 @@ public class DrinkGetService {
             .topConc(topConc)
             .build();
     }
+
+
 
     // 중복되는 로직 분리 필요
     /* 일단 보류

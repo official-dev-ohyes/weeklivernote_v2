@@ -4,6 +4,7 @@ import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
 import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
+import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,9 +71,15 @@ public class DrinkController {
         return new ResponseEntity<>(totalDrinkInfoDto, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/drink/monthly")
-    public void monthlyDrinkGet() {
+    @GetMapping("/v1/drink/monthly/{drinkDate}")
+    @Operation(summary = "해당 월의 음주 전체 조회",
+        description = "날짜와 대표 주종(가장 많이 마신 주종)의 리스트를 반환합니다.")
+    public ResponseEntity<Object> monthlyDrinkGet(@PathVariable LocalDate drinkDate) {
+        // 토큰 로직 추가 필요
+        Long socialId = 1L;
 
+        MonthlyDrinkInfoDto monthlyDrinkInfoDto = drinkGetService.monthlyDrinkGet(drinkDate, socialId);
+        return new ResponseEntity<>(monthlyDrinkInfoDto, HttpStatus.OK);
     }
 
     @GetMapping("/v1/drink/daily/{drinkDate}")
