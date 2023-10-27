@@ -49,6 +49,7 @@ public class DrinkService {
                 .img(drinkRequestDto.getImgUrl())
                 .hangover(drinkRequestDto.getHangover())
                 .alcoholConc(drinkRequestDto.getAlcoholConc())
+                .detoxTime(0F)
                 .build();
 
             Diary savedDiary = diaryRepository.save(diary);

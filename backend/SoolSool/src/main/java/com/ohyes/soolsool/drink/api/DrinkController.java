@@ -69,7 +69,8 @@ public class DrinkController {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
 
-        TotalDrinkInfoDto totalDrinkInfoDto = drinkGetService.totalDrinkInfoGet(drinkDate, socialId);
+        TotalDrinkInfoDto totalDrinkInfoDto = drinkGetService.totalDrinkInfoGet(drinkDate,
+            socialId);
         return new ResponseEntity<>(totalDrinkInfoDto, HttpStatus.OK);
     }
 
@@ -80,7 +81,8 @@ public class DrinkController {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
 
-        MonthlyDrinkInfoDto monthlyDrinkInfoDto = drinkGetService.monthlyDrinkGet(drinkDate, socialId);
+        MonthlyDrinkInfoDto monthlyDrinkInfoDto = drinkGetService.monthlyDrinkGet(drinkDate,
+            socialId);
         return new ResponseEntity<>(monthlyDrinkInfoDto, HttpStatus.OK);
     }
 
@@ -95,14 +97,18 @@ public class DrinkController {
         return new ResponseEntity<>(dailyDrinkDto, HttpStatus.OK);
     }
 
-//    @GetMapping("/v1/drink/daily-detail/{drinkDate}")
-//    public ResponseEntity<Object> dailyDetailDrinkGet(@PathVariable LocalDate drinkDate) {
-//        // 토큰 로직 추가 필요
-//        Long socialId = 1L;
-//
-//        DailyDetailDrinkDto dailyDetailDrinkDto = drinkGetService.dailyDetailDrinkGet(drinkDate, socialId);
-//        return new ResponseEntity<>(dailyDetailDrinkDto, HttpStatus.OK);
-//    }
+    @GetMapping("/v1/drink/daily-detail/{drinkDate}")
+    @Operation(summary = "해당 날짜의 음주 상세 조회",
+        description = "날짜, 음주 시작 시간, 해독 시간, 그래프 관련 데이터 및 일기 정보를 반환합니다."
+            + "(당일 조회의 경우 detoxTime은 0.0입니다.)")
+    public ResponseEntity<Object> dailyDetailDrinkGet(@PathVariable LocalDate drinkDate) {
+        // 토큰 로직 추가 필요
+        Long socialId = 1L;
+
+        DailyDetailDrinkDto dailyDetailDrinkDto = drinkGetService.dailyDetailDrinkGet(drinkDate,
+            socialId);
+        return new ResponseEntity<>(dailyDetailDrinkDto, HttpStatus.OK);
+    }
 
     @DeleteMapping("/v1/drink/daily/{drinkDate}")
     @Operation(summary = "음주 기록 및 일기 전체 삭제", description = "날짜만 보내면 해당 날짜의 모든 기록을 삭제합니다.")
