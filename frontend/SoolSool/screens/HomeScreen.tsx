@@ -6,14 +6,12 @@ import { calculateTimeDifference } from "../utils/timeUtils";
 
 import { StyleSheet, View, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import HomeCarousel from "../components/Home/HomeCarousel";
 import DrinkController from "../components/Home/DrinkController";
-import UserStatus from "../components/Home/UserStatus";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const date = new Date("2023-10-24T15:30:00");
-  const isCarousel: any = useRef(null);
+  const date = new Date("2023-10-27T15:30:00");
 
   useEffect(() => {
     setDrinkToday(
@@ -29,8 +27,6 @@ function HomeScreen() {
   }, []);
 
   const timeSinceDrink = calculateTimeDifference(date);
-  // const data: DrinkToday[] = [drinkToday, drinkToday];
-  const data = [drinkToday, drinkToday];
 
   // const fetchDrinkTodayData = async () => {
   //   try {
@@ -77,25 +73,26 @@ function HomeScreen() {
   }
 
   return (
-    <View style={styles.rootScreen}>
-      <UserStatus
-        index={0}
-        drinkInVolume={drinkToday.drinkTotal}
-        alcoholInGrams={drinkToday.alcoholAmount}
-        requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-        period={timeSinceDrink}
-        imageSource={drinkToday.intoxicationImage}
-      />
-      {/* <UserStatus
-        index={1}
-        drinkInVolume={drinkToday.drinkTotal}
-        alcoholInGrams={drinkToday.alcoholAmount}
-        requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-        period={timeSinceDrink}
-        imageSource={drinkToday.intoxicationImage}
-      /> */}
-      <DrinkController />
-    </View>
+    <HomeCarousel />
+    // <View style={styles.rootScreen}>
+    //   <UserStatus
+    //     index={0}
+    //     drinkInVolume={drinkToday.drinkTotal}
+    //     alcoholInGrams={drinkToday.alcoholAmount}
+    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
+    //     period={timeSinceDrink}
+    //     imageSource={drinkToday.intoxicationImage}
+    //   />
+    //   {/* <UserStatus
+    //     index={1}
+    //     drinkInVolume={drinkToday.drinkTotal}
+    //     alcoholInGrams={drinkToday.alcoholAmount}
+    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
+    //     period={timeSinceDrink}
+    //     imageSource={drinkToday.intoxicationImage}
+    //   /> */}
+    //   <DrinkController />
+    // </View>
   );
 }
 

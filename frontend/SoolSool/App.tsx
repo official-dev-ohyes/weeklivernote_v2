@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
@@ -86,33 +86,28 @@ export default function App() {
   return (
     <PaperProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <SafeAreaView style={styles.rootScreen}>
-          <StatusBar style="auto" />
+        {/* <SafeAreaView style={styles.rootScreen}> */}
+        <View style={styles.rootScreen}>
+          <StatusBar style="dark" />
           <NavigationContainer>
-            <RecoilRoot>
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: true,
                 }}
-              >
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen
-                  name="KakaoLoginScreen"
-                  component={KakaoLoginScreen}
-                />
-                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-                <Stack.Screen
-                  name="Settings"
-                  component={SettingsScreen}
-                  options={{
-                    headerShown: true,
-                  }}
-                />
-              </Stack.Navigator>
-            </RecoilRoot>
+              />
+            </Stack.Navigator>
           </NavigationContainer>
-        </SafeAreaView>
+        </View>
       </QueryClientProvider>
     </PaperProvider>
   );
@@ -121,6 +116,6 @@ export default function App() {
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
+    marginTop: Constants.statusBarHeight,
   },
 });
