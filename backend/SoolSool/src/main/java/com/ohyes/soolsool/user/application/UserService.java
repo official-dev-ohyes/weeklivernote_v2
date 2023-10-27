@@ -5,8 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
-import com.ohyes.soolsool.user.dto.UserRequestDto;
+import com.ohyes.soolsool.user.dto.KakaoProfileDto;
+import com.ohyes.soolsool.util.jwt.JwtProvider;
+import com.ohyes.soolsool.util.jwt.TokenDto;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +42,42 @@ public class UserService {
     private final JwtProvider jwtProvider;
 
 
+    public Map<String, Object> kakaoLogin(String code) throws JsonProcessingException {
+        KakaoProfileDto newUser = getKakaoUser(getAccessToken(code));
+
+        User user = userRepository.findBySocialId(newUser.getSocialId()).orElse(null);;
+
+        if (user == null) {
+            user = User.builder()
+                .socialId(newUser.getSocialId())
+                .nickname(newUser.getNickname())
+                .profileImg(newUser.getProfileImg())
+                .address("ADDRESS")
+                .gender("GENDER")
+                .height(1)
+                .weight(1)
+                .alcoholLimit(1)
+                .refreshToken("REFRESH_TOKEN")
+                .maxNonalcoholPeriod(1).build();
+
+            userRepository.save(user);
+        }
+
+        TokenDto tokenDto =  jwtProvider.createToken(newUser.getSocialId());
+
+        updateRefreshToken(tokenDto, newUser.getSocialId());
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getNickname());
+        data.put("tokenInfo", tokenDto);
+        data.put("alcoholLimit", user.getAlcoholLimit());
+
+        return data;
+
+    }
 
     // Access Token 받아오기
-    public String getAccessToken(String code) {
+    public String getAccessToken(String code) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -63,82 +100,39 @@ public class UserService {
             String.class
         );
 
+        String responseBody = accessTokenResponse.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
-        User oauthToken = null;
-        try {
-            oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), User.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return oauthToken;
-    }
-
-    public String kakaoLogin(String code) throws Exception {
-        UserRequestDto newUser = getKakaoUser(getAccessToken(code));
-        Optional<User> user = userRepository.findBySocialId(newUser.getSocialId());
-
-        if (user == null) {
-            user = User.builder()
-                .socialId(newUser.getSocialId())
-                .nickname(newUser.getNickname())
-                .profileImg(newUser.getProfileImg())
-                .address("ADDRESS").build()
-                .gender("GENDER").build()
-                .height("HEIGHT").build()
-                .weight("WEIGHT").build()
-                .alcohol_limit("ALCOHOL_LIMIT").build()
-                .refresh_token("REFRESH_TOKEN").build()
-                .maxNonalcoholPeriod("MAX_NONALCOHOL_PERIOD").build();
-
-            userRepository.save(user);
-        }
-
-//        TokenDto tokenDto =  jwtTokenProvider.createToken(user);
-
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        return jsonNode.get("access_token").asText();
     }
 
     // 사용자 정보 저장
-    public User saveUserAndGetToken(String token) {
-        User profile = findProfile(token);
+//    public User saveUserAndGetToken(String token) {
+//        User profile = findProfile(token);
+//
+//        User user = userRepository.findBySocialId(profile.getKakao_account().getId());
+//
+//        if(user == null) {
+//            user = User.builder()
+//                .socialId(profile.getSocialId())
+//                .profileImg(profile.getKakao_account().getProfile().getProfile_img())
+//                .nickname(profile.getKakao_account().getProfile().getNickname())
+//                .address("ADDRESS").build()
+//                .gender("GENDER").build()
+//                .height("HEIGHT").build()
+//                .weight("WEIGHT").build()
+//                .alcohol_limit("ALCOHOL_LIMIT").build()
+//                .refresh_token("REFRESH_TOKEN").build()
+//                .maxNonalcoholPeriod("MAX_NONALCOHOL_PERIOD").build();
+//
+//            userRepository.save(user);
+//
+//        }
+//
+//        return createToken(user);
+//    }
 
-        User user = userRepository.findBySocialId(profile.getKakao_account().getId());
-
-        if(user == null) {
-            user = User.builder()
-                .socialId(profile.getSocialId())
-                .profileImg(profile.getKakao_account().getProfile().getProfile_img())
-                .nickname(profile.getKakao_account().getProfile().getNickname())
-                .address("ADDRESS").build()
-                .gender("GENDER").build()
-                .height("HEIGHT").build()
-                .weight("WEIGHT").build()
-                .alcohol_limit("ALCOHOL_LIMIT").build()
-                .refresh_token("REFRESH_TOKEN").build()
-                .maxNonalcoholPeriod("MAX_NONALCOHOL_PERIOD").build();
-
-            userRepository.save(user);
-
-        }
-
-        return createToken(user);
-    }
-
-    public String createToken(User user){
-        String jwtToken = JWT.create()
-            .withSubject(user.getSocialId())
-            .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
-
-            .withClaim("id", user.getSocialId())
-            .withClaim("nickname", user.getNickname())
-
-            .sign(Algorithm.HMAC512(JwtProperties.SECRET));
-
-        return jwtToken;
-    }
-
-
-    public User getKakaoUser(String token) throws JsonProcessingException {
+    public KakaoProfileDto getKakaoUser(String token) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -155,14 +149,6 @@ public class UserService {
             String.class
         );
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        User kakaoProfile = null;
-//        try {
-//            kakaoProfile = objectMapper.readValue(kakaoProfileResponse.getBody(), User.class);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-
         String responseBody = kakaoProfileResponse.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
@@ -171,11 +157,21 @@ public class UserService {
         String nickname = jsonNode.get("properties")
             .get("nickname").asText();
         String profileImg = jsonNode.get("properties")
-            .get("profile_image").asText();
+            .get("profile_image_url").asText();
 
-        return new UserRequestDto(socialId, nickname, profileImg);
+        return new KakaoProfileDto(socialId, nickname, profileImg);
 
-//        return kakaoProfile;
+    }
+
+    private void updateRefreshToken(TokenDto tokenDto, Long socialId) {
+        Optional<User> userOptional = userRepository.findBySocialId(socialId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.updateRefreshToken(tokenDto.getRefreshToken());
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("일치하는 회원이 없습니다.");
+        }
     }
 
 }

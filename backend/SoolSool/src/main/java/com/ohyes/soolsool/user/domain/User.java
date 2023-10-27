@@ -84,10 +84,12 @@ public class User {
 
     // 생성자
     @Builder
-    public User(Category category, String nickname, String profileImg, String address,
+    public User(Long socialId, Category category, String nickname, String profileImg,
+        String address,
         String gender, int height, int weight, int alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod) {
 
+        this.socialId = socialId;
         this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
@@ -99,5 +101,9 @@ public class User {
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
 
+    }
+
+    public void updateRefreshToken(String updatedRefreshToken) {
+        this.refreshToken = updatedRefreshToken;
     }
 }
