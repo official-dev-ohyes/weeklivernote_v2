@@ -10,6 +10,7 @@ import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,6 +49,7 @@ public class DrinkService {
                 .img(drinkRequestDto.getImgUrl())
                 .hangover(drinkRequestDto.getHangover())
                 .alcoholConc(drinkRequestDto.getAlcoholConc())
+                .detoxTime(0F)
                 .build();
 
             Diary savedDiary = diaryRepository.save(diary);
@@ -56,10 +58,20 @@ public class DrinkService {
 
         // 해당 일기와 연결해서 음주 기록 저장
         List<DrinkInfo> drinkInfos = drinkRequestDto.getDrinks();
+        LocalDateTime startTime;
+
+        // 입력 시간이 있으면 해당 시간, 없으면 실시간으로 기록
+        if (drinkRequestDto.getStartTime() != null) {
+            startTime = drinkRequestDto.getDrinkDate().atTime(drinkRequestDto.getStartTime());
+        } else {
+            startTime = LocalDateTime.now();
+        }
+
         drinkInfos.forEach(e -> {
             Drink drink = Drink.builder()
                 .drinkUnit(e.getDrinkUnit())
                 .drinkAmount(e.getDrinkAmount())
+                .recordTime(startTime)
                 .diary(diaryRepository.findByDiaryPk(pk))
                 .category(categoryRepository.findByCategoryName(e.getCategory()))
                 .build();
@@ -91,30 +103,50 @@ public class DrinkService {
         List<DrinkInfo> drinkInfos = drinkRequestDto.getDrinks(); // 입력 값
         List<Drink> drinks = existingDiary.getDrinks(); // 기존 값
 
-        // 주종과 단위가 일치하는 음주 기록 검색
-        drinkInfos.forEach(e -> {
-            AtomicBoolean modified = new AtomicBoolean(false);
-            drinks.forEach(f -> {
-                if (f.getCategory() == categoryRepository.findByCategoryName(
-                    e.getCategory())
-                    && f.getDrinkUnit().equals(e.getDrinkUnit())) {
-                    modified.set(true);
-                    f.setDrinkAmount(e.getDrinkAmount());
-                    drinkRepository.save(f);
-                }
-            });
+        // 시간이 존재하면 초기화 후 재기록
+        if (drinkRequestDto.getStartTime() != null) {
+            LocalDateTime startTime = drinkRequestDto.getDrinkDate().atTime(drinkRequestDto.getStartTime());
+            drinkRepository.deleteAll(drinks);
 
-            // 찾지 못했을 경우 새로 저장
-            if (!modified.get()) {
+            drinkInfos.forEach(e -> {
                 Drink drink = Drink.builder()
                     .drinkUnit(e.getDrinkUnit())
                     .drinkAmount(e.getDrinkAmount())
+                    .recordTime(startTime)
                     .diary(existingDiary)
                     .category(categoryRepository.findByCategoryName(e.getCategory()))
                     .build();
                 drinkRepository.save(drink);
-            }
-        });
+            });
+        // 존재하지 않으면 실시간이므로 수정
+        } else {
+            LocalDateTime startTime = LocalDateTime.now();
+            // 주종과 단위가 일치하는 음주 기록 검색
+            drinkInfos.forEach(e -> {
+                AtomicBoolean modified = new AtomicBoolean(false);
+                drinks.forEach(f -> {
+                    if (f.getCategory() == categoryRepository.findByCategoryName(
+                        e.getCategory())
+                        && f.getDrinkUnit().equals(e.getDrinkUnit())) {
+                        modified.set(true);
+                        f.setDrinkAmount(e.getDrinkAmount());
+                        drinkRepository.save(f);
+                    }
+                });
+
+                // 찾지 못했을 경우 새로 저장
+                if (!modified.get()) {
+                    Drink drink = Drink.builder()
+                        .drinkUnit(e.getDrinkUnit())
+                        .drinkAmount(e.getDrinkAmount())
+                        .recordTime(startTime)
+                        .diary(existingDiary)
+                        .category(categoryRepository.findByCategoryName(e.getCategory()))
+                        .build();
+                    drinkRepository.save(drink);
+                }
+            });
+        }
     }
 
     public void drinkDelete(DrinkRequestDto drinkRequestDto, Long socialId) {

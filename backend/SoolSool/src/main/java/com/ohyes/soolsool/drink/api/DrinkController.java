@@ -2,8 +2,10 @@ package com.ohyes.soolsool.drink.api;
 
 import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
+import com.ohyes.soolsool.drink.dto.DailyDetailDrinkDto;
 import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
+import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +32,8 @@ public class DrinkController {
     private final DrinkGetService drinkGetService;
 
     @PostMapping("/v1/drink")
-    @Operation(summary = "음주 기록 추가", description = "음주 기록, 메모, 숙취 등을 저장합니다.")
+    @Operation(summary = "음주 기록 추가",
+        description = "음주 기록, 메모, 숙취 등을 저장합니다.(startTime 없으면 현재 시간으로 음주 기록 저장)")
     public ResponseEntity<Object> drinkAdd(@RequestBody DrinkRequestDto drinkRequestDto) {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
@@ -66,13 +69,21 @@ public class DrinkController {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
 
-        TotalDrinkInfoDto totalDrinkInfoDto = drinkGetService.totalDrinkInfoGet(drinkDate, socialId);
+        TotalDrinkInfoDto totalDrinkInfoDto = drinkGetService.totalDrinkInfoGet(drinkDate,
+            socialId);
         return new ResponseEntity<>(totalDrinkInfoDto, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/drink/monthly")
-    public void monthlyDrinkGet() {
+    @GetMapping("/v1/drink/monthly/{drinkDate}")
+    @Operation(summary = "해당 월의 음주 전체 조회",
+        description = "날짜와 대표 주종(가장 많이 마신 주종)의 리스트를 반환합니다.")
+    public ResponseEntity<Object> monthlyDrinkGet(@PathVariable LocalDate drinkDate) {
+        // 토큰 로직 추가 필요
+        Long socialId = 1L;
 
+        MonthlyDrinkInfoDto monthlyDrinkInfoDto = drinkGetService.monthlyDrinkGet(drinkDate,
+            socialId);
+        return new ResponseEntity<>(monthlyDrinkInfoDto, HttpStatus.OK);
     }
 
     @GetMapping("/v1/drink/daily/{drinkDate}")
@@ -86,16 +97,18 @@ public class DrinkController {
         return new ResponseEntity<>(dailyDrinkDto, HttpStatus.OK);
     }
 
-    /* 일단 보류
     @GetMapping("/v1/drink/daily-detail/{drinkDate}")
+    @Operation(summary = "해당 날짜의 음주 상세 조회",
+        description = "날짜, 음주 시작 시간, 해독 시간, 그래프 관련 데이터 및 일기 정보를 반환합니다."
+            + "(당일 조회의 경우 detoxTime은 0.0입니다.)")
     public ResponseEntity<Object> dailyDetailDrinkGet(@PathVariable LocalDate drinkDate) {
         // 토큰 로직 추가 필요
         Long socialId = 1L;
 
-        drinkGetService.dailyDetailDrinkGet(drinkDate, socialId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        DailyDetailDrinkDto dailyDetailDrinkDto = drinkGetService.dailyDetailDrinkGet(drinkDate,
+            socialId);
+        return new ResponseEntity<>(dailyDetailDrinkDto, HttpStatus.OK);
     }
-    */
 
     @DeleteMapping("/v1/drink/daily/{drinkDate}")
     @Operation(summary = "음주 기록 및 일기 전체 삭제", description = "날짜만 보내면 해당 날짜의 모든 기록을 삭제합니다.")

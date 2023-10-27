@@ -51,6 +51,9 @@ public class Diary {
     @Column(name = "alcohol_conc")
     private float alcoholConc;
 
+    @Column(name = "detox_time")
+    private float detoxTime;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createAt;
@@ -69,12 +72,14 @@ public class Diary {
 
     // 생성자
     @Builder
-    public Diary(LocalDate drinkDate, String memo, String img, String hangover, float alcoholConc, User user) {
+    public Diary(LocalDate drinkDate, String memo, String img, String hangover, float alcoholConc,
+        float detoxTime, User user) {
         this.drinkDate = drinkDate;
         this.memo = memo;
         this.img = img;
         this.hangover = hangover;
         this.alcoholConc = alcoholConc;
+        this.detoxTime = detoxTime;
         this.user = user;
     }
 }
