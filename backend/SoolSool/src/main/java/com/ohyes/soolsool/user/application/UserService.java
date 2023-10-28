@@ -136,7 +136,7 @@ public class UserService {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer" + token);
+        headers.add("Authorization", "Bearer " + token);
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
@@ -156,7 +156,7 @@ public class UserService {
         Long socialId = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
             .get("nickname").asText();
-        String profileImg = jsonNode.get("properties")
+        String profileImg = jsonNode.get("kakao_account").get("profile")
             .get("profile_image_url").asText();
 
         return new KakaoProfileDto(socialId, nickname, profileImg);

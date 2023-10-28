@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +36,7 @@ public class JwtProvider {
     private static final Long REFRESH_EXPIRATION_TIME = 14 * 24 * 60 * 60 * 1000L; // 14일
 //    private final UserRepository userRepository;
 
-
+    @Autowired
     public JwtProvider(@Value("${jwt.secret-key}") String secretKey) {
         String keyBase64Encoded = Base64.getEncoder().encodeToString(secretKey.getBytes());
         this.key = Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());

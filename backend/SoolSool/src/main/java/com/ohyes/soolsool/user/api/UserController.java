@@ -22,13 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/user")
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    @GetMapping("/login")
+    @GetMapping("v1/user/login")
     public ResponseEntity<Object> userLogin(@RequestParam String code) throws JsonProcessingException {
         Map<String, Object> data = userService.kakaoLogin(code);
         return new ResponseEntity<>(data, HttpStatus.OK);
