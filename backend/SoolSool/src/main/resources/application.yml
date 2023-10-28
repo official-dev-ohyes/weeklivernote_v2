@@ -22,32 +22,29 @@ spring:
   main:
     log-startup-info: false
 
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: ${CLIENT_ID}   # REST API 키
-            client-secret: ${CLIENT_SECRET}
-            redirect-uri: ${REDIRECT_URI}
-            client-authentication-method: POST
-            authorization-grant-type: authorization_code
-            scope: profile_nickname, profile_image
-            client-name: Kakao
-        provider:
-          kakao:
-            authorization-uri: <https://kauth.kakao.com/oauth/authorize>
-            token-uri: <https://kauth.kakao.com/oauth/token>
-            user-info-uri: <https://kapi.kakao.com/v2/user/me>
-            user-name-attribute: id
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: ${CLIENT_ID}   # REST API 키
+#            client-secret: ${CLIENT_SECRET}
+#            redirect-uri: ${REDIRECT_URI}
+#            client-authentication-method: POST
+#            authorization-grant-type: authorization_code
+#            scope: profile_nickname, profile_image
+#            client-name: Kakao
+#        provider:
+#          kakao:
+#            authorization-uri: <https://kauth.kakao.com/oauth/authorize>
+#            token-uri: <https://kauth.kakao.com/oauth/token>
+#            user-info-uri: <https://kapi.kakao.com/v2/user/me>
+#            user-name-attribute: id
 
-
-  oauth:
-    kakao:
-      client-id: ${ClIENT_ID}
-      url:
-        auth: https://kauth.kakao.com
-        api: https://kapi.kakao.com
+kakao:
+  client-id: ${CLIENT_ID}   # REST API 키
+  client-secret: ${CLIENT_SECRET}
+  redirect-uri: ${REDIRECT_URI}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
