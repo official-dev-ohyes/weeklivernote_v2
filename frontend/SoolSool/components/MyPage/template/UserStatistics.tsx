@@ -1,12 +1,27 @@
-import { Text, View } from "react-native";
-import React, { Component } from "react";
+import { StyleSheet, View } from "react-native";
+import React from "react";
+import WeeklyStatistics from "../WeeklyStatistics";
+import MonthlyStatistics from "../MonthlyStatistics";
 
-export default class UserStatistics extends Component {
-  render() {
+interface UserStatisticsProps {
+  // nonAlc:number;
+}
+
+function UserStatistics(props:UserStatisticsProps) {
     return (
-      <View>
-        <Text>UserStatistics</Text>
+      <View style={styles.mainContainer}>
+        <WeeklyStatistics/>
+        <MonthlyStatistics/>
       </View>
     );
   }
-}
+
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flexDirection: "column",
+      gap: 15,
+    },
+  });
+
+export default UserStatistics;
+

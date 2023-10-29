@@ -2,6 +2,7 @@ import { Text, Pressable, Image, StyleSheet, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { cheeseDuck } from "../../../assets";
+import DetailProfile from "../DetailProfile";
 
 interface UserData {
   weight: number;
@@ -21,36 +22,17 @@ function UserProfile(props: UserProfileProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.userProfileBox}>
-        <View style={styles.LeftBox}>
-          <Image source={cheeseDuck} style={styles.profileImage} />
-          <View style={styles.userInfoContainerRow}>
-            <Text style={styles.userInfoLabel}>닉네임:</Text>
-            <Text style={styles.userInfoText}>{userData.nickname}</Text>
-          </View>
+      <Image source={cheeseDuck} style={styles.profileImage} />
+      
+      <Text style={styles.userInfoText}>{userData.nickname}</Text>
 
-          <View style={styles.userInfoContainerRow}>
-            <Text style={styles.userInfoLabel}>성별:</Text>
-            <Ionicons name="female-outline" size={15} />
-          </View>
-        </View>
+      <View style={styles.userAddress}>
+        <Ionicons name="home" size={15} />
+        <Text style={styles.userInfoText}>{userData.address}</Text>
+      </View >
 
-        <View style={styles.RightBox}>
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>주소</Text>
-            <Text style={styles.userInfoText}>{userData.address}</Text>
-          </View>
-
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>체중</Text>
-            <Text style={styles.userInfoText}>{userData.weight} kg</Text>
-          </View>
-
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>주량</Text>
-            <Text style={styles.userInfoText}>{userData.alcoholAmount} ml</Text>
-          </View>
-        </View>
+      <View style={styles.userDetail}>
+        <DetailProfile userData={userData} />
       </View>
     </View>
   );
@@ -58,16 +40,11 @@ function UserProfile(props: UserProfileProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // backgroundColor: "#FFFF",
-  },
-  userProfileBox: {
-    // backgroundColor: "rgba(255, 255, 255, 0.8)",
-    padding: 16,
-    borderRadius: 8,
-    marginHorizontal: 16,
+    backgroundColor: "#FFFF",
     flexDirection: "column",
-    alignItems: "center",
-    gap: 5,
+    gap: 15,
+    borderRadius: 20,
+    alignItems: "center"
   },
   userInfoLabel: {
     fontSize: 16,
@@ -78,9 +55,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 3,
   },
-  userInfoContainerRow: {
+  userAddress: {
     flexDirection: "row",
-    alignItems: "center",
   },
   profileImage: {
     width: 100,
@@ -90,20 +66,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "lightgray",
   },
-  RightBox: {
-    flexDirection: "row",
-    gap: 5,
-  },
-  rightBoxItem: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "lightgray",
-    borderRadius: 10,
-    padding: 5,
-  },
-  LeftBox: {},
+  userDetail :{
+    // flex: 1,
+    width: "100%"
+  }
 });
 
 export default UserProfile;

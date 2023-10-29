@@ -4,7 +4,7 @@ import { accessTokenAtom } from "../recoil/auth";
 
 const axiosInstance = axios.create({
   // 추후 .env 파일에 환경변수 생성해서 사용할 것
-  baseURL: "https://soolsool.site",
+  baseURL: process.env.REACT_APP_BACK_URL,
   headers: {
     "Content-Type": "application/json",
   },
