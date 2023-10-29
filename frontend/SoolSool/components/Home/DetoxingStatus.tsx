@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
+import Wave from "./Wave";
 
 interface DetoxingStatusProps {
   alcoholInGrams: number;
@@ -21,7 +22,7 @@ function DetoxingStatus({
         </Text>
         시간
       </Text>
-      <Text>간 찰랑찰랑 이미지 자리</Text>
+      <Wave />
     </View>
   );
 }
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
   },
   subtitleContainer: {
     fontSize: 20,
+    paddingBottom: 12,
   },
   periodContainer: {
     fontWeight: "bold",
