@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
+import BodyInfo from "../components/AddInfo/BodyInfo";
+
 
 function AddInfoScreen() {
+  
   return (
     <View>
-      <Text>Add Info</Text>
+      <Text>1단계</Text>
+      <BodyInfo />
     </View>
   );
 }
