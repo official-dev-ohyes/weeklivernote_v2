@@ -10,7 +10,9 @@ import highImage from "./Home/drunken-level-03.png";
 import veryHighImage from "./Home/drunken-level-04.png";
 import severeImage from "./Home/drunken-level-05.png";
 import nonAlcIcon from "./nonAlcIcon.png";
+import tempChar from "./tempChar.png";
 export {
+  tempChar,
   iconImage,
   background_mypage,
   cheeseDuck,
