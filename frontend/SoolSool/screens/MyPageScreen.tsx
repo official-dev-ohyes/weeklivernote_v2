@@ -54,7 +54,7 @@ function MyPageScreen({ navigation }) {
   // }
 
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <MyPageUpperBar />
       <UserProfile userData={userData} />
       <UserNonAlc nonAlc={nonAlc}/>
@@ -64,9 +64,12 @@ function MyPageScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    // resizeMode: "center",
+  mainContainer: {
+    borderWidth: 1,
+    borderColor: "black",
+    flexDirection: "column",
+    gap: 5,
+    marginHorizontal: 15,
   },
 });
 

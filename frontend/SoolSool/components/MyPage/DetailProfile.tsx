@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import React from "react";
 
 interface UserData {
@@ -18,8 +18,7 @@ function DetailProfile(props: DetailProfileProps) {
   const { userData } = props;
 
     return (
-      <View>
-        <View>
+      <View style={styles.mainContainer}>
           <View >
             <Text>성별</Text>
             <Text>{userData.gender}</Text>
@@ -35,8 +34,15 @@ function DetailProfile(props: DetailProfileProps) {
             <Text>{userData.alcoholAmount} ml</Text>
           </View>
       </View>
-      </View>
     );
   }
+
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      borderRadius: 20,
+    },
+  });
 
 export default DetailProfile;
