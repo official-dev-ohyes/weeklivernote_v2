@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 
-function AddInfoSecondScreen() {
+function AddInfoStep2Screen() {
   return (
     <View>
-      <Text>AddInfoSecondScreen</Text>
+      <Text>AddInfoStep2Screen</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({});
 
-export default AddInfoSecondScreen;
+export default AddInfoStep2Screen;

@@ -21,6 +21,8 @@ import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 
 import { RecoilRoot } from "recoil";
+import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
+import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -99,6 +101,8 @@ export default function App() {
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="KakaoLoginScreen" component={KakaoLoginScreen} />
               <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="AddInfoStep2" component={AddInfoStep2Screen} />
+              <Stack.Screen name="AddInfoStep3" component={AddInfoStep3Screen} />
               <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
               <Stack.Screen
                 name="Settings"

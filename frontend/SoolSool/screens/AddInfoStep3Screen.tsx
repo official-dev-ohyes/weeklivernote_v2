@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 
-function AddInfoThirdScreen() {
+function AddInfoStep3Screen() {
   return (
     <View>
-      <Text>AddInfoThirdScreen</Text>
+      <Text>AddInfoStep3</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({});
 
-export default AddInfoThirdScreen;
+export default AddInfoStep3Screen;
