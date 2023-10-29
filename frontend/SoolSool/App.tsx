@@ -84,6 +84,7 @@ const theme = {
 
 export default function App() {
   return (
+    <RecoilRoot>
     <PaperProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         {/* <SafeAreaView style={styles.rootScreen}> */}
@@ -96,6 +97,7 @@ export default function App() {
               }}
             >
               <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="KakaoLoginScreen" component={KakaoLoginScreen} />
               <Stack.Screen name="AddInfo" component={AddInfoScreen} />
               <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
               <Stack.Screen
@@ -110,6 +112,7 @@ export default function App() {
         </View>
       </QueryClientProvider>
     </PaperProvider>
+    </RecoilRoot>
   );
 }
 

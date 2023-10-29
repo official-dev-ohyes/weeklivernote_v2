@@ -27,6 +27,8 @@ interface UserData {
 }
 
 function MyPageScreen({ navigation }) {
+
+  console.log("test호출",fetchDrink("2023-10-09"));
   // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
   const [userData, setUserData] = useState<UserData>({
     weight: 70,
@@ -62,7 +64,7 @@ function MyPageScreen({ navigation }) {
     </View>
   );
 }
-
+//
 const styles = StyleSheet.create({
   mainContainer: {
     // borderWidth: 1,
