@@ -65,10 +65,10 @@ function MyPageScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    borderWidth: 1,
-    borderColor: "black",
+    // borderWidth: 1,
+    // borderColor: "black",
     flexDirection: "column",
-    gap: 5,
+    gap: 15,
     marginHorizontal: 15,
   },
 });

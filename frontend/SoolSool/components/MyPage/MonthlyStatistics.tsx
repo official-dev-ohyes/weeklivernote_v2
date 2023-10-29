@@ -9,6 +9,9 @@ function MonthlyStatistics(props:MonthlyStatisticsProps) {
     return (
       <View style={styles.mainContainer}>
         <Text>월간통계페이지</Text>
+        <View style={styles.tempBox}>
+
+</View>
       </View>
     );
   }
@@ -20,6 +23,13 @@ function MonthlyStatistics(props:MonthlyStatisticsProps) {
       gap: 5,
       borderRadius: 20,
     },
+    tempBox:{
+      width: "90%",
+      height: 100,
+      backgroundColor: "lightgrey",
+      marginHorizontal: 10,
+      borderRadius: 20
+    }
   });
 
 export default MonthlyStatistics;
