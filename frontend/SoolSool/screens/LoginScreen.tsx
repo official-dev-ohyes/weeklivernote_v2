@@ -6,8 +6,6 @@ import {
   Button,
 } from "react-native";
 import { Back_bright_2, kakaoLoginButton } from "../assets";
-import { WebView } from "react-native-webview";
-import { useState } from "react";
 
 function LoginScreen({ navigation }) {
   const navigateToAddInfo = () => {
