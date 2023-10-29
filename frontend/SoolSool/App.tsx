@@ -21,6 +21,8 @@ import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 
 import { RecoilRoot } from "recoil";
+import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
+import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -84,6 +86,7 @@ const theme = {
 
 export default function App() {
   return (
+    <RecoilRoot>
     <PaperProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         {/* <SafeAreaView style={styles.rootScreen}> */}
@@ -96,7 +99,10 @@ export default function App() {
               }}
             >
               <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="KakaoLoginScreen" component={KakaoLoginScreen} />
               <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="AddInfoStep2" component={AddInfoStep2Screen} />
+              <Stack.Screen name="AddInfoStep3" component={AddInfoStep3Screen} />
               <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
               <Stack.Screen
                 name="Settings"
@@ -110,6 +116,7 @@ export default function App() {
         </View>
       </QueryClientProvider>
     </PaperProvider>
+    </RecoilRoot>
   );
 }
 

@@ -1,12 +1,12 @@
 import axiosInstance from "./axiosConfig";
 //
-export const fetchDrink = async () => {
+export const fetchDrink = async (drinkDate) => {
   try {
-    const res = await axiosInstance.get(`/api/v1/drink`);
+    const res = await axiosInstance.get(`/api/v1/drink/${drinkDate}`);
     console.log("조회 성공했다면", res);
     return res.data;
   } catch (err) {
-    console.log("axios 호출 실패");
+    console.log("axios 호출 실패하는 이유", err);
     throw new Error("drink record 조회 get 요청 실패");
   }
 };

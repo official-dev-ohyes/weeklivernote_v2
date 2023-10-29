@@ -21,7 +21,10 @@ import drink07 from "./Home/drinks/drink-07.png";
 import drink08 from "./Home/drinks/drink-08.png";
 import drink09 from "./Home/drinks/drink-09.png";
 
+import tempChar from "./tempChar.png";
+
 export {
+  tempChar,
   iconImage,
   background_mypage,
   cheeseDuck,

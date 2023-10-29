@@ -8,6 +8,7 @@ import {
 import { Back_bright_2, kakaoLoginButton } from "../assets";
 
 function LoginScreen({ navigation }) {
+  console.log("와",navigation);
   const navigateToAddInfo = () => {
     navigation.navigate("AddInfo");
   };
