@@ -1,12 +1,20 @@
 import { Text, View } from "react-native";
-import React, { Component } from "react";
+import React from "react";
+import WeeklyStatistics from "../WeeklyStatistics";
+import MonthlyStatistics from "../MonthlyStatistics";
 
-export default class UserStatistics extends Component {
-  render() {
+interface UserStatisticsProps {
+  // nonAlc:number;
+}
+
+function UserStatistics(props:UserStatisticsProps) {
     return (
       <View>
-        <Text>UserStatistics</Text>
+        <WeeklyStatistics/>
+        <MonthlyStatistics/>
       </View>
     );
   }
-}
+
+export default UserStatistics;
+

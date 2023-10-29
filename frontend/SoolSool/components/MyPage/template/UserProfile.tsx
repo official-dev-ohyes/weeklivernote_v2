@@ -2,6 +2,7 @@ import { Text, Pressable, Image, StyleSheet, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { cheeseDuck } from "../../../assets";
+import DetailProfile from "../DetailProfile";
 
 interface UserData {
   weight: number;
@@ -21,53 +22,37 @@ function UserProfile(props: UserProfileProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.userProfileBox}>
         <View style={styles.LeftBox}>
           <Image source={cheeseDuck} style={styles.profileImage} />
           <View style={styles.userInfoContainerRow}>
-            <Text style={styles.userInfoLabel}>닉네임:</Text>
             <Text style={styles.userInfoText}>{userData.nickname}</Text>
           </View>
 
           <View style={styles.userInfoContainerRow}>
-            <Text style={styles.userInfoLabel}>성별:</Text>
-            <Ionicons name="female-outline" size={15} />
+          <Text style={styles.userInfoText}>{userData.address}</Text>
+            {/* <Ionicons name="female-outline" size={15} /> */}
           </View>
         </View>
-
-        <View style={styles.RightBox}>
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>주소</Text>
-            <Text style={styles.userInfoText}>{userData.address}</Text>
-          </View>
-
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>체중</Text>
-            <Text style={styles.userInfoText}>{userData.weight} kg</Text>
-          </View>
-
-          <View style={styles.rightBoxItem}>
-            <Text style={styles.userInfoLabel}>주량</Text>
-            <Text style={styles.userInfoText}>{userData.alcoholAmount} ml</Text>
-          </View>
+          <DetailProfile userData={userData} />
         </View>
-      </View>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // backgroundColor: "#FFFF",
+    backgroundColor: "#FFFF",
+    flexDirection: "column",
+    gap: 5,
+    marginHorizontal: 15,
   },
   userProfileBox: {
     // backgroundColor: "rgba(255, 255, 255, 0.8)",
     padding: 16,
     borderRadius: 8,
-    marginHorizontal: 16,
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 5,
+    
+    
+    
+    
   },
   userInfoLabel: {
     fontSize: 16,
