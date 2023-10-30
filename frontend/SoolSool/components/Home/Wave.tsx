@@ -73,7 +73,8 @@ const Wave = ({ size = 256, progress = 50 }) => {
           r={outerCircleRadius}
           style="stroke"
           strokeWidth={padding}
-          color="#fff"
+          // color="#fff"
+          color="rgba(255,255,255,0)"
         />
 
         <Group clip={roundedRectangle}>
