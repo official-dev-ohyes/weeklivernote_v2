@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
@@ -23,6 +23,8 @@ import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 import DailyDetail from "./components/Calendar/DailyDetail";
 
 import { RecoilRoot } from "recoil";
+import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
+import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -86,15 +88,29 @@ const theme = {
 
 export default function App() {
   return (
+    <RecoilRoot>
     <PaperProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <SafeAreaView style={styles.rootScreen}>
-          <StatusBar style="auto" />
+        {/* <SafeAreaView style={styles.rootScreen}> */}
+        <View style={styles.rootScreen}>
+          <StatusBar style="dark" />
           <NavigationContainer>
-            <RecoilRoot>
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="KakaoLoginScreen" component={KakaoLoginScreen} />
+              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+              <Stack.Screen name="AddInfoStep2" component={AddInfoStep2Screen} />
+              <Stack.Screen name="AddInfoStep3" component={AddInfoStep3Screen} />
+              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: true,
                 }}
               >
                 <Stack.Screen name="Login" component={LoginScreen} />
@@ -114,16 +130,18 @@ export default function App() {
                 <Stack.Screen name="DailyDetail" component={DailyDetail} />
               </Stack.Navigator>
             </RecoilRoot>
+            </Stack.Navigator>
           </NavigationContainer>
-        </SafeAreaView>
+        </View>
       </QueryClientProvider>
     </PaperProvider>
+    </RecoilRoot>
   );
 }
 
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
+    marginTop: Constants.statusBarHeight,
   },
 });

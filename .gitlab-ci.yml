@@ -1,0 +1,29 @@
+image: node:alpine
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .yarn
+
+stages:
+  - build
+
+before_script:
+  - yarn install --cache-folder .yarn
+
+eas-build-emulator:
+  stage: build
+  script:
+    - apk add --no-cache bash
+    - npx eas-cli build -p android --profile emulator
+    - npx eas-cli build -p ios --profile simulator
+  only:
+    - develop/FE
+
+eas-build-all:
+  stage: build
+  script:
+    - apk add --no-cache bash
+    - npx eas-cli build --platform all --non-interactive
+  only:
+    - main/FE

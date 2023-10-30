@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useQuery } from "react-query";
-import {
-  StyleSheet,
-  Text,
-  ImageBackground,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, ImageBackground, View } from "react-native";
 import UserProfile from "../components/MyPage/template/UserProfile";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { background_mypage } from "../assets";
 import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
 import { fetchUserProfile } from "../api/mypageApi";
+import { createDrink, fetchDrink } from "../api/drinkRecordApi";
+import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -32,6 +27,8 @@ interface UserData {
 }
 
 function MyPageScreen({ navigation }) {
+
+  console.log("test호출",fetchDrink("2023-10-09"));
   // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
   const [userData, setUserData] = useState<UserData>({
     weight: 70,
@@ -41,6 +38,8 @@ function MyPageScreen({ navigation }) {
     nickname: "오예스",
     alcoholAmount: 30,
   });
+
+  const [nonAlc,setNonAlc] = useState<number>(10);
 
   // const {
   //   data: userData,
@@ -57,21 +56,22 @@ function MyPageScreen({ navigation }) {
   // }
 
   return (
-    <ImageBackground
-      source={background_mypage} // 이미지 파일 경로
-      style={styles.backgroundImage}
-    >
+    <View style={styles.mainContainer}>
       <MyPageUpperBar />
       <UserProfile userData={userData} />
+      <UserNonAlc nonAlc={nonAlc}/>
       <UserStatistics />
-    </ImageBackground>
+    </View>
   );
 }
-
+//
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    // resizeMode: "center",
+  mainContainer: {
+    // borderWidth: 1,
+    // borderColor: "black",
+    flexDirection: "column",
+    gap: 15,
+    marginHorizontal: 15,
   },
 });
 
