@@ -8,35 +8,10 @@ import { StyleSheet, View, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
 import DrinkController from "../components/Home/DrinkController";
-import { DrinkCarousel } from "../components/Home/DrinkCarousel";
-
-import {
-  drink01,
-  drink02,
-  drink03,
-  drink04,
-  drink05,
-  drink06,
-  drink07,
-  drink08,
-  drink09,
-} from "../assets";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
   const date = new Date("2023-10-27T15:30:00");
-
-  const drinkData = [
-    drink01,
-    drink02,
-    drink03,
-    drink04,
-    drink05,
-    drink06,
-    drink07,
-    drink08,
-    drink09,
-  ];
 
   // const fetchARandomActivity = async (url) => {
   //   try {
@@ -62,8 +37,6 @@ function HomeScreen() {
       })
     );
   }, []);
-
-  const timeSinceDrink = calculateTimeDifference(date);
 
   // const fetchDrinkTodayData = async () => {
   //   try {
@@ -101,7 +74,7 @@ function HomeScreen() {
 
   if (!drinkToday) {
     return (
-      <View>
+      <View style={styles.loadingContainer}>
         {/* <ActivityIndicator animating={true} color={}/> */}
         <ActivityIndicator animating={true} />
         <Text>Loading...</Text>
@@ -112,10 +85,9 @@ function HomeScreen() {
   return (
     <>
       <HomeCarousel />
-      {/* <View>
-        <DrinkCarousel data={drinkData} />
-      </View> */}
-      <DrinkController />
+      <View style={styles.controllerContainer}>
+        <DrinkController />
+      </View>
     </>
   );
 }
@@ -126,6 +98,15 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  controllerContainer: {
+    margin: 24,
+    marginTop: -240,
   },
 });
 
