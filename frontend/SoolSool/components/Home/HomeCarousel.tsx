@@ -48,7 +48,8 @@ const Indicator = ({ scrollX }) => {
               height: 10,
               width: 10,
               borderRadius: 5,
-              backgroundColor: "#A5BBFF",
+              backgroundColor: "#fff",
+              // backgroundColor: "#A5BBFF",
               opacity,
               margin: 10,
               transform: [{ scale }],
@@ -123,7 +124,7 @@ export default function HomeCarousel() {
     <View style={styles.container}>
       <StatusBar hidden />
       <Backdrop scrollX={scrollX} />
-      <Square scrollX={scrollX} />
+      {/* <Square scrollX={scrollX} /> */}
       <Animated.FlatList
         data={DATA}
         keyExtractor={(item) => item.key}

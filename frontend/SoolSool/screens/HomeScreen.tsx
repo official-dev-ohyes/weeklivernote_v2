@@ -13,6 +13,18 @@ function HomeScreen() {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
   const date = new Date("2023-10-27T15:30:00");
 
+  // const fetchARandomActivity = async (url) => {
+  //   try {
+  //     const response = await axios.get(url);
+  //     console.log("응답 데이터:", response.data);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("요청 실패:", error);
+  //     throw error;
+  //   }
+  // };
+  // fetchARandomActivity("https://www.boredapi.com/api/activity");
+
   useEffect(() => {
     setDrinkToday(
       new DrinkToday({
@@ -25,8 +37,6 @@ function HomeScreen() {
       })
     );
   }, []);
-
-  const timeSinceDrink = calculateTimeDifference(date);
 
   // const fetchDrinkTodayData = async () => {
   //   try {
@@ -64,7 +74,7 @@ function HomeScreen() {
 
   if (!drinkToday) {
     return (
-      <View>
+      <View style={styles.loadingContainer}>
         {/* <ActivityIndicator animating={true} color={}/> */}
         <ActivityIndicator animating={true} />
         <Text>Loading...</Text>
@@ -73,26 +83,12 @@ function HomeScreen() {
   }
 
   return (
-    <HomeCarousel />
-    // <View style={styles.rootScreen}>
-    //   <UserStatus
-    //     index={0}
-    //     drinkInVolume={drinkToday.drinkTotal}
-    //     alcoholInGrams={drinkToday.alcoholAmount}
-    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-    //     period={timeSinceDrink}
-    //     imageSource={drinkToday.intoxicationImage}
-    //   />
-    //   {/* <UserStatus
-    //     index={1}
-    //     drinkInVolume={drinkToday.drinkTotal}
-    //     alcoholInGrams={drinkToday.alcoholAmount}
-    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-    //     period={timeSinceDrink}
-    //     imageSource={drinkToday.intoxicationImage}
-    //   /> */}
-    //   <DrinkController />
-    // </View>
+    <>
+      <HomeCarousel />
+      <View style={styles.controllerContainer}>
+        <DrinkController />
+      </View>
+    </>
   );
 }
 
@@ -103,9 +99,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  cardImageContainer: {
-    width: 200,
-    height: 200,
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  controllerContainer: {
+    margin: 24,
+    marginTop: -240,
   },
 });
 

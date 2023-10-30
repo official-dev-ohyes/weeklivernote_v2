@@ -1,9 +1,9 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, ImageProps } from "react-native";
 
 interface DrinkingStatusProps {
   drinkInVolume: number;
   drinkingFor: number;
-  imageSource: number;
+  imageSource: ImageProps["source"];
 }
 
 function DrinkingStatus({

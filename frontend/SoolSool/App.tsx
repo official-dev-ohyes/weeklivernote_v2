@@ -15,7 +15,7 @@ import LoginScreen from "./screens/LoginScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
 import HomeScreen from "./screens/HomeScreen";
 import CalendarScreen from "./screens/CalendarScreen";
-import MapScreen from "./screens/MapScreen";
+// import MapScreen from "./screens/MapScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
@@ -53,7 +53,7 @@ function BottomTabNavigator() {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Map"
         component={MapScreen}
         options={{
@@ -61,7 +61,7 @@ function BottomTabNavigator() {
             <Ionicons name="map-outline" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="MyPage"
         component={MyPageScreen}
@@ -87,35 +87,44 @@ const theme = {
 export default function App() {
   return (
     <RecoilRoot>
-    <PaperProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        {/* <SafeAreaView style={styles.rootScreen}> */}
-        <View style={styles.rootScreen}>
-          <StatusBar style="dark" />
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="KakaoLoginScreen" component={KakaoLoginScreen} />
-              <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-              <Stack.Screen name="AddInfoStep2" component={AddInfoStep2Screen} />
-              <Stack.Screen name="AddInfoStep3" component={AddInfoStep3Screen} />
-              <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-              <Stack.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={{
-                  headerShown: true,
+      <PaperProvider theme={theme}>
+        <QueryClientProvider client={queryClient}>
+          {/* <SafeAreaView style={styles.rootScreen}> */}
+          <View style={styles.rootScreen}>
+            <StatusBar style="dark" />
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
                 }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </View>
-      </QueryClientProvider>
-    </PaperProvider>
+              >
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen
+                  name="KakaoLoginScreen"
+                  component={KakaoLoginScreen}
+                />
+                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                <Stack.Screen
+                  name="AddInfoStep2"
+                  component={AddInfoStep2Screen}
+                />
+                <Stack.Screen
+                  name="AddInfoStep3"
+                  component={AddInfoStep3Screen}
+                />
+                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
+                <Stack.Screen
+                  name="Settings"
+                  component={SettingsScreen}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </View>
+        </QueryClientProvider>
+      </PaperProvider>
     </RecoilRoot>
   );
 }
