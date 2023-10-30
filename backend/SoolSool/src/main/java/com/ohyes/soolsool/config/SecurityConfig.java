@@ -35,8 +35,8 @@ public class SecurityConfig {
             .and()
             .httpBasic().disable()
             .formLogin().disable()
-
             .authorizeRequests()
+//            .oauth2Login()
             .anyRequest().permitAll()   // 모든 요청에 모든 사용자 접근 허용(개발 편의를 위해 설정)
 //                .anyRequest().authenticated()   // 모든 요청에 대해 인증 필요
             .and().build();
