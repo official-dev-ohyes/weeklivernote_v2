@@ -1,0 +1,107 @@
+[
+  {
+    "name": "소주",
+    "volume": 360,
+    "unit": "병",
+    "alcoholPercentage": 19,
+    "imagePath": "../assets/Home/drinks/drink-01.png"
+  },
+  {
+    "name": "소주",
+    "volume": 50,
+    "unit": "잔",
+    "alcoholPercentage": 19,
+    "imagePath": "../assets/Home/drinks/drink-02.png"
+  },
+  {
+    "name": "맥주",
+    "volume": 500,
+    "unit": "병",
+    "alcoholPercentage": 5,
+    "imagePath": "../assets/Home/drinks/drink-03.png"
+  },
+  {
+    "name": "맥주",
+    "volume": 200,
+    "unit": "잔",
+    "alcoholPercentage": 5,
+    "imagePath": "../assets/Home/drinks/drink-04.png"
+  },
+  {
+    "name": "소맥",
+    "volume": 400,
+    "unit": "병",
+    "alcoholPercentage": 10,
+    "imagePath": "../assets/Home/drinks/drink-05.png"
+  },
+  {
+    "name": "소맥",
+    "volume": 200,
+    "unit": "잔",
+    "alcoholPercentage": 10,
+    "imagePath": "../assets/Home/drinks/drink-06.png"
+  },
+  {
+    "name": "와인",
+    "volume": 750,
+    "unit": "병",
+    "alcoholPercentage": 11,
+    "imagePath": "../assets/Home/drinks/drink-07.png"
+  },
+  {
+    "name": "와인",
+    "volume": 150,
+    "unit": "잔",
+    "alcoholPercentage": 11,
+    "imagePath": "../assets/Home/drinks/drink-08.png"
+  },
+  {
+    "name": "막걸리",
+    "volume": 750,
+    "unit": "병",
+    "alcoholPercentage": 6,
+    "imagePath": "../assets/Home/drinks/drink-09.png"
+  },
+  {
+    "name": "막걸리",
+    "volume": 200,
+    "unit": "잔",
+    "alcoholPercentage": 6,
+    "imagePath": "../assets/Home/drinks/drink-10.png"
+  },
+  {
+    "name": "하이볼",
+    "volume": 400,
+    "unit": "잔",
+    "alcoholPercentage": 8,
+    "imagePath": "../assets/Home/drinks/drink-11.png"
+  },
+  {
+    "name": "칵테일(약)",
+    "volume": 200,
+    "unit": "잔",
+    "alcoholPercentage": 8,
+    "imagePath": "../assets/Home/drinks/drink-12.png"
+  },
+  {
+    "name": "칵테일(강)",
+    "volume": 200,
+    "unit": "잔",
+    "alcoholPercentage": 20,
+    "imagePath": "../assets/Home/drinks/drink-13.png"
+  },
+  {
+    "name": "위스키",
+    "volume": 750,
+    "unit": "병",
+    "alcoholPercentage": 40,
+    "imagePath": "../assets/Home/drinks/drink-14.png"
+  },
+  {
+    "name": "위스키",
+    "volume": 45,
+    "unit": "잔",
+    "alcoholPercentage": 40,
+    "imagePath": "../assets/Home/drinks/drink-15.png"
+  }
+]
