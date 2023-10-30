@@ -34,9 +34,9 @@ public class DrinkGetService {
 
     public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
-        Diary exisingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
-        List<Drink> drinks = exisingDiary.getDrinks();
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        List<Drink> drinks = existingDiary.getDrinks();
 
         AtomicInteger drinkTotal = new AtomicInteger();
         AtomicInteger alcoholAmount = new AtomicInteger();
@@ -73,13 +73,17 @@ public class DrinkGetService {
     }
 
     public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         List<DailyMainDrink> dailyMainDrinks = new ArrayList<>();
 
         // 년, 월이 일치하는 일기들 검색
         int year = drinkDate.getYear();
         int month = drinkDate.getMonthValue();
         List<Diary> diaries = diaryRepository.findAllByUserAndDrinkDateYearAndDrinkDateMonth(user, year, month);
+
+        if (diaries.isEmpty()) {
+            throw new NullPointerException("해당 월의 음주 기록이 없습니다.");
+        }
 
         // 각 일기의 drinks마다 가장 많은 양의 주종 저장
         diaries.forEach(d -> {
@@ -117,9 +121,9 @@ public class DrinkGetService {
 
     public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
-        Diary exisingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
-        List<Drink> drinks = exisingDiary.getDrinks();
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        List<Drink> drinks = existingDiary.getDrinks();
 
         AtomicInteger drinkTotal = new AtomicInteger();
         AtomicInteger alcoholAmount = new AtomicInteger();
@@ -163,8 +167,8 @@ public class DrinkGetService {
 
     public DailyDetailDrinkDto dailyDetailDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
         // LocalDateTime startTime; float detoxTime; List<DrinkPercent> drinks;
         List<Drink> drinks = existingDiary.getDrinks();
