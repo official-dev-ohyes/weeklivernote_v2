@@ -20,7 +20,7 @@ eas-build-emulator:
   only:
     - develop/FE
   tags:
-    - expo-runner
+    - new-expo-runner
 
 eas-build-all:
   stage: build
@@ -30,5 +30,7 @@ eas-build-all:
   only:
     - main/FE
   tags:
-    - expo-runner
+    - new-expo-runner
 
+tags:
+  - new-expo-runner
