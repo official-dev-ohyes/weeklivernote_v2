@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SimpleTimeZone;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -99,5 +100,9 @@ public class User {
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
         this.startNonalcoholDate = startNonalcoholDate;
+    }
+
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
     }
 }

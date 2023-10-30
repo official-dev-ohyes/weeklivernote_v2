@@ -22,22 +22,19 @@ spring:
   main:
     log-startup-info: false
 
-# 로그인
-jwt:
-  secret: ${JWT_SECRET_KEY}
-
-oauth:
-  kakao:
-    client-id: ${CLIENT_ID}
-    url:
-      auth: https://kauth.kakao.com
-      api: https://kapi.kakao.com
-
 management:
   endpoint:
   endpoints:
     web:
       base-path: /soolsool
+
+kakao:
+  client-id: ${CLIENT_ID}   # REST API 키
+  client-secret: ${CLIENT_SECRET}
+  redirect-uri: ${REDIRECT_URI}
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
 
 springdoc:
   packages-to-scan: com.ohyes.soolsool
