@@ -2,18 +2,42 @@ import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
 import React, { useState, useEffect } from "react";
 import DailySummary from "./DailySummary";
+import { fetchMonthRecord } from "../../api/calendarApi";
 
 function CalendarSixWeeks({}) {
+  // 오늘 정보 저장
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+
+  const currentDate = `${year}-${month < 10 ? "0" : ""}${month}-${
+    day < 10 ? "0" : ""
+  }${day}`;
+
+  const [currentDay, setCurrent] = useState("");
   const { height } = Dimensions.get("window");
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
 
-  const handleDayPress = (day) => {
-    if (`${day.year}-${day.month}-${day.day}` === selectDay) {
+  // console.log("test호출", fetchMonthRecord("2023-10-09"));
+
+  useEffect(() => {
+    console.log(`현재 날짜는? ${currentDate}`);
+    setCurrent(currentDate);
+  }, []);
+
+  const handleDayPress = (clickDay) => {
+    const newMonth =
+      clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
+    const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
+    const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
+    if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
     } else {
-      setSelectDay(`${day.year}-${day.month}-${day.day}`);
+      setSelectDay(newDate);
+      setCurrent(newDate);
       setIsSelectDay(true);
     }
   };
@@ -32,6 +56,7 @@ function CalendarSixWeeks({}) {
         <View>
           <View style={styles.smallCalendar}>
             <Calendar
+              current={currentDay}
               // style={{ height: "100%" }}
               theme={{
                 "stylesheet.day.basic": {
@@ -51,6 +76,7 @@ function CalendarSixWeeks({}) {
         <View style={styles.largeCalendar}>
           <Calendar
             // style={{ height: "100%" }}
+            current={currentDay}
             theme={{
               "stylesheet.day.basic": {
                 base: {
