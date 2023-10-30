@@ -27,3 +27,6 @@ eas-build-all:
     - npx eas-cli build --platform all --non-interactive
   only:
     - main/FE
+
+tags:
+  - expo-runner
