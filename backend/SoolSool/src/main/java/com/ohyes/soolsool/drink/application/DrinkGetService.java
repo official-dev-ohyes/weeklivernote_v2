@@ -34,7 +34,7 @@ public class DrinkGetService {
 
     public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
+        User user = userRepository.findBySocialId(socialId).orElse(null);
         Diary exisingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
         List<Drink> drinks = exisingDiary.getDrinks();
 
@@ -73,7 +73,7 @@ public class DrinkGetService {
     }
 
     public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
+        User user = userRepository.findBySocialId(socialId).orElse(null);
         List<DailyMainDrink> dailyMainDrinks = new ArrayList<>();
 
         // 년, 월이 일치하는 일기들 검색
@@ -117,7 +117,7 @@ public class DrinkGetService {
 
     public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
+        User user = userRepository.findBySocialId(socialId).orElse(null);
         Diary exisingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
         List<Drink> drinks = exisingDiary.getDrinks();
 
@@ -163,7 +163,7 @@ public class DrinkGetService {
 
     public DailyDetailDrinkDto dailyDetailDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow();
+        User user = userRepository.findBySocialId(socialId).orElse(null);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
 
         // LocalDateTime startTime; float detoxTime; List<DrinkPercent> drinks;
