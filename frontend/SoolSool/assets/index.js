@@ -20,6 +20,7 @@ import drink06 from "./Home/drinks/drink-06.png";
 import drink07 from "./Home/drinks/drink-07.png";
 import drink08 from "./Home/drinks/drink-08.png";
 import drink09 from "./Home/drinks/drink-09.png";
+import liverImage from "./Home/liver.png";
 
 import tempChar from "./tempChar.png";
 
@@ -46,4 +47,5 @@ export {
   drink07,
   drink08,
   drink09,
+  liverImage,
 };

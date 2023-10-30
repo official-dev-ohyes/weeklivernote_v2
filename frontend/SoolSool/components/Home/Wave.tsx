@@ -9,11 +9,13 @@ import {
   useClockValue,
   useComputedValue,
   useValue,
+  Image,
+  useImage,
 } from "@shopify/react-native-skia";
 import { curveBasis, line } from "d3";
 import React, { useEffect } from "react";
 
-const Wave = ({ size = 256, progress = 30 }) => {
+const Wave = ({ size = 256, progress = 50 }) => {
   const r = size / 2;
   const padding = size / 25;
   const outerCircleRadius = r - padding / 2;
@@ -22,6 +24,8 @@ const Wave = ({ size = 256, progress = 30 }) => {
   const amplitude = 15;
   const verticalOffset = useValue(100);
   const clock = useClockValue();
+
+  const liverImage = useImage(require("../../assets/Home/liver.png"));
 
   useEffect(() => {
     verticalOffset.current = (1 - progress / 100) * innerCircleSize;
@@ -53,20 +57,30 @@ const Wave = ({ size = 256, progress = 30 }) => {
   );
 
   return (
-    <Canvas style={{ width: size, height: size }}>
-      <Circle
-        cx={r}
-        cy={r}
-        r={outerCircleRadius}
-        style="stroke"
-        strokeWidth={padding}
-        // color="#239"
-        color="#fff"
-      />
-      <Group clip={roundedRectangle}>
-        <Path path={animatedPath} color="#A0E9FF" />
-      </Group>
-    </Canvas>
+    <>
+      <Canvas style={{ width: size, height: size }}>
+        <Image
+          image={liverImage}
+          fit="contain"
+          width={size / 2}
+          height={size / 2}
+          x={60}
+          y={60}
+        />
+        <Circle
+          cx={r}
+          cy={r}
+          r={outerCircleRadius}
+          style="stroke"
+          strokeWidth={padding}
+          color="#fff"
+        />
+
+        <Group clip={roundedRectangle}>
+          <Path path={animatedPath} color="rgba(160,233,255,0.5)" />
+        </Group>
+      </Canvas>
+    </>
   );
 };
 
