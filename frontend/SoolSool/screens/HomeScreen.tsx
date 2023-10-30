@@ -111,30 +111,12 @@ function HomeScreen() {
 
   return (
     <>
-      {/* <HomeCarousel /> */}
-      <View>
+      <HomeCarousel />
+      {/* <View>
         <DrinkCarousel data={drinkData} />
-      </View>
+      </View> */}
+      <DrinkController />
     </>
-    // <View style={styles.rootScreen}>
-    //   <UserStatus
-    //     index={0}
-    //     drinkInVolume={drinkToday.drinkTotal}
-    //     alcoholInGrams={drinkToday.alcoholAmount}
-    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-    //     period={timeSinceDrink}
-    //     imageSource={drinkToday.intoxicationImage}
-    //   />
-    //   {/* <UserStatus
-    //     index={1}
-    //     drinkInVolume={drinkToday.drinkTotal}
-    //     alcoholInGrams={drinkToday.alcoholAmount}
-    //     requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-    //     period={timeSinceDrink}
-    //     imageSource={drinkToday.intoxicationImage}
-    //   /> */}
-    //   <DrinkController />
-    // </View>
   );
 }
 
@@ -144,10 +126,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flex: 1,
-  },
-  cardImageContainer: {
-    width: 200,
-    height: 200,
   },
 });
 

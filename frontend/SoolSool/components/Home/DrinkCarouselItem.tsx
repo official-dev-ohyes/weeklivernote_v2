@@ -6,8 +6,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 type DrinkCarouselItemProps = {
-  //   imageSrc: ImageProps["source"];
-  imageSrc: number;
+  imageSrc: ImageProps["source"];
   index: number;
   contentOffset: Animated.SharedValue<number>;
 };
@@ -21,8 +20,6 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
   index,
   contentOffset,
 }) => {
-  //   console.log("from carousel item: ", imageSrc);
-
   const rStyle = useAnimatedStyle(() => {
     const inputRange = [
       (index - 2) * ListItemWidth,
@@ -99,9 +96,6 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
         rStyle,
       ]}
     >
-      {/* 
-        I've used the React Native Image because it was crashing on Android:
-      */}
       <Image
         source={imageSrc}
         style={{

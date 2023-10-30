@@ -10,14 +10,14 @@ function DrinkController() {
   const maxIsDisabled = useMemo(() => value >= maxValue, [maxValue, value]);
 
   const handleDecrement = () => {
-    console.log("덜 마심");
+    // console.log("덜 마심");
     setValue((prev) => {
       return prev - 1;
     });
   };
 
   const handleIncrement = () => {
-    console.log("더 마심");
+    // console.log("더 마심");
     setValue((prev) => {
       return prev + 1;
     });

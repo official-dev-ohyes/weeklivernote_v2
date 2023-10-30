@@ -1,10 +1,9 @@
-import { FlatList, ImageProps, Text } from "react-native";
+import { FlatList, ImageProps, Text, Image, View } from "react-native";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
 
 type DrinkCarouselProps = {
-  //   data: ImageProps["source"][];
-  data: number[];
+  data: ImageProps["source"][];
 };
 
 const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
@@ -12,7 +11,6 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
 
   return (
     <>
-      <Text>where are u</Text>
       <FlatList
         data={data}
         keyExtractor={(_, index) => index.toString()}
@@ -36,15 +34,13 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
           // paddingLeft: 1.5 * ListItemWidth,
         }}
         horizontal
-        renderItem={({ item, index }) => {
-          return (
-            <DrinkCarouselItem
-              contentOffset={contentOffset}
-              imageSrc={item}
-              index={index}
-            />
-          );
-        }}
+        renderItem={({ item, index }) => (
+          <DrinkCarouselItem
+            contentOffset={contentOffset}
+            imageSrc={item}
+            index={index}
+          />
+        )}
       />
     </>
   );
