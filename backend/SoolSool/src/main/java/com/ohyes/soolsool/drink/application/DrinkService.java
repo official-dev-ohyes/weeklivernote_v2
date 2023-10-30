@@ -9,6 +9,7 @@ import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,20 +29,23 @@ public class DrinkService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void drinkAdd(DrinkRequestDto drinkRequestDto, Long socialId) {
+        if (drinkRequestDto.getDrinks().isEmpty()) {
+            throw new NullPointerException("저장할 음주 정보가 없습니다.(최소 1개 필요)");
+        }
+
         // 해당 날짜의 일기 및 유저 검색
         LocalDate date = drinkRequestDto.getDrinkDate();
-        User user = userRepository.findBySocialId(socialId).orElse(null);
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         int pk;
 
         // 유저가 해당 날짜에 작성한 일기가 이미 있으면 일기 생성 X
         if (diaryRepository.existsByDrinkDateAndUser(date, user)) {
-            log.info("일기가 이미 존재합니다.");
             pk = diaryRepository.findDiaryPkByDrinkDateAndUser(date, user);
         }
         // 유저가 해당 날짜에 작성한 일기가 없으면 일기 생성
         else {
-            log.info("일기가 존재하지 않습니다.");
             Diary diary = Diary.builder()
                 .user(user)
                 .drinkDate(drinkRequestDto.getDrinkDate())
@@ -73,17 +77,18 @@ public class DrinkService {
                 .drinkAmount(e.getDrinkAmount())
                 .recordTime(startTime)
                 .diary(diaryRepository.findByDiaryPk(pk))
-                .category(categoryRepository.findByCategoryName(e.getCategory()))
+                .category(categoryRepository.findByCategoryName(e.getCategory()).orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다.")))
                 .build();
 
             drinkRepository.save(drink);
         });
     }
 
+    @Transactional
     public void drinkModify(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElse(null);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user);
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
         // [1] 일기 관련 정보 수정
         if (existingDiary != null) {
@@ -114,7 +119,7 @@ public class DrinkService {
                     .drinkAmount(e.getDrinkAmount())
                     .recordTime(startTime)
                     .diary(existingDiary)
-                    .category(categoryRepository.findByCategoryName(e.getCategory()))
+                    .category(categoryRepository.findByCategoryName(e.getCategory()).orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다.")))
                     .build();
                 drinkRepository.save(drink);
             });
@@ -126,7 +131,7 @@ public class DrinkService {
                 AtomicBoolean modified = new AtomicBoolean(false);
                 drinks.forEach(f -> {
                     if (f.getCategory() == categoryRepository.findByCategoryName(
-                        e.getCategory())
+                        e.getCategory()).orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다."))
                         && f.getDrinkUnit().equals(e.getDrinkUnit())) {
                         modified.set(true);
                         f.setDrinkAmount(e.getDrinkAmount());
@@ -141,7 +146,7 @@ public class DrinkService {
                         .drinkAmount(e.getDrinkAmount())
                         .recordTime(startTime)
                         .diary(existingDiary)
-                        .category(categoryRepository.findByCategoryName(e.getCategory()))
+                        .category(categoryRepository.findByCategoryName(e.getCategory()).orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다.")))
                         .build();
                     drinkRepository.save(drink);
                 }
@@ -149,19 +154,26 @@ public class DrinkService {
         }
     }
 
+    @Transactional
     public void drinkDelete(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 해당 날짜 일기의 음주 기록 찾기
-        User user = userRepository.findBySocialId(socialId).orElse(null);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user);
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<DrinkInfo> drinkInfos = drinkRequestDto.getDrinks(); // 입력 값
         List<Drink> drinks = existingDiary.getDrinks(); // 기존 값
+
+        if (drinkInfos.isEmpty()) {
+            throw new NullPointerException("삭제할 음주 정보가 없습니다.(최소 1개 필요)");
+        } else if (drinkInfos.size() > drinks.size()) {
+            throw new NullPointerException("삭제 요청 개수가 잘못되었습니다.");
+        }
         List<Drink> deletedDrinks = new ArrayList<>();
 
         // 주종과 단위가 일치하는 음주 기록을 찾는다면 해당 기록 삭제
         drinkInfos.forEach(e -> {
             drinks.forEach(f -> {
                 if (f.getCategory() == categoryRepository.findByCategoryName(
-                    e.getCategory())
+                    e.getCategory()).orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다."))
                     && f.getDrinkUnit().equals(e.getDrinkUnit())) {
                     deletedDrinks.add(f);
                     drinkRepository.delete(f);
@@ -177,8 +189,8 @@ public class DrinkService {
 
     public void drinkEventDelete(LocalDate drinkDate, Long socialId) {
         // 해당 날짜 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElse(null);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user);
+        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
 
         // 음주 기록 전체 삭제
