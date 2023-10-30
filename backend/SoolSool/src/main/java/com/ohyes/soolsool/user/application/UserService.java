@@ -45,7 +45,7 @@ public class UserService {
     public Map<String, Object> kakaoLogin(String code) throws JsonProcessingException {
         KakaoProfileDto newUser = getKakaoUser(getAccessToken(code));
 
-        User user = userRepository.findBySocialId(newUser.getSocialId()).orElseThrow();;
+        User user = userRepository.findBySocialId(newUser.getSocialId()).orElse(null);
 
         if (user == null) {
             user = User.builder()
