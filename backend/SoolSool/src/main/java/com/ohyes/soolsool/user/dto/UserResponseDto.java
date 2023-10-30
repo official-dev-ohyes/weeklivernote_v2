@@ -25,20 +25,21 @@ public class UserResponseDto {
 
 
     @Builder
-    private UserResponseDto (Long socialId, Category category, String nickname, String profileImg, String address,
+    private UserResponseDto(Long socialId, Category category, String nickname, String profileImg,
+        String address,
         String gender, int height, int weight, float alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod) {
 
         this.socialId = socialId;
-        this.category =category;
-        this.nickname =nickname;
-        this.profileImg =profileImg;
-        this.address =address;
-        this.gender =gender;
-        this.height =height;
-        this.weight =weight;
-        this.alcoholLimit =alcoholLimit;
-        this.refreshToken =refreshToken;
-        this.maxNonalcoholPeriod =maxNonalcoholPeriod;
+        this.category = category;
+        this.nickname = nickname;
+        this.profileImg = profileImg;
+        this.address = address;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.alcoholLimit = alcoholLimit;
+        this.refreshToken = refreshToken;
+        this.maxNonalcoholPeriod = maxNonalcoholPeriod;
     }
 }

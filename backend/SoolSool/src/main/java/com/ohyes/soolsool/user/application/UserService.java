@@ -3,15 +3,20 @@ package com.ohyes.soolsool.user.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohyes.soolsool.drink.domain.Category;
+import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
+import com.ohyes.soolsool.user.dto.UserResponseDto;
 import com.ohyes.soolsool.util.jwt.JwtProvider;
 import com.ohyes.soolsool.util.jwt.TokenDto;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +66,7 @@ public class UserService {
                 .maxNonalcoholPeriod(1).build();
 
             userRepository.save(user);
+            userInfoAdd(userReponseDto, newUser.getSocialId());
         }
 
         TokenDto tokenDto =  jwtProvider.createToken(newUser.getSocialId());
@@ -147,6 +153,53 @@ public class UserService {
         } else {
             throw new RuntimeException("일치하는 회원이 없습니다.");
         }
+    }
+
+    public  Map<String, Object> userInfoAdd(UserResponseDto userResponseDto, Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+        List<Drink> drinks = new ArrayList<>();
+
+        AtomicInteger alcoholLimit = new AtomicInteger();
+
+        drinks.forEach(e -> {
+            int amount;
+            if (e.getDrinkUnit().equals("잔")) {
+                amount = e.getCategory().getGlass() * e.getDrinkAmount();
+            } else {
+                amount = e.getCategory().getBottle() * e.getDrinkAmount();
+            }
+            alcoholLimit.addAndGet((int) (amount * e.getCategory().getVolume() * 0.7984 / 100));
+
+
+
+        if (user != null) {
+            user.setSocialId(socialId); // Social ID는 업데이트하지 않음
+            user.setCategory((Category) userResponseDto.getCategory());
+            user.setNickname(userResponseDto.getNickname());
+            user.setProfileImg(userResponseDto.getProfileImg());
+            user.setAddress(userResponseDto.getAddress());
+            user.setGender(userResponseDto.getGender());
+            user.setHeight(userResponseDto.getHeight());
+            user.setWeight(userResponseDto.getWeight());
+            user.setAlcoholLimit(alcoholLimit.get());
+            user.setRefreshToken(userResponseDto.getRefreshToken());
+            user.setMaxNonalcoholPeriod(userResponseDto.getMaxNonalcoholPeriod());
+
+            userRepository.save(user);
+        }
+
+        TokenDto tokenDto = TokenDto.builder()
+            .accessToken()
+            .refreshToken()
+            .accessTokenExpiresIn() // 예: 1 시간
+            .build();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getNickname());
+        data.put("tokenInfo", tokenDto);
+        data.put("alcoholLimit", user.getAlcoholLimit());
+        return data;
+
     }
 
 }
