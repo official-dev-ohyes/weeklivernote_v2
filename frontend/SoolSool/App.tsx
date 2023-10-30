@@ -20,6 +20,8 @@ import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 
+import DailyDetail from "./components/Calendar/DailyDetail";
+
 import { RecoilRoot } from "recoil";
 
 const Stack = createNativeStackNavigator();
@@ -109,6 +111,7 @@ export default function App() {
                     headerShown: true,
                   }}
                 />
+                <Stack.Screen name="DailyDetail" component={DailyDetail} />
               </Stack.Navigator>
             </RecoilRoot>
           </NavigationContainer>

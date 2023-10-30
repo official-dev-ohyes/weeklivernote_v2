@@ -1,36 +1,94 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import NewRecord from "./NewRecord";
 
 function DailySummary({ summaryText }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  // 클릭 시 상세 페이지로 이동
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
+  const navigation = useNavigation();
+
+  // const navigateToDailyDetail = () => {
+  //   navigation.navigate("DailyDetail", { summaryText });
+  // };
+
   return (
-    <View style={styles.check}>
-      <View style={styles.headerBox}>
-        <Text style={styles.headerText}>{summaryText}</Text>
-      </View>
-      <View style={styles.informations}>
-        <View style={styles.category}>
-          <View style={styles.eachAlcohol}>
-            {/* 나중에 여기에 각각 술 아이콘이 들어가요 */}
-            <View style={styles.eachAlcoholIcon}>
-              <Text>아이콘1</Text>
+    <View style={styles.total}>
+      {/* <TouchableWithoutFeedback onPress={navigateToDailyDetail}>
+      <View style={styles.check}>
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>{summaryText}</Text>
+        </View>
+        <View style={styles.informations}>
+          <View style={styles.category}>
+            <View style={styles.eachAlcohol}>
+              나중에 여기에 술 아이콘 넣기
+              <View style={styles.eachAlcoholIcon}>
+                <Text>아이콘1</Text>
+              </View>
+              <Text>수량</Text>
             </View>
-            <Text>수량</Text>
+            <Text>아이콘2</Text>
+            <Text>아이콘3</Text>
           </View>
-          <Text>아이콘2</Text>
-          <Text>아이콘3</Text>
+          <View style={styles.textInformations}>
+            <Text>총량</Text>
+            <Text>최대 알코올 수치</Text>
+          </View>
         </View>
-        <View style={styles.textInformations}>
-          <Text>총량</Text>
-          <Text>최대 알코올 수치</Text>
         </View>
-      </View>
+      </TouchableWithoutFeedback> */}
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <View style={styles.check}>
+          <View style={styles.headerBox}>
+            <Text style={styles.headerText}>{summaryText}</Text>
+          </View>
+          <View style={styles.New}>
+            <Text style={styles.plus}>+</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalView}>
+          <NewRecord /> {/* 모달 내부에 NewRecord 컴포넌트 표시 */}
+          <TouchableOpacity
+            onPress={() => {
+              setModalVisible(false);
+            }}
+          >
+            <Text style={styles.closeButton}>닫기</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  total: {
+    // 조건문 달고는 없앨 애
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 5,
+  },
   check: {
     flex: 1,
     flexDirection: "column",
@@ -81,6 +139,29 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: "column",
     justifyContent: "space-around",
+  },
+  New: {
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  plus: {
+    fontSize: 50,
+    color: "black",
+    textAlign: "center",
+    textAlignVertical: "center", // 수직 가운데 정렬 (Android에서 사용)
+    // flex: 1, // 수직 가운데 정렬 (iOS에서 사용)
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  closeButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
 });
 
