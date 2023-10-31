@@ -31,6 +31,3 @@ eas-build-all:
     - main/FE
   tags:
     - new-expo-runner
-
-tags:
-  - new-expo-runner
