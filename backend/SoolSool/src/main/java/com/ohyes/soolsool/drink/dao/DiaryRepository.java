@@ -23,4 +23,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Integer> {
 
     @Query("SELECT d FROM Diary d WHERE d.user = :user AND YEAR(d.drinkDate) = :year AND MONTH(d.drinkDate) = :month")
     List<Diary> findAllByUserAndDrinkDateYearAndDrinkDateMonth(User user, int year, int month);
+
+    List<Diary> findAllByDrinkDate(LocalDate drinkDate);
 }
