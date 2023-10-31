@@ -26,7 +26,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>주간통계페이지</Text>
+      {/* <Text>주간통계페이지</Text>
       <View style={styles.tempBox}>
         <View style={styles.chartContainer}>
           <View style={styles.chart}>
@@ -37,6 +37,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               maxValue={0}
               barBorderRadius={5}
               isAnimated
+              frontColor={"tomato"}
             />
           </View>
           <View style={styles.chart}>
@@ -50,7 +51,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
             />
           </View>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }
