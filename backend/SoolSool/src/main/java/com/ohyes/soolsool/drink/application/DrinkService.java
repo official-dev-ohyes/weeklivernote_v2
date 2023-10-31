@@ -10,6 +10,7 @@ import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class DrinkService {
     private final DrinkRepository drinkRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final UploadService uploadService;
 
     @Transactional
     public void drinkAdd(DrinkRequestDto drinkRequestDto, Long socialId) {
@@ -50,7 +52,6 @@ public class DrinkService {
                 .user(user)
                 .drinkDate(drinkRequestDto.getDrinkDate())
                 .memo(drinkRequestDto.getMemo())
-                .img(drinkRequestDto.getImgUrl())
                 .hangover(drinkRequestDto.getHangover())
                 .alcoholConc(drinkRequestDto.getAlcoholConc())
                 .detoxTime(0F)
@@ -94,9 +95,6 @@ public class DrinkService {
         if (existingDiary != null) {
             if (drinkRequestDto.getMemo() != null) {
                 existingDiary.setMemo(drinkRequestDto.getMemo());
-            }
-            if (drinkRequestDto.getImgUrl() != null) {
-                existingDiary.setImg(drinkRequestDto.getImgUrl());
             }
             if (drinkRequestDto.getHangover() != null) {
                 existingDiary.setHangover(drinkRequestDto.getHangover());
@@ -155,7 +153,7 @@ public class DrinkService {
     }
 
     @Transactional
-    public void drinkDelete(DrinkRequestDto drinkRequestDto, Long socialId) {
+    public void drinkDelete(DrinkRequestDto drinkRequestDto, Long socialId) throws IOException {
         // 해당 날짜 일기의 음주 기록 찾기
         User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
@@ -183,11 +181,14 @@ public class DrinkService {
 
         // 삭제한 후에 해당 날짜 일기의 음주 기록이 없다면 일기 전체 삭제
         if (drinks.size() == deletedDrinks.size()) {
+            if (existingDiary.getImg() != null) {
+                uploadService.drinkPhotoDelete(existingDiary, existingDiary.getImg());
+            }
             diaryRepository.delete(existingDiary);
         }
     }
 
-    public void drinkEventDelete(LocalDate drinkDate, Long socialId) {
+    public void drinkEventDelete(LocalDate drinkDate, Long socialId) throws IOException {
         // 해당 날짜 일기 찾기
         User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
@@ -196,7 +197,10 @@ public class DrinkService {
         // 음주 기록 전체 삭제
         drinkRepository.deleteAll(drinks);
 
-        // 일기 삭제
+        // 일기 및 사진 삭제
+        if (existingDiary.getImg() != null) {
+            uploadService.drinkPhotoDelete(existingDiary, existingDiary.getImg());
+        }
         diaryRepository.delete(existingDiary);
     }
 }

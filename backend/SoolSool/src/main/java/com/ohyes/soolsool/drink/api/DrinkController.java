@@ -2,6 +2,7 @@ package com.ohyes.soolsool.drink.api;
 
 import com.ohyes.soolsool.drink.application.DrinkGetService;
 import com.ohyes.soolsool.drink.application.DrinkService;
+import com.ohyes.soolsool.drink.application.UploadService;
 import com.ohyes.soolsool.drink.dto.DailyDetailDrinkDto;
 import com.ohyes.soolsool.drink.dto.DailyDrinkDto;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
@@ -10,6 +11,7 @@ import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class DrinkController {
 
     private final DrinkService drinkService;
     private final DrinkGetService drinkGetService;
+    private final UploadService uploadService;
 
     @PostMapping("/v1/drink")
     @Operation(summary = "음주 기록 추가",
@@ -43,6 +48,21 @@ public class DrinkController {
             drinkService.drinkAdd(drinkRequestDto, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 저장 성공"), HttpStatus.OK);
         } catch (NullPointerException e){
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value = "/v1/drink/photo/{drinkDate}", produces = "application/json", consumes = "multipart/form-data")
+    @Operation(summary = "해당 날짜의 사진 저장",
+        description = "사진 파일을 저장합니다.(빈 값을 보내면 사진 파일을 삭제합니다.)")
+    public ResponseEntity<Object> drinkPhotoAdd(@PathVariable LocalDate drinkDate, @RequestPart(value = "file", required = false) MultipartFile multipartFile) throws Exception{
+        // 토큰 로직 추가 필요
+        try {
+            Long socialId = 1L;
+
+            uploadService.drinkPhotoAdd(drinkDate, multipartFile, socialId);
+            return new ResponseEntity<>(new MessageResponse("사진 변경사항 저장 성공"), HttpStatus.OK);
+        } catch (NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
@@ -70,7 +90,7 @@ public class DrinkController {
 
             drinkService.drinkDelete(drinkRequestDto, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 중 특정 주종 삭제 성공"), HttpStatus.OK);
-        } catch (NullPointerException e){
+        } catch (NullPointerException | IOException e){
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
@@ -148,7 +168,7 @@ public class DrinkController {
 
             drinkService.drinkEventDelete(drinkDate, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 전체 삭제 성공"), HttpStatus.OK);
-        } catch (NullPointerException e){
+        } catch (NullPointerException | IOException e){
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
