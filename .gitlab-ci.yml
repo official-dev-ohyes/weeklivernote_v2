@@ -19,6 +19,8 @@ eas-build-emulator:
     - npx eas-cli build -p ios --profile simulator
   only:
     - develop/FE
+  tags:
+    - new-expo-runner
 
 eas-build-all:
   stage: build
@@ -27,3 +29,8 @@ eas-build-all:
     - npx eas-cli build --platform all --non-interactive
   only:
     - main/FE
+  tags:
+    - new-expo-runner
+
+tags:
+  - new-expo-runner

@@ -1,3 +1,4 @@
+import { ImageProps } from "react-native";
 import {
   soberImage,
   mildImage,
@@ -16,7 +17,7 @@ enum IntoxicationLevel {
   Severe,
 }
 
-const IntoxicationImageMap: Record<IntoxicationLevel, number> = {
+const IntoxicationImageMap: Record<IntoxicationLevel, ImageProps["source"]> = {
   [IntoxicationLevel.Sober]: soberImage,
   [IntoxicationLevel.Mild]: mildImage,
   [IntoxicationLevel.Moderate]: moderateImage,
@@ -70,7 +71,7 @@ export class DrinkToday {
     }
   }
 
-  get intoxicationImage(): number {
+  get intoxicationImage(): ImageProps["source"] {
     const level = this.intoxicationLevel;
     return IntoxicationImageMap[level];
   }

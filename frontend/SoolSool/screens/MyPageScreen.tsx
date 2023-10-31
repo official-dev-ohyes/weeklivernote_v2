@@ -8,6 +8,8 @@ import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
 import { fetchUserProfile } from "../api/mypageApi";
 import { createDrink, fetchDrink } from "../api/drinkRecordApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
+import { fetchNotice } from "../api/noticeApi";
+import axios from "axios";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -27,8 +29,15 @@ interface UserData {
 }
 
 function MyPageScreen({ navigation }) {
+  //공지사항조회함수
+  fetchNotice()
+    .then((res) => {
+      console.log("성공", res);
+    })
+    .catch((error) => {
+      console.error("실패", error);
+    });
 
-  console.log("test호출",fetchDrink("2023-10-09"));
   // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
   const [userData, setUserData] = useState<UserData>({
     weight: 70,
@@ -39,7 +48,7 @@ function MyPageScreen({ navigation }) {
     alcoholAmount: 30,
   });
 
-  const [nonAlc,setNonAlc] = useState<number>(10);
+  const [nonAlc, setNonAlc] = useState<number>(10);
 
   // const {
   //   data: userData,
@@ -59,7 +68,7 @@ function MyPageScreen({ navigation }) {
     <View style={styles.mainContainer}>
       <MyPageUpperBar />
       <UserProfile userData={userData} />
-      <UserNonAlc nonAlc={nonAlc}/>
+      <UserNonAlc nonAlc={nonAlc} />
       <UserStatistics />
     </View>
   );
