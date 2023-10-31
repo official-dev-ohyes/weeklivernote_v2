@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { useQuery } from "react-query";
 import { StyleSheet, Text, ImageBackground, View } from "react-native";
 import UserProfile from "../components/MyPage/template/UserProfile";
@@ -10,6 +10,7 @@ import { createDrink, fetchDrink } from "../api/drinkRecordApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 import { fetchNotice } from "../api/noticeApi";
 import axios from "axios";
+import SettingsIconButton from "../components/MyPage/SettingsIconButton";
 
 // interface UserStatistics {
 //   weekly: Record<string, [number, number][]>;
@@ -29,6 +30,20 @@ interface UserData {
 }
 
 function MyPageScreen({ navigation }) {
+  // 내비게이션 헤더에 설정페이지 이동 버튼 추가
+  function handleHeaderButtonPressed() {
+    navigation.navigate("Settings");
+    // navigation을 프롭스로 받아와야하나?
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <SettingsIconButton onPress={handleHeaderButtonPressed} />;
+      },
+    });
+  }, []);
+
   //공지사항조회함수
   fetchNotice()
     .then((res) => {

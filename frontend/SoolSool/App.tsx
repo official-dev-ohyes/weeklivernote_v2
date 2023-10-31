@@ -32,7 +32,9 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerShown: false,
+        headerStyle: { backgroundColor: "#03174C" },
+        headerTintColor: "white",
+        tabBarShowLabel: false,
       }}
     >
       <BottomTab.Screen
@@ -42,6 +44,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-home-sharp" color={color} size={size} />
           ),
+          title: "홈",
         }}
       />
       <BottomTab.Screen
@@ -51,6 +54,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-calendar-sharp" color={color} size={size} />
           ),
+          title: "캘린더",
         }}
       />
       {/* <BottomTab.Screen
@@ -60,6 +64,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
+                    title: "지도",
         }}
       /> */}
       <BottomTab.Screen
@@ -69,6 +74,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
+          title: "마이 페이지",
         }}
       />
     </BottomTab.Navigator>
@@ -118,6 +124,8 @@ export default function App() {
                   component={SettingsScreen}
                   options={{
                     headerShown: true,
+                    headerStyle: { backgroundColor: "#03174C" },
+                    headerTintColor: "white",
                   }}
                 />
               </Stack.Navigator>
