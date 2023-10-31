@@ -19,37 +19,33 @@ function CalendarSixWeeks({}) {
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState([]);
+  const [alcoholInfo, setAlcoholInfo] = useState([]);
 
   useEffect(() => {
     console.log(`현재 날짜는? ${nowDate}`);
     const setAndFetch = async () => {
       await setCurrentDay(nowDate);
-      fetchMonthRecord(nowDate); // currentDay로 실행시 적용 안됨
+      fetchMonthRecord(nowDate) // currentDay로 실행시 적용 안됨
+        .then((res) => {
+          console.log("성공", res.drinks);
+          setAlcoholInfo(res.deinks);
+
+          const drinkData = res.drinks;
+          setAlcoholInfo(drinkData);
+
+          let days = [];
+          for (let i = 0; i < drinkData.length; i++) {
+            days.push(drinkData[i].date);
+          }
+          setAlcoholDays(days);
+          console.log(`알코올 마신 날들은? ${days}`);
+        })
+        .catch((error) => {
+          console.error("실패", error);
+        });
     };
     setAndFetch();
-  }, []);
-
-  // axios : 월간 정보
-  const fetchMonthRecord = async (num) => {
-    console.log(`axios 요청보낸 날짜 : ${num}`);
-    try {
-      const res = await axios.get(
-        process.env.REACT_APP_BACK_URL + `/v1/drink/monthly/${num}`
-      );
-      console.log("성공!", res.data);
-      const drinkData = res.data.drinks;
-      setAlcoholDays(drinkData);
-      return res.data;
-    } catch (err) {
-      console.log(err);
-      throw new Error("실패!");
-    }
-  };
-
-  /////////////////////////////디버깅/////////////////////////////
-  for (let i = 0; i < alcoholDays.length; i++) {
-    console.log(alcoholDays[i].date);
-  }
+  }, [nowDate]);
 
   const handleDayPress = async (clickDay) => {
     const newMonth =
@@ -119,7 +115,7 @@ function CalendarSixWeeks({}) {
             />
           </View>
           <View style={styles.dailySummaryComponent}>
-            <DailySummary summaryText={selectDay} />
+            <DailySummary summaryText={selectDay} alcoholDays={alcoholDays} />
           </View>
         </View>
       ) : (
