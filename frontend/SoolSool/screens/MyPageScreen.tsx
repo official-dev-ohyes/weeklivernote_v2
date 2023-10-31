@@ -81,7 +81,6 @@ function MyPageScreen({ navigation }) {
 
   return (
     <View style={styles.mainContainer}>
-      <MyPageUpperBar />
       <UserProfile userData={userData} />
       <UserNonAlc nonAlc={nonAlc} />
       <UserStatistics />

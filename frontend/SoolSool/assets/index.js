@@ -10,6 +10,7 @@ import highImage from "./Home/intoxication/drunken-level-03.png";
 import veryHighImage from "./Home/intoxication/drunken-level-04.png";
 import severeImage from "./Home/intoxication/drunken-level-05.png";
 import nonAlcIcon from "./nonAlcIcon.png";
+import logo from "./logo.png";
 
 import drink01 from "./Home/drinks/drink-01.png";
 import drink02 from "./Home/drinks/drink-02.png";
@@ -60,4 +61,5 @@ export {
   drink14,
   drink15,
   liverImage,
+  logo,
 };

@@ -1,11 +1,6 @@
-import {
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  Button,
-} from "react-native";
-import { Back_bright_2, kakaoLoginButton } from "../assets";
+import { TouchableOpacity, StyleSheet, Image, View } from "react-native";
+import { Button } from "react-native-paper";
+import { kakaoLoginButton, logo } from "../assets";
 
 function LoginScreen({ navigation }) {
   const navigateToAddInfo = () => {
@@ -20,26 +15,44 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <ImageBackground source={Back_bright_2} style={styles.backgroundImage}>
+    <View style={styles.mainContainer}>
+      <Image source={logo} style={styles.logoImage} />
       <TouchableOpacity onPress={handleClick}>
         <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
       </TouchableOpacity>
-      <Button title="추가 정보 입력" onPress={navigateToAddInfo} />
-      <Button title="메인으로" onPress={navigateToBottomTab} />
-    </ImageBackground>
+      <Button mode="contained" onPress={navigateToAddInfo}>
+        "추가 정보 입력"
+      </Button>
+      <Button mode="contained" onPress={navigateToBottomTab}>
+        "메인으로"
+      </Button>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "auto",
+    marginBottom: "auto",
+    gap: 30,
   },
   kakaoLoginButton: {
     width: 300,
     height: 80,
+    marginTop: 100,
     marginRight: "auto",
     marginLeft: "auto",
     borderRadius: 15,
+  },
+  logoImage: {
+    width: 350,
+    height: 170,
+    marginRight: "auto",
+    marginLeft: "auto",
   },
 });
 
