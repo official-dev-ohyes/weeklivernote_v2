@@ -14,7 +14,7 @@ export const fetchMonthRecord = async (day) => {
 export const fetchDailyDrink = async (day) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/daily/${day}`);
-    console.log("성공!", res.data);
+    // console.log("성공!", res);
     return res.data;
   } catch (err) {
     throw new Error("실패!");

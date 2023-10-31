@@ -15,6 +15,7 @@ function DailySummary({ summaryText, alcoholDays }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [dailyModalVisible, setDailyModalVisible] = useState(false);
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
+  const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
   // 클릭 시 상세 페이지로 이동
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
@@ -27,12 +28,13 @@ function DailySummary({ summaryText, alcoholDays }) {
       setIsAlcohol(true);
       fetchDailyDrink(summaryText)
         .then((res) => {
+          console.log(res);
+          setDailyInfo(res); // 이 부분을 선언, 변경 후 담아주는게 좋을 지 고민
           let alcohols = [];
           for (let i = 0; i < res.drinks.length; i++) {
             alcohols.push(res.drinks[i]);
           }
           setAlcoholList(alcohols);
-          console.log(alcohols);
         })
         .catch((error) => {
           console.error("실패", error);
@@ -60,8 +62,8 @@ function DailySummary({ summaryText, alcoholDays }) {
               <Text>아이콘3</Text>
             </View>
             <View style={styles.textInformations}>
-              <Text>총량</Text>
-              <Text>최대 알코올 수치</Text>
+              <Text>{dailyInfo.totalDrink}</Text>
+              <Text>{dailyInfo.topConc.toFixed(3)}</Text>
             </View>
           </View>
         </TouchableOpacity>
