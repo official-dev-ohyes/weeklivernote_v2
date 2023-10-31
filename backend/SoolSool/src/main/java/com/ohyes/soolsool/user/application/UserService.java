@@ -5,20 +5,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.drink.dao.CategoryRepository;
 import com.ohyes.soolsool.drink.domain.Category;
-import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
-import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
+import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
 import com.ohyes.soolsool.util.jwt.JwtProvider;
 import com.ohyes.soolsool.util.jwt.TokenDto;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -165,10 +162,10 @@ public class UserService {
 
     }
 
-    public  Map<String, Object> userInfoAdd(UserResponseDto userResponseDto,
+    public  Map<String, Object> userInfoAdd(UserRequestDto userRequestDto,
         Long socialId) {
         User user = userRepository.findBySocialId(socialId).orElse(null);
-        DrinkInfo drinkInfo = userResponseDto.getDrinkInfo();
+        DrinkInfo drinkInfo = userRequestDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory());
 
         int alcoholLimit = 0;
@@ -193,12 +190,12 @@ public class UserService {
         user.setSocialId(socialId);
         user.setNickname(user.getNickname());
         user.setProfileImg(user.getProfileImg());
-        user.setAddress(userResponseDto.getAddress());
-        user.setGender(userResponseDto.getGender());
-        user.setHeight(userResponseDto.getHeight());
-        user.setWeight(userResponseDto.getWeight());
+        user.setAddress(userRequestDto.getAddress());
+        user.setGender(userRequestDto.getGender());
+        user.setHeight(userRequestDto.getHeight());
+        user.setWeight(userRequestDto.getWeight());
         user.setAlcoholLimit(alcoholLimit);
-        user.setRefreshToken(userResponseDto.getRefreshToken());
+        user.setRefreshToken(userRequestDto.getRefreshToken());
 
         userRepository.save(user);
 

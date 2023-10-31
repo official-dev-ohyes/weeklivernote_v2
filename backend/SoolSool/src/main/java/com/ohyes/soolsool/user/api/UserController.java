@@ -2,11 +2,9 @@ package com.ohyes.soolsool.user.api;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ohyes.soolsool.drink.dto.DrinkInfo;
-import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.application.UserService;
-import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
+import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +33,10 @@ public class UserController {
     }
 
     @PatchMapping("/v1/user")
-    public ResponseEntity<Object> userInfoAdd(@RequestBody UserResponseDto userResponseDto) {
+    public ResponseEntity<Object> userInfoAdd(@RequestBody UserRequestDto userRequestDto) {
         Long socialId = 1L;
 
-        Map<String, Object> data = userService.userInfoAdd(userResponseDto, socialId);
+        Map<String, Object> data = userService.userInfoAdd(userRequestDto, socialId);
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }
