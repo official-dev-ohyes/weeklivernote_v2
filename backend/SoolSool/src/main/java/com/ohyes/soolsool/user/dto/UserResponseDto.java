@@ -1,31 +1,23 @@
 package com.ohyes.soolsool.user.dto;
 
-import jdk.jfr.Category;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class UserResponseDto {
 
-    private Long socialId;
-    //    private Category category;
     private String nickname;
     private String profileImg;
     private String address;
     private String gender;
     private int height;
     private int weight;
-    private int alcoholLimit;
-    private String refreshToken;
-    private int maxNonalcoholPeriod;
+    private float alcoholLimit;
 
     @Builder
-    private UserResponseDto(Long socialId, String nickname, String profileImg,
-        String address,
-        String gender, int height, int weight, int alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod) {
+    private UserResponseDto(String nickname, String profileImg,
+        String address, String gender, int height, int weight, float alcoholLimit) {
 
-        this.socialId = socialId;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.address = address;
@@ -33,8 +25,7 @@ public class UserResponseDto {
         this.height = height;
         this.weight = weight;
         this.alcoholLimit = alcoholLimit;
-        this.refreshToken = refreshToken;
-        this.maxNonalcoholPeriod = maxNonalcoholPeriod;
+
     }
 
 }

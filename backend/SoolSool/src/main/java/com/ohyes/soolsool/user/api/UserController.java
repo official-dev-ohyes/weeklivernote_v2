@@ -39,4 +39,12 @@ public class UserController {
         Map<String, Object> data = userService.userInfoAdd(userRequestDto, socialId);
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
+
+    @GetMapping("/v1/user/info")
+    public ResponseEntity<Object> userInfoGet() {
+        Long socialId = 1L;
+
+        UserResponseDto userResponseDto = userService.userInfoGet(socialId);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
 }

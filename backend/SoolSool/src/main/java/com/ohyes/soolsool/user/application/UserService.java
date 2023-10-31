@@ -16,6 +16,7 @@ import com.ohyes.soolsool.util.jwt.TokenDto;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SimpleTimeZone;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -168,7 +169,7 @@ public class UserService {
         DrinkInfo drinkInfo = userRequestDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory());
 
-        int alcoholLimit = 0;
+        float alcoholLimit = 0;
 
         int amount;
 
@@ -185,7 +186,7 @@ public class UserService {
                 amount = category.getBottle() * drinkInfo.getDrinkAmount();
             }
         }
-        alcoholLimit += ((int) (amount * category.getVolume() * 0.7984 / 100));
+        alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
 
         user.setSocialId(socialId);
         user.setNickname(user.getNickname());
@@ -209,6 +210,29 @@ public class UserService {
         data.put("alcoholLimit", user.getAlcoholLimit());
 
         return data;
+
+    }
+
+    public UserResponseDto userInfoGet(Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+
+        String nickname = user.getNickname();
+        String profileImg = user.getProfileImg();
+        String address = user.getAddress();
+        String gender = user.getGender();
+        int height = user.getHeight();
+        int weight = user.getWeight();
+        float alcoholLimit = user.getAlcoholLimit();
+
+        return UserResponseDto.builder()
+            .nickname(nickname)
+            .profileImg(profileImg)
+            .address(address)
+            .gender(gender)
+            .height(height)
+            .weight(weight)
+            .alcoholLimit(alcoholLimit)
+            .build();
 
     }
 
