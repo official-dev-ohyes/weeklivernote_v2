@@ -148,13 +148,13 @@ public class DrinkGetService {
         });
 
         // 성별, 체중에 따른 혈중 알코올 농도 계산
-        int index;
+        float index;
         if (user.getGender().equals("남")) {
-            index = 7;
+            index = 8.6F;
         } else {
-            index = 6;
+            index = 6.4F;
         }
-        float topConc = (float)((alcoholAmount.get() * 0.7984) / (index * user.getWeight()));
+        float topConc = (float)((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
 
         // Dto에 담아서 반환
         return DailyDrinkDto.builder()
