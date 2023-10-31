@@ -87,6 +87,11 @@ const theme = {
     ...DefaultTheme.colors,
     // 커스텀 색상 설정
     // primary: 'tomato',
+    mainPink: "#F2A7C3",
+    mainBlue: "#0477BF",
+    mainGreen: "#03A678",
+    mainYellow: "#F2D06B",
+    mainRed: "#F25E5E",
   },
 };
 
