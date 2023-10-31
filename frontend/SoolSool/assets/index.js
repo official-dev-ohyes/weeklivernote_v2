@@ -20,6 +20,12 @@ import drink06 from "./Home/drinks/drink-06.png";
 import drink07 from "./Home/drinks/drink-07.png";
 import drink08 from "./Home/drinks/drink-08.png";
 import drink09 from "./Home/drinks/drink-09.png";
+import drink10 from "./Home/drinks/drink-10.png";
+import drink11 from "./Home/drinks/drink-11.png";
+import drink12 from "./Home/drinks/drink-12.png";
+import drink13 from "./Home/drinks/drink-13.png";
+import drink14 from "./Home/drinks/drink-14.png";
+import drink15 from "./Home/drinks/drink-15.png";
 import liverImage from "./Home/liver.png";
 
 import tempChar from "./tempChar.png";
@@ -47,5 +53,11 @@ export {
   drink07,
   drink08,
   drink09,
+  drink10,
+  drink11,
+  drink12,
+  drink13,
+  drink14,
+  drink15,
   liverImage,
 };
