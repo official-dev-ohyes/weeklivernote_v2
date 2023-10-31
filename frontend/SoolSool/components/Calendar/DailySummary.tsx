@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -10,52 +10,58 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import NewRecord from "./NewRecord";
 
-function DailySummary({ summaryText }) {
+function DailySummary({ summaryText, alcoholDays }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [dailyModalVisible, setDailyModalVisible] = useState(false);
+  const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   // 클릭 시 상세 페이지로 이동
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
   const navigation = useNavigation();
 
-  // const navigateToDailyDetail = () => {
-  //   navigation.navigate("DailyDetail", { summaryText });
-  // };
+  useEffect(() => {
+    setIsAlcohol(false);
+
+    if (alcoholDays.includes(summaryText)) {
+      setIsAlcohol(true);
+      // 개별 일자 API 호출
+    }
+  }, [summaryText]);
 
   return (
     <View style={styles.total}>
-      {/* <TouchableWithoutFeedback onPress={navigateToDailyDetail}>
-      <View style={styles.check}>
-        <View style={styles.headerBox}>
-          <Text style={styles.headerText}>{summaryText}</Text>
-        </View>
-        <View style={styles.informations}>
-          <View style={styles.category}>
-            <View style={styles.eachAlcohol}>
-              나중에 여기에 술 아이콘 넣기
-              <View style={styles.eachAlcoholIcon}>
-                <Text>아이콘1</Text>
+      {isAlcohol ? (
+        <TouchableOpacity onPress={() => setDailyModalVisible(true)}>
+          <View style={styles.headerBox}>
+            <Text style={styles.headerText}>{summaryText}</Text>
+          </View>
+          <View style={styles.informations}>
+            <View style={styles.category}>
+              <View style={styles.eachAlcohol}>
+                {/* 나중에 여기에 술 아이콘 넣기 */}
+                <View style={styles.eachAlcoholIcon}>
+                  <Text>아이콘1</Text>
+                </View>
+                <Text>수량</Text>
               </View>
-              <Text>수량</Text>
+              <Text>아이콘2</Text>
+              <Text>아이콘3</Text>
             </View>
-            <Text>아이콘2</Text>
-            <Text>아이콘3</Text>
+            <View style={styles.textInformations}>
+              <Text>총량</Text>
+              <Text>최대 알코올 수치</Text>
+            </View>
           </View>
-          <View style={styles.textInformations}>
-            <Text>총량</Text>
-            <Text>최대 알코올 수치</Text>
-          </View>
-        </View>
-        </View>
-      </TouchableWithoutFeedback> */}
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <View style={styles.check}>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.headerBox}>
             <Text style={styles.headerText}>{summaryText}</Text>
           </View>
           <View style={styles.New}>
             <Text style={styles.plus}>+</Text>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      )}
 
       <Modal
         animationType="slide"
@@ -82,28 +88,20 @@ function DailySummary({ summaryText }) {
 
 const styles = StyleSheet.create({
   total: {
-    // 조건문 달고는 없앨 애
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "white",
+    // backgroundColor: "yellow",
     borderRadius: 10,
     padding: 5,
-  },
-  check: {
-    flex: 1,
-    flexDirection: "column",
-    // alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 5,
-    // 글씨 키우기
+    justifyContent: "center",
+    alignContent: "center",
   },
   headerBox: {
     height: "20%",
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 5,
+    // backgroundColor: "black",
   },
   headerText: {
     // 높이의 몇 퍼센트로 하고 싶은걸
@@ -141,8 +139,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   New: {
+    height: "80%",
     justifyContent: "center",
     alignContent: "center",
+    paddingBottom: "10%",
   },
   plus: {
     fontSize: 50,
