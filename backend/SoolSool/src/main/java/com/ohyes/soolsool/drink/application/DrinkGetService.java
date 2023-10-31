@@ -147,21 +147,12 @@ public class DrinkGetService {
             drinkCounts.add(drinkCount); // 음주 데이터
         });
 
-        // 성별, 체중에 따른 혈중 알코올 농도 계산
-        float index;
-        if (user.getGender().equals("남")) {
-            index = 8.6F;
-        } else {
-            index = 6.4F;
-        }
-        float topConc = (float)((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
-
         // Dto에 담아서 반환
         return DailyDrinkDto.builder()
             .date(drinkDate)
             .drinks(drinkCounts)
             .totalDrink(drinkTotal.get())
-            .topConc(topConc)
+            .topConc(existingDiary.getAlcoholConc())
             .build();
     }
 
@@ -170,7 +161,6 @@ public class DrinkGetService {
         User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
-        // LocalDateTime startTime; float detoxTime; List<DrinkPercent> drinks;
         List<Drink> drinks = existingDiary.getDrinks();
         AtomicReference<LocalDateTime> drinkStartTime = new AtomicReference<>(LocalDateTime.MAX);
         AtomicInteger drinkTotal = new AtomicInteger();

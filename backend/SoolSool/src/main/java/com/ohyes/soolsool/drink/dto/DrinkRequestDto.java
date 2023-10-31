@@ -18,20 +18,18 @@ public class DrinkRequestDto {
     // 일기 관련 부분
     private LocalDate drinkDate;
 
-    @Schema(example = "18:00")
+    @Schema(example = "null")
     private LocalTime startTime;
     private String memo;
     private String hangover;
-    private float alcoholConc;
 
     @Builder
-    private DrinkRequestDto(List<DrinkInfo> drinks, LocalDate drinkDate, LocalTime startTime, String memo, String hangover, float alcoholConc) {
+    private DrinkRequestDto(List<DrinkInfo> drinks, LocalDate drinkDate, LocalTime startTime, String memo, String hangover) {
         this.drinks = drinks;
         this.drinkDate = drinkDate;
         this.startTime = startTime;
         this.memo = memo;
         this.hangover = hangover;
-        this.alcoholConc = alcoholConc;
     }
 }
 
