@@ -21,6 +21,10 @@ spring:
       matching-strategy: ant_path_matcher
   main:
     log-startup-info: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 management:
   endpoint:
@@ -53,3 +57,15 @@ logging:
         type:
           descriptor:
             sql: trace
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: soolsool
+    stack:
+      auto: false
