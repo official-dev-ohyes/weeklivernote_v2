@@ -21,10 +21,10 @@ function LoginScreen({ navigation }) {
         <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
       </TouchableOpacity>
       <Button mode="contained" onPress={navigateToAddInfo}>
-        "추가 정보 입력"
+        추가 정보 입력
       </Button>
       <Button mode="contained" onPress={navigateToBottomTab}>
-        "메인으로"
+        메인으로
       </Button>
     </View>
   );
