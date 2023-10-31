@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import NewRecord from "./NewRecord";
+import { fetchDailyDrink } from "../../api/calendarApi";
 
 function DailySummary({ summaryText, alcoholDays }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [dailyModalVisible, setDailyModalVisible] = useState(false);
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
+  const [alcoholList, setAlcoholList] = useState([]);
   // 클릭 시 상세 페이지로 이동
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
   const navigation = useNavigation();
@@ -23,7 +25,18 @@ function DailySummary({ summaryText, alcoholDays }) {
 
     if (alcoholDays.includes(summaryText)) {
       setIsAlcohol(true);
-      // 개별 일자 API 호출
+      fetchDailyDrink(summaryText)
+        .then((res) => {
+          let alcohols = [];
+          for (let i = 0; i < res.drinks.length; i++) {
+            alcohols.push(res.drinks[i]);
+          }
+          setAlcoholList(alcohols);
+          console.log(alcohols);
+        })
+        .catch((error) => {
+          console.error("실패", error);
+        });
     }
   }, [summaryText]);
 
