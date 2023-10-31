@@ -8,7 +8,7 @@ import lombok.Getter;
 public class UserRequestDto {
 
     private Long socialId;
-    private Category category;
+//    private Category category;
     private String nickname;
     private String profileImg;
     private String address;
@@ -20,13 +20,12 @@ public class UserRequestDto {
     private int maxNonalcoholPeriod;
 
     @Builder
-    private UserRequestDto(Long socialId, Category category, String nickname, String profileImg,
+    private UserRequestDto(Long socialId, String nickname, String profileImg,
         String address,
         String gender, int height, int weight, int alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod) {
 
         this.socialId = socialId;
-        this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.address = address;

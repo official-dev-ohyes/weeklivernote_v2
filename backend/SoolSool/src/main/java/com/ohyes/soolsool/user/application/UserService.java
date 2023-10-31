@@ -3,15 +3,17 @@ package com.ohyes.soolsool.user.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohyes.soolsool.drink.dao.CategoryRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.domain.Drink;
+import com.ohyes.soolsool.drink.dto.DrinkInfo;
+import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
 import com.ohyes.soolsool.util.jwt.JwtProvider;
 import com.ohyes.soolsool.util.jwt.TokenDto;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,41 +46,14 @@ public class UserService {
     private String client_secret;
 
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final JwtProvider jwtProvider;
 
 
-    public Map<String, Object> kakaoLogin(String code) throws JsonProcessingException {
+    public KakaoProfileDto kakaoLogin(String code) throws JsonProcessingException {
         KakaoProfileDto newUser = getKakaoUser(getAccessToken(code));
 
-        User user = userRepository.findBySocialId(newUser.getSocialId()).orElse(null);
-
-        if (user == null) {
-            user = User.builder()
-                .socialId(newUser.getSocialId())
-                .nickname(newUser.getNickname())
-                .profileImg(newUser.getProfileImg())
-                .address("ADDRESS")
-                .gender("GENDER")
-                .height(1)
-                .weight(1)
-                .alcoholLimit(1)
-                .refreshToken("REFRESH_TOKEN")
-                .maxNonalcoholPeriod(1).build();
-
-            userRepository.save(user);
-            userInfoAdd(userReponseDto, newUser.getSocialId());
-        }
-
-        TokenDto tokenDto =  jwtProvider.createToken(newUser.getSocialId());
-
-        updateRefreshToken(tokenDto, newUser.getSocialId());
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("userName", user.getNickname());
-        data.put("tokenInfo", tokenDto);
-        data.put("alcoholLimit", user.getAlcoholLimit());
-
-        return data;
+        return newUser;
 
     }
 
@@ -155,49 +130,87 @@ public class UserService {
         }
     }
 
-    public  Map<String, Object> userInfoAdd(UserResponseDto userResponseDto, Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElse(null);
-        List<Drink> drinks = new ArrayList<>();
+    public Map<String, Object> registerKakaoUser(KakaoProfileDto kakaoProfileDto) {
+        User user = userRepository.findBySocialId(kakaoProfileDto.getSocialId()).orElse(null);
 
-        AtomicInteger alcoholLimit = new AtomicInteger();
-
-        drinks.forEach(e -> {
-            int amount;
-            if (e.getDrinkUnit().equals("잔")) {
-                amount = e.getCategory().getGlass() * e.getDrinkAmount();
-            } else {
-                amount = e.getCategory().getBottle() * e.getDrinkAmount();
-            }
-            alcoholLimit.addAndGet((int) (amount * e.getCategory().getVolume() * 0.7984 / 100));
-
-
-
-        if (user != null) {
-            user.setSocialId(socialId); // Social ID는 업데이트하지 않음
-            user.setCategory((Category) userResponseDto.getCategory());
-            user.setNickname(userResponseDto.getNickname());
-            user.setProfileImg(userResponseDto.getProfileImg());
-            user.setAddress(userResponseDto.getAddress());
-            user.setGender(userResponseDto.getGender());
-            user.setHeight(userResponseDto.getHeight());
-            user.setWeight(userResponseDto.getWeight());
-            user.setAlcoholLimit(alcoholLimit.get());
-            user.setRefreshToken(userResponseDto.getRefreshToken());
-            user.setMaxNonalcoholPeriod(userResponseDto.getMaxNonalcoholPeriod());
+        if (user == null) {
+            user = User.builder()
+                .socialId(kakaoProfileDto.getSocialId())
+                .nickname(kakaoProfileDto.getNickname())
+                .profileImg(kakaoProfileDto.getProfileImg())
+                .address("ADDRESS")
+                .gender("여")
+                .height(1)
+                .weight(1)
+                .alcoholLimit(1)
+                .refreshToken("REFRESH_TOKEN")
+                .maxNonalcoholPeriod(0).build();
 
             userRepository.save(user);
+            Map<String, Object> data = new HashMap<>();
+            data.put("message", "추가 정보 등록이 필요한 회원입니다.");
+            return data;
         }
 
-        TokenDto tokenDto = TokenDto.builder()
-            .accessToken()
-            .refreshToken()
-            .accessTokenExpiresIn() // 예: 1 시간
-            .build();
+        TokenDto tokenDto =  jwtProvider.createToken(kakaoProfileDto.getSocialId());
+
+        updateRefreshToken(tokenDto, kakaoProfileDto.getSocialId());
 
         Map<String, Object> data = new HashMap<>();
         data.put("userName", user.getNickname());
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
+
+        return data;
+
+    }
+
+    public  Map<String, Object> userInfoAdd(UserResponseDto userResponseDto,
+        Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+        DrinkInfo drinkInfo = userResponseDto.getDrinkInfo();
+        Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory());
+
+        int alcoholLimit = 0;
+
+        int amount;
+
+        if (drinkInfo.getCategory().equals("소주")) {
+            if (drinkInfo.getDrinkUnit().equals("잔")) {
+                amount = category.getGlass() * drinkInfo.getDrinkAmount();
+            } else {
+                amount = category.getBottle() * drinkInfo.getDrinkAmount();
+            }
+        } else {
+            if (drinkInfo.getCategory().equals("잔")) {
+                amount = category.getGlass() * drinkInfo.getDrinkAmount();
+            } else {
+                amount = category.getBottle() * drinkInfo.getDrinkAmount();
+            }
+        }
+        alcoholLimit += ((int) (amount * category.getVolume() * 0.7984 / 100));
+
+        user.setSocialId(socialId);
+        user.setNickname(user.getNickname());
+        user.setProfileImg(user.getProfileImg());
+        user.setAddress(userResponseDto.getAddress());
+        user.setGender(userResponseDto.getGender());
+        user.setHeight(userResponseDto.getHeight());
+        user.setWeight(userResponseDto.getWeight());
+        user.setAlcoholLimit(alcoholLimit);
+        user.setRefreshToken(userResponseDto.getRefreshToken());
+
+        userRepository.save(user);
+
+        TokenDto tokenDto =  jwtProvider.createToken(socialId);
+
+        updateRefreshToken(tokenDto, socialId);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getNickname());
+        data.put("tokenInfo", tokenDto);
+        data.put("alcoholLimit", user.getAlcoholLimit());
+
         return data;
 
     }
