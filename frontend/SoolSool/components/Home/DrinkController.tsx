@@ -4,13 +4,13 @@ import {
   View,
   Text,
   Dimensions,
-  Image,
   ImageBackground,
   Pressable,
 } from "react-native";
 import { IconButton, Modal, Portal, Chip } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
 import drinksData from "../../data/drinks.json";
+import { getDrinkImageById } from "../../utils/drinkUtils";
 
 import {
   drink01,
@@ -39,23 +39,24 @@ const drinkData = [
 ];
 
 interface Drink {
+  id: number;
   name: string;
-  volumen: number;
+  volume: number;
   unit: "병" | "잔";
   alcoholPercentage: number;
-  imagePath: string;
 }
 
 function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
 
   const [selectedDrink, setSelectedDrink] = useState({
+    id: 2,
     name: "소주",
     volume: 360,
-    unit: "병",
+    unit: "잔",
     alcoholPercentage: 19,
-    imagePath: "../../assets/Home/drinks/drink-01.png",
   });
+  const imageSource = getDrinkImageById(selectedDrink.id);
 
   const [value, setValue] = useState(0);
   const minValue = 0;
@@ -113,7 +114,7 @@ function DrinkController() {
           />
           <Pressable onPress={handleModalOpen}>
             <ImageBackground
-              source={drink04}
+              source={imageSource}
               style={styles.imageContainer}
               resizeMode="contain"
             >
