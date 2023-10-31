@@ -8,36 +8,37 @@ interface WeeklyStatisticsProps {
 
 function WeeklyStatistics(props: WeeklyStatisticsProps) {
   const barData = [
-    { value: -250 },
-    { value: -500 },
-    { value: -745 },
-    { value: -320 },
-    { value: -600 },
-    { value: -256 },
-    { value: -300 },
+    { value: 140 },
+    { value: 50 },
+    { value: 75 },
+    { value: 20 },
+    { value: 100 },
+    { value: 25 },
+    { value: 30 },
   ];
   const lineData = [
-    { value: -5 },
-    { value: -10 },
-    { value: -15 },
-    { value: -20 },
-    { value: -25 },
+    { value: 95 },
+    { value: 70 },
+    { value: 110 },
+    { value: 120 },
+    { value: 85 },
+    { value: 50 },
   ];
 
   return (
     <View style={styles.mainContainer}>
       <Text>주간통계페이지</Text>
-      <View style={styles.tempBox}>
+      <View style={styles.graphBox}>
         <View style={styles.chartContainer}>
           <View style={styles.chart}>
             <BarChart
               data={barData}
-              barWidth={20}
+              barWidth={15}
               height={180}
-              maxValue={0}
               barBorderRadius={5}
-              isAnimated
-              frontColor={"tomato"}
+              stepValue={15}
+              maxValue={150}
+              yAxisLabelWidth={30}
             />
           </View>
           <View style={styles.chart}>
@@ -47,6 +48,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               // height={150}
               yAxisThickness={0}
               xAxisThickness={0}
+              stepValue={15}
               hideAxesAndRules
             />
           </View>
@@ -63,10 +65,10 @@ const styles = StyleSheet.create({
     gap: 5,
     borderRadius: 20,
   },
-  tempBox: {
+  graphBox: {
     width: 350,
-    height: 200,
-    backgroundColor: "lightgrey",
+    height: 235,
+    backgroundColor: "#0477BF",
     marginHorizontal: 10,
     borderRadius: 20,
   },
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position: "absolute",
+    margin: 20,
   },
   chart: {
     position: "absolute",
