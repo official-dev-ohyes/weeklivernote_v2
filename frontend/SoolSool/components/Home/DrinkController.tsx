@@ -12,39 +12,15 @@ import { DrinkCarousel } from "./DrinkCarousel";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 
-import {
-  drink01,
-  drink02,
-  drink03,
-  drink04,
-  drink05,
-  drink06,
-  drink07,
-  drink08,
-  drink09,
-} from "../../assets/index";
-
-const { width, height } = Dimensions.get("screen");
-
-const drinkData = [
-  drink01,
-  drink02,
-  drink03,
-  drink04,
-  drink05,
-  drink06,
-  drink07,
-  drink08,
-  drink09,
-];
-
 interface Drink {
   id: number;
   name: string;
   volume: number;
-  unit: "병" | "잔";
+  unit: string;
   alcoholPercentage: number;
 }
+
+const { width, height } = Dimensions.get("screen");
 
 function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
@@ -84,6 +60,10 @@ function DrinkController() {
     });
   };
 
+  const getSelectedDrink = (drink: Drink) => {
+    setSelectedDrink(drink);
+  };
+
   return (
     <>
       <Portal>
@@ -92,7 +72,7 @@ function DrinkController() {
           onDismiss={handleModalClose}
           contentContainerStyle={styles.modalContainer}
         >
-          <DrinkCarousel data={drinkData} />
+          <DrinkCarousel data={drinksData} sendData={getSelectedDrink} />
         </Modal>
       </Portal>
 
@@ -137,7 +117,9 @@ function DrinkController() {
           />
         </View>
         <Pressable onPress={handleModalOpen}>
-          <Text style={styles.nameText}>{selectedDrink.name}</Text>
+          <Text style={styles.nameText}>
+            {selectedDrink.name} ({selectedDrink.unit})
+          </Text>
         </Pressable>
       </View>
     </>
@@ -174,11 +156,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(255,255,255,1)",
     padding: 0,
     margin: 12,
     width: width * 0.95,
-    height: height * 0.5,
+    height: height * 0.4,
     borderRadius: 20,
   },
   valueText: {

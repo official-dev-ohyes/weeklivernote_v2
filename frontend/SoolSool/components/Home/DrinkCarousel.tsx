@@ -1,13 +1,30 @@
-import { useRef } from "react";
-import { FlatList, ImageProps, Text, Image, View } from "react-native";
+import { useRef, useState } from "react";
+import { FlatList, Button, View, StyleSheet } from "react-native";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
 
+interface Drink {
+  id: number;
+  name: string;
+  volume: number;
+  unit: string;
+  alcoholPercentage: number;
+}
+
 type DrinkCarouselProps = {
-  data: ImageProps["source"][];
+  data: Drink[];
+  sendData: (drink: Drink) => void;
 };
 
-const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
+const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
+  const [centeredItem, setCenteredItem] = useState({
+    id: 2,
+    name: "소주",
+    volume: 360,
+    unit: "잔",
+    alcoholPercentage: 19,
+  });
+
   const contentOffset = useSharedValue(0);
   const flatListRef = useRef(null);
 
@@ -20,14 +37,15 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
 
   const handleMomentumScrollEnd = () => {
     const centerItemIndex = getCenterItemIndex();
-    const centerItem = data[centerItemIndex];
+    setCenteredItem(data[centerItemIndex]);
+  };
 
-    console.log("Center Item Index:", centerItemIndex);
-    console.log("Center Item Data:", centerItem);
+  const handleClick = () => {
+    sendData(centeredItem);
   };
 
   return (
-    <>
+    <View style={styles.rootcontainer}>
       <FlatList
         data={data}
         ref={flatListRef}
@@ -53,14 +71,24 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data }) => {
         renderItem={({ item, index }) => (
           <DrinkCarouselItem
             contentOffset={contentOffset}
-            imageSrc={item}
+            item={item}
             index={index}
           />
         )}
-        // onMomentumScrollEnd={handleMomentumScrollEnd}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
-    </>
+      <Button title="선택하기" onPress={handleClick} />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  rootcontainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 200,
+  },
+});
 
 export { DrinkCarousel };

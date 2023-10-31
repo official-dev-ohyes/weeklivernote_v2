@@ -1,12 +1,21 @@
-import { Dimensions, ImageProps, Image } from "react-native";
+import { Dimensions, Text, Image } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { getDrinkImageById } from "../../utils/drinkUtils";
+
+interface Drink {
+  id: number;
+  name: string;
+  volume: number;
+  unit: string;
+  alcoholPercentage: number;
+}
 
 type DrinkCarouselItemProps = {
-  imageSrc: ImageProps["source"];
+  item: Drink;
   index: number;
   contentOffset: Animated.SharedValue<number>;
 };
@@ -16,10 +25,11 @@ const { width: windowWidth } = Dimensions.get("window");
 export const ListItemWidth = windowWidth / 4;
 
 const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
-  imageSrc,
+  item,
   index,
   contentOffset,
 }) => {
+  const imageSource = getDrinkImageById(item.id);
   const rStyle = useAnimatedStyle(() => {
     const inputRange = [
       (index - 2) * ListItemWidth,
@@ -97,7 +107,7 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
       ]}
     >
       <Image
-        source={imageSrc}
+        source={imageSource}
         style={{
           margin: 3,
           height: ListItemWidth,
@@ -108,6 +118,9 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
           borderColor: "white",
         }}
       />
+      <Text>
+        {item.name} ({item.unit})
+      </Text>
     </Animated.View>
   );
 };
