@@ -9,16 +9,20 @@ const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from
 function KakaoLoginScreen({ navigation }) {
   // 백으로부터 AccessToken 및 유저데이터 받아오는 함수
   const fetchAccessToken = async (code: string) => {
-    console.log(code,"로axios요청을 하는중...");
+    console.log(code, "로axios요청을 하는중...");
     try {
-      const response = await axios.get("https://localhost:8080/api/v1/user/login", {
-        params: {
-          code,
-          grant_type: "authorization_code",
-        },
-      });
+      const response = await axios.get(
+        "https://soolsool.site/api/v1/user/login",
+        {
+          params: {
+            code,
+            grant_type: "authorization_code",
+          },
+        }
+      );
       // const ACCESS_TOKEN = response.data.access_token;
-      console.log("성공!", response);
+      console.log("성공!", response.data);
+      navigation.navigate("BottomTab");
     } catch (e) {
       console.log("실패", e);
     }

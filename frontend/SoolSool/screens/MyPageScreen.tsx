@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 import { StyleSheet, Text, ImageBackground, View } from "react-native";
 import UserProfile from "../components/MyPage/template/UserProfile";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
-import { background_mypage } from "../assets";
 import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
 import { fetchUserProfile } from "../api/mypageApi";
 import { createDrink, fetchDrink } from "../api/drinkRecordApi";
@@ -81,7 +80,6 @@ function MyPageScreen({ navigation }) {
 
   return (
     <View style={styles.mainContainer}>
-      <MyPageUpperBar />
       <UserProfile userData={userData} />
       <UserNonAlc nonAlc={nonAlc} />
       <UserStatistics />

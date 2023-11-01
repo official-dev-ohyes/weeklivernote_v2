@@ -1,6 +1,4 @@
 import iconImage from "./icon.png";
-import background_mypage from "./background_mypage.png";
-import Back_bright_2 from "./Back_bright_2.png";
 import cheeseDuck from "./cheeseDuck.jpg";
 import kakaoLoginButton from "./kakao_login_button.png";
 import soberImage from "./Home/intoxication/drunken-level-00.png";
@@ -10,6 +8,7 @@ import highImage from "./Home/intoxication/drunken-level-03.png";
 import veryHighImage from "./Home/intoxication/drunken-level-04.png";
 import severeImage from "./Home/intoxication/drunken-level-05.png";
 import nonAlcIcon from "./nonAlcIcon.png";
+import logo from "./logo.png";
 
 import drink01 from "./Home/drinks/drink-01.png";
 import drink02 from "./Home/drinks/drink-02.png";
@@ -25,15 +24,15 @@ import drink11 from "./Home/drinks/drink-11.png";
 import drink12 from "./Home/drinks/drink-12.png";
 import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
-import drink15 from "./Home/drinks/drink-15.png";
 import liverImage from "./Home/liver.png";
+import addInfoImage from "./addInfoImage.png";
 
-import tempChar from "./tempChar.png";
+import mainFontTTF from "./font/YeongdeokSea.ttf";
 
 export {
-  tempChar,
+  mainFontTTF,
+  addInfoImage,
   iconImage,
-  background_mypage,
   cheeseDuck,
   soberImage,
   mildImage,
@@ -41,7 +40,6 @@ export {
   highImage,
   veryHighImage,
   severeImage,
-  Back_bright_2,
   kakaoLoginButton,
   nonAlcIcon,
   drink01,
@@ -58,6 +56,6 @@ export {
   drink12,
   drink13,
   drink14,
-  drink15,
   liverImage,
+  logo,
 };

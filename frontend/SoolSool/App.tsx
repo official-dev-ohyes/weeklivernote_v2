@@ -19,10 +19,12 @@ import CalendarScreen from "./screens/CalendarScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
-
 import { RecoilRoot } from "recoil";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
+import { useEffect, useState } from "react";
+import * as Font from "expo-font";
+import { mainFontTTF } from "./assets";
 
 import DailyDetailScreen from "./screens/DailyDetailScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
@@ -33,10 +35,20 @@ const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
+  const [isFont, setIsFont] = useState(false);
+
+  useEffect(async () => {
+    await Font.loadAsync({
+      mainFont: mainFontTTF,
+      // "custom-font-otf": require("../assets/font/Yeongdeok_Sea.otf"),
+    });
+    setIsFont(true);
+  }, []);
+
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#03174C" },
+        headerStyle: { backgroundColor: "#0477BF" },
         headerTintColor: "white",
         tabBarShowLabel: false,
       }}
@@ -48,7 +60,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-home-sharp" color={color} size={size} />
           ),
-          title: "홈",
+          title: "Home",
         }}
       />
       <BottomTab.Screen
@@ -58,7 +70,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-calendar-sharp" color={color} size={size} />
           ),
-          title: "캘린더",
+          title: "Calender",
         }}
       />
       {/* <BottomTab.Screen
@@ -78,7 +90,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "마이 페이지",
+          title: "MyPage",
         }}
       />
     </BottomTab.Navigator>
@@ -112,6 +124,7 @@ export default function App() {
                 screenOptions={{
                   headerShown: false,
                 }}
+                initialRouteName="Login"
               >
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen

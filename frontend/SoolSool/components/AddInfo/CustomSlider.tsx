@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 import { View } from "react-native";
-import { MD3Colors } from 'react-native-paper';
+import { MD3Colors } from "react-native-paper";
 
 const CustomSlider = ({ value, onValueChange }) => {
   const handleDrag = (event) => {
@@ -14,9 +14,9 @@ const CustomSlider = ({ value, onValueChange }) => {
       style={{
         width: 350, // 슬라이더 너비
         height: 15, // 슬라이더 높이
-        backgroundColor: 'lightgray',
+        backgroundColor: "lightgray",
         borderRadius: 10,
-        overflow: 'hidden',
+        overflow: "hidden",
       }}
       onTouchMove={handleDrag}
     >
