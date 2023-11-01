@@ -100,6 +100,9 @@ const styles = StyleSheet.create({
     padding: 5,
     justifyContent: "center",
     alignContent: "center",
+    borderWidth: 2,
+    borderColor: "black",
+    margin: 5,
   },
   headerBox: {
     height: "20%",

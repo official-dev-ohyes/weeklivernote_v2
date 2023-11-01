@@ -40,8 +40,8 @@ function CalendarSixWeeks({}) {
           setAlcoholDays(days);
           console.log(`알코올 마신 날들은? ${days}`);
         })
-        .catch((error) => {
-          console.error("실패", error);
+        .catch((err) => {
+          console.error("실패", err);
         });
     };
     setAndFetch();

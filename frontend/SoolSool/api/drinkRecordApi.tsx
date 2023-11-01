@@ -49,7 +49,7 @@ export const fetchDailyDrink = async (day) => {
 export const fetchDailyDetail = async (day) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/daily-detail/${day}`);
-    console.log("성공!", res.data);
+    // console.log("성공!", res.data);
     return res.data;
   } catch (err) {
     throw new Error("실패!");
