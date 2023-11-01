@@ -24,6 +24,9 @@ import { RecoilRoot } from "recoil";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
+import DailyDetailScreen from "./screens/DailyDetailScreen";
+// @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
@@ -116,6 +119,14 @@ export default function App() {
                 <Stack.Screen
                   name="Settings"
                   component={SettingsScreen}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+                {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
+                <Stack.Screen
+                  name="DailyDetail"
+                  component={DailyDetailScreen}
                   options={{
                     headerShown: true,
                   }}

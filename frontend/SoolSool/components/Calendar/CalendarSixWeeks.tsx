@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
 import React, { useState, useEffect } from "react";
 import DailySummary from "./DailySummary";
-import { fetchMonthRecord } from "../../api/calendarApi";
+import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import axios from "axios";
 
 function CalendarSixWeeks({}) {
@@ -115,7 +115,11 @@ function CalendarSixWeeks({}) {
             />
           </View>
           <View style={styles.dailySummaryComponent}>
-            <DailySummary summaryText={selectDay} alcoholDays={alcoholDays} />
+            <DailySummary
+              summaryText={selectDay}
+              alcoholDays={alcoholDays}
+              // navigation={navigation}
+            />
           </View>
         </View>
       ) : (

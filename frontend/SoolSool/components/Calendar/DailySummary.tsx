@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 import NewRecord from "./NewRecord";
-import { fetchDailyDrink } from "../../api/calendarApi";
+import { fetchDailyDrink } from "../../api/drinkRecordApi";
+import { useNavigation } from "@react-navigation/native";
 
 function DailySummary({ summaryText, alcoholDays }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [dailyModalVisible, setDailyModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // 네비게이션으로 바꿀 계획
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
-  // 클릭 시 상세 페이지로 이동
+
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   useEffect(() => {
     setIsAlcohol(false);
@@ -29,7 +23,7 @@ function DailySummary({ summaryText, alcoholDays }) {
       fetchDailyDrink(summaryText)
         .then((res) => {
           console.log(res);
-          setDailyInfo(res); // 이 부분을 선언, 변경 후 담아주는게 좋을 지 고민
+          setDailyInfo(res);
           let alcohols = [];
           for (let i = 0; i < res.drinks.length; i++) {
             alcohols.push(res.drinks[i]);
@@ -45,7 +39,11 @@ function DailySummary({ summaryText, alcoholDays }) {
   return (
     <View style={styles.total}>
       {isAlcohol ? (
-        <TouchableOpacity onPress={() => setDailyModalVisible(true)}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("DailyDetail", { date: summaryText });
+          }}
+        >
           <View style={styles.headerBox}>
             <Text style={styles.headerText}>{summaryText}</Text>
           </View>
@@ -62,8 +60,14 @@ function DailySummary({ summaryText, alcoholDays }) {
               <Text>아이콘3</Text>
             </View>
             <View style={styles.textInformations}>
-              <Text>{dailyInfo.totalDrink}</Text>
-              <Text>{dailyInfo.topConc.toFixed(3)}</Text>
+              <Text>
+                {dailyInfo.totalDrink}
+                <Text> ml</Text>
+              </Text>
+              <Text>
+                {dailyInfo.topConc.toFixed(3)}
+                <Text> %</Text>
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
