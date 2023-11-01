@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import ModalDropdown from "react-native-modal-dropdown";
-import NewRecord from "../components/Calendar/NewRecord";
+import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 
 function RecordCreateScreen({ route }) {
   const day = route.params.date;
@@ -24,19 +24,6 @@ function RecordCreateScreen({ route }) {
   ];
   const amountCategory = ["잔", "병"];
 
-  // const addAlcoholList(() => {
-  //   NewRecord = {
-  //     category:
-  //   }
-  // });
-
-  console.log(`술 종류 수 ${alcoholRecord.length}`);
-  console.log("지금 기록된 술 목록");
-  for (let i = 0; i < alcoholRecord.length; i++) {
-    console.log(alcoholRecord[i]);
-  }
-
-  console.log(`날짜는 ${day}`);
   return (
     <View style={styles.total}>
       <View style={styles.header}>
@@ -44,13 +31,7 @@ function RecordCreateScreen({ route }) {
       </View>
       <View style={styles.contents}>
         <View style={styles.tagArea}>
-          {Object.keys(alcoholRecord).map((recordKey, index) => (
-            <View key={index} style={styles.record}>
-              <Text>술 종류: {alcoholRecord[recordKey].category}</Text>
-              <Text>양: {alcoholRecord[recordKey].amount}</Text>
-              <Text>단위: {alcoholRecord[recordKey].unit}</Text>
-            </View>
-          ))}
+          <NowAddedAlcohols alcoholRecord={alcoholRecord} />
         </View>
         <View style={styles.alcoholArea}>
           <View style={styles.alcoholInput}>
@@ -89,12 +70,12 @@ function RecordCreateScreen({ route }) {
                 amount: alcohol,
                 unit: selectedUnit,
               };
-              setAlcoholRecord([...alcoholRecord, newRecord]); // 배열에 새로운 레코드 추가
+              setAlcoholRecord([...alcoholRecord, newRecord]);
               setAlcohol("");
               console.log(alcoholRecord);
             }}
           >
-            입력
+            추가
           </Button>
         </View>
         <View style={styles.time}>
@@ -121,6 +102,9 @@ function RecordCreateScreen({ route }) {
             numberOfLines={9}
           />
         </View>
+        <Button icon="camera" mode="contained">
+          저장
+        </Button>
       </View>
     </View>
   );
@@ -195,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: "purple",
   },
   memo: {
-    height: "45%",
+    height: "40%",
     backgroundColor: "white",
   },
   record: {
