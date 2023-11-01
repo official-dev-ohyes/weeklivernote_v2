@@ -27,4 +27,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Integer> {
     List<Diary> findAllByUserAndDrinkDateYearAndDrinkDateMonth(User user, int year, int month);
 
     List<Diary> findAllByDrinkDate(LocalDate drinkDate);
+
+    List<Diary> findByUserOrderByDrinkDateDesc(User user);
 }
