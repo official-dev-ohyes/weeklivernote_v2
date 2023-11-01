@@ -9,7 +9,7 @@ function DailySummary(props) {
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
-  console.log(`알코올 데이즈 ${alcoholDays}`);
+  // console.log(`알코올 데이즈 ${alcoholDays}`);
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 

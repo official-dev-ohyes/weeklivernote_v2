@@ -27,7 +27,7 @@ function CalendarSixWeeks({}) {
       await setCurrentDay(nowDate);
       fetchMonthRecord(nowDate) // currentDay로 실행시 적용 안됨
         .then((res) => {
-          console.log("성공", res.drinks);
+          // console.log("성공", res.drinks);
           setAlcoholInfo(res.deinks);
 
           const drinkData = res.drinks;
@@ -38,7 +38,7 @@ function CalendarSixWeeks({}) {
             days.push(drinkData[i].date);
           }
           setAlcoholDays(days);
-          console.log(`알코올 마신 날들은? ${days}`);
+          // console.log(`알코올 마신 날들은? ${days}`);
         })
         .catch((err) => {
           console.error("실패", err);
@@ -52,7 +52,7 @@ function CalendarSixWeeks({}) {
       clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
     const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
     const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
-    console.log(`변경된 날짜는? ${newDate}`);
+    // console.log(`변경된 날짜는? ${newDate}`);
     if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
@@ -86,7 +86,7 @@ function CalendarSixWeeks({}) {
         current.getMonth() < 10 ? "0" : ""
       }${current.getMonth()}-${"01"}`;
     }
-    console.log(`이동한 날짜는 ${shiftDay}`);
+    // console.log(`이동한 날짜는 ${shiftDay}`);
     setCurrentDay(shiftDay);
     fetchMonthRecord(shiftDay);
   };
