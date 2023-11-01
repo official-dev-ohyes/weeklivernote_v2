@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-import NewRecord from "./NewRecord";
 import { fetchDailyDrink } from "../../api/drinkRecordApi";
 import { useNavigation } from "@react-navigation/native";
 
 function DailySummary({ summaryText, alcoholDays }) {
-  const [modalVisible, setModalVisible] = useState(false); // 네비게이션으로 바꿀 계획
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
@@ -72,7 +69,11 @@ function DailySummary({ summaryText, alcoholDays }) {
           </View>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("RecordCreate", { date: summaryText });
+          }}
+        >
           <View style={styles.headerBox}>
             <Text style={styles.headerText}>{summaryText}</Text>
           </View>
@@ -81,26 +82,6 @@ function DailySummary({ summaryText, alcoholDays }) {
           </View>
         </TouchableOpacity>
       )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalView}>
-          <NewRecord /> {/* 모달 내부에 NewRecord 컴포넌트 표시 */}
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(false);
-            }}
-          >
-            <Text style={styles.closeButton}>닫기</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 }

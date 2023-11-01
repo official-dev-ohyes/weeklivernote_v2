@@ -25,6 +25,7 @@ import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 import DailyDetailScreen from "./screens/DailyDetailScreen";
+import RecordCreateScreen from "./screens/RecordCreateScreen";
 // @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();
@@ -140,6 +141,13 @@ export default function App() {
                 <Stack.Screen
                   name="DailyDetail"
                   component={DailyDetailScreen}
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+                <Stack.Screen
+                  name="RecordCreate"
+                  component={RecordCreateScreen}
                   options={{
                     headerShown: true,
                   }}
