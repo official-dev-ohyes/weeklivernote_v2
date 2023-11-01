@@ -3,7 +3,6 @@ package com.ohyes.soolsool.config;
 import com.ohyes.soolsool.drink.dao.DiaryRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
-import com.ohyes.soolsool.drink.dto.DrinkCount;
 import com.ohyes.soolsool.user.domain.User;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,12 +39,13 @@ public class SchedulerConfig {
             todayDrinks.forEach(e -> {
                 int amount;
                 if (e.getDrinkUnit().equals("잔")) {
-                    amount = e.getCategory().getGlass() * e.getDrinkAmount();
+                    amount = (int) (e.getCategory().getGlass() * e.getDrinkAmount());
                 } else {
-                    amount = e.getCategory().getBottle() * e.getDrinkAmount();
+                    amount = (int) (e.getCategory().getBottle() * e.getDrinkAmount());
                 }
                 drinkTotal.addAndGet(amount); // 총 음주량
-                alcoholAmount.addAndGet((int) (amount * e.getCategory().getVolume() * 0.7984 / 100)); // 총 알코올양
+                alcoholAmount.addAndGet(
+                    (int) (amount * e.getCategory().getVolume() * 0.7984 / 100)); // 총 알코올양
             });
 
             // 성별, 체중에 따른 혈중 알코올 농도 계산
@@ -55,8 +55,8 @@ public class SchedulerConfig {
             } else {
                 index = 6.4F;
             }
-            float topConc = (float)((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
-            float detoxTime = (float)((200 * topConc / 3) + 1.5);
+            float topConc = (float) ((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
+            float detoxTime = (float) ((200 * topConc / 3) + 1.5);
 
             t.setAlcoholConc(topConc);
             t.setDetoxTime(detoxTime);

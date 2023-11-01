@@ -47,15 +47,18 @@ public class DrinkController {
 
             drinkService.drinkAdd(drinkRequestDto, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 저장 성공"), HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(value = "/v1/drink/photo/{drinkDate}", produces = "application/json", consumes = "multipart/form-data")
     @Operation(summary = "해당 날짜의 사진 저장",
         description = "사진 파일을 저장합니다.(빈 값을 보내면 사진 파일을 삭제합니다.)")
-    public ResponseEntity<Object> drinkPhotoAdd(@PathVariable LocalDate drinkDate, @RequestPart(value = "file", required = false) MultipartFile multipartFile) throws Exception{
+    public ResponseEntity<Object> drinkPhotoAdd(@PathVariable LocalDate drinkDate,
+        @RequestPart(value = "file", required = false) MultipartFile multipartFile)
+        throws Exception {
         // 토큰 로직 추가 필요
         try {
             Long socialId = 1L;
@@ -63,7 +66,8 @@ public class DrinkController {
             uploadService.drinkPhotoAdd(drinkDate, multipartFile, socialId);
             return new ResponseEntity<>(new MessageResponse("사진 변경사항 저장 성공"), HttpStatus.OK);
         } catch (NullPointerException e) {
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -76,8 +80,9 @@ public class DrinkController {
 
             drinkService.drinkModify(drinkRequestDto, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 수정 성공"), HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -90,8 +95,9 @@ public class DrinkController {
 
             drinkService.drinkDelete(drinkRequestDto, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 중 특정 주종 삭제 성공"), HttpStatus.OK);
-        } catch (NullPointerException | IOException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException | IOException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -106,8 +112,9 @@ public class DrinkController {
             TotalDrinkInfoDto totalDrinkInfoDto = drinkGetService.totalDrinkInfoGet(drinkDate,
                 socialId);
             return new ResponseEntity<>(totalDrinkInfoDto, HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -122,8 +129,9 @@ public class DrinkController {
             MonthlyDrinkInfoDto monthlyDrinkInfoDto = drinkGetService.monthlyDrinkGet(drinkDate,
                 socialId);
             return new ResponseEntity<>(monthlyDrinkInfoDto, HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -137,8 +145,9 @@ public class DrinkController {
 
             DailyDrinkDto dailyDrinkDto = drinkGetService.dailyDrinkGet(drinkDate, socialId);
             return new ResponseEntity<>(dailyDrinkDto, HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -154,8 +163,9 @@ public class DrinkController {
             DailyDetailDrinkDto dailyDetailDrinkDto = drinkGetService.dailyDetailDrinkGet(drinkDate,
                 socialId);
             return new ResponseEntity<>(dailyDetailDrinkDto, HttpStatus.OK);
-        } catch (NullPointerException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -168,8 +178,9 @@ public class DrinkController {
 
             drinkService.drinkEventDelete(drinkDate, socialId);
             return new ResponseEntity<>(new MessageResponse("음주 기록 전체 삭제 성공"), HttpStatus.OK);
-        } catch (NullPointerException | IOException e){
-            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException | IOException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 }
