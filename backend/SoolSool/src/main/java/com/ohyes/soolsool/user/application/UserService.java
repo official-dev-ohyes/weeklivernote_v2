@@ -9,6 +9,7 @@ import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
+import com.ohyes.soolsool.user.dto.UserModifyDto;
 import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
 import com.ohyes.soolsool.util.jwt.JwtProvider;
@@ -47,7 +48,7 @@ public class UserService {
     private final CategoryRepository categoryRepository;
     private final JwtProvider jwtProvider;
 
-
+    // 카카오 로그인
     public KakaoProfileDto kakaoLogin(String code) throws JsonProcessingException {
         KakaoProfileDto newUser = getKakaoUser(getAccessToken(code));
 
@@ -85,7 +86,7 @@ public class UserService {
         return jsonNode.get("access_token").asText();
     }
 
-
+    // 카카오 유저 정보 저장
     public KakaoProfileDto getKakaoUser(String token) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 
@@ -117,6 +118,7 @@ public class UserService {
 
     }
 
+    // 리프래쉬토큰 업데이트
     private void updateRefreshToken(TokenDto tokenDto, Long socialId) {
         Optional<User> userOptional = userRepository.findBySocialId(socialId);
         if (userOptional.isPresent()) {
@@ -128,6 +130,7 @@ public class UserService {
         }
     }
 
+    // 회원가입
     public Map<String, Object> registerKakaoUser(KakaoProfileDto kakaoProfileDto) {
         User user = userRepository.findBySocialId(kakaoProfileDto.getSocialId()).orElse(null);
 
@@ -163,6 +166,7 @@ public class UserService {
 
     }
 
+    // 회원 추가 정보 등록
     public  Map<String, Object> userInfoAdd(UserRequestDto userRequestDto,
         Long socialId) {
         User user = userRepository.findBySocialId(socialId).orElse(null);
@@ -188,9 +192,6 @@ public class UserService {
         }
         alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
 
-        user.setSocialId(socialId);
-        user.setNickname(user.getNickname());
-        user.setProfileImg(user.getProfileImg());
         user.setAddress(userRequestDto.getAddress());
         user.setGender(userRequestDto.getGender());
         user.setHeight(userRequestDto.getHeight());
@@ -213,6 +214,7 @@ public class UserService {
 
     }
 
+    // 회원 추가 정보 조회
     public UserResponseDto userInfoGet(Long socialId) {
         User user = userRepository.findBySocialId(socialId).orElse(null);
 
@@ -234,6 +236,56 @@ public class UserService {
             .alcoholLimit(alcoholLimit)
             .build();
 
+    }
+
+    // 회원 추가 정보 수정
+    public void userInfoModify(UserModifyDto userModifyDto, Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+        DrinkInfo drinkInfo = userModifyDto.getDrinkInfo();
+        Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory());
+
+        // 기본 정보 수정
+        if (userModifyDto.getNickname() != null) {
+            user.setNickname(userModifyDto.getNickname());
+        }
+        if (userModifyDto.getAddress() != null) {
+            user.setAddress(userModifyDto.getAddress());
+        }
+        if (userModifyDto.getGender() != null) {
+            user.setGender(userModifyDto.getGender());
+        }
+        if (userModifyDto.getHeight() != 0) {
+            user.setHeight(userModifyDto.getHeight());
+        }
+        if (userModifyDto.getWeight() != 0) {
+            user.setWeight(userModifyDto.getWeight());
+        }
+
+
+        // 주량 수정
+        if (drinkInfo != null) {
+            float alcoholLimit = 0;
+
+            int amount;
+
+            if (drinkInfo.getCategory().equals("소주")) {
+                if (drinkInfo.getDrinkUnit().equals("잔")) {
+                    amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                } else {
+                    amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                }
+            } else {
+                if (drinkInfo.getCategory().equals("잔")) {
+                    amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                } else {
+                    amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                }
+            }
+            alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
+            user.setAlcoholLimit(alcoholLimit);
+        }
+
+        userRepository.save(user);
     }
 
 }

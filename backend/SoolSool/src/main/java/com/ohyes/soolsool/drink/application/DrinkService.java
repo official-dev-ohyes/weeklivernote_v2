@@ -83,7 +83,8 @@ public class DrinkService {
     public void drinkModify(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
         User user = userRepository.findBySocialId(socialId).orElse(null);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user);
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(),
+            user);
 
         // [1] 일기 관련 정보 수정
         if (existingDiary != null) {
@@ -105,7 +106,8 @@ public class DrinkService {
 
         // 시간이 존재하면 초기화 후 재기록
         if (drinkRequestDto.getStartTime() != null) {
-            LocalDateTime startTime = drinkRequestDto.getDrinkDate().atTime(drinkRequestDto.getStartTime());
+            LocalDateTime startTime = drinkRequestDto.getDrinkDate()
+                .atTime(drinkRequestDto.getStartTime());
             drinkRepository.deleteAll(drinks);
 
             drinkInfos.forEach(e -> {
@@ -118,7 +120,7 @@ public class DrinkService {
                     .build();
                 drinkRepository.save(drink);
             });
-        // 존재하지 않으면 실시간이므로 수정
+            // 존재하지 않으면 실시간이므로 수정
         } else {
             LocalDateTime startTime = LocalDateTime.now();
             // 주종과 단위가 일치하는 음주 기록 검색
@@ -152,7 +154,8 @@ public class DrinkService {
     public void drinkDelete(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 해당 날짜 일기의 음주 기록 찾기
         User user = userRepository.findBySocialId(socialId).orElse(null);
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user);
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(),
+            user);
         List<DrinkInfo> drinkInfos = drinkRequestDto.getDrinks(); // 입력 값
         List<Drink> drinks = existingDiary.getDrinks(); // 기존 값
         List<Drink> deletedDrinks = new ArrayList<>();
