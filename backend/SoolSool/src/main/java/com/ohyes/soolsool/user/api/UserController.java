@@ -8,6 +8,7 @@ import com.ohyes.soolsool.user.dto.KakaoProfileDto;
 import com.ohyes.soolsool.user.dto.UserModifyDto;
 import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
+import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,6 +87,18 @@ public class UserController {
 
             UserStatResponseDto userStatResponseDto = userStatService.getUserStat(socialId);
             return new ResponseEntity<>(userStatResponseDto, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/v1/user/stat-chart")
+    public ResponseEntity<Object> userStatChartGet() {
+        try {
+            Long socialId = 1L;
+
+            UserStatChartResponseDto userStatChartResponseDto = userStatService.getUserStatChart(socialId);
+            return new ResponseEntity<>(userStatChartResponseDto, HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }
