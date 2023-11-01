@@ -32,7 +32,7 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#03174C" },
+        headerStyle: { backgroundColor: "#0477BF" },
         headerTintColor: "white",
         tabBarShowLabel: false,
       }}
@@ -44,7 +44,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-home-sharp" color={color} size={size} />
           ),
-          title: "홈",
+          title: "Home",
         }}
       />
       <BottomTab.Screen
@@ -54,7 +54,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-calendar-sharp" color={color} size={size} />
           ),
-          title: "캘린더",
+          title: "Calender",
         }}
       />
       {/* <BottomTab.Screen
@@ -74,7 +74,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "마이 페이지",
+          title: "MyPage",
         }}
       />
     </BottomTab.Navigator>
