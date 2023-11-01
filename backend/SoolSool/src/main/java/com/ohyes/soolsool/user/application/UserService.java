@@ -17,7 +17,6 @@ import com.ohyes.soolsool.util.jwt.TokenDto;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.SimpleTimeZone;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +42,9 @@ public class UserService {
 
     @Value("${kakao.client-secret}")
     private String client_secret;
+
+    @Value("${kakao.admin-key}")
+    private String admin_key;
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -289,4 +291,61 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 카카오 로그아웃
+    public String userLogout(Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+        String nickname = user.getNickname();
+
+        try {
+            RestTemplate rt = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "KakaoAK " + admin_key);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("target_id_type", "user_id");
+            params.add("target_id", "socialId");
+
+            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+            ResponseEntity<String> response = rt.exchange(
+                "https://kapi.kakao.com/v1/user/logout",
+                HttpMethod.POST,
+                entity,
+                String.class
+            );
+            return nickname;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw e;
+        }
+    }
+
+    public String userDelete(Long socialId) {
+        User user = userRepository.findBySocialId(socialId).orElse(null);
+        String nickname = user.getNickname();
+
+        try {
+            RestTemplate rt = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "KakaoAK " + admin_key);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("target_id_type", "user_id");
+            params.add("target_id", "socialId");
+
+            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+            ResponseEntity<String> response = rt.exchange(
+                "https://kapi.kakao.com/v1/user/unlink",
+                HttpMethod.POST,
+                entity,
+                String.class
+            );
+            userRepository.deleteBySocialId(socialId);
+            return nickname;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw e;
+        }
+    }
 }
