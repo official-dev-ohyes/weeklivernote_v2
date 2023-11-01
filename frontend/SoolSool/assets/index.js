@@ -25,7 +25,6 @@ import drink11 from "./Home/drinks/drink-11.png";
 import drink12 from "./Home/drinks/drink-12.png";
 import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
-import drink15 from "./Home/drinks/drink-15.png";
 import liverImage from "./Home/liver.png";
 
 import tempChar from "./tempChar.png";
@@ -58,6 +57,5 @@ export {
   drink12,
   drink13,
   drink14,
-  drink15,
   liverImage,
 };
