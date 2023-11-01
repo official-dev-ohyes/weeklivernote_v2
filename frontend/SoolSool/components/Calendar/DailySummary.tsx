@@ -4,11 +4,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchDailyDrink } from "../../api/drinkRecordApi";
 import { useNavigation } from "@react-navigation/native";
 
-function DailySummary({ summaryText, alcoholDays }) {
+function DailySummary(props) {
+  const { summaryText, alcoholDays } = props;
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
-
+  console.log(`알코올 데이즈 ${alcoholDays}`);
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
@@ -38,7 +39,11 @@ function DailySummary({ summaryText, alcoholDays }) {
       {isAlcohol ? (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("DailyDetail", { date: summaryText });
+            navigation.navigate("DailyDetail", {
+              summaryText,
+              alcoholDays,
+              isAlcohol: true,
+            });
           }}
         >
           <View style={styles.headerBox}>

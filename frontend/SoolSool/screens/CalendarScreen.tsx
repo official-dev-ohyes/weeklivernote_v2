@@ -8,7 +8,7 @@ import CalendarSixWeeks from "../components/Calendar/CalendarSixWeeks";
 function CalendarScreen() {
   return (
     <View>
-      <Text>Calendar</Text>
+      <Text>술력</Text>
       {/* 주 별 간격 조정 */}
       {/* <CalendarMain /> */}
       {/* 주 별 간격 미조정 */}
