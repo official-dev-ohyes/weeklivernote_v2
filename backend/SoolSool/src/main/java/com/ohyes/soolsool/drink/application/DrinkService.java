@@ -7,6 +7,7 @@ import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.drink.dto.DrinkRequestDto;
+import com.ohyes.soolsool.user.application.UserStatService;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class DrinkService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UploadService uploadService;
+    private final UserStatService userStatService;
     private final CalculateService calculateService;
 
     @Transactional
@@ -92,6 +94,12 @@ public class DrinkService {
 
             drinkRepository.save(drink);
         });
+
+        if (drinkRequestDto.getStartTime() != null) {   // 실시간 아닐 경우 경우 maxNonAlcPeriod 업데이트
+            userStatService.updateMaxNonAlcPeriod(user);
+        } else { // 실시간 경우 startNonAlcDate 업데이트
+            userStatService.updateStartNonAlcDate(user, drinkRequestDto.getDrinkDate());
+        }
     }
 
     @Transactional
@@ -219,5 +227,9 @@ public class DrinkService {
             uploadService.drinkPhotoDelete(existingDiary, existingDiary.getImg());
         }
         diaryRepository.delete(existingDiary);
+
+        // user 필요한 정보 업데이트
+        userStatService.updateMaxNonAlcPeriod(user);
+        userStatService.updateStartNonAlcDate(user, null);
     }
 }

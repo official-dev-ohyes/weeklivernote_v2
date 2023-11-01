@@ -10,7 +10,9 @@ import lombok.Getter;
 public class KakaoProfileDto {
 
     private Long socialId;
+
     private String nickname;
+
     private String profileImg;
 
 
