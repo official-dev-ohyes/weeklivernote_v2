@@ -13,6 +13,7 @@ import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,8 +36,10 @@ public class DrinkGetService {
 
     public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        User user = userRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
+            .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
 
         AtomicInteger drinkTotal = new AtomicInteger();
@@ -48,12 +51,13 @@ public class DrinkGetService {
         drinks.forEach(e -> {
             int amount;
             if (e.getDrinkUnit().equals("잔")) {
-                amount = e.getCategory().getGlass() * e.getDrinkAmount();
+                amount = (int) (e.getCategory().getGlass() * e.getDrinkAmount());
             } else {
-                amount = e.getCategory().getBottle() * e.getDrinkAmount();
+                amount = (int) (e.getCategory().getBottle() * e.getDrinkAmount());
             }
             drinkTotal.addAndGet(amount); // 총 음주량
-            alcoholAmount.addAndGet((int) (amount * e.getCategory().getVolume() * 0.7984 / 100)); // 총 알코올양
+            alcoholAmount.addAndGet(
+                (int) (amount * e.getCategory().getVolume() * 0.7984 / 100)); // 총 알코올양
 
             // 음주 시작 시간 비교
             LocalDateTime recordTime = e.getRecordTime();
@@ -84,13 +88,15 @@ public class DrinkGetService {
     }
 
     public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        User user = userRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
         List<DailyMainDrink> dailyMainDrinks = new ArrayList<>();
 
         // 년, 월이 일치하는 일기들 검색
         int year = drinkDate.getYear();
         int month = drinkDate.getMonthValue();
-        List<Diary> diaries = diaryRepository.findAllByUserAndDrinkDateYearAndDrinkDateMonth(user, year, month);
+        List<Diary> diaries = diaryRepository.findAllByUserAndDrinkDateYearAndDrinkDateMonth(user,
+            year, month);
 
         if (diaries.isEmpty()) {
             throw new NullPointerException("해당 월의 음주 기록이 없습니다.");
@@ -107,13 +113,14 @@ public class DrinkGetService {
                 String categoryName = drink.getCategory().getCategoryName();
                 int amount;
                 if (drink.getDrinkUnit().equals("잔")) {
-                    amount = drink.getCategory().getGlass() * drink.getDrinkAmount();
+                    amount = (int) (drink.getCategory().getGlass() * drink.getDrinkAmount());
                 } else {
-                    amount = drink.getCategory().getBottle() * drink.getDrinkAmount();
+                    amount = (int) (drink.getCategory().getBottle() * drink.getDrinkAmount());
                 }
 
                 // 주종별 합계를 맵에 추가 또는 갱신
-                categoryTotalMap.put(categoryName, categoryTotalMap.getOrDefault(categoryName, 0) + amount);
+                categoryTotalMap.put(categoryName,
+                    categoryTotalMap.getOrDefault(categoryName, 0) + amount);
             }
 
             // 양을 계산한 후 최댓값 갱신
@@ -125,7 +132,7 @@ public class DrinkGetService {
                     mainDrink.set(categoryName);
                     maxAmount.set(drinkAmount);
                 }
-            };
+            }
 
             DailyMainDrink dailyMainDrink = DailyMainDrink.builder()
                 .date(d.getDrinkDate())
@@ -143,8 +150,10 @@ public class DrinkGetService {
 
     public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        User user = userRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
+            .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
 
         AtomicInteger drinkTotal = new AtomicInteger();
@@ -154,13 +163,14 @@ public class DrinkGetService {
             String categoryName = drink.getCategory().getCategoryName();
             int amount;
             if (drink.getDrinkUnit().equals("잔")) {
-                amount = drink.getCategory().getGlass() * drink.getDrinkAmount();
+                amount = (int) (drink.getCategory().getGlass() * drink.getDrinkAmount());
             } else {
-                amount = drink.getCategory().getBottle() * drink.getDrinkAmount();
+                amount = (int) (drink.getCategory().getBottle() * drink.getDrinkAmount());
             }
 
             // 주종별 합계를 맵에 추가 또는 갱신
-            categoryTotalMap.put(categoryName, categoryTotalMap.getOrDefault(categoryName, 0) + amount);
+            categoryTotalMap.put(categoryName,
+                categoryTotalMap.getOrDefault(categoryName, 0) + amount);
 
             drinkTotal.addAndGet(amount);
         }
@@ -190,8 +200,10 @@ public class DrinkGetService {
 
     public DailyDetailDrinkDto dailyDetailDrinkGet(LocalDate drinkDate, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        User user = userRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
+            .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
         List<Drink> drinks = existingDiary.getDrinks();
         AtomicReference<LocalDateTime> drinkStartTime = new AtomicReference<>(LocalDateTime.MAX);
@@ -204,9 +216,9 @@ public class DrinkGetService {
             String categoryName = drink.getCategory().getCategoryName();
             int amount;
             if (drink.getDrinkUnit().equals("잔")) {
-                amount = drink.getCategory().getGlass() * drink.getDrinkAmount();
+                amount = (int) (drink.getCategory().getGlass() * drink.getDrinkAmount());
             } else {
-                amount = drink.getCategory().getBottle() * drink.getDrinkAmount();
+                amount = (int) (drink.getCategory().getBottle() * drink.getDrinkAmount());
             }
             int alcohol = (int) (amount * drink.getCategory().getVolume() * 0.7984 / 100);
             // 주종별 합계를 맵에 추가 또는 갱신
@@ -237,15 +249,21 @@ public class DrinkGetService {
 
         // 퍼센트 계산
         List<DrinkPercent> drinkPercents = new ArrayList<>();
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
         for (Map.Entry<String, List<Integer>> entry : categoryTotalMap.entrySet()) {
             String categoryName = entry.getKey();
             List<Integer> drinkInfo = entry.getValue();
 
+            String drinkPercentForm = decimalFormat.format(
+                (float) (drinkInfo.get(0) * 100) / drinkTotal.get());
+            String alcPercentForm = decimalFormat.format(
+                (float) (drinkInfo.get(1) * 100) / alcoholTotal.get());
+
             // DrinkCount 객체 생성
             DrinkPercent drinkPercent = DrinkPercent.builder()
                 .category(categoryName)
-                .drinkPercent((float)(drinkInfo.get(0) * 100 / drinkTotal.get()))
-                .alcPercent((float)(drinkInfo.get(1) * 100 / alcoholTotal.get()))
+                .drinkPercent(Float.parseFloat(drinkPercentForm))
+                .alcPercent(Float.parseFloat(alcPercentForm))
                 .build();
 
             drinkPercents.add(drinkPercent);

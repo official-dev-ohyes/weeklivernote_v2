@@ -51,9 +51,9 @@ public class CalculateService {
                 .orElseThrow();
             int amount;
             if (e.getDrinkUnit().equals("잔")) {
-                amount = category.getGlass() * e.getDrinkAmount();
+                amount = (int) (category.getGlass() * e.getDrinkAmount());
             } else {
-                amount = category.getBottle() * e.getDrinkAmount();
+                amount = (int) (category.getBottle() * e.getDrinkAmount());
             }
             drinkTotal.addAndGet(amount); // 총 음주량
             alcoholAmount.addAndGet((int) (amount * category.getVolume() * 0.7984 / 100)); // 총 알코올양

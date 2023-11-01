@@ -25,7 +25,7 @@ public class Drink {
     private int drinkPk;
 
     @Column(name = "drink_amount")
-    private byte drinkAmount;
+    private float drinkAmount;
 
     @Column(name = "drink_unit")
     private String drinkUnit;
@@ -44,7 +44,7 @@ public class Drink {
 
     // 생성자
     @Builder
-    public Drink(String drinkUnit, byte drinkAmount, LocalDateTime recordTime, Diary diary, Category category) {
+    public Drink(String drinkUnit, float drinkAmount, LocalDateTime recordTime, Diary diary, Category category) {
         this.drinkUnit = drinkUnit;
         this.drinkAmount = drinkAmount;
         this.recordTime = recordTime;

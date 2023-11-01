@@ -50,22 +50,23 @@ public class UploadService {
 
         return uploadUrl;      // 업로드된 파일의 S3 URL 주소 반환
     }
+
     private void removeNewFile(File targetFile) {
         System.gc();
         System.runFinalization();
-        if(targetFile.delete()) {
+        if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
-        }else {
+        } else {
             log.info("파일이 삭제되지 못했습니다.");
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws  IOException {
+    private Optional<File> convert(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-        File convertFile = new File(UUID.randomUUID()+"."+ext);
-        if(convertFile.createNewFile()) {
+        File convertFile = new File(UUID.randomUUID() + "." + ext);
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
             }
@@ -81,13 +82,17 @@ public class UploadService {
             .acl(ObjectCannedACL.BUCKET_OWNER_FULL_CONTROL)
             .build();
         s3Client.putObject(putObjectRequest, RequestBody.fromFile(uploadFile));
-        return String.valueOf(s3Client.utilities().getUrl(GetUrlRequest.builder().bucket(bucket).key(fileName).build()));
+        return String.valueOf(s3Client.utilities()
+            .getUrl(GetUrlRequest.builder().bucket(bucket).key(fileName).build()));
     }
 
     @Transactional
-    public void drinkPhotoAdd(LocalDate drinkDate, MultipartFile multipartFile, Long socialId) throws IOException {
-        User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+    public void drinkPhotoAdd(LocalDate drinkDate, MultipartFile multipartFile, Long socialId)
+        throws IOException {
+        User user = userRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
+            .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
         // 이미 사진이 있는 상태면 먼저 삭제
         if (existingDiary.getImg() != null) {
@@ -106,7 +111,7 @@ public class UploadService {
     }
 
     @Transactional
-    public void drinkPhotoDelete(Diary diary, String fileName) throws IOException{
+    public void drinkPhotoDelete(Diary diary, String fileName) throws IOException {
         try {
             String key = fileName.split("/")[3] + "/" + fileName.split("/")[4];
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()

@@ -180,15 +180,15 @@ public class UserService {
 
         if (drinkInfo.getCategory().equals("소주")) {
             if (drinkInfo.getDrinkUnit().equals("잔")) {
-                amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                amount = (int) (category.getGlass() * drinkInfo.getDrinkAmount());
             } else {
-                amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                amount = (int) (category.getBottle() * drinkInfo.getDrinkAmount());
             }
         } else {
             if (drinkInfo.getCategory().equals("잔")) {
-                amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                amount = (int) (category.getGlass() * drinkInfo.getDrinkAmount());
             } else {
-                amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                amount = (int) (category.getBottle() * drinkInfo.getDrinkAmount());
             }
         }
         alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
@@ -271,15 +271,15 @@ public class UserService {
 
             if (drinkInfo.getCategory().equals("소주")) {
                 if (drinkInfo.getDrinkUnit().equals("잔")) {
-                    amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                    amount = (int) (category.getGlass() * drinkInfo.getDrinkAmount());
                 } else {
-                    amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                    amount = (int) (category.getBottle() * drinkInfo.getDrinkAmount());
                 }
             } else {
                 if (drinkInfo.getCategory().equals("잔")) {
-                    amount = category.getGlass() * drinkInfo.getDrinkAmount();
+                    amount = (int) (category.getGlass() * drinkInfo.getDrinkAmount());
                 } else {
-                    amount = category.getBottle() * drinkInfo.getDrinkAmount();
+                    amount = (int) (category.getBottle() * drinkInfo.getDrinkAmount());
                 }
             }
             alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
