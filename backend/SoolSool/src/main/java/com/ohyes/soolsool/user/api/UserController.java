@@ -76,7 +76,10 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 유저 관련 통계 - 최장/현재 논 알코올 기간 및 올해 총 술 총량
     @GetMapping("v1/user/stat")
+    @Operation(summary = "유저 요약 통계 조회",
+        description = "유저의 최장/현내 논 알코올 기간과 올해 마신 술 총량을 조회합니다.")
     public ResponseEntity<Object> userStatGet() {
         try {
             Long socialId = 1L;
