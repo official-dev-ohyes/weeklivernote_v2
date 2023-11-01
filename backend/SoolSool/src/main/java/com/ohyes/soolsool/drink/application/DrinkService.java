@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class DrinkService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UploadService uploadService;
+    private final CalculateService calculateService;
 
     @Transactional
     public void drinkAdd(DrinkRequestDto drinkRequestDto, Long socialId) {
@@ -48,13 +50,20 @@ public class DrinkService {
         }
         // 유저가 해당 날짜에 작성한 일기가 없으면 일기 생성
         else {
+            // 오늘 날짜가 아니라면 혈중 알코올 농도, 해독 시간 바로 계산
+            // 오늘 날짜면 실시간이거나 변동 가능성이 많으므로 계산 X
+            HashMap<String, Float> results = new HashMap<>();
+            if (!calculateService.getCorrectDate().equals(date)) {
+                results = calculateService.calculateConcAndDetoxTime(drinkRequestDto.getDrinks(), socialId);
+            }
+
             Diary diary = Diary.builder()
                 .user(user)
                 .drinkDate(drinkRequestDto.getDrinkDate())
                 .memo(drinkRequestDto.getMemo())
                 .hangover(drinkRequestDto.getHangover())
-                .alcoholConc(drinkRequestDto.getAlcoholConc())
-                .detoxTime(0F)
+                .alcoholConc(results.getOrDefault("topConc", 0.0f))
+                .detoxTime(results.getOrDefault("detoxTime", 0.0f))
                 .build();
 
             Diary savedDiary = diaryRepository.save(diary);
@@ -89,7 +98,8 @@ public class DrinkService {
     public void drinkModify(DrinkRequestDto drinkRequestDto, Long socialId) {
         // 유저와 날짜가 일치하는 일기 찾기
         User user = userRepository.findBySocialId(socialId).orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
-        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkRequestDto.getDrinkDate(), user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+        LocalDate drinkDate = drinkRequestDto.getDrinkDate();
+        Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user).orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
         // [1] 일기 관련 정보 수정
         if (existingDiary != null) {
@@ -99,6 +109,13 @@ public class DrinkService {
             if (drinkRequestDto.getHangover() != null) {
                 existingDiary.setHangover(drinkRequestDto.getHangover());
             }
+
+            HashMap<String, Float> results = new HashMap<>();
+            if (!calculateService.getCorrectDate().equals(drinkDate)) {
+                results = calculateService.calculateConcAndDetoxTime(drinkRequestDto.getDrinks(), socialId);
+            }
+            existingDiary.setAlcoholConc(results.getOrDefault("topConc", 0.0f));
+            existingDiary.setDetoxTime(results.getOrDefault("detoxTime", 0.0f));
             diaryRepository.save(existingDiary);
         }
 
@@ -108,7 +125,7 @@ public class DrinkService {
 
         // 시간이 존재하면 초기화 후 재기록
         if (drinkRequestDto.getStartTime() != null) {
-            LocalDateTime startTime = drinkRequestDto.getDrinkDate().atTime(drinkRequestDto.getStartTime());
+            LocalDateTime startTime = drinkDate.atTime(drinkRequestDto.getStartTime());
             drinkRepository.deleteAll(drinks);
 
             drinkInfos.forEach(e -> {
