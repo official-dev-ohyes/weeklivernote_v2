@@ -1,29 +1,19 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
-import { calculateTimeDifference } from "../utils/timeUtils";
 
 import { StyleSheet, View, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
+import SafeDriveInfo from "../components/Home/SafeDriveInfo";
 import DrinkController from "../components/Home/DrinkController";
+import { drinkTodayAtom } from "../recoil/drinkTodayAtom";
+import { useRecoilState } from "recoil";
 
 function HomeScreen() {
-  const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-  const date = new Date("2023-10-27T15:30:00");
-
-  // const fetchARandomActivity = async (url) => {
-  //   try {
-  //     const response = await axios.get(url);
-  //     console.log("응답 데이터:", response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("요청 실패:", error);
-  //     throw error;
-  //   }
-  // };
-  // fetchARandomActivity("https://www.boredapi.com/api/activity");
+  const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
+  const date = new Date("2023-10-30T15:30:00");
 
   useEffect(() => {
     setDrinkToday(
@@ -75,8 +65,7 @@ function HomeScreen() {
   if (!drinkToday) {
     return (
       <View style={styles.loadingContainer}>
-        {/* <ActivityIndicator animating={true} color={}/> */}
-        <ActivityIndicator animating={true} />
+        <ActivityIndicator animating={true} color="#03174C" />
         <Text>Loading...</Text>
       </View>
     );
@@ -86,6 +75,7 @@ function HomeScreen() {
     <>
       <HomeCarousel />
       <View style={styles.controllerContainer}>
+        <SafeDriveInfo />
         <DrinkController />
       </View>
     </>
@@ -106,7 +96,7 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -240,
+    marginTop: -250,
   },
 });
 
