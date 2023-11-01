@@ -5,10 +5,6 @@ import React, { useState } from "react";
 import CalendarMain from "../components/Calendar/CalendarMain";
 import CalendarSixWeeks from "../components/Calendar/CalendarSixWeeks";
 
-let isSelectDay: boolean = false;
-let selectDay: string;
-let today = new Date();
-
 function CalendarScreen() {
   return (
     <View>
