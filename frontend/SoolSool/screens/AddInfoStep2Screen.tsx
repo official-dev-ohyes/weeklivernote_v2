@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import DotIndicator from "../components/AddInfo/DotIndicator ";
 
 function AddInfoStep2Screen({ navigation }) {
   const [selectedAddress, setSelectedAddress] = useState("일단");
@@ -32,6 +33,7 @@ function AddInfoStep2Screen({ navigation }) {
   }, [selectedAddress]);
   return (
     <View style={styles.mainContainer}>
+      <DotIndicator activeIndex={2} />
       <Text>주소를 선택하세요</Text>
       {/* <PlacesInput
         googleApiKey={process.env.GOOGLE_API_KEY}

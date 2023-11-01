@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "react-native-paper";
+import DotIndicator from "../components/AddInfo/DotIndicator ";
 
 function AddInfoStep3Screen({ navigation, route }) {
   const { address } = route.params;
@@ -21,6 +22,7 @@ function AddInfoStep3Screen({ navigation, route }) {
   return (
     <View>
       {/* <Text>선택한 주소: {address}</Text> */}
+      <DotIndicator activeIndex={3} />
       <Text style={styles.title}>주량</Text>
       <View style={styles.drinkSelection}>
         <TouchableOpacity

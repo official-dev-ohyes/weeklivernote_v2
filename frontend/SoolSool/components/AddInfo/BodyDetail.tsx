@@ -1,15 +1,14 @@
 import { Text, View, StyleSheet } from "react-native";
 import { Button, ProgressBar, MD3Colors } from "react-native-paper";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import CustomSlider from "./CustomSlider";
 
-interface BodyDetailProps {
-  // nonAlc:number;
-}
+// interface BodyDetailProps {
+// nonAlc:number;
+// }
 
-function BodyDetail(props: BodyDetailProps) {
-  const navigation = useNavigation();
+function BodyDetail({ navigation }) {
+  // const navigation = useNavigation();
   const [height, setHeight] = React.useState(0.5);
   const [weight, setWeight] = React.useState(0.5);
 
@@ -27,12 +26,12 @@ function BodyDetail(props: BodyDetailProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>몸무게</Text>
+      <Text style={styles.text}>몸무게</Text>
       <View>
         <CustomSlider value={weight} onValueChange={handleWeightValueChange} />
         <Text>Progress: {Math.round(weight * 100)}kg</Text>
       </View>
-      <Text>키</Text>
+      <Text style={styles.text}>키</Text>
       <View>
         <CustomSlider value={height} onValueChange={handleHeightValueChange} />
         <Text>Progress: {Math.round(height * 100)}cm</Text>
@@ -46,10 +45,13 @@ function BodyDetail(props: BodyDetailProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#FFFF",
+    // backgroundColor: "#FFFF",
     flexDirection: "column",
-    gap: 5,
+    gap: 15,
     borderRadius: 20,
+  },
+  text: {
+    fontSize: 20,
   },
 });
 
