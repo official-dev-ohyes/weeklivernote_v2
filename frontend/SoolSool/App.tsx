@@ -34,15 +34,15 @@ const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
-  const [isFont, setIsFont] = useState(false);
+  // const [isFont, setIsFont] = useState(false);
 
-  useEffect(async () => {
-    await Font.loadAsync({
-      mainFont: mainFontTTF,
-      // "custom-font-otf": require("../assets/font/Yeongdeok_Sea.otf"),
-    });
-    setIsFont(true);
-  }, []);
+  // useEffect(async () => {
+  //   await Font.loadAsync({
+  //     mainFont: mainFontTTF,
+  //     // "custom-font-otf": require("../assets/font/Yeongdeok_Sea.otf"),
+  //   });
+  //   setIsFont(true);
+  // }, []);
 
   return (
     <BottomTab.Navigator
