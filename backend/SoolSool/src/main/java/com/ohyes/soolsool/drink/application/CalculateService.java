@@ -67,7 +67,7 @@ public class CalculateService {
             index = 6.4F;
         }
         float topConc = (float) ((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
-        float detoxTime = (float) ((200 * topConc / 3) + 1.5);
+        float detoxTime = (float) (200 * topConc / 3);
 
         // 해시맵으로 반환
         HashMap<String, Float> results = new HashMap<>();
