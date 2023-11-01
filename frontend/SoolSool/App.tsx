@@ -19,16 +19,28 @@ import CalendarScreen from "./screens/CalendarScreen";
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
-
 import { RecoilRoot } from "recoil";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
+import { useEffect, useState } from "react";
+import * as Font from "expo-font";
+import { mainFontTTF } from "./assets";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
+  const [isFont, setIsFont] = useState(false);
+
+  useEffect(async () => {
+    await Font.loadAsync({
+      mainFont: mainFontTTF,
+      // "custom-font-otf": require("../assets/font/Yeongdeok_Sea.otf"),
+    });
+    setIsFont(true);
+  }, []);
+
   return (
     <BottomTab.Navigator
       screenOptions={{

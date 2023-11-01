@@ -28,7 +28,10 @@ import drink15 from "./Home/drinks/drink-15.png";
 import liverImage from "./Home/liver.png";
 import addInfoImage from "./addInfoImage.png";
 
+import mainFontTTF from "./font/YeongdeokSea.ttf";
+
 export {
+  mainFontTTF,
   addInfoImage,
   iconImage,
   cheeseDuck,
