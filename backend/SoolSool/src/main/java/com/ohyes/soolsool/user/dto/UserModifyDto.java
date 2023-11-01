@@ -2,7 +2,6 @@ package com.ohyes.soolsool.user.dto;
 
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jdk.jfr.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserRequestDto {
+public class UserModifyDto {
+
+    @Schema(example = "한소희")
+    private String nickname;
 
     @Schema(example = "부산시 강서구 화전동")
     private String address;
@@ -25,22 +27,19 @@ public class UserRequestDto {
     @Schema(example = "50")
     private int weight;
 
-    private String refreshToken;
-
     private DrinkInfo drinkInfo;
 
     @Builder
-    private UserRequestDto(String address, String gender, int height, int weight,
-        String refreshToken, DrinkInfo drinkInfo) {
+    private UserModifyDto(String nickname, String address, String gender, int height, int weight,
+        DrinkInfo drinkInfo) {
 
+        this.nickname = nickname;
         this.address = address;
         this.gender = gender;
         this.height = height;
         this.weight = weight;
-        this.refreshToken = refreshToken;
 
         this.drinkInfo = drinkInfo;
 
     }
-
 }
