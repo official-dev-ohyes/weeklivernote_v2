@@ -26,6 +26,9 @@ import { useEffect, useState } from "react";
 import * as Font from "expo-font";
 import { mainFontTTF } from "./assets";
 
+import DailyDetailScreen from "./screens/DailyDetailScreen";
+// @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
+
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
@@ -120,6 +123,7 @@ export default function App() {
                 screenOptions={{
                   headerShown: false,
                 }}
+                initialRouteName="Login"
               >
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen
@@ -143,6 +147,14 @@ export default function App() {
                     headerShown: true,
                     headerStyle: { backgroundColor: "#03174C" },
                     headerTintColor: "white",
+                  }}
+                />
+                {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
+                <Stack.Screen
+                  name="DailyDetail"
+                  component={DailyDetailScreen}
+                  options={{
+                    headerShown: true,
                   }}
                 />
               </Stack.Navigator>
