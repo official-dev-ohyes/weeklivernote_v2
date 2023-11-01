@@ -1,10 +1,40 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
+import ModalDropdown from "react-native-modal-dropdown";
+import NewRecord from "../components/Calendar/NewRecord";
 
 function RecordCreateScreen({ route }) {
   const day = route.params.date;
+  const [alcoholRecord, setAlcoholRecord] = useState([]);
+  const [alcohol, setAlcohol] = useState("");
   const [memo, setMemo] = useState("");
+  const [selectedAlcohol, setSelectedAlcohol] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState("");
+  const alcoholCategory = [
+    "소주",
+    "맥주",
+    "소맥",
+    "와인",
+    "하이볼",
+    "막걸리",
+    "칵테일(약)",
+    "칵테일(강)",
+    "위스키",
+  ];
+  const amountCategory = ["잔", "병"];
+
+  // const addAlcoholList(() => {
+  //   NewRecord = {
+  //     category:
+  //   }
+  // });
+
+  console.log(`술 종류 수 ${alcoholRecord.length}`);
+  console.log("지금 기록된 술 목록");
+  for (let i = 0; i < alcoholRecord.length; i++) {
+    console.log(alcoholRecord[i]);
+  }
 
   console.log(`날짜는 ${day}`);
   return (
@@ -13,20 +43,59 @@ function RecordCreateScreen({ route }) {
         <Text>{day}</Text>
       </View>
       <View style={styles.contents}>
-        <View style={styles.tagArea}></View>
+        <View style={styles.tagArea}>
+          {Object.keys(alcoholRecord).map((recordKey, index) => (
+            <View key={index} style={styles.record}>
+              <Text>술 종류: {alcoholRecord[recordKey].category}</Text>
+              <Text>양: {alcoholRecord[recordKey].amount}</Text>
+              <Text>단위: {alcoholRecord[recordKey].unit}</Text>
+            </View>
+          ))}
+        </View>
         <View style={styles.alcoholArea}>
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>술</Text>
-            <View style={styles.category}>{/* 드롭다운 박스 */}</View>
+            <View style={styles.category}>
+              <ModalDropdown
+                options={alcoholCategory}
+                onSelect={(index, value) => setSelectedAlcohol(value)}
+              />
+            </View>
           </View>
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>양</Text>
-            <View style={styles.alcoholAmount}></View>
-            <View style={styles.alcoholAmount}></View>
-            {/* 드롭다운 박스 */}
+            <View style={styles.alcoholAmount}>
+              <TextInput
+                placeholder="숫자를 입력하세요"
+                keyboardType="numeric"
+                value={alcohol}
+                onChangeText={(text) => setAlcohol(text)}
+              />
+            </View>
+            <View style={styles.alcoholAmount}>
+              <ModalDropdown
+                options={amountCategory}
+                onSelect={(index, value) => setSelectedUnit(value)}
+              />
+            </View>
           </View>
           {/* addinfoscreen 참조해서 버튼 예쁘게 만들기 */}
-          <Button>입력</Button>
+          <Button
+            icon="camera"
+            mode="contained"
+            onPress={() => {
+              const newRecord = {
+                category: selectedAlcohol,
+                amount: alcohol,
+                unit: selectedUnit,
+              };
+              setAlcoholRecord([...alcoholRecord, newRecord]); // 배열에 새로운 레코드 추가
+              setAlcohol("");
+              console.log(alcoholRecord);
+            }}
+          >
+            입력
+          </Button>
         </View>
         <View style={styles.time}>
           <Text style={styles.timeHeader}>술자리 시작</Text>
@@ -44,6 +113,7 @@ function RecordCreateScreen({ route }) {
           {/* 한글 입력이 안돼요ㅠㅠ */}
           <TextInput
             label="술자리 기록을 남겨보세요"
+            keyboardType="default"
             mode="outlined"
             value={memo}
             onChangeText={(memo) => setMemo(memo)}
@@ -100,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 4,
     height: "90%",
     margin: "1%",
-    backgroundColor: "white",
+    backgroundColor: "yellow",
   },
   // @@@@@@@@@@@@@@@@@@@@@나중에 세밀하게 수정하기@@@@@@@@@@@@@@@@@@@@@
   alcoholAmount: {
@@ -127,6 +197,11 @@ const styles = StyleSheet.create({
   memo: {
     height: "45%",
     backgroundColor: "white",
+  },
+  record: {
+    backgroundColor: "lightgrey",
+    marginVertical: 5,
+    padding: 10,
   },
 });
 
