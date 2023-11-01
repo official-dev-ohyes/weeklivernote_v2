@@ -3,10 +3,13 @@ package com.ohyes.soolsool.user.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ohyes.soolsool.user.application.UserService;
+import com.ohyes.soolsool.user.application.UserStatService;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
 import com.ohyes.soolsool.user.dto.UserModifyDto;
 import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
+import com.ohyes.soolsool.user.dto.UserStatResponseDto;
+import com.ohyes.soolsool.util.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserStatService userStatService;
 
     // 회원가입 or 로그인
     @GetMapping("v1/user/login")
@@ -70,5 +74,17 @@ public class UserController {
 
         userService.userInfoModify(userModifyDto, socialId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("v1/user/stat")
+    public ResponseEntity<Object> userStatGet() {
+        try {
+            Long socialId = 1L;
+
+            UserStatResponseDto userStatResponseDto = userStatService.getUserStat(socialId);
+            return new ResponseEntity<>(userStatResponseDto, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 }
