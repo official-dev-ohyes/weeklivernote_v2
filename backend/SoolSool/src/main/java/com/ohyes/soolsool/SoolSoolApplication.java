@@ -2,6 +2,8 @@ package com.ohyes.soolsool;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
+import jakarta.annotation.PostConstruct;
+import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -18,4 +20,8 @@ public class SoolSoolApplication {
 		SpringApplication.run(SoolSoolApplication.class, args);
 	}
 
+	@PostConstruct
+	public void setTimeZone() {
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+	}
 }
