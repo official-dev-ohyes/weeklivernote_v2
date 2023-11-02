@@ -114,6 +114,8 @@ public class UserController {
     }
 
     @GetMapping("/v1/user/stat-chart")
+    @Operation(summary = "유저 음주 통계 차트 조회",
+        description = "유저의 주간/연간 음주 통계 그래프를 조회합니다.")
     public ResponseEntity<Object> userStatChartGet() {
         try {
             Long socialId = 1L;
