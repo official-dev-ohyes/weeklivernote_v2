@@ -7,13 +7,13 @@ import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 function RecordCreateScreen({ route }) {
   const day = route.params.date;
   const [alcoholRecord, setAlcoholRecord] = useState([]);
-  const [alcohol, setAlcohol] = useState("");
-  const [memo, setMemo] = useState("");
   const [selectedAlcohol, setSelectedAlcohol] = useState("");
+  const [value, setValue] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState("");
   const [selectedAmPm, setSelectedAmPm] = useState("");
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
+  const [memo, setMemo] = useState("");
   const alcoholCategory = [
     "소주",
     "맥주",
@@ -41,9 +41,15 @@ function RecordCreateScreen({ route }) {
     "55",
   ];
 
-  useEffect(() => {
-    console.log(`술자리 기록 ${alcoholRecord}`);
-  }, [alcoholRecord, selectedAlcohol, selectedUnit]);
+  const handleDecrement = () => {
+    const newValue = value - 0.5;
+    setValue(newValue);
+  };
+
+  const handleIncrement = () => {
+    const newValue = value + 0.5;
+    setValue(newValue);
+  };
 
   return (
     <View style={styles.total}>
@@ -68,14 +74,21 @@ function RecordCreateScreen({ route }) {
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>양</Text>
             <View style={styles.alcoholAmount}>
-              <TextInput
+              <Button icon="camera" mode="contained" onPress={handleDecrement}>
+                -
+              </Button>
+              <Text>{value}</Text>
+              <Button icon="camera" mode="contained" onPress={handleIncrement}>
+                +
+              </Button>
+              {/* <TextInput
                 placeholder="숫자를 입력하세요"
                 keyboardType="numeric"
                 value={alcohol}
                 onChangeText={(text) => setAlcohol(text)}
-              />
+              /> */}
             </View>
-            <View style={styles.alcoholAmount}>
+            <View style={styles.alcoholUnit}>
               <ModalDropdown
                 defaultValue="단위 선택"
                 options={["잔", "병"]}
@@ -99,11 +112,14 @@ function RecordCreateScreen({ route }) {
               onPress={() => {
                 const newRecord = {
                   category: selectedAlcohol,
-                  amount: alcohol,
+                  amount: value,
                   unit: selectedUnit,
                 };
                 setAlcoholRecord([...alcoholRecord, newRecord]);
-                setAlcohol("");
+                setValue(0);
+                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@여기다시 디폴트값으로 돌리고 싶다@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                // setSelectedAlcohol("");
+                // setSelectedUnit("");
                 console.log(alcoholRecord);
               }}
             >
@@ -216,7 +232,18 @@ const styles = StyleSheet.create({
   },
   // @@@@@@@@@@@@@@@@@@@@@나중에 세밀하게 수정하기@@@@@@@@@@@@@@@@@@@@@
   alcoholAmount: {
-    flex: 1.9,
+    flex: 2,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "90%",
+    marginTop: "1%",
+    marginBottom: "1%",
+    marginRight: "0.5%",
+    backgroundColor: "white",
+  },
+  alcoholUnit: {
+    flex: 1,
     height: "90%",
     marginTop: "1%",
     marginBottom: "1%",
