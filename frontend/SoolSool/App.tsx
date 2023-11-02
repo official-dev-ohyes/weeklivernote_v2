@@ -35,7 +35,7 @@ const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 function BottomTabNavigator() {
-  const [isFont, setIsFont] = useState(false);
+  // const [isFont, setIsFont] = useState(false);
 
   // useEffect(async () => {
   //   await Font.loadAsync({
