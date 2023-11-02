@@ -29,7 +29,7 @@ const IntoxicationImageMap: Record<IntoxicationLevel, ImageProps["source"]> = {
 interface DrinkTodayData {
   drinkTotal: number;
   alcoholAmount: number;
-  drinkStartTime: string;
+  drinkStartTime: string | null;
   height: number;
   weight: number;
   gender: string;
@@ -38,19 +38,24 @@ interface DrinkTodayData {
 export class DrinkToday {
   drinkTotal: number;
   alcoholAmount: number;
-  drinkStartTime: string;
+  drinkStartTime: string | null;
   height: number;
   weight: number;
   gender: string;
 
   get bloodAlcoholContent(): number {
     let genderConstant: number;
-    if (this.gender === "female") {
-      genderConstant = 0.55;
+    if (this.gender === "여자") {
+      genderConstant = 0.64;
     } else {
-      genderConstant = 0.68;
+      genderConstant = 0.86;
     }
-    return (this.alcoholAmount / (this.weight * 1000 * genderConstant)) * 100;
+
+    const bac =
+      ((this.alcoholAmount * 0.7) / (this.weight * 1000 * genderConstant)) *
+      100;
+    const roundedBAC = bac.toFixed(2);
+    return parseFloat(roundedBAC);
   }
 
   get intoxicationLevel(): IntoxicationLevel {
@@ -76,8 +81,17 @@ export class DrinkToday {
     return IntoxicationImageMap[level];
   }
 
+  get cannotDriveFor(): number {
+    const requiredTime = (200 * this.bloodAlcoholContent) / 3;
+    const roundedRequiredTime = requiredTime.toFixed(2);
+    return parseFloat(roundedRequiredTime);
+  }
+
   get requiredTimeForDetox(): number {
-    return 100;
+    const requiredTimeInSeconds = this.alcoholAmount / 0.002;
+    const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
+
+    return Number(requiredTimeInHours);
   }
 
   constructor(data: DrinkTodayData) {

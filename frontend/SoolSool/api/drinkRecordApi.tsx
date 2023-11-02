@@ -1,9 +1,13 @@
 import axiosInstance from "./axiosConfig";
-//
+
+// 일간 음주 총계 조회
 export const fetchDrink = async (drinkDate) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/${drinkDate}`);
-    console.log("조회 성공했다면", res.data);
+
+    if (res.status === 400) {
+      return "NONE";
+    }
     return res.data;
   } catch (err) {
     console.log("axios 호출 실패하는 이유", err);
@@ -11,6 +15,7 @@ export const fetchDrink = async (drinkDate) => {
   }
 };
 
+// 음주 기록 추가
 export const createDrink = async (drinkData) => {
   try {
     const res = await axiosInstance.post(`/v1/drink`, drinkData);
@@ -19,6 +24,42 @@ export const createDrink = async (drinkData) => {
   } catch (err) {
     console.log("axios 호출 실패");
     throw new Error("drink record 기록 post 요청 실패");
+  }
+};
+
+// 음주 기록 수정
+export const updateDrink = async (drinkData) => {
+  try {
+    const res = await axiosInstance.patch(`/v1/drink`, drinkData);
+    console.log("성공했다면", res.data);
+    return res.data;
+  } catch (err) {
+    console.log("axios 호출 실패");
+    throw new Error("drink record 기록 patch 요청 실패");
+  }
+};
+
+// 음주 기록 삭제 (개별 술 기록 삭제)
+export const deleteDrink = async (drinkData) => {
+  try {
+    const res = await axiosInstance.delete(`/v1/drink-one`, drinkData);
+    console.log("성공했다면", res.data);
+    return res.data;
+  } catch (err) {
+    console.log("axios 호출 실패");
+    throw new Error("drink record 기록 delete 요청 실패");
+  }
+};
+
+// 일간 음주 기록 완전 삭제
+export const removeDrink = async (drinkDate) => {
+  try {
+    const res = await axiosInstance.delete(`/v1/drink/daily/${drinkDate}`);
+    console.log("성공했다면", res.data);
+    return res.data;
+  } catch (err) {
+    console.log("axios 호출 실패");
+    throw new Error("drink record 기록 delete 요청 실패");
   }
 };
 

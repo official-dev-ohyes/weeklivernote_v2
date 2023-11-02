@@ -4,7 +4,7 @@ import Wave from "./Wave";
 interface DetoxingStatusProps {
   alcoholInGrams: number;
   requiredTimeForDetox: number;
-  detoxingFor: number;
+  detoxingFor: number | undefined;
 }
 
 function DetoxingStatus({
@@ -12,17 +12,24 @@ function DetoxingStatus({
   requiredTimeForDetox,
   detoxingFor,
 }: DetoxingStatusProps) {
+  const detoxingInProgress = (1 - detoxingFor / requiredTimeForDetox) * 100;
+
   return (
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{alcoholInGrams}g</Text>
-      <Text style={styles.subtitleContainer}>
-        해독까지{"  "}
-        <Text style={styles.periodContainer}>
-          {requiredTimeForDetox - detoxingFor}
+      {detoxingFor === undefined ? (
+        <Text style={styles.periodContainer}>Drink Mindfully!</Text>
+      ) : (
+        <Text style={styles.subtitleContainer}>
+          해독까지{"  "}
+          <Text style={styles.periodContainer}>
+            {requiredTimeForDetox - detoxingFor}
+          </Text>
+          시간
         </Text>
-        시간
-      </Text>
-      <Wave size={200} />
+      )}
+
+      <Wave size={200} progress={detoxingInProgress} />
     </View>
   );
 }

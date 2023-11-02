@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+// import { useQuery } from "react-query";
 import {
   StyleSheet,
   View,
@@ -15,6 +16,13 @@ import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
 import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import {
+  createDrink,
+  updateDrink,
+  deleteDrink,
+  removeDrink,
+} from "../../api/drinkRecordApi";
+import { getToday } from "../../utils/timeUtils";
 
 interface Drink {
   id: number;
@@ -47,6 +55,9 @@ function DrinkController() {
   const minIsDisabled = useMemo(() => value <= minValue, [minValue, value]);
   const maxIsDisabled = useMemo(() => value >= maxValue, [maxValue, value]);
 
+  // const today = getToday();
+  const today = "2023-11-01";
+
   useEffect(() => {
     const selectedDrinkLog = currentDrinks[selectedDrink.id];
 
@@ -72,7 +83,14 @@ function DrinkController() {
     }));
   };
 
-  const handleLogReset = () => {
+  const handleLogReset = async () => {
+    try {
+      await removeDrink(today);
+    } catch (error) {
+      console.error("Error while removing drink:", error);
+      return;
+    }
+
     setCurrentDrinks({});
     setSelectedDrink(defaultDrink);
   };
@@ -83,21 +101,40 @@ function DrinkController() {
       setValue(newValue);
       handleLogChange(selectedDrink.id, newValue);
 
+      const drinkData = {
+        drinks: [
+          {
+            category: selectedDrink.name,
+            drinkUnit: selectedDrink.unit,
+            drinkAmount: newValue,
+          },
+        ],
+        drinkDate: today,
+      };
+
       if (newValue === 0) {
+        deleteDrink(drinkData)
+          .then((res) => {
+            console.log("Successfully delete a new drink log.", res);
+          })
+          .catch((err) => {
+            console.log("Fail to delete a drink log.", err);
+          });
+
         setCurrentDrinks((prev) => {
           const updatedCurrentDrinks = { ...prev };
           delete updatedCurrentDrinks[selectedDrink.id];
           return updatedCurrentDrinks;
         });
+      } else {
+        updateDrink(drinkData)
+          .then((res) => {
+            console.log("Successfully update a new drink log.", res);
+          })
+          .catch((err) => {
+            console.log("Fail to update a new drink log.", err);
+          });
       }
-
-      setDrinkToday((prev) => ({
-        ...prev,
-        drinkTotal: prev.drinkTotal - selectedDrink.volume,
-        alcoholAmount:
-          prev.alcoholAmount -
-          selectedDrink.volume * selectedDrink.alcoholPercentage,
-      }));
     }
   };
 
@@ -105,13 +142,35 @@ function DrinkController() {
     const newValue = value + 1;
     setValue(newValue);
     handleLogChange(selectedDrink.id, newValue);
-    setDrinkToday((prev) => ({
-      ...prev,
-      drinkTotal: prev.drinkTotal + selectedDrink.volume,
-      alcoholAmount:
-        prev.alcoholAmount +
-        selectedDrink.volume * selectedDrink.alcoholPercentage,
-    }));
+
+    const drinkData = {
+      drinks: [
+        {
+          category: selectedDrink.name,
+          drinkUnit: selectedDrink.unit,
+          drinkAmount: newValue,
+        },
+      ],
+      drinkDate: today,
+    };
+
+    if (newValue === 1) {
+      createDrink(drinkData)
+        .then((res) => {
+          console.log("Successfully create a new drink log.", res);
+        })
+        .catch((err) => {
+          console.log("Fail to create a new drink log.", err);
+        });
+    } else {
+      updateDrink(drinkData)
+        .then((res) => {
+          console.log("Successfully update a new drink log.", res);
+        })
+        .catch((err) => {
+          console.log("Fail to update a new drink log.", err);
+        });
+    }
   };
 
   const getSelectedDrink = (drink: Drink) => {

@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, Image, ImageProps } from "react-native";
 
 interface DrinkingStatusProps {
   drinkInVolume: number;
-  drinkingFor: number;
+  drinkingFor: number | undefined;
   imageSource: ImageProps["source"];
 }
 
@@ -14,11 +14,16 @@ function DrinkingStatus({
   return (
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{drinkInVolume}ml</Text>
-      <Text style={styles.subtitleContainer}>
-        마신 지{"  "}
-        <Text style={styles.periodContainer}>{drinkingFor}</Text>
-        시간 째
-      </Text>
+      {drinkingFor === undefined ? (
+        <Text style={styles.periodContainer}>Drink Mindfully!</Text>
+      ) : (
+        <Text style={styles.subtitleContainer}>
+          마신 지{"  "}
+          <Text style={styles.periodContainer}>{drinkingFor}</Text>
+          시간 째
+        </Text>
+      )}
+
       <View style={styles.imageContainer}>
         <Image source={imageSource} style={styles.image} />
       </View>

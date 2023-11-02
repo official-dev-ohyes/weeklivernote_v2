@@ -52,6 +52,9 @@ function BottomTabNavigator() {
         headerTintColor: "white",
         tabBarShowLabel: false,
       }}
+      sceneContainerStyle={{
+        backgroundColor: "#fff",
+      }}
     >
       <BottomTab.Screen
         name="Home"
@@ -123,6 +126,7 @@ export default function App() {
               <Stack.Navigator
                 screenOptions={{
                   headerShown: false,
+                  contentStyle: { backgroundColor: "#fff" },
                 }}
                 initialRouteName="Login"
               >
