@@ -35,7 +35,6 @@ management:
 kakao:
   client-id: ${CLIENT_ID}   # REST API 키
   client-secret: ${CLIENT_SECRET}
-  redirect-uri: ${REDIRECT_URI}
   admin-key: ${ADMIN_KEY}
 
 jwt:
