@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DrinkRepository extends JpaRepository<Drink, Integer> {
 
-    @Query("SELECT sum(c.glass * d.drinkAmount) FROM Drink d " +
+    @Query("SELECT COALESCE(sum(c.glass * d.drinkAmount), 0) FROM Drink d " +
             "JOIN d.diary di " +
             "JOIN d.category c " +
             "WHERE di.user.socialId = :socialId " +
@@ -20,7 +20,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "AND YEAR(di.drinkDate) = :year")
     long getTotalDrinkAmountInGlass(@Param("socialId") Long socialId, @Param("year") int year);
 
-    @Query("SELECT sum(c.bottle * d.drinkAmount) FROM Drink d " +
+    @Query("SELECT COALESCE(sum(c.bottle * d.drinkAmount), 0) FROM Drink d " +
             "JOIN d.diary di " +
             "JOIN d.category c " +
             "WHERE di.user.socialId = :socialId " +

@@ -37,7 +37,7 @@ public class UserStatService {
         // 유저의 현재 논 알코올 기간
         LocalDate now = LocalDate.now();
         LocalDate startNonAlcDate = user.getStartNonalcoholDate();
-        int nowNonAlcPeriod = (int) ChronoUnit.DAYS.between(now, startNonAlcDate);
+        int nowNonAlcPeriod = Math.abs((int) ChronoUnit.DAYS.between(startNonAlcDate, now));
 
         // 유저의 최장 논 알코올 기간
         int maxNonAlcPeriod = user.getMaxNonalcoholPeriod();
