@@ -43,7 +43,7 @@ function MyPageScreen({ navigation }) {
     });
   }, []);
 
-  //공지사항조회함수
+  // 공지사항조회함수
   fetchNotice()
     .then((res) => {
       console.log("성공", res);
@@ -51,6 +51,24 @@ function MyPageScreen({ navigation }) {
     .catch((error) => {
       console.error("실패", error);
     });
+
+  // useEffect(() => {
+  //   fetchNotice()
+  //     .then((res) => {
+  //       console.log("성공", res);
+  //     })
+  //     .catch((error) => {
+  //       console.error("실패", error);
+  //     });
+  // }, []);
+
+  // const {
+  //   data: Notice,
+  //   isLoading,
+  //   isError,
+  // } = useQuery("NoticeQuery", fetchNotice());
+
+  // console.log("!!!", Notice);
 
   // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
   const [userData, setUserData] = useState<UserData>({
