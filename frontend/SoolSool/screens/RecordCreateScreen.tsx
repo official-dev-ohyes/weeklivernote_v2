@@ -6,7 +6,7 @@ import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 
 import { createDrink } from "../api/drinkRecordApi";
 
-function RecordCreateScreen({ route }) {
+function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
   const [alcoholRecord, setAlcoholRecord] = useState([]);
   const [selectedAlcohol, setSelectedAlcohol] = useState("");
@@ -87,11 +87,9 @@ function RecordCreateScreen({ route }) {
       memo: memo,
       hangover: "",
     }).then((res) => {
+      navigation.navigate("Calendar");
       console.log("찐성공");
     });
-    // .catch((err) => {
-    //   // console.log(err);
-    // });
   };
 
   return (
@@ -125,12 +123,6 @@ function RecordCreateScreen({ route }) {
               <Button icon="camera" mode="contained" onPress={handleIncrement}>
                 +
               </Button>
-              {/* <TextInput
-                placeholder="숫자를 입력하세요"
-                keyboardType="numeric"
-                value={alcohol}
-                onChangeText={(text) => setAlcohol(text)}
-              /> */}
             </View>
             <View style={styles.alcoholUnit}>
               <ModalDropdown
@@ -161,7 +153,6 @@ function RecordCreateScreen({ route }) {
                   drinkAmount: value,
                 };
                 setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
-                // setAlcoholRecord([...alcoholRecord, newRecord]);
                 setValue(0);
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@여기다시 디폴트값으로 돌리고 싶다@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 // setSelectedAlcohol("");
@@ -192,18 +183,6 @@ function RecordCreateScreen({ route }) {
               options={minute}
               onSelect={(index, value) => setSelectedMinute(value)}
             />
-            {/* dasfkldasjfkldsajklfjsad
-            asdf
-            asdf
-            asdf
-            dsaf
-            sda
-            fads
-            f
-            wer
-            feas
-            f
-            wearlk */}
           </View>
         </View>
         <View style={styles.memo}>
