@@ -20,6 +20,7 @@ function CalendarSixWeeks({}) {
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState([]);
   const [alcoholInfo, setAlcoholInfo] = useState([]);
+  const [isSame, setIsSame] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`현재 날짜는? ${nowDate}`);
@@ -38,7 +39,7 @@ function CalendarSixWeeks({}) {
             days.push(drinkData[i].date);
           }
           setAlcoholDays(days);
-          // console.log(`알코올 마신 날들은? ${days}`);
+          console.log(`알코올 마신 날들은? ${days}`);
         })
         .catch((err) => {
           console.error("실패", err);
@@ -60,6 +61,11 @@ function CalendarSixWeeks({}) {
       setSelectDay(newDate);
       setCurrentDay(newDate);
       await fetchMonthRecord(newDate);
+      if (nowDate === newDate) {
+        setIsSame(true);
+      } else {
+        setIsSame(false);
+      }
       setIsSelectDay(true);
     }
   };
@@ -115,11 +121,15 @@ function CalendarSixWeeks({}) {
             />
           </View>
           <View style={styles.dailySummaryComponent}>
-            <DailySummary
-              summaryText={selectDay}
-              alcoholDays={alcoholDays}
-              // navigation={navigation}
-            />
+            {isSame ? (
+              <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+            ) : (
+              <DailySummary
+                summaryText={selectDay}
+                alcoholDays={alcoholDays}
+                // navigation={navigation}
+              />
+            )}
           </View>
         </View>
       ) : (
