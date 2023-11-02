@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 
+import { createDrink } from "../api/drinkRecordApi";
+
 function RecordCreateScreen({ route }) {
   const day = route.params.date;
   const [alcoholRecord, setAlcoholRecord] = useState([]);
@@ -25,7 +27,20 @@ function RecordCreateScreen({ route }) {
     "칵테일(강)",
     "위스키",
   ];
-  const hour = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+  const hour = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
   const minute = [
     "00",
     "05",
@@ -42,13 +57,41 @@ function RecordCreateScreen({ route }) {
   ];
 
   const handleDecrement = () => {
-    const newValue = value - 0.5;
-    setValue(newValue);
+    if (value > 0) {
+      const newValue = value - 0.5;
+      setValue(newValue);
+    }
   };
 
   const handleIncrement = () => {
     const newValue = value + 0.5;
     setValue(newValue);
+  };
+
+  const saveRecord = () => {
+    let time;
+    if (selectedAmPm === "AM") {
+      time = `${selectedHour}:${selectedMinute}`;
+    } else {
+      time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
+    }
+    console.log("drinks:", JSON.stringify(alcoholRecord, null, 2));
+    console.log(`drinkDate : ${day}`);
+    console.log(`drinkTime : ${time}`);
+    console.log(`memo : ${memo}`);
+    console.log(`날짜 타입 ${typeof time}`);
+    createDrink({
+      drinks: [...alcoholRecord],
+      drinkDate: day,
+      startTime: time,
+      memo: memo,
+      hangover: "",
+    }).then((res) => {
+      console.log("찐성공");
+    });
+    // .catch((err) => {
+    //   // console.log(err);
+    // });
   };
 
   return (
@@ -65,7 +108,8 @@ function RecordCreateScreen({ route }) {
             <Text style={styles.word}>술</Text>
             <View style={styles.category}>
               <ModalDropdown
-                defaultValue="주종 선택"
+                defaultValue={"주종 선택"}
+                // defaultValue={selectedAlcohol || "주종 선택"}
                 options={alcoholCategory}
                 onSelect={(index, value) => setSelectedAlcohol(value)}
               />
@@ -102,6 +146,7 @@ function RecordCreateScreen({ route }) {
               mode="contained"
               onPress={() => {
                 setAlcoholRecord([]);
+                setValue(0);
               }}
             >
               초기화
@@ -112,10 +157,11 @@ function RecordCreateScreen({ route }) {
               onPress={() => {
                 const newRecord = {
                   category: selectedAlcohol,
-                  amount: value,
-                  unit: selectedUnit,
+                  drinkUnit: selectedUnit,
+                  drinkAmount: value,
                 };
-                setAlcoholRecord([...alcoholRecord, newRecord]);
+                setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
+                // setAlcoholRecord([...alcoholRecord, newRecord]);
                 setValue(0);
                 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@여기다시 디폴트값으로 돌리고 싶다@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 // setSelectedAlcohol("");
@@ -176,7 +222,13 @@ function RecordCreateScreen({ route }) {
             numberOfLines={9}
           />
         </View>
-        <Button icon="camera" mode="contained">
+        <Button
+          icon="camera"
+          mode="contained"
+          onPress={() => {
+            saveRecord();
+          }}
+        >
           저장
         </Button>
       </View>

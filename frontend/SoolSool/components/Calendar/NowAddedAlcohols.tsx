@@ -6,10 +6,10 @@ function NowAddedAlcohols({ alcoholRecord }) {
   useEffect(() => {
     setCount(alcoholRecord.length);
     for (let i = 0; i < alcoholRecord.length; i++) {
-      console.log(`넘어온 정보${i + 1}번째!`);
-      console.log("술 종류:", alcoholRecord[i].category);
-      console.log("양:", alcoholRecord[i].amount);
-      console.log("단위:", alcoholRecord[i].unit);
+      // console.log(`넘어온 정보${i + 1}번째!`);
+      // console.log("술 종류:", alcoholRecord[i].category);
+      // console.log("양:", alcoholRecord[i].drinkAmount);
+      // console.log("단위:", alcoholRecord[i].drinkUnit);
     }
   }, [alcoholRecord]);
 
@@ -22,9 +22,9 @@ function NowAddedAlcohols({ alcoholRecord }) {
           <View key={index} style={styles.alcoholInfo}>
             <Text>
               {record.category}
-              <Text> ({record.unit}) </Text>
+              <Text> ({record.drinkUnit}) </Text>
             </Text>
-            <Text>{record.amount}</Text>
+            <Text>{record.drinkAmount}</Text>
           </View>
         ))}
       </View>
@@ -34,9 +34,9 @@ function NowAddedAlcohols({ alcoholRecord }) {
             <View key={index} style={styles.alcoholInfo}>
               <Text>
                 {record.category}
-                <Text> ({record.unit}) </Text>
+                <Text> ({record.drinkUnit}) </Text>
               </Text>
-              <Text>{record.amount}</Text>
+              <Text>{record.drinkAmount}</Text>
             </View>
           ))}
         </View>
