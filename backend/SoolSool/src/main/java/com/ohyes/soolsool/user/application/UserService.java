@@ -12,8 +12,11 @@ import com.ohyes.soolsool.user.dto.KakaoProfileDto;
 import com.ohyes.soolsool.user.dto.UserModifyDto;
 import com.ohyes.soolsool.user.dto.UserRequestDto;
 import com.ohyes.soolsool.user.dto.UserResponseDto;
+import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import com.ohyes.soolsool.util.jwt.JwtProvider;
 import com.ohyes.soolsool.util.jwt.TokenDto;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -68,7 +71,7 @@ public class UserService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", client_id);
-        params.add("redirect_uri", redirect_uri);
+        params.add("redirect_uri", "https://kauth.kakao.com/oauth/token");
         params.add("code", code);
         params.add("client_secret", client_secret);
 
@@ -147,7 +150,10 @@ public class UserService {
                 .weight(1)
                 .alcoholLimit(1)
                 .refreshToken("REFRESH_TOKEN")
-                .maxNonalcoholPeriod(0).build();
+                .maxNonalcoholPeriod(0)
+                .startNonalcoholDate(LocalDate.now())
+                .build();
+
 
             userRepository.save(user);
             Map<String, Object> data = new HashMap<>();
@@ -155,7 +161,7 @@ public class UserService {
             return data;
         }
 
-        TokenDto tokenDto = jwtProvider.createToken(kakaoProfileDto.getSocialId());
+        TokenDto tokenDto = jwtProvider.createToken(user);
 
         updateRefreshToken(tokenDto, kakaoProfileDto.getSocialId());
 
@@ -204,7 +210,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        TokenDto tokenDto = jwtProvider.createToken(socialId);
+        TokenDto tokenDto = jwtProvider.createToken(user);
 
         updateRefreshToken(tokenDto, socialId);
 
@@ -219,6 +225,7 @@ public class UserService {
 
     // 회원 추가 정보 조회
     public UserResponseDto userInfoGet(Long socialId) {
+//        User user = UserUtils.getUserFromToken(userDetails);
         User user = userRepository.findBySocialId(socialId).orElse(null);
 
         String nickname = user.getNickname();
