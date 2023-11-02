@@ -9,6 +9,9 @@ stages:
   - build
 
 before_script:
+  - apt-get install -y nodejs
+  - apt-get install -y yarn
+  - yarn -v
   - yarn install --cache-folder .yarn
 
 eas-build-emulator:
