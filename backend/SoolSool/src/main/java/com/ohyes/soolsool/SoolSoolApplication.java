@@ -20,8 +20,8 @@ public class SoolSoolApplication {
 		SpringApplication.run(SoolSoolApplication.class, args);
 	}
 
-	@PostConstruct
-	public void setTimeZone() {
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-	}
+//	@PostConstruct
+//	public void setTimeZone() {
+//		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+//	}
 }
