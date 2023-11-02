@@ -3,9 +3,18 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
+import { useRoute } from "@react-navigation/native";
 
-function AddInfoStep2Screen({ navigation }) {
-  const [selectedAddress, setSelectedAddress] = useState("일단");
+function AddInfoStep2Screen({ navigation, route }) {
+  const height = route.params.height;
+  const weight = route.params.weight;
+  const gender = route.params.gender;
+
+  console.log("!키:", height);
+  console.log("!몸무게:", weight);
+  console.log("!성별:", gender);
+
+  const [selectedAddress, setSelectedAddress] = useState("삼성전기");
 
   const autoCompleteHandler = (data, details = null) => {
     // data는 검색결과에 대한 간략한 정보
@@ -17,7 +26,12 @@ function AddInfoStep2Screen({ navigation }) {
 
   const goToNextStep = () => {
     if (selectedAddress) {
-      navigation.navigate("AddInfoStep3", { address: selectedAddress });
+      navigation.navigate("AddInfoStep3", {
+        address: selectedAddress,
+        height: height,
+        weight: weight,
+        gender: gender,
+      });
     } else {
       alert("주소를 선택해주세요");
     }
@@ -57,12 +71,13 @@ function AddInfoStep2Screen({ navigation }) {
         enablePoweredByContainer={false}
         styles={{
           textInputContainer: {
-            backgroundColor: "grey",
+            // backgroundColor: "red",
             flexDirection: "row",
           },
           textInput: {
-            height: 38,
-            color: "#5d5d5d",
+            backgroundColor: "lightblue",
+            borderRadius: 50,
+            height: 44,
             fontSize: 16,
             paddingVertical: 9,
             paddingHorizontal: 12,
@@ -71,7 +86,7 @@ function AddInfoStep2Screen({ navigation }) {
             color: "#1faadb",
           },
           listView: {
-            backgroundColor: "#ffffff",
+            backgroundColor: "lightblue",
             borderRadius: 10,
             paddingHorizontal: 10,
             elevation: 8,
@@ -82,11 +97,10 @@ function AddInfoStep2Screen({ navigation }) {
           },
           separator: {
             height: 2,
-            backgroundColor: "#c8c7cc",
+            backgroundColor: "red",
           },
           description: {
             fontSize: 15,
-            fontFamily: "spoqaR",
           },
           loader: {
             flexDirection: "row",
@@ -95,12 +109,18 @@ function AddInfoStep2Screen({ navigation }) {
           },
         }}
       />
-      <Button mode="contained" onPress={goToPreviousStep}>
-        Previous
-      </Button>
-      <Button mode="contained" onPress={goToNextStep}>
-        Next
-      </Button>
+      <View>
+        <Button
+          mode="contained"
+          buttonColor={"#384BAD"}
+          onPress={goToPreviousStep}
+        >
+          Previous
+        </Button>
+        <Button mode="contained" buttonColor={"#384BAD"} onPress={goToNextStep}>
+          Next
+        </Button>
+      </View>
     </View>
   );
 }
@@ -109,7 +129,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: "center",
-    // alignItems: "center",s
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
   },
 });
 

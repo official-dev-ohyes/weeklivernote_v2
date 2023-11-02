@@ -26,11 +26,10 @@ import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
 import liverImage from "./Home/liver.png";
 import addInfoImage from "./addInfoImage.png";
-
-// import mainFontTTF from "./font/YeongdeokSea.ttf";
+import loadingSpinner from "./loadingSpinner.gif";
 
 export {
-  // mainFontTTF,
+  loadingSpinner,
   addInfoImage,
   iconImage,
   cheeseDuck,
