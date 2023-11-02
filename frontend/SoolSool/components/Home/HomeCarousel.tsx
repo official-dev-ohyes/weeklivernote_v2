@@ -10,7 +10,7 @@ import UserStatus from "./UserStatus";
 
 const { width, height } = Dimensions.get("screen");
 
-const bgs = ["#A5BBFF", "#DDBEFE"];
+// const bgs = ["#A5BBFF", "#DDBEFE"];
 const DATA = [
   {
     key: "0",
@@ -25,7 +25,7 @@ const Indicator = ({ scrollX }) => {
     <View
       style={{
         position: "absolute",
-        top: 50,
+        top: 20,
         flexDirection: "row",
       }}
     >
@@ -48,7 +48,7 @@ const Indicator = ({ scrollX }) => {
               height: 10,
               width: 10,
               borderRadius: 5,
-              backgroundColor: "#fff",
+              backgroundColor: "#0477BF",
               // backgroundColor: "#A5BBFF",
               opacity,
               margin: 10,
@@ -61,61 +61,61 @@ const Indicator = ({ scrollX }) => {
   );
 };
 
-const Backdrop = ({ scrollX }) => {
-  const backgroundColor = scrollX.interpolate({
-    inputRange: bgs.map((_, i) => i * width),
-    outputRange: bgs.map((bg) => bg),
-  });
+// const Backdrop = ({ scrollX }) => {
+//   const backgroundColor = scrollX.interpolate({
+//     inputRange: bgs.map((_, i) => i * width),
+//     outputRange: bgs.map((bg) => bg),
+//   });
 
-  return (
-    <Animated.View
-      style={[
-        StyleSheet.absoluteFillObject,
-        {
-          backgroundColor,
-        },
-      ]}
-    />
-  );
-};
+//   return (
+//     <Animated.View
+//       style={[
+//         StyleSheet.absoluteFillObject,
+//         {
+//           backgroundColor,
+//         },
+//       ]}
+//     />
+//   );
+// };
 
-const Square = ({ scrollX }) => {
-  const YOLO = Animated.modulo(
-    Animated.divide(Animated.modulo(scrollX, width), new Animated.Value(width)),
-    1
-  );
+// const Square = ({ scrollX }) => {
+//   const YOLO = Animated.modulo(
+//     Animated.divide(Animated.modulo(scrollX, width), new Animated.Value(width)),
+//     1
+//   );
 
-  const rotate = YOLO.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: ["35deg", "0deg", "35deg"],
-  });
-  const translateX = YOLO.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0, -height, 0],
-  });
+//   const rotate = YOLO.interpolate({
+//     inputRange: [0, 0.5, 1],
+//     outputRange: ["35deg", "0deg", "35deg"],
+//   });
+//   const translateX = YOLO.interpolate({
+//     inputRange: [0, 0.5, 1],
+//     outputRange: [0, -height, 0],
+//   });
 
-  return (
-    <Animated.View
-      style={{
-        width: height,
-        height,
-        backgroundColor: "#fff",
-        borderRadius: 86,
-        position: "absolute",
-        top: -height * 0.6,
-        left: -height * 0.3,
-        transform: [
-          {
-            rotate,
-          },
-          {
-            translateX,
-          },
-        ],
-      }}
-    />
-  );
-};
+//   return (
+//     <Animated.View
+//       style={{
+//         width: height,
+//         height,
+//         backgroundColor: "#fff",
+//         borderRadius: 86,
+//         position: "absolute",
+//         top: -height * 0.6,
+//         left: -height * 0.3,
+//         transform: [
+//           {
+//             rotate,
+//           },
+//           {
+//             translateX,
+//           },
+//         ],
+//       }}
+//     />
+//   );
+// };
 
 export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
@@ -123,7 +123,7 @@ export default function HomeCarousel() {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <Backdrop scrollX={scrollX} />
+      {/* <Backdrop scrollX={scrollX} /> */}
       {/* <Square scrollX={scrollX} /> */}
       <Animated.FlatList
         data={DATA}

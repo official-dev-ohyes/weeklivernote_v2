@@ -10,6 +10,7 @@ import {
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
+import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
@@ -28,14 +29,16 @@ const { width, height } = Dimensions.get("screen");
 function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
+  const numberOfCurrentDrinks = Object.keys(currentDrinks).length;
   const setDrinkToday = useSetRecoilState(drinkTodayAtom);
-  const [selectedDrink, setSelectedDrink] = useState({
+  const defaultDrink = {
     id: 2,
     name: "소주",
-    volume: 350,
+    volume: 50,
     unit: "잔",
     alcoholPercentage: 19,
-  });
+  };
+  const [selectedDrink, setSelectedDrink] = useState(defaultDrink);
   const imageSource = getDrinkImageById(selectedDrink.id);
 
   const [value, setValue] = useState(0);
@@ -69,14 +72,33 @@ function DrinkController() {
     }));
   };
 
-  // const handleLogReset = () => {
-  //   setCurrentDrinks({});
-  // };
+  const handleLogReset = () => {
+    setCurrentDrinks({});
+    setSelectedDrink(defaultDrink);
+  };
 
   const handleDecrement = () => {
-    const newValue = value - 1;
-    setValue(newValue);
-    handleLogChange(selectedDrink.id, newValue);
+    if (value > 0) {
+      const newValue = value - 1;
+      setValue(newValue);
+      handleLogChange(selectedDrink.id, newValue);
+
+      if (newValue === 0) {
+        setCurrentDrinks((prev) => {
+          const updatedCurrentDrinks = { ...prev };
+          delete updatedCurrentDrinks[selectedDrink.id];
+          return updatedCurrentDrinks;
+        });
+      }
+
+      setDrinkToday((prev) => ({
+        ...prev,
+        drinkTotal: prev.drinkTotal - selectedDrink.volume,
+        alcoholAmount:
+          prev.alcoholAmount -
+          selectedDrink.volume * selectedDrink.alcoholPercentage,
+      }));
+    }
   };
 
   const handleIncrement = () => {
@@ -109,6 +131,26 @@ function DrinkController() {
       </Portal>
 
       <View style={styles.rootContainer}>
+        {numberOfCurrentDrinks !== 0 ? (
+          <>
+            <IconButton
+              icon="refresh"
+              size={20}
+              onPress={handleLogReset}
+              iconColor="#6C6C6C"
+              style={styles.iconContainer}
+            />
+            <CurrentDrinks
+              currentDrinkData={currentDrinks}
+              allDrinkData={drinksData}
+              onClickItem={getSelectedDrink}
+            />
+            <View style={styles.divider} />
+          </>
+        ) : (
+          <></>
+        )}
+
         <View style={styles.stepperContainer}>
           <IconButton
             icon="minus"
@@ -152,10 +194,22 @@ function DrinkController() {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "#F6F6F6",
     borderRadius: 15,
     padding: 16,
     alignItems: "center",
+  },
+  iconContainer: {
+    width: "100%",
+    alignItems: "flex-end",
+    position: "absolute",
+    top: 10,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#C6C6C6",
+    padding: 4,
+    width: "100%",
   },
   imageContainer: {
     width: 100,

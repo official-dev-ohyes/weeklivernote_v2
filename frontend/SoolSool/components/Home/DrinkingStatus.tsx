@@ -19,7 +19,9 @@ function DrinkingStatus({
         <Text style={styles.periodContainer}>{drinkingFor}</Text>
         시간 째
       </Text>
-      <Image source={imageSource} />
+      <View style={styles.imageContainer}>
+        <Image source={imageSource} style={styles.image} />
+      </View>
     </View>
   );
 }
@@ -28,7 +30,7 @@ const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
     marginVertical: 24,
-    padding: 12,
+    padding: 0,
     display: "flex",
     alignItems: "center",
   },
@@ -41,6 +43,18 @@ const styles = StyleSheet.create({
   },
   periodContainer: {
     fontWeight: "bold",
+  },
+  imageContainer: {
+    backgroundColor: "#F6F6F6",
+    borderRadius: 200,
+    marginVertical: 24,
+    padding: 8,
+  },
+  image: {
+    width: 120,
+    height: 120,
+    resizeMode: "contain",
+    margin: 30,
   },
 });
 

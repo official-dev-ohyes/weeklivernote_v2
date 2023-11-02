@@ -3,7 +3,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, BackHandler } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
 import SafeDriveInfo from "../components/Home/SafeDriveInfo";
@@ -13,7 +13,7 @@ import { useRecoilState } from "recoil";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
-  const date = new Date("2023-10-30T15:30:00");
+  const date = new Date("2023-11-01T15:30:00");
 
   useEffect(() => {
     setDrinkToday(
@@ -27,6 +27,22 @@ function HomeScreen() {
       })
     );
   }, []);
+
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => {
+  //     backHandler.remove();
+  //     console.log("I'm leaving");
+  //   };
+  // }, []);
 
   // const fetchDrinkTodayData = async () => {
   //   try {
@@ -96,7 +112,7 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -250,
+    marginTop: -400,
   },
 });
 
