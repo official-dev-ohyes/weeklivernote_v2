@@ -5,6 +5,7 @@ import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.drink.domain.Drink;
 import com.ohyes.soolsool.user.domain.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +24,16 @@ public class SchedulerConfig {
     private DiaryRepository diaryRepository;
 
     // 전날 일기에 대해서 5시에 일괄적으로 혈중 알코올 농도 및 해독 시간 계산
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 */10 * * * *")
     @Transactional
     public void calculate() {
+        log.debug("[calculate 시작]");
         LocalDate now = LocalDate.now();
         LocalDate previousDay = now.minusDays(1);
-        List<Diary> todayDiaries = diaryRepository.findAllByDrinkDate(previousDay);
+        List<Diary> todayDiaries = diaryRepository.findAllByDrinkDate(now);
+        log.error("현재 날짜와 시간 : " + LocalDateTime.now());
+        log.error("오늘 : " + now);
+        log.error("어제 : " + previousDay);
 
         todayDiaries.forEach(t -> {
             User user = t.getUser();
@@ -62,5 +67,6 @@ public class SchedulerConfig {
             t.setDetoxTime(detoxTime);
             diaryRepository.save(t);
         });
+        log.debug("[calculate 종료]");
     }
 }
