@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private static final String HEADER_STRING = "Authorization";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
         throws IOException {  // JWT 인증 과정에서 401 Error 발생시 호출
-        String exception = (String) request.getAttribute(HEADER_STRING);
+        String exception = (String) request.getAttribute(AUTHORIZATION_HEADER);
         String errorCode;
 
         if (exception == null) {
@@ -33,6 +33,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private void setResponse(HttpServletResponse response, String errorCode) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().println(HEADER_STRING + " : " + errorCode);
+        response.getWriter().println(AUTHORIZATION_HEADER + " : " + errorCode);
     }
 }
