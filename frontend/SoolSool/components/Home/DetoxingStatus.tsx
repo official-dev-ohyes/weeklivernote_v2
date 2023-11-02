@@ -23,7 +23,7 @@ function DetoxingStatus({
         <Text style={styles.subtitleContainer}>
           해독까지{"  "}
           <Text style={styles.periodContainer}>
-            {requiredTimeForDetox - detoxingFor}
+            {(requiredTimeForDetox - detoxingFor).toFixed(1)}
           </Text>
           시간
         </Text>
