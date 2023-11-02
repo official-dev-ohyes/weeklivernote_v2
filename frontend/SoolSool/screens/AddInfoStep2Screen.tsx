@@ -71,12 +71,13 @@ function AddInfoStep2Screen({ navigation, route }) {
         enablePoweredByContainer={false}
         styles={{
           textInputContainer: {
-            backgroundColor: "grey",
+            // backgroundColor: "red",
             flexDirection: "row",
           },
           textInput: {
-            height: 38,
-            color: "#5d5d5d",
+            backgroundColor: "lightblue",
+            borderRadius: 50,
+            height: 44,
             fontSize: 16,
             paddingVertical: 9,
             paddingHorizontal: 12,
@@ -85,7 +86,7 @@ function AddInfoStep2Screen({ navigation, route }) {
             color: "#1faadb",
           },
           listView: {
-            backgroundColor: "#ffffff",
+            backgroundColor: "lightblue",
             borderRadius: 10,
             paddingHorizontal: 10,
             elevation: 8,
@@ -96,11 +97,10 @@ function AddInfoStep2Screen({ navigation, route }) {
           },
           separator: {
             height: 2,
-            backgroundColor: "#c8c7cc",
+            backgroundColor: "red",
           },
           description: {
             fontSize: 15,
-            fontFamily: "spoqaR",
           },
           loader: {
             flexDirection: "row",
@@ -109,12 +109,18 @@ function AddInfoStep2Screen({ navigation, route }) {
           },
         }}
       />
-      <Button mode="contained" onPress={goToPreviousStep}>
-        Previous
-      </Button>
-      <Button mode="contained" onPress={goToNextStep}>
-        Next
-      </Button>
+      <View>
+        <Button
+          mode="contained"
+          buttonColor={"#384BAD"}
+          onPress={goToPreviousStep}
+        >
+          Previous
+        </Button>
+        <Button mode="contained" buttonColor={"#384BAD"} onPress={goToNextStep}>
+          Next
+        </Button>
+      </View>
     </View>
   );
 }
@@ -123,7 +129,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: "center",
-    // alignItems: "center",s
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
   },
 });
 

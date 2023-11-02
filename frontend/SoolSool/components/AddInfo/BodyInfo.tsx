@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   // 선택된 버튼 스타일
   selectedButton: {
-    backgroundColor: "#2439A5", // 선택 시 배경색 변경
+    backgroundColor: "#384BAD", // 선택 시 배경색 변경
   },
   selectedButtonText: {
     color: "#FFFFFF", // 선택 시 텍스트색 변경

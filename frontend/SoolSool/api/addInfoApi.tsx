@@ -18,6 +18,6 @@ export const saveUserInfo = async (
     });
     return res.data;
   } catch (err) {
-    throw new Error("사용자 정보 추가 post 요청 실패");
+    throw new Error("사용자 정보 추가 patch 요청 실패");
   }
 };

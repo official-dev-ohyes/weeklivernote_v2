@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     gap: 15,
+    // backgroundColor: "#ffffff",
+    // flex: 1,
   },
   characterImage: {
     width: "90%",

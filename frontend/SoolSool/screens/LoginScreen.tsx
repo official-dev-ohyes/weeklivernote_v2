@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     marginBottom: "auto",
     gap: 30,
+    // backgroundColor: "#ffffff",
+    // flex: 1,
   },
   kakaoLoginButton: {
     width: 300,
