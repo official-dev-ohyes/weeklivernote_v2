@@ -24,16 +24,13 @@ public class SchedulerConfig {
     private DiaryRepository diaryRepository;
 
     // 전날 일기에 대해서 5시에 일괄적으로 혈중 알코올 농도 및 해독 시간 계산
-    @Scheduled(cron = "0 13 7 * * *")
+    @Scheduled(cron = "0 0 5 * * *")
     @Transactional
     public void calculate() {
-        log.debug("[calculate 시작]");
         LocalDate now = LocalDate.now();
         LocalDate previousDay = now.minusDays(1);
-        List<Diary> todayDiaries = diaryRepository.findAllByDrinkDate(now);
+        List<Diary> todayDiaries = diaryRepository.findAllByDrinkDate(previousDay);
         log.error("[calculate] 현재 날짜와 시간 : " + LocalDateTime.now());
-        log.error("[calculate] 오늘 : " + now);
-        log.error("[calculate] 어제 : " + previousDay);
 
         todayDiaries.forEach(t -> {
             User user = t.getUser();
@@ -61,12 +58,11 @@ public class SchedulerConfig {
                 index = 6.4F;
             }
             float topConc = (float) ((alcoholAmount.get() * 0.7) / (index * user.getWeight()));
-            float detoxTime = (float) ((200 * topConc / 3) + 1.5);
+            float detoxTime = (float) (200 * topConc / 3);
 
             t.setAlcoholConc(topConc);
             t.setDetoxTime(detoxTime);
             diaryRepository.save(t);
         });
-        log.debug("[calculate 종료]");
     }
 }
