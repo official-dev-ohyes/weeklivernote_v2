@@ -18,7 +18,7 @@ public class ChartDataDto {
 
     public ChartDataDto(LocalDate date, double value) {
         this.value = value;
-        this.label = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault());
+        this.label = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA);
         this.date = date;
     }
 }
