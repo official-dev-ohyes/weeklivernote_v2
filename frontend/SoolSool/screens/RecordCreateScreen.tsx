@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   timer: {
     flex: 7,
     flexDirection: "row",
-    backgroundColor: "purple",
+    // backgroundColor: "purple",
     justifyContent: "space-around",
   },
   timeInput: {
