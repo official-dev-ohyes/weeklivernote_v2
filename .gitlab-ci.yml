@@ -9,14 +9,14 @@ stages:
   - build
 
 before_script:
-  - choco install nodejs
-  - choco install yarn
+  - cd S09P31E103/frontend/SoolSool
   - yarn -v
   - yarn install --cache-folder .yarn
 
 eas-build-emulator:
   stage: build
   script:
+    - cd S09P31E103/frontend/SoolSool
     - npx eas-cli build -p android --profile emulator
     - npx eas-cli build -p ios --profile simulator
   only:
@@ -27,6 +27,7 @@ eas-build-emulator:
 eas-build-all:
   stage: build
   script:
+    - cd S09P31E103/frontend/SoolSool
     - npx eas-cli build --platform all --non-interactive
   only:
     - main/FE
