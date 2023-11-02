@@ -15,11 +15,11 @@ public class DrinkInfo {
     @Schema(example = "잔")
     private String drinkUnit;
 
-    @Schema(type = "integer", format = "int32", example = "1")
-    private byte drinkAmount;
+    @Schema(type = "number", format = "float", example = "1")
+    private float drinkAmount;
 
     @Builder
-    private DrinkInfo(String category, String drinkUnit, byte drinkAmount) {
+    private DrinkInfo(String category, String drinkUnit, float drinkAmount) {
         this.category = category;
         this.drinkUnit = drinkUnit;
         this.drinkAmount = drinkAmount;
