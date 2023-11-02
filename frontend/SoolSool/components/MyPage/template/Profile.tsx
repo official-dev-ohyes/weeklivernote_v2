@@ -4,32 +4,33 @@ import { Ionicons } from "@expo/vector-icons";
 import { cheeseDuck } from "../../../assets";
 import DetailProfile from "../DetailProfile";
 
-interface UserData {
-  weight: number;
-  gender: string;
+interface UserProfile {
   address: string;
+  alcoholLimit: number;
+  gender: string;
+  height: number;
   nickname: string;
-  profileImage: string;
-  alcoholAmount: number;
+  profileImg: string | null;
+  weight: number;
 }
 
 interface UserProfileProps {
-  userData: UserData;
+  userData: UserProfile;
 }
 
-function UserProfile(props: UserProfileProps) {
+function Profile(props: UserProfileProps) {
   const { userData } = props;
 
   return (
     <View style={styles.mainContainer}>
       <Image source={cheeseDuck} style={styles.profileImage} />
-      
+
       <Text style={styles.userInfoText}>{userData.nickname}</Text>
 
       <View style={styles.userAddress}>
         <Ionicons name="home" size={15} />
         <Text style={styles.userInfoText}>{userData.address}</Text>
-      </View >
+      </View>
 
       <View style={styles.userDetail}>
         <DetailProfile userData={userData} />
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 15,
     borderRadius: 20,
-    alignItems: "center"
+    alignItems: "center",
   },
   userInfoLabel: {
     fontSize: 16,
@@ -66,10 +67,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "lightgray",
   },
-  userDetail :{
+  userDetail: {
     // flex: 1,
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
 
-export default UserProfile;
+export default Profile;
