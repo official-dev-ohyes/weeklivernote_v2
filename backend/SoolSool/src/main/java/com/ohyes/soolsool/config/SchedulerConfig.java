@@ -31,9 +31,9 @@ public class SchedulerConfig {
         LocalDate now = LocalDate.now();
         LocalDate previousDay = now.minusDays(1);
         List<Diary> todayDiaries = diaryRepository.findAllByDrinkDate(now);
-        log.error("현재 날짜와 시간 : " + LocalDateTime.now());
-        log.error("오늘 : " + now);
-        log.error("어제 : " + previousDay);
+        log.error("[calculate] 현재 날짜와 시간 : " + LocalDateTime.now());
+        log.error("[calculate] 오늘 : " + now);
+        log.error("[calculate] 어제 : " + previousDay);
 
         todayDiaries.forEach(t -> {
             User user = t.getUser();

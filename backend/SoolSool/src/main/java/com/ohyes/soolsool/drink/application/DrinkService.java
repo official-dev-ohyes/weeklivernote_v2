@@ -80,9 +80,15 @@ public class DrinkService {
 
         // 입력 시간이 있으면 해당 시간, 없으면 실시간으로 기록
         if (drinkRequestDto.getStartTime() != null) {
+            log.debug("[drinkAdd 시간 있을 경우]");
             startTime = drinkRequestDto.getDrinkDate().atTime(drinkRequestDto.getStartTime());
+            log.error("[drinkAdd] drinkRequestDto.getDrinkDate : " + drinkRequestDto.getDrinkDate());
+            log.error("[drinkAdd] drinkRequestDto.getStartTime : " + drinkRequestDto.getStartTime());
+            log.error("[drinkAdd] startTime : " + startTime);
         } else {
             startTime = LocalDateTime.now();
+            log.error("[drinkAdd 시간 없을 경우]");
+            log.error("[drinkAdd] startTime : " + startTime);
         }
 
         drinkInfos.forEach(e -> {
