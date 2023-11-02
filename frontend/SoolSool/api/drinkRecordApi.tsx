@@ -29,7 +29,7 @@ export const fetchMonthRecord = async (day) => {
     // console.log("성공!", res.data);
     return res.data;
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     throw new Error("실패!");
   }
 };

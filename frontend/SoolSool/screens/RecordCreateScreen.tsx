@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 
@@ -11,6 +11,9 @@ function RecordCreateScreen({ route }) {
   const [memo, setMemo] = useState("");
   const [selectedAlcohol, setSelectedAlcohol] = useState("");
   const [selectedUnit, setSelectedUnit] = useState("");
+  const [selectedAmPm, setSelectedAmPm] = useState("");
+  const [selectedHour, setSelectedHour] = useState("");
+  const [selectedMinute, setSelectedMinute] = useState("");
   const alcoholCategory = [
     "소주",
     "맥주",
@@ -22,7 +25,25 @@ function RecordCreateScreen({ route }) {
     "칵테일(강)",
     "위스키",
   ];
-  const amountCategory = ["잔", "병"];
+  const hour = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+  const minute = [
+    "00",
+    "05",
+    "10",
+    "15",
+    "20",
+    "25",
+    "30",
+    "35",
+    "40",
+    "45",
+    "50",
+    "55",
+  ];
+
+  useEffect(() => {
+    console.log(`술자리 기록 ${alcoholRecord}`);
+  }, [alcoholRecord, selectedAlcohol, selectedUnit]);
 
   return (
     <View style={styles.total}>
@@ -38,6 +59,7 @@ function RecordCreateScreen({ route }) {
             <Text style={styles.word}>술</Text>
             <View style={styles.category}>
               <ModalDropdown
+                defaultValue="주종 선택"
                 options={alcoholCategory}
                 onSelect={(index, value) => setSelectedAlcohol(value)}
               />
@@ -55,35 +77,71 @@ function RecordCreateScreen({ route }) {
             </View>
             <View style={styles.alcoholAmount}>
               <ModalDropdown
-                options={amountCategory}
+                defaultValue="단위 선택"
+                options={["잔", "병"]}
                 onSelect={(index, value) => setSelectedUnit(value)}
               />
             </View>
           </View>
-          {/* addinfoscreen 참조해서 버튼 예쁘게 만들기 */}
-          <Button
-            icon="camera"
-            mode="contained"
-            onPress={() => {
-              const newRecord = {
-                category: selectedAlcohol,
-                amount: alcohol,
-                unit: selectedUnit,
-              };
-              setAlcoholRecord([...alcoholRecord, newRecord]);
-              setAlcohol("");
-              console.log(alcoholRecord);
-            }}
-          >
-            추가
-          </Button>
+          <View style={styles.buttons}>
+            <Button
+              icon="camera"
+              mode="contained"
+              onPress={() => {
+                setAlcoholRecord([]);
+              }}
+            >
+              초기화
+            </Button>
+            <Button
+              icon="camera"
+              mode="contained"
+              onPress={() => {
+                const newRecord = {
+                  category: selectedAlcohol,
+                  amount: alcohol,
+                  unit: selectedUnit,
+                };
+                setAlcoholRecord([...alcoholRecord, newRecord]);
+                setAlcohol("");
+                console.log(alcoholRecord);
+              }}
+            >
+              추가
+            </Button>
+          </View>
         </View>
         <View style={styles.time}>
           <Text style={styles.timeHeader}>술자리 시작</Text>
           <View style={styles.timer}>
-            <Text>PM</Text>
-            {/* 숫자 입력창1 */}
-            {/* 숫자 입력창2 */}
+            <ModalDropdown
+              defaultValue="선택"
+              options={["AM", "PM"]}
+              onSelect={(index, value) => setSelectedAmPm(value)}
+            />
+            <ModalDropdown
+              defaultValue="시"
+              options={hour}
+              onSelect={(index, value) => setSelectedHour(value)}
+            />
+            <Text>:</Text>
+            <ModalDropdown
+              defaultValue="분"
+              options={minute}
+              onSelect={(index, value) => setSelectedMinute(value)}
+            />
+            {/* dasfkldasjfkldsajklfjsad
+            asdf
+            asdf
+            asdf
+            dsaf
+            sda
+            fads
+            f
+            wer
+            feas
+            f
+            wearlk */}
           </View>
         </View>
         <View style={styles.memo}>
@@ -165,6 +223,10 @@ const styles = StyleSheet.create({
     marginRight: "0.5%",
     backgroundColor: "white",
   },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   time: {
     display: "flex",
     flexDirection: "row",
@@ -176,7 +238,13 @@ const styles = StyleSheet.create({
   },
   timer: {
     flex: 7,
+    flexDirection: "row",
     backgroundColor: "purple",
+    justifyContent: "space-around",
+  },
+  timeInput: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   memo: {
     height: "40%",
