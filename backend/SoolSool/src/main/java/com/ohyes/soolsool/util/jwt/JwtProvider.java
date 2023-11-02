@@ -50,8 +50,8 @@ public class JwtProvider {
 
         return TokenDto.builder()
             .accessToken(accessToken)
-            .accessTokenExpiresIn(REFRESH_EXPIRATION_TIME)
             .refreshToken(refreshToken)
+            .accessTokenExpiresIn(REFRESH_EXPIRATION_TIME)
             .build();
     }
 

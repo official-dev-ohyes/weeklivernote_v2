@@ -12,7 +12,7 @@ spring:
     password: ${LOCAL_DB_PASSWORD}
 
 kakao:
-  redirect-uri: http://localhost:8080/kakao/callback
+  redirect-uri: https://kauth.kakao.com/oauth/token
 
 cloud:
   aws:

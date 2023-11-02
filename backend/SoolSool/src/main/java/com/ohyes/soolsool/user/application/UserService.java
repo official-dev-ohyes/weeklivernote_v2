@@ -71,7 +71,7 @@ public class UserService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", client_id);
-        params.add("redirect_uri", "https://kauth.kakao.com/oauth/token");
+        params.add("redirect_uri", redirect_uri);
         params.add("code", code);
         params.add("client_secret", client_secret);
 

@@ -100,7 +100,10 @@ public class UserController {
         return new ResponseEntity<>(new MessageResponse(nickname + "회원탈퇴"), HttpStatus.OK);
     }
 
+    // 유저 관련 통계 - 최장/현재 논 알코올 기간 및 올해 총 술 총량
     @GetMapping("v1/user/stat")
+    @Operation(summary = "유저 요약 통계 조회",
+        description = "유저의 최장/현내 논 알코올 기간과 올해 마신 술 총량을 조회합니다.")
     public ResponseEntity<Object> userStatGet() {
         try {
             Long socialId = 1L;
@@ -111,4 +114,20 @@ public class UserController {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/v1/user/stat-chart")
+    @Operation(summary = "유저 음주 통계 차트 조회",
+        description = "유저의 주간/연간 음주 통계 그래프를 조회합니다.")
+    public ResponseEntity<Object> userStatChartGet() {
+        try {
+            Long socialId = 1L;
+
+            UserStatChartResponseDto userStatChartResponseDto = userStatService.getUserStatChart(
+                socialId);
+            return new ResponseEntity<>(userStatChartResponseDto, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
