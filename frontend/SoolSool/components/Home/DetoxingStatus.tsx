@@ -22,7 +22,7 @@ function DetoxingStatus({
         </Text>
         시간
       </Text>
-      <Wave />
+      <Wave size={200} />
     </View>
   );
 }
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
     marginVertical: 24,
-    padding: 12,
+    padding: 4,
     display: "flex",
     alignItems: "center",
   },

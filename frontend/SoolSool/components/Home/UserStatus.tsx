@@ -10,12 +10,12 @@ interface UserStatusProps {
 
 const UserStatus: React.FC<UserStatusProps> = ({ identifier }) => {
   const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-  const date = new Date("2023-10-27T15:30:00");
+  const date = new Date("2023-11-01T15:30:00");
 
   useEffect(() => {
     setDrinkToday(
       new DrinkToday({
-        drinkTotal: 1000,
+        drinkTotal: 1290,
         alcoholAmount: 35.8,
         drinkStartTime: date.toDateString(),
         height: 157,

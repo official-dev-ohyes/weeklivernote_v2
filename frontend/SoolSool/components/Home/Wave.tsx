@@ -17,7 +17,7 @@ import React, { useEffect } from "react";
 
 const Wave = ({ size = 256, progress = 50 }) => {
   const r = size / 2;
-  const padding = size / 25;
+  const padding = size / 30;
   const outerCircleRadius = r - padding / 2;
   const innerCircleSize = size - padding * 2;
   const frequency = 4;
@@ -62,10 +62,10 @@ const Wave = ({ size = 256, progress = 50 }) => {
         <Image
           image={liverImage}
           fit="contain"
-          width={size / 2}
-          height={size / 2}
-          x={60}
-          y={60}
+          width={(size * 2) / 3}
+          height={(size * 2) / 3}
+          x={40}
+          y={35}
         />
         <Circle
           cx={r}
@@ -73,7 +73,6 @@ const Wave = ({ size = 256, progress = 50 }) => {
           r={outerCircleRadius}
           style="stroke"
           strokeWidth={padding}
-          // color="#fff"
           color="rgba(255,255,255,0)"
         />
 

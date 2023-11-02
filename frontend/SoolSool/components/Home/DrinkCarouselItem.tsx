@@ -1,4 +1,4 @@
-import { Dimensions, Text, Image } from "react-native";
+import { Dimensions, Text, Image, StyleSheet } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -118,11 +118,18 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
           borderColor: "white",
         }}
       />
-      <Text>
+      <Text style={styles.text}>
         {item.name} ({item.unit})
       </Text>
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+});
 
 export { DrinkCarouselItem };
