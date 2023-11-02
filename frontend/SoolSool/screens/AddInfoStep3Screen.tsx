@@ -9,16 +9,44 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "react-native-paper";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
+import { saveUserInfo } from "../api/addInfoApi";
 
 function AddInfoStep3Screen({ navigation, route }) {
-  const { address } = route.params;
+  const { height, weight, gender, address } = route.params;
+
+  console.log("00", height);
+  console.log("00:", weight);
+  console.log("성별000:", gender);
+  console.log("주0소:", address);
+
   const [selectedDrinkKind, setSelectedDrinkKind] = useState(null);
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState("잔");
 
   const goToPreviousStep = () => {
-    navigation.navigate("AddInfoStep2");
+    navigation.navigate("AddInfoStep2", {
+      height: height,
+      weight: weight,
+      gender: gender,
+    });
   };
+
+  const handleSubmitInfo = () => {
+    const drinkInfo = {
+      category: selectedDrinkKind,
+      drinkUnit: unit,
+      drinkAmount: amount,
+    };
+
+    saveUserInfo(weight, height, gender, address, drinkInfo)
+      .then((res) => {
+        console.log("성공", res);
+      })
+      .catch((error) => {
+        console.error("실패", error);
+      });
+  };
+
   return (
     <View>
       {/* <Text>선택한 주소: {address}</Text> */}
@@ -73,6 +101,9 @@ function AddInfoStep3Screen({ navigation, route }) {
       <Button mode="contained" onPress={goToPreviousStep}>
         Previous
       </Button>
+      <Button mode="contained" onPress={handleSubmitInfo}>
+        Submit
+      </Button>
     </View>
   );
 }
@@ -100,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedButton: {
-    backgroundColor: "lightblue",
+    backgroundColor: "#0477BF",
   },
   drinkButtonText: {
     fontSize: 16,

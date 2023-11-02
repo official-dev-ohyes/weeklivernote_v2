@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import BodyDetail from "./BodyDetail";
 import { Icon, MD3Colors } from "react-native-paper";
 
@@ -8,6 +8,32 @@ import { Icon, MD3Colors } from "react-native-paper";
 // }
 
 function BodyInfo({ navigation }) {
+  const [selectedGender, setSelectedGender] = useState(""); // 초기값은 빈 문자열로 설정
+  const handleGenderSelection = (gender) => {
+    if (selectedGender === gender) {
+      // 이미 선택된 버튼을 다시 누를 경우 선택 해제
+      setSelectedGender("");
+    } else {
+      // 다른 버튼을 선택한 경우 선택 상태로 변경
+      setSelectedGender(gender);
+    }
+  };
+
+  // 스타일을 선택된 버튼에 따라 동적으로 적용
+  const getButtonStyle = (gender) => {
+    if (selectedGender === gender) {
+      return [styles.button, styles.selectedButton];
+    }
+    return styles.button;
+  };
+
+  const getButtonTextStyle = (gender) => {
+    if (selectedGender === gender) {
+      return [styles.buttonText, styles.selectedButtonText];
+    }
+    return styles.buttonText;
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View>
@@ -25,15 +51,21 @@ function BodyInfo({ navigation }) {
       <View style={styles.columnContainer}>
         <Text style={styles.text}>성별 </Text>
         <View style={styles.rowContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>남자</Text>
+          <TouchableOpacity
+            style={getButtonStyle("남자")}
+            onPress={() => handleGenderSelection("남자")}
+          >
+            <Text style={getButtonTextStyle("남자")}>남자</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>여자</Text>
+          <TouchableOpacity
+            style={getButtonStyle("여자")}
+            onPress={() => handleGenderSelection("여자")}
+          >
+            <Text style={getButtonTextStyle("여자")}>여자</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <BodyDetail navigation={navigation} />
+      <BodyDetail navigation={navigation} gender={selectedGender} />
     </View>
   );
 }
@@ -77,6 +109,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+  },
+  // 선택된 버튼 스타일
+  selectedButton: {
+    backgroundColor: "#2439A5", // 선택 시 배경색 변경
+  },
+  selectedButtonText: {
+    color: "#FFFFFF", // 선택 시 텍스트색 변경
   },
 });
 

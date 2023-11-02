@@ -24,9 +24,9 @@ import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 import { useEffect, useState } from "react";
 import * as Font from "expo-font";
-import { mainFontTTF } from "./assets";
 
 import DailyDetailScreen from "./screens/DailyDetailScreen";
+import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 // @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();
@@ -129,6 +129,10 @@ export default function App() {
                 <Stack.Screen
                   name="KakaoLoginScreen"
                   component={KakaoLoginScreen}
+                />
+                <Stack.Screen
+                  name="KakaoRedirectScreen"
+                  component={KakaoRedirectScreen}
                 />
                 <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                 <Stack.Screen

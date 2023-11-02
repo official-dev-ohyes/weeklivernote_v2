@@ -7,13 +7,18 @@ import CustomSlider from "./CustomSlider";
 // nonAlc:number;
 // }
 
-function BodyDetail({ navigation }) {
+function BodyDetail({ navigation, gender }) {
   // const navigation = useNavigation();
+
   const [height, setHeight] = React.useState(0.5);
   const [weight, setWeight] = React.useState(0.5);
 
   const goToNextStep = () => {
-    navigation.navigate("AddInfoStep2");
+    navigation.navigate("AddInfoStep2", {
+      height: Math.round(height * 100),
+      weight: Math.round(weight * 100),
+      gender: gender,
+    });
   };
 
   const handleWeightValueChange = (newValue) => {

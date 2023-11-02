@@ -3,9 +3,18 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
+import { useRoute } from "@react-navigation/native";
 
-function AddInfoStep2Screen({ navigation }) {
-  const [selectedAddress, setSelectedAddress] = useState("일단");
+function AddInfoStep2Screen({ navigation, route }) {
+  const height = route.params.height;
+  const weight = route.params.weight;
+  const gender = route.params.gender;
+
+  console.log("!키:", height);
+  console.log("!몸무게:", weight);
+  console.log("!성별:", gender);
+
+  const [selectedAddress, setSelectedAddress] = useState("삼성전기");
 
   const autoCompleteHandler = (data, details = null) => {
     // data는 검색결과에 대한 간략한 정보
@@ -17,7 +26,12 @@ function AddInfoStep2Screen({ navigation }) {
 
   const goToNextStep = () => {
     if (selectedAddress) {
-      navigation.navigate("AddInfoStep3", { address: selectedAddress });
+      navigation.navigate("AddInfoStep3", {
+        address: selectedAddress,
+        height: height,
+        weight: weight,
+        gender: gender,
+      });
     } else {
       alert("주소를 선택해주세요");
     }
