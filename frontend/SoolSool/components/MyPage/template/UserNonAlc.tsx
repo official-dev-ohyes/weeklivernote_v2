@@ -34,25 +34,27 @@ function UserNonAlc(props: UserNonAlcProps) {
 const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
-    gap: 40,
+    gap: 20,
   },
   circleContainer: {
     flexDirection: "column",
     flex: 1,
-    width: 70,
-    height: 100,
-    backgroundColor: "lightblue",
+    width: 100,
+    height: 110,
+    backgroundColor: "#0477BF",
     gap: 5,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 500,
   },
   stringText: {
-    fontSize: 17,
+    fontSize: 15,
+    color: "white",
   },
   numberText: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "white",
   },
 });
 

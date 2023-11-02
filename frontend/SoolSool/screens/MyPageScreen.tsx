@@ -1,6 +1,6 @@
 import { useEffect, useState, useLayoutEffect } from "react";
 import { useQuery } from "react-query";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
@@ -86,24 +86,25 @@ function MyPageScreen(props: UserProfileProps) {
     }
   }, [userProfileData, isProfileLoading]);
 
-  const [nonAlc, setNonAlc] = useState<number>(10);
-
   return (
-    <View style={styles.mainContainer}>
-      <Profile userData={userProfile} />
-      <UserNonAlc alcoholData={alcoholStatistics} />
-      <UserStatistics />
-    </View>
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <Profile userData={userProfile} />
+        <UserNonAlc alcoholData={alcoholStatistics} />
+        <UserStatistics />
+      </View>
+    </ScrollView>
   );
 }
 //
 const styles = StyleSheet.create({
   mainContainer: {
-    // borderWidth: 1,
-    // borderColor: "black",
     flexDirection: "column",
-    gap: 15,
+    gap: 25,
     marginHorizontal: 15,
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
   },
 });
 

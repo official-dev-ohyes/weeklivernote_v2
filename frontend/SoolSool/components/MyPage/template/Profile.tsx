@@ -28,8 +28,8 @@ function Profile(props: UserProfileProps) {
       <Text style={styles.userInfoText}>{userData.nickname}</Text>
 
       <View style={styles.userAddress}>
-        <Ionicons name="home" size={15} />
-        <Text style={styles.userInfoText}>{userData.address}</Text>
+        <Ionicons name="location" color={"white"} size={20} />
+        <Text style={styles.addressText}>{userData.address}</Text>
       </View>
 
       <View style={styles.userDetail}>
@@ -53,19 +53,32 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   userInfoText: {
-    fontSize: 14,
+    fontSize: 17,
     marginBottom: 3,
   },
+  addressText: {
+    fontSize: 15,
+    color: "white",
+  },
   userAddress: {
+    width: "auto",
+    paddingRight: 22,
+    paddingLeft: 15,
+    height: 35,
+    borderRadius: 20,
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#0477BF",
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
     borderRadius: 500,
-    marginTop: 30,
+    marginTop: 40,
     borderWidth: 2,
-    borderColor: "lightgray",
+    borderColor: "#0477BF",
   },
   userDetail: {
     // flex: 1,
