@@ -24,7 +24,7 @@ public class SchedulerConfig {
     private DiaryRepository diaryRepository;
 
     // 전날 일기에 대해서 5시에 일괄적으로 혈중 알코올 농도 및 해독 시간 계산
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 13 7 * * *")
     @Transactional
     public void calculate() {
         log.debug("[calculate 시작]");
