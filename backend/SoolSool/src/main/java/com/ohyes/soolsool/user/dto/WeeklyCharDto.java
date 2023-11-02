@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserStatChartResponseDto {
+public class WeeklyCharDto {
 
-    private WeeklyCharDto weekly;
-    private List<YearlyChartDataDto> yearly;
+    private List<ChartDataDto> bar;
+    private List<ChartDataDto> line;
 }

@@ -3,23 +3,23 @@ package com.ohyes.soolsool.user.application;
 import com.ohyes.soolsool.drink.dao.DiaryRepository;
 import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
-import com.ohyes.soolsool.drink.domain.Drink;
-import com.ohyes.soolsool.user.dao.UserChartDataInterface;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
-import com.ohyes.soolsool.user.dto.UserChartDto;
+import com.ohyes.soolsool.user.dto.ChartDataDto;
 import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
-
+import com.ohyes.soolsool.user.dto.WeeklyCharDto;
+import com.ohyes.soolsool.user.dto.YearlyChartDataDto;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -62,106 +62,80 @@ public class UserStatService {
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.minusDays(6);
 
-        List<UserChartDataInterface> drinks = drinkRepository.getWeeklyDrinkAmountInGlass(user.getSocialId(), startDate, now);
-
-//        for (int i = 0; i < drinks.size() - 1; i++) {
-//            drinks.get(i)
-////            LocalDate currentDrinkDate = diaries.get(i).getDrinkDate();
-////            LocalDate nextDrinkDate = diaries.get(i + 1).getDrinkDate();
-//
-//        }
-
-        for (UserChartDataInterface drink : drinks) {
-            System.out.println("드링크 " + drink); // 각 Drink 객체를 출력합니다.
-            System.out.println("드링크 " + drink.getDrinkDate() + "  " + "  " ) ; // 각 Drink 객체를 출력합니다.
+        // weekly 술 총량
+        Map<LocalDate, ChartDataDto> drinkDataMap = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = startDate.plusDays(i);
+            drinkDataMap.put(date, new ChartDataDto(date, 0.0));
         }
 
+        List<ChartDataDto> drinkData = drinkRepository.getDrinkData(user.getSocialId(), startDate,
+            now);
+        for (ChartDataDto drink : drinkData) {
+            drinkDataMap.put(drink.getDate(), drink);
+        }
 
-        return UserStatChartResponseDto.builder()
-                .temp("고마워")
-                .build();
-    }
+        ArrayList<ChartDataDto> sortedDrinkList = new ArrayList<>(drinkDataMap.values());
+        sortedDrinkList.sort(Comparator.comparing(ChartDataDto::getDate));
 
-//    public List<BarDataDto> getChartData(@PathVariable Long userId) {
-//        LocalDate toDate = LocalDate.now();
-//        LocalDate fromDate = toDate.minusDays(6);
-//        List<UserDrinkRecord> drinkRecords = userDrinkRecordRepository.findRecentDrinkRecords(userId, fromDate, toDate);
-//
-//        List<BarDataDto> barData = new ArrayList<>();
-//        for (UserDrinkRecord record : drinkRecords) {
-//            barData.add(new BarDataDto(record.getAmount(), record.getDate().getDayOfWeek().toString(), null));
-//        }
-//
-//        return barData;
-//    }
+        // weekly 알코올 총량
+        Map<LocalDate, ChartDataDto> alcDataMap = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = startDate.plusDays(i);
+            alcDataMap.put(date, new ChartDataDto(date, 0.0));
+        }
 
-//    import java.time.LocalDate;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//    public class DrinkDtoConverter {
-//        public static Map<String, Object> convertToDto(List<Diary> diaries) {
-//            // DTO를 생성하기 위한 데이터 구조
-//            Map<String, Object> dto = new HashMap<>();
-//            Map<String, List<Map<String, Object>>> yearlyData = new HashMap<>();
-//            List<Map<String, Object>> weeklyBarData = new ArrayList<>();
-//            List<Map<String, Object>> weeklyLineData = new ArrayList<>();
-//
-//            // 오늘부터 최근 7일간의 날짜를 구합니다.
-//            LocalDate today = LocalDate.now();
-//            LocalDate startDate = today.minusDays(6); // 최근 7일간의 시작 날짜
-//
-//            // 주어진 기간(오늘부터 최근 7일간) 내에 해당하는 drink 기록을 조회합니다.
-//            for (Diary diary : diaries) {
-//                LocalDate drinkDate = diary.getDrinkDate();
-//                if (drinkDate.isAfter(startDate) && !drinkDate.isAfter(today)) {
-//                    List<Drink> drinks = diary.getDrinks();
-//                    for (Drink drink : drinks) {
-//                        float drinkAmount = drink.getDrinkAmount();
-//                        String drinkUnit = drink.getDrinkUnit();
-//                        Category category = drink.getCategory();
-//
-//                        // drink_unit에 따라서 해당하는 category의 glass 또는 bottle 값을 가져옵니다.
-//                        float categoryValue = 0.0f;
-//                        if (drinkUnit.equals("잔")) {
-//                            categoryValue = category.getGlass();
-//                        } else if (drinkUnit.equals("병")) {
-//                            categoryValue = category.getBottle();
-//                        }
-//
-//                        // drink_amount와 category의 값을 곱하여 DTO 데이터를 가공합니다.
-//                        float value = drinkAmount * categoryValue;
-//
-//                        // 주간 데이터를 가공하여 weeklyBarData와 weeklyLineData에 추가합니다.
-//                        String label = drinkDate.getDayOfWeek().toString();
-//                        Map<String, Object> barData = new HashMap<>();
-//                        barData.put("value", value);
-//                        barData.put("label", label);
-//
-//                        Map<String, Object> lineData = new HashMap<>();
-//                        lineData.put("value", value);
-//                        lineData.put("label", label);
-//
-//                        weeklyBarData.add(barData);
-//                        weeklyLineData.add(lineData);
-//                    }
+        List<ChartDataDto> alcData = drinkRepository.getAlcData(user.getSocialId(), startDate, now);
+        for (ChartDataDto drink : alcData) {
+            alcDataMap.put(drink.getDate(), drink);
+        }
+
+        ArrayList<ChartDataDto> sortedAlcList = new ArrayList<>(alcDataMap.values());
+        sortedAlcList.sort(Comparator.comparing(ChartDataDto::getDate));
+
+        WeeklyCharDto weeklyChart = new WeeklyCharDto();
+        weeklyChart.setBar(sortedDrinkList);
+        weeklyChart.setLine(sortedAlcList);
+
+        // yearly
+        Map<Integer, YearlyChartDataDto> yearlyDrinkDataMap = new HashMap<>();
+        for (int i = 1; i <= 12; i++) {
+            yearlyDrinkDataMap.put(i, new YearlyChartDataDto(i, 0));
+        }
+
+        int year = now.getYear();
+        List<YearlyChartDataDto> yearlyData = drinkRepository.getYearlyData(user.getSocialId(),
+            year);
+        for (YearlyChartDataDto drink : yearlyData) {
+            yearlyDrinkDataMap.put(drink.getMonth(), drink);
+        }
+
+        ArrayList<YearlyChartDataDto> sortedYearlyList = new ArrayList<>(
+            yearlyDrinkDataMap.values());
+        sortedYearlyList.sort(Comparator.comparing(YearlyChartDataDto::getMonth));
+
+//        List<YearlyChartDataDto> yearlyDataMap = new ArrayList<>();
+//        for (int month = 1; month <= 12; month++) {
+//            boolean found = false;
+//            for (YearlyChartDataDto yearlyChartData : yearlyData) {
+//                if (yearlyChartData.getMonth() == month) {
+//                    yearlyDataMap.add(yearlyChartData);
+//                    found = true;
+//                    break;
 //                }
 //            }
-//
-//            // DTO에 데이터를 저장합니다.
-//            dto.put("weekly", Map.of("bar", weeklyBarData, "line", weeklyLineData));
-//            dto.put("yearly", yearlyData);
-//
-//            return dto;
+//            if (!found) {
+//                YearlyChartDataDto emptyData = new YearlyChartDataDto(month, 0.0);
+//                yearlyDataMap.add(emptyData);
+//            }
 //        }
-//    }
 
+        UserStatChartResponseDto response = new UserStatChartResponseDto();
+        response.setWeekly(weeklyChart);
+        response.setYearly(sortedYearlyList);
 
-
-
-
+        return response;
+    }
 
     public void updateStartNonAlcDate(User user, LocalDate drinkDate) {
         if (drinkDate != null) {   // 실시간 일기 작성시 작성 날짜로 업데이트
