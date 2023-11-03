@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
-import { FlatList, Button, View, StyleSheet } from "react-native";
+import { FlatList, View, StyleSheet } from "react-native";
+import { Button } from "react-native-paper";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
+import { useAppTheme } from "../../App";
 
 interface Drink {
   id: number;
@@ -17,6 +19,9 @@ type DrinkCarouselProps = {
 };
 
 const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
+  const {
+    colors: { mainBlue },
+  } = useAppTheme();
   const [centeredItem, setCenteredItem] = useState({
     id: 2,
     name: "소주",
@@ -77,7 +82,16 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
         )}
         onMomentumScrollEnd={handleMomentumScrollEnd}
       />
-      <Button title="선택하기" onPress={handleClick} />
+      <Button
+        onPress={handleClick}
+        mode="text"
+        textColor="white"
+        buttonColor={mainBlue}
+        style={styles.selectButton}
+        labelStyle={styles.buttonText}
+      >
+        선택하기
+      </Button>
     </View>
   );
 };
@@ -88,6 +102,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 200,
+  },
+  selectButton: {
+    padding: 4,
+    paddingBottom: 0,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 
