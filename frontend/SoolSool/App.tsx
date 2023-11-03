@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
 } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import Constants from "expo-constants";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -84,7 +83,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-                    title: "지도",
+                    title: "Map",
         }}
       /> */}
       <BottomTab.Screen
@@ -94,7 +93,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "MyPage",
+          title: "My Page",
         }}
       />
     </BottomTab.Navigator>
@@ -122,7 +121,6 @@ export default function App() {
         <PaperProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
             <SafeAreaView style={styles.rootScreen}>
-              {/* <View style={styles.rootScreen}> */}
               <StatusBar style="auto" />
               <NavigationContainer>
                 <Stack.Navigator
@@ -155,7 +153,7 @@ export default function App() {
                     component={SettingsScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#03174C" },
+                      headerStyle: { backgroundColor: "#0477BF" },
                       headerTintColor: "white",
                     }}
                   />
@@ -165,6 +163,9 @@ export default function App() {
                     component={DailyDetailScreen}
                     options={{
                       headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                      title: "Calendar",
                     }}
                   />
                   <Stack.Screen
@@ -172,12 +173,14 @@ export default function App() {
                     component={RecordCreateScreen}
                     options={{
                       headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                      title: "Calendar",
                     }}
                   />
                 </Stack.Navigator>
               </NavigationContainer>
             </SafeAreaView>
-            {/* </View> */}
           </QueryClientProvider>
         </PaperProvider>
       </SafeAreaProvider>
