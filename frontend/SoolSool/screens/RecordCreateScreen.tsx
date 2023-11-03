@@ -78,22 +78,27 @@ function RecordCreateScreen({ route, navigation }) {
   };
 
   const saveRecord = () => {
+    let date = day;
     let time;
     if (selectedAmPm === "AM") {
       time = `${selectedHour}:${selectedMinute}`;
       if (selectedHour < "05") {
-        console.log(`day날짜는 이렇습니다. ${day}`);
+        const currentDate = new Date(day);
+        currentDate.setDate(currentDate.getDate() - 1);
+        date = `${currentDate.getFullYear()}-${String(
+          currentDate.getMonth() + 1
+        ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
       }
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
     console.log("drinks:", JSON.stringify(alcoholRecord, null, 2));
-    console.log(`drinkDate : ${day}`);
+    console.log(`drinkDate : ${date}`);
     console.log(`drinkTime : ${time}`);
     console.log(`memo : ${memo}`);
     createDrink({
       drinks: [...alcoholRecord],
-      drinkDate: day,
+      drinkDate: date,
       startTime: time,
       memo: memo,
       hangover: "",
