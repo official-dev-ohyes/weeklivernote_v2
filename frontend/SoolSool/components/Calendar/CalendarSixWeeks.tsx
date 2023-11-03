@@ -18,7 +18,7 @@ function CalendarSixWeeks({}) {
   const { height } = Dimensions.get("window");
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
-  const [alcoholDays, setAlcoholDays] = useState([]);
+  const [alcoholDays, setAlcoholDays] = useState({});
   const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
@@ -34,12 +34,16 @@ function CalendarSixWeeks({}) {
           const drinkData = res.drinks;
           setAlcoholInfo(drinkData);
 
+          const tempDays = {};
           let days = [];
           for (let i = 0; i < drinkData.length; i++) {
-            days.push(drinkData[i].date);
+            const tempDate = drinkData[i].date;
+            tempDays[tempDate] = { marked: true };
+            // days.push(`${drinkData[i].date}: { selected: true }`);
           }
-          setAlcoholDays(days);
-          console.log(`알코올 마신 날들은? ${days}`);
+          setAlcoholDays(tempDays);
+          // setAlcoholDays(days);
+          // console.log(`알코올 마신 날들은? ${days}`);
         })
         .catch((err) => {
           console.error("실패", err);
@@ -100,6 +104,20 @@ function CalendarSixWeeks({}) {
   const height1 = (height * 0.9) / 10;
   const height2 = (height * 0.9) / 7.8;
 
+  // const selectedDayStyle = {
+  //   selected: {
+  //     // backgroundColor: 'blue',
+  //     borderRadius: 16,
+  //   },
+  //   today: {
+  //     color: 'blue'
+  //   },
+  // };
+
+  console.log(
+    `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
+  );
+
   return (
     <View style={styles.totalContainer}>
       {isSelectDay ? (
@@ -107,6 +125,7 @@ function CalendarSixWeeks({}) {
           <View style={styles.smallCalendar}>
             <Calendar
               current={currentDay}
+              markedDates={alcoholDays}
               // style={{ height: "100%" }}
               theme={{
                 "stylesheet.day.basic": {
@@ -137,6 +156,7 @@ function CalendarSixWeeks({}) {
           <Calendar
             // style={{ height: "100%" }}
             current={currentDay}
+            markedDates={alcoholDays}
             theme={{
               "stylesheet.day.basic": {
                 base: {
