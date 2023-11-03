@@ -94,7 +94,8 @@ public class UserController {
     @Operation(summary = "카카오 회원 탈퇴",
         description = "서비스와 연결을 끊고 db에서 삭제합니다.")
     public ResponseEntity<Object> userDelete(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+//        Long socialId = 3138259260L;
+//        String nickname = userService.userDelete(socialId);
         String nickname = userService.userDelete(userDetails);
         return new ResponseEntity<>(new MessageResponse(nickname + " 회원탈퇴"), HttpStatus.OK);
     }
