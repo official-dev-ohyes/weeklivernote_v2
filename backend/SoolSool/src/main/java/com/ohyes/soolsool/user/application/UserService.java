@@ -228,9 +228,8 @@ public class UserService {
     }
 
     // 회원 추가 정보 조회
-    public UserResponseDto userInfoGet(Long socialId) {
-//        User user = UserUtils.getUserFromToken(userDetails);
-        User user = userRepository.findBySocialId(socialId).orElse(null);
+    public UserResponseDto userInfoGet(UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
 
         String nickname = user.getNickname();
         String profileImg = user.getProfileImg();
@@ -253,8 +252,8 @@ public class UserService {
     }
 
     // 회원 추가 정보 수정
-    public void userInfoModify(UserModifyDto userModifyDto, Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElse(null);
+    public void userInfoModify(UserModifyDto userModifyDto, UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
         DrinkInfo drinkInfo = userModifyDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory())
             .orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다."));
@@ -303,8 +302,8 @@ public class UserService {
     }
 
     // 카카오 로그아웃
-    public String userLogout(Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElse(null);
+    public String userLogout(UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
         String nickname = user.getNickname();
 
         try {
@@ -313,11 +312,11 @@ public class UserService {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "KakaoAK " + admin_key);
 
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
             params.add("target_id_type", "user_id");
-            params.add("target_id", "socialId");
+            params.add("target_id", String.valueOf(user.getSocialId()));
 
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+            HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(params, headers);
             ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v1/user/logout",
                 HttpMethod.POST,
@@ -331,8 +330,8 @@ public class UserService {
         }
     }
 
-    public String userDelete(Long socialId) {
-        User user = userRepository.findBySocialId(socialId).orElse(null);
+    public String userDelete(UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
         String nickname = user.getNickname();
 
         try {
@@ -341,18 +340,18 @@ public class UserService {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "KakaoAK " + admin_key);
 
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
             params.add("target_id_type", "user_id");
-            params.add("target_id", "socialId");
+            params.add("target_id", String.valueOf(user.getSocialId()));
 
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+            HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(params, headers);
             ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v1/user/unlink",
                 HttpMethod.POST,
                 entity,
                 String.class
             );
-            userRepository.deleteBySocialId(socialId);
+            userRepository.delete(user);
             return nickname;
         } catch (Exception e) {
             log.info(e.getMessage());

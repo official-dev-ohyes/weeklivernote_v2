@@ -11,6 +11,8 @@ import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.user.dto.WeeklyCharDto;
 import com.ohyes.soolsool.user.dto.YearlyChartDataDto;
+import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -31,10 +33,9 @@ public class UserStatService {
     private final DrinkRepository drinkRepository;
     private final DiaryRepository diaryRepository;
 
-    public UserStatResponseDto getUserStat(Long socialId) {
+    public UserStatResponseDto getUserStat(UserDetailsImpl userDetails) {
         // 유저 정보 인증
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        User user = UserUtils.getUserFromToken(userDetails);
 
         // 유저의 현재 논 알코올 기간
         LocalDate now = LocalDate.now();
@@ -62,9 +63,9 @@ public class UserStatService {
             .build();
     }
 
-    public UserStatChartResponseDto getUserStatChart(Long socialId) {
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+
+    public UserStatChartResponseDto getUserStatChart(UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
 
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.minusDays(6);

@@ -12,6 +12,7 @@ import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,7 +40,7 @@ public class UserController {
 
     // 회원가입 or 로그인
     @GetMapping("v1/user/login")
-    @Operation(summary = "카카오 소셜 로그인",
+    @Operation(summary = "카카오 소셜 회원가입 및 로그인",
         description = "이미 회원 정보가 있으면 로그인 없으면 회원가입 진행하고 추가 정보 입력 필요합니다.")
     public ResponseEntity<Object> userLogin(@RequestParam String code)
         throws JsonProcessingException {
@@ -61,10 +63,10 @@ public class UserController {
     @GetMapping("/v1/user/info")
     @Operation(summary = "회원 추가 정보 조회",
         description = "등록 되어있는 회원 추가 정보를 조회합니다.")
-    public ResponseEntity<Object> userInfoGet() {
-        Long socialId = 1L;
+    public ResponseEntity<Object> userInfoGet(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        UserResponseDto userResponseDto = userService.userInfoGet(socialId);
+        UserResponseDto userResponseDto = userService.userInfoGet(userDetails);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
@@ -72,42 +74,38 @@ public class UserController {
     @PatchMapping("/v1/user/info")
     @Operation(summary = "회원 정보 수정",
         description = "등록 되어있는 회원 정보를 수정합니다.")
-    public ResponseEntity<Object> userInfoModify(@RequestBody UserModifyDto userModifyDto) {
-        Long socialId = 1L;
+    public ResponseEntity<Object> userInfoModify(@RequestBody UserModifyDto userModifyDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userService.userInfoModify(userModifyDto, socialId);
+        userService.userInfoModify(userModifyDto, userDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("v1/user/logout")
     @Operation(summary = "카카오 로그아웃",
         description = "토큰을 만료 시켜서 로그아웃 시킵니다.")
-    public ResponseEntity<Object> userLogout() {
-        Long socialId = 1L;
+    public ResponseEntity<Object> userLogout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String nickname = userService.userLogout(socialId);
-        return new ResponseEntity<>(new MessageResponse(nickname + "로그아웃 성공"), HttpStatus.OK);
+        String nickname = userService.userLogout(userDetails);
+        return new ResponseEntity<>(new MessageResponse(nickname + " 로그아웃 성공"), HttpStatus.OK);
     }
 
     @PostMapping("v1/user")
     @Operation(summary = "카카오 회원 탈퇴",
         description = "서비스와 연결을 끊고 db에서 삭제합니다.")
-    public ResponseEntity<Object> userDelete() {
-        Long socialId = 1L;
+    public ResponseEntity<Object> userDelete(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String nickname = userService.userDelete(socialId);
-        return new ResponseEntity<>(new MessageResponse(nickname + "회원탈퇴"), HttpStatus.OK);
+        String nickname = userService.userDelete(userDetails);
+        return new ResponseEntity<>(new MessageResponse(nickname + " 회원탈퇴"), HttpStatus.OK);
     }
 
     // 유저 관련 통계 - 최장/현재 논 알코올 기간 및 올해 총 술 총량
     @GetMapping("v1/user/stat")
     @Operation(summary = "유저 요약 통계 조회",
         description = "유저의 최장/현내 논 알코올 기간과 올해 마신 술 총량을 조회합니다.")
-    public ResponseEntity<Object> userStatGet() {
+    public ResponseEntity<Object> userStatGet(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            Long socialId = 1L;
-
-            UserStatResponseDto userStatResponseDto = userStatService.getUserStat(socialId);
+            UserStatResponseDto userStatResponseDto = userStatService.getUserStat(userDetails);
             return new ResponseEntity<>(userStatResponseDto, HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -117,12 +115,10 @@ public class UserController {
     @GetMapping("/v1/user/stat-chart")
     @Operation(summary = "유저 음주 통계 차트 조회",
         description = "유저의 주간/연간 음주 통계 그래프를 조회합니다.")
-    public ResponseEntity<Object> userStatChartGet() {
+    public ResponseEntity<Object> userStatChartGet(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            Long socialId = 1L;
-
             UserStatChartResponseDto userStatChartResponseDto = userStatService.getUserStatChart(
-                socialId);
+                userDetails);
             return new ResponseEntity<>(userStatChartResponseDto, HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
