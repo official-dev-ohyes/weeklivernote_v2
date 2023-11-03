@@ -16,7 +16,7 @@ function DailySummary(props) {
   useEffect(() => {
     setIsAlcohol(false);
 
-    if (alcoholDays.includes(summaryText)) {
+    if (alcoholDays[summaryText]) {
       setIsAlcohol(true);
       fetchDailyDrink(summaryText)
         .then((res) => {
@@ -76,7 +76,10 @@ function DailySummary(props) {
       ) : (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("RecordCreate", { date: summaryText });
+            navigation.navigate("RecordCreate", {
+              date: summaryText,
+              isAlcohol: true,
+            });
           }}
         >
           <View style={styles.headerBox}>
