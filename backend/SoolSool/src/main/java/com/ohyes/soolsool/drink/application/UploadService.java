@@ -3,8 +3,9 @@ package com.ohyes.soolsool.drink.application;
 import com.amazonaws.SdkClientException;
 import com.ohyes.soolsool.drink.dao.DiaryRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
-import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,6 @@ import java.util.UUID;
 @Slf4j
 public class UploadService {
 
-    private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
     private final S3Client s3Client;
 
@@ -87,10 +87,9 @@ public class UploadService {
     }
 
     @Transactional
-    public void drinkPhotoAdd(LocalDate drinkDate, MultipartFile multipartFile, Long socialId)
-        throws IOException {
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+    public void drinkPhotoAdd(LocalDate drinkDate, MultipartFile multipartFile,
+        UserDetailsImpl userDetails) throws IOException {
+        User user = UserUtils.getUserFromToken(userDetails);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
             .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
