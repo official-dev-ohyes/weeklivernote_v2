@@ -1,24 +1,28 @@
-import { atom, RecoilState, RecoilValue, DefaultValue, AtomEffect } from 'recoil';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { atom } from "recoil";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const persistAtom: AtomEffect<any> = ({ setSelf, onSet }) => {
-  // Load initial value from AsyncStorage
-  AsyncStorage.getItem('accessToken').then((savedValue) => {
-    if (savedValue !== null) {
-      setSelf(JSON.parse(savedValue));
-    }
-  });
+// const persistAtom: AtomEffect<any> = ({ setSelf, onSet }) => {
+//   // Load initial value from AsyncStorage
+//   AsyncStorage.getItem('accessToken').then((savedValue) => {
+//     if (savedValue !== null) {
+//       setSelf(JSON.parse(savedValue));
+//     }
+//   });
 
-  // Save changes to AsyncStorage
-  onSet((newValue, oldValue) => {
-    if (newValue !== oldValue) {
-      AsyncStorage.setItem('accessToken', JSON.stringify(newValue));
-    }
-  });
-};
+//   // Save changes to AsyncStorage
+//   onSet((newValue, oldValue) => {
+//     if (newValue !== oldValue) {
+//       AsyncStorage.setItem('accessToken', JSON.stringify(newValue));
+//     }
+//   });
+// };
 
 export const accessTokenAtom = atom({
-  key: 'accessTokenAtom',
+  key: "accessTokenAtom",
   default: null,
-  effects_UNSTABLE: [persistAtom],
+});
+
+export const userNameAtom = atom({
+  key: "userNameAtom",
+  default: null,
 });

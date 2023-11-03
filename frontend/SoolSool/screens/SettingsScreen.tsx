@@ -1,6 +1,10 @@
 import React from "react";
 import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
+import { showErrorAndRetry } from "../utils/showErrorUtils";
+import { Modal, Portal, Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logOut, signOut } from "../api/accountApi";
 
 function Section({ title, content }) {
   return (
@@ -21,6 +25,10 @@ function Separator() {
 
 function SettingsScreen({ navigation }) {
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   const toggleNotification = () => {
     setIsNotificationEnabled(!isNotificationEnabled);
@@ -28,6 +36,34 @@ function SettingsScreen({ navigation }) {
 
   const handleGoToNotification = () => {
     navigation.navigate("Notification");
+  };
+
+  const handleLogOut = async () => {
+    await logOut()
+      .then(async (res) => {
+        await AsyncStorage.removeItem("accessToken");
+        navigation.navigate("Home");
+      })
+      .catch((err) => {
+        showErrorAndRetry(
+          "로그아웃 실패",
+          "당신은 주간일기에서 나갈 수 없습니다."
+        );
+      });
+  };
+
+  const confirmSignOut = async () => {
+    await signOut()
+      .then((res) => {})
+      .catch((err) => {
+        showErrorAndRetry(
+          "회원탈퇴 실패",
+          "당신은 주간일기에서 나갈 수 없습니다."
+        );
+      })
+      .finally(() => {
+        hideModal();
+      });
   };
 
   return (
@@ -53,7 +89,11 @@ function SettingsScreen({ navigation }) {
               <Text>공지사항</Text>
             </TouchableOpacity>
             <Separator />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+              }
+            >
               <Text>문의하기</Text>
             </TouchableOpacity>
           </>
@@ -68,7 +108,11 @@ function SettingsScreen({ navigation }) {
               <Text>서비스 이용약관</Text>
             </TouchableOpacity>
             <Separator />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+              }
+            >
               <Text>위치정보 이용약관</Text>
             </TouchableOpacity>
             <Separator />
@@ -83,16 +127,47 @@ function SettingsScreen({ navigation }) {
         title="계정관리"
         content={
           <>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleLogOut}>
               <Text>로그아웃</Text>
             </TouchableOpacity>
             <Separator />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={showModal}>
               <Text>회원탈퇴</Text>
             </TouchableOpacity>
           </>
         }
       />
+
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            width: "90%",
+            borderRadius: 5,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <View style={styles.mainContainer}>
+            <Text style={styles.alertTitle}>주간일기</Text>
+            <View style={styles.textContainer}>
+              <Text>정말 탈퇴하시겠습니까?</Text>
+              <Text>모든 정보가 삭제됩니다.</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button mode="contained" onPress={confirmSignOut}>
+                확인
+              </Button>
+              <Button mode="outlined" onPress={hideModal}>
+                취소
+              </Button>
+            </View>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -136,6 +211,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: "100%",
     marginBottom: 25,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
+  },
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 15,
+  },
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
   },
 });
 

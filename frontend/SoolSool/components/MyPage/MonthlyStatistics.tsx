@@ -11,7 +11,6 @@ interface MonthlyStatisticsProps {
 
 function MonthlyStatistics(props: MonthlyStatisticsProps) {
   const [barData, setBarData] = useState(null);
-  const [lineData, setLineData] = useState(null);
 
   const {
     data: monthlyStatisticsData,
@@ -24,8 +23,8 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
   useEffect(() => {
     if (!isLoading && monthlyStatisticsData) {
-      setBarData(monthlyStatisticsData.weekly.bar);
-      setLineData(monthlyStatisticsData.weekly.line);
+      console.log("왜?", monthlyStatisticsData);
+      setBarData(monthlyStatisticsData.yearly);
     }
   }, [monthlyStatisticsData, isLoading]);
 
@@ -37,7 +36,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
           <View style={styles.barchart}>
             <BarChart
               data={barData}
-              barWidth={29}
+              barWidth={10}
               height={180}
               barBorderRadius={5}
               stepValue={500}
@@ -46,20 +45,6 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
               yAxisLabelWidth={7}
               hideAxesAndRules
               frontColor="#FFCC4A"
-            />
-          </View>
-          <View style={styles.linechart}>
-            <LineChart
-              data={lineData}
-              // width={300}
-              // height={150}
-              yAxisThickness={0}
-              xAxisThickness={0}
-              stepValue={500}
-              maxValue={300}
-              yAxisLabelWidth={0}
-              hideAxesAndRules
-              color="#0477BF"
             />
           </View>
         </View>

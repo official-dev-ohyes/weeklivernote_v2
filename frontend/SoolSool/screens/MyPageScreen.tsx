@@ -89,7 +89,7 @@ function MyPageScreen(props: UserProfileProps) {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
-        <Profile userData={userProfile} />
+        <Profile navigation={navigation} userData={userProfile} />
         <UserNonAlc alcoholData={alcoholStatistics} />
         <UserStatistics />
       </View>

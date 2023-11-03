@@ -29,6 +29,7 @@ import DailyDetailScreen from "./screens/DailyDetailScreen";
 import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
 import NotificationScreen from "./screens/NotificationScreen";
+import EditProfileScreen from "./screens/EditProfileScreen";
 // @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();

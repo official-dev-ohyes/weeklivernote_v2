@@ -69,7 +69,10 @@ function AddInfoStep3Screen({ navigation, route }) {
       })
       .catch((error) => {
         console.error("추가정보 입력 실패", error);
-        showErrorAndRetry();
+        showErrorAndRetry(
+          "다음에 다시 시도하세요",
+          "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
+        );
       });
   };
 
