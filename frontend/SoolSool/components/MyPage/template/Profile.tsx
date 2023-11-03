@@ -3,6 +3,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 // import { cheeseDuck } from "../../../assets";
 import DetailProfile from "../DetailProfile";
+import { showErrorAndRetry } from "../../../utils/showErrorUtils";
 
 interface UserProfile {
   address: string;
@@ -23,7 +24,9 @@ function Profile(props: UserProfileProps) {
   const { userData, navigation } = props;
 
   const handleEdit = () => {
-    navigation.navigator("EditProfile");
+    console.log("에딧아이콘 클릭");
+    showErrorAndRetry("준비 중", "조금만 기다려줘...");
+    // navigation.navigate("EditProfile");
   };
 
   return (
@@ -33,7 +36,7 @@ function Profile(props: UserProfileProps) {
           source={{ uri: userData.profileImg }}
           style={styles.profileImage}
         />
-        <Pressable style={styles.editIcon} onPress={() => handleEdit}>
+        <Pressable style={styles.editIcon} onPress={handleEdit}>
           <Ionicons name="pencil" color={"white"} size={15} />
         </Pressable>
       </View>

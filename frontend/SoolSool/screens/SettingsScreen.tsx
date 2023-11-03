@@ -29,7 +29,6 @@ function SettingsScreen({ navigation }) {
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = { backgroundColor: "white", padding: 20 };
 
   const toggleNotification = () => {
     setIsNotificationEnabled(!isNotificationEnabled);
