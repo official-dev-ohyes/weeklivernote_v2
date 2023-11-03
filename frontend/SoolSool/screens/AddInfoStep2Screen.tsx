@@ -6,9 +6,7 @@ import DotIndicator from "../components/AddInfo/DotIndicator ";
 import { useRoute } from "@react-navigation/native";
 
 function AddInfoStep2Screen({ navigation, route }) {
-  const height = route.params.height;
-  const weight = route.params.weight;
-  const gender = route.params.gender;
+  const { height, weight, gender, socialId } = route.params;
 
   console.log("!키:", height);
   console.log("!몸무게:", weight);
@@ -31,6 +29,7 @@ function AddInfoStep2Screen({ navigation, route }) {
         height: height,
         weight: weight,
         gender: gender,
+        socialId: socialId,
       });
     } else {
       alert("주소를 선택해주세요");

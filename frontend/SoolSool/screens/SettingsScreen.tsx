@@ -42,7 +42,7 @@ function SettingsScreen({ navigation }) {
     await logOut()
       .then(async (res) => {
         await AsyncStorage.removeItem("accessToken");
-        navigation.navigate("Home");
+        navigation.navigate("Login");
       })
       .catch((err) => {
         showErrorAndRetry(
@@ -54,7 +54,11 @@ function SettingsScreen({ navigation }) {
 
   const confirmSignOut = async () => {
     await signOut()
-      .then((res) => {})
+      .then(async (res) => {
+        console.log("회원탈퇴 성공");
+        await AsyncStorage.removeItem("accessToken");
+        navigation.navigate("Login");
+      })
       .catch((err) => {
         showErrorAndRetry(
           "회원탈퇴 실패",

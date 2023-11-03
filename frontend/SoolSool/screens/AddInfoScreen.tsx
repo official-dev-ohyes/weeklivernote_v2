@@ -3,12 +3,14 @@ import BodyInfo from "../components/AddInfo/BodyInfo";
 import { addInfoImage } from "../assets";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
 
-function AddInfoScreen({ navigation }) {
+function AddInfoScreen({ navigation, route }) {
+  const socialId = route?.params?.socialId;
+  console.log("소셜아이디", socialId);
   return (
     <View style={styles.mainContainer}>
       <DotIndicator activeIndex={1} />
       <Image source={addInfoImage} style={styles.characterImage} />
-      <BodyInfo navigation={navigation} />
+      <BodyInfo navigation={navigation} socialId={socialId} />
     </View>
   );
 }

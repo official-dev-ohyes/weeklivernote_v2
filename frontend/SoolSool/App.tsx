@@ -151,6 +151,11 @@ export default function App() {
                     name="KakaoLoginScreen"
                     component={KakaoLoginScreen}
                   />
+                  <Stack.Screen
+                    name="KakaoRedirectScreen"
+                    component={KakaoRedirectScreen}
+                  />
+
                   <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                   <Stack.Screen
                     name="AddInfoStep2"

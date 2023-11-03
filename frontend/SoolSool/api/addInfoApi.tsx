@@ -1,6 +1,7 @@
 import axiosInstance from "./axiosConfig";
 
 export const saveUserInfo = async (
+  socialId,
   weight,
   height,
   gender,
@@ -10,6 +11,7 @@ export const saveUserInfo = async (
   console.log("data확인", weight, height, gender, address, drinkInfo);
   try {
     const res = await axiosInstance.patch(`/v1/user`, {
+      socialId: socialId,
       weight: weight,
       height: height,
       gender: gender,

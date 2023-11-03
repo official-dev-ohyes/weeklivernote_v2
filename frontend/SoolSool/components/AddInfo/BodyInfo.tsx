@@ -7,7 +7,7 @@ import { Icon, MD3Colors } from "react-native-paper";
 // nonAlc:number;
 // }
 
-function BodyInfo({ navigation }) {
+function BodyInfo({ navigation, socialId }) {
   const [selectedGender, setSelectedGender] = useState(""); // 초기값은 빈 문자열로 설정
   const handleGenderSelection = (gender) => {
     if (selectedGender === gender) {
@@ -65,7 +65,11 @@ function BodyInfo({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-      <BodyDetail navigation={navigation} gender={selectedGender} />
+      <BodyDetail
+        navigation={navigation}
+        gender={selectedGender}
+        socialId={socialId}
+      />
     </View>
   );
 }
