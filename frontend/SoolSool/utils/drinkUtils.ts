@@ -1,5 +1,6 @@
 import { ImageProps } from "react-native";
 import * as assets from "../assets";
+import drinkData from "../data/drinks.json";
 
 const IdImageMap: Record<number, ImageProps["source"]> = {};
 
@@ -13,4 +14,14 @@ export const getDrinkImageById = (id: number): ImageProps["source"] => {
     throw new Error(`Invalid drink ID: ${id}`);
   }
   return image;
+};
+
+export const getIdByCategoryAndUnit = (
+  category: string,
+  unit: string
+): number | null => {
+  const matchingDrink = drinkData.find(
+    (item) => item.name === category && item.unit === unit
+  );
+  return matchingDrink ? matchingDrink.id : null;
 };

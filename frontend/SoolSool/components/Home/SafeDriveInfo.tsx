@@ -1,16 +1,42 @@
+import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { Chip, Icon, MD3Colors } from "react-native-paper";
+import { Icon, MD3Colors } from "react-native-paper";
+import { calculateTimeAfterHours } from "../../utils/timeUtils";
 
-const SafeDriveInfo = () => {
+interface SafeDriveInfoProps {
+  bloodAlcoholContent: number;
+  drinkStartTime: string;
+  requiredTimeToDrive: number;
+}
+
+const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
+  bloodAlcoholContent,
+  drinkStartTime,
+  requiredTimeToDrive,
+}) => {
+  const canDriveFrom = calculateTimeAfterHours(
+    drinkStartTime,
+    requiredTimeToDrive
+  );
+
   return (
     <View style={styles.rootContainer}>
       <View style={styles.chipsContainer}>
         <Icon source="blood-bag" color={MD3Colors.error50} size={32} />
-        <Text style={styles.chipText}>0.03 %</Text>
+        <Text style={styles.chipText}>{bloodAlcoholContent} %</Text>
       </View>
       <View style={styles.chipsContainer}>
-        <Icon source="car-off" color={MD3Colors.error50} size={32} />
-        <Text style={styles.chipText}> 08:30 까지</Text>
+        {canDriveFrom === "passed" ? (
+          <>
+            <Icon source="car" color="#6A9C89" size={32} />
+            <Text style={styles.chipText}>안전 운전</Text>
+          </>
+        ) : (
+          <>
+            <Icon source="car-off" color={MD3Colors.error50} size={32} />
+            <Text style={styles.chipText}>{canDriveFrom} 까지</Text>
+          </>
+        )}
       </View>
     </View>
   );
@@ -35,7 +61,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 16,
   },
 });
 

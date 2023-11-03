@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   drinkItemContainer: {
     display: "flex",
     paddingHorizontal: 8,
-    paddingTop: 16,
+    paddingTop: 14,
     paddingBottom: 4,
   },
   drinkBadgeContainer: {

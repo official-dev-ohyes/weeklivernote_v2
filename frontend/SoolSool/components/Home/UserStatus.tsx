@@ -1,34 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DrinkingStatus from "./DrinkingStatus";
 import DetoxingStatus from "./DetoxingStatus";
-import { DrinkToday } from "../../models/DrinkToday";
 import { calculateTimeDifference } from "../../utils/timeUtils";
+import { useRecoilValue } from "recoil";
+import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
 
 interface UserStatusProps {
   identifier: string;
 }
 
 const UserStatus: React.FC<UserStatusProps> = ({ identifier }) => {
-  const [drinkToday, setDrinkToday] = useState<DrinkToday | null>(null);
-  const date = new Date("2023-11-01T15:30:00");
-
-  useEffect(() => {
-    setDrinkToday(
-      new DrinkToday({
-        drinkTotal: 1290,
-        alcoholAmount: 35.8,
-        drinkStartTime: date.toDateString(),
-        height: 157,
-        weight: 58,
-        gender: "female",
-      })
-    );
-  }, []);
-  const timeSinceDrink = calculateTimeDifference(date);
+  const drinkToday = useRecoilValue(drinkTodayAtom);
 
   if (!drinkToday) {
     return;
   }
+
+  const timeSinceDrink = drinkToday.drinkStartTime
+    ? calculateTimeDifference(new Date(drinkToday.drinkStartTime))
+    : undefined;
 
   return (
     <>
