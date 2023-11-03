@@ -21,7 +21,7 @@ function KakaoRedirectScreen({ route, navigation }) {
         }
       );
 
-      console.log("리다이렉트 페이지에서 드디어 성공", response.data);
+      console.log("로그인에 성공했습니다");
 
       if (response.data.message) {
         console.log("첫 회원이시군요!");

@@ -28,6 +28,7 @@ import * as Font from "expo-font";
 import DailyDetailScreen from "./screens/DailyDetailScreen";
 import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
+import NotificationScreen from "./screens/NotificationScreen";
 // @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();
@@ -154,7 +155,16 @@ export default function App() {
                   component={SettingsScreen}
                   options={{
                     headerShown: true,
-                    headerStyle: { backgroundColor: "#03174C" },
+                    headerStyle: { backgroundColor: "#0477BF" },
+                    headerTintColor: "white",
+                  }}
+                />
+                <Stack.Screen
+                  name="Notification"
+                  component={NotificationScreen}
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: "#0477BF" },
                     headerTintColor: "white",
                   }}
                 />

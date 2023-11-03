@@ -1,44 +1,61 @@
-import { Text, View,StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import React from "react";
-import { cheeseDuck, nonAlcIcon } from "../../../assets";
 
-interface UserNonAlcProps {
-  nonAlc:number;
+interface AlcoholStatistics {
+  maxNonAlcPeriod: number;
+  nowNonAlcPeriod: number;
+  drinkYearAmount: number;
 }
 
-function UserNonAlc(props:UserNonAlcProps) {
-  const nonAlc = props.nonAlc;
-    return (
-      <View style={styles.mainContainer}>
-        <Image source={nonAlcIcon} style={styles.mainIcon} />
-        <Text style={styles.commonText}>술을 </Text>
-        <Text style={styles.boldText}>{nonAlc}</Text>
-        <Text style={styles.commonText} >일간 마시지 않았습니다:)</Text>
-      </View>
-    );
-  }
+interface UserNonAlcProps {
+  alcoholData: AlcoholStatistics;
+}
 
-  const styles = StyleSheet.create({
-    mainContainer: {
-      backgroundColor: "#FFFF",
-      flexDirection: "row",
-      gap: 5,
-      borderRadius: 20,
-    },
-    mainIcon :{
-    width: 50,
-    height: 50,
-    borderWidth: 2,
-    // borderColor: "lightgray",
-    },
-    boldText:{
-      fontWeight: "bold",
-      fontSize: 30,
-      alignSelf: "center", // 수직 가운데 정렬
-    },
-    commonText:{
-      alignSelf: "center", // 수직 가운데 정렬
-    }
-  });
+function UserNonAlc(props: UserNonAlcProps) {
+  const { alcoholData } = props;
+  return (
+    <View style={styles.mainContainer}>
+      <View style={styles.circleContainer}>
+        <Text style={styles.stringText}>최근금주지속</Text>
+        <Text style={styles.numberText}>{alcoholData.nowNonAlcPeriod}</Text>
+      </View>
+      <View style={styles.circleContainer}>
+        <Text style={styles.stringText}>최장금주지속</Text>
+        <Text style={styles.numberText}>{alcoholData.maxNonAlcPeriod}</Text>
+      </View>
+      <View style={styles.circleContainer}>
+        <Text style={styles.stringText}>올해음주량</Text>
+        <Text style={styles.numberText}>{alcoholData.drinkYearAmount}</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flexDirection: "row",
+    gap: 20,
+  },
+  circleContainer: {
+    flexDirection: "column",
+    flex: 1,
+    width: 100,
+    height: 110,
+    backgroundColor: "#0477BF",
+    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 500,
+  },
+  stringText: {
+    fontSize: 15,
+    color: "white",
+  },
+  numberText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+});
 
 export default UserNonAlc;

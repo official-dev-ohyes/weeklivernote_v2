@@ -11,6 +11,7 @@ import { Button } from "react-native-paper";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
 import { saveUserInfo } from "../api/addInfoApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showErrorAndRetry } from "../utils/showErrorUtils";
 
 function AddInfoStep3Screen({ navigation, route }) {
   const { height, weight, gender, address } = route.params;
@@ -68,6 +69,7 @@ function AddInfoStep3Screen({ navigation, route }) {
       })
       .catch((error) => {
         console.error("추가정보 입력 실패", error);
+        showErrorAndRetry();
       });
   };
 
