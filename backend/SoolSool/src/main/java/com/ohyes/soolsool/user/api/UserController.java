@@ -52,9 +52,8 @@ public class UserController {
     @Operation(summary = "회원 추가 정보 입력",
         description = "회원가입 후 회원 추가 정보를 입력합니다.")
     public ResponseEntity<Object> userInfoAdd(@RequestBody UserRequestDto userRequestDto) {
-        Long socialId = 1L;
 
-        Map<String, Object> data = userService.userInfoAdd(userRequestDto, socialId);
+        Map<String, Object> data = userService.userInfoAdd(userRequestDto);
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 

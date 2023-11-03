@@ -157,6 +157,7 @@ public class UserService {
 
             userRepository.save(user);
             Map<String, Object> data = new HashMap<>();
+            data.put("socialID", user.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
             return data;
         }
@@ -175,8 +176,10 @@ public class UserService {
     }
 
     // 회원 추가 정보 등록
-    public Map<String, Object> userInfoAdd(UserRequestDto userRequestDto,
-        Long socialId) {
+    public Map<String, Object> userInfoAdd(UserRequestDto userRequestDto) {
+
+        Long socialId = userRequestDto.getSocialId();
+
         User user = userRepository.findBySocialId(socialId).orElse(null);
         DrinkInfo drinkInfo = userRequestDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory())
@@ -201,6 +204,7 @@ public class UserService {
         }
         alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
 
+        user.setSocialId(socialId);
         user.setAddress(userRequestDto.getAddress());
         user.setGender(userRequestDto.getGender());
         user.setHeight(userRequestDto.getHeight());
