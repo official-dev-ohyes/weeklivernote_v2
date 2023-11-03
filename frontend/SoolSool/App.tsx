@@ -4,6 +4,7 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
+  useTheme,
 } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -98,10 +99,11 @@ function BottomTabNavigator() {
 
 const theme = {
   ...DefaultTheme,
+
+  custom: "property",
+
   colors: {
     ...DefaultTheme.colors,
-    // 커스텀 색상 설정
-    // primary: 'tomato',
     mainPink: "#F2A7C3",
     mainBlue: "#0477BF",
     mainGreen: "#03A678",
@@ -109,6 +111,9 @@ const theme = {
     mainRed: "#F25E5E",
   },
 };
+
+export type AppTheme = typeof theme;
+export const useAppTheme = () => useTheme<AppTheme>();
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

@@ -291,9 +291,11 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 36,
+    fontFamily: "Yeongdeok-Sea",
   },
   nameText: {
-    fontSize: 20,
+    fontSize: 24,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

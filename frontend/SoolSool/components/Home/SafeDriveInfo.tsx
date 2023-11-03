@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
   },
   chipText: {
-    fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 
