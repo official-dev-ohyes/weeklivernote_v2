@@ -45,12 +45,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("[Token 인증] 사용자 인증 성공");
 
         } catch (TokenExpiredException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             log.info("[Token 인증] 토큰이 만료되었습니다.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.");
             request.setAttribute(AUTHORIZATION_HEADER, "토큰이 만료되었습니다.");
         } catch (JWTVerificationException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             log.info("[Token 인증] 유효하지 않은 토큰입니다.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
             request.setAttribute(AUTHORIZATION_HEADER, "유효하지 않은 토큰입니다.");
         }
         filterChain.doFilter(request, response);
