@@ -22,11 +22,22 @@ export const createDrink = async (drinkData) => {
   }
 };
 
+export const deleteDrink = async (day) => {
+  try {
+    const res = await axiosInstance.delete(`/v1/drink/daily/${day}`);
+    console.log("삭제 성공", res);
+    return res;
+  } catch (err) {
+    console.log("삭제 실패");
+    throw new Error("음주기록 삭제 실패");
+  }
+};
+
 // 월간 음주 기록 조회
 export const fetchMonthRecord = async (day) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/monthly/${day}`);
-    // console.log("성공!", res.data);
+    console.log("성공!", res.data);
     return res.data;
   } catch (err) {
     console.log(err);

@@ -34,6 +34,8 @@ function DailySummary(props) {
     }
   }, [summaryText]);
 
+  console.log(`이 날짜의 이즈알코올은?! ${isAlcohol}`);
+
   return (
     <View style={styles.total}>
       {isAlcohol ? (

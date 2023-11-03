@@ -35,7 +35,6 @@ function CalendarSixWeeks({}) {
           setAlcoholInfo(drinkData);
 
           const tempDays = {};
-          let days = [];
           for (let i = 0; i < drinkData.length; i++) {
             const tempDate = drinkData[i].date;
             tempDays[tempDate] = { marked: true };

@@ -3,11 +3,20 @@ import { Button, TextInput } from "react-native-paper";
 import { useState, useEffect } from "react";
 import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
+import { useQuery } from "react-query";
 
-import { createDrink } from "../api/drinkRecordApi";
+import {
+  createDrink,
+  fetchDailyDrink,
+  fetchDailyDetail,
+} from "../api/drinkRecordApi";
 
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
+  const isAlcohol = route.params.isAlcohol; // create, update 구분
+  const [DailyDrinkData, setDailyDrinkData] = useState([]);
+  // const [DailyDrinkData, setDailyDrinkData] = useState([]);
+
   const [alcoholRecord, setAlcoholRecord] = useState([]);
   const [selectedAlcohol, setSelectedAlcohol] = useState("");
   const [value, setValue] = useState(0);
@@ -72,6 +81,9 @@ function RecordCreateScreen({ route, navigation }) {
     let time;
     if (selectedAmPm === "AM") {
       time = `${selectedHour}:${selectedMinute}`;
+      if (selectedHour < "05") {
+        console.log(`day날짜는 이렇습니다. ${day}`);
+      }
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
@@ -79,7 +91,6 @@ function RecordCreateScreen({ route, navigation }) {
     console.log(`drinkDate : ${day}`);
     console.log(`drinkTime : ${time}`);
     console.log(`memo : ${memo}`);
-    console.log(`날짜 타입 ${typeof time}`);
     createDrink({
       drinks: [...alcoholRecord],
       drinkDate: day,
@@ -91,6 +102,42 @@ function RecordCreateScreen({ route, navigation }) {
       console.log("찐성공");
     });
   };
+
+  // if (isAlcohol) {
+  //   const {
+  //     data: DailyDrinkData,
+  //     isLoading: dailyLoading,
+  //     isError: dailyError,
+  //   } = useQuery("DailyDrinkQuery", async () => await fetchDailyDrink(day));
+  //   console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
+
+  //   const {
+  //     data: DailyDetailData,
+  //     isLoading: detailLoading,
+  //     isError: detailError,
+  //   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
+  //   console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
+  //   // setMemo(DailyDetailData.memo);
+  //   console.log(`시간은 이렇게 생겼습니다. ${DailyDetailData.startTime}`);
+  //   const tempHour = parseInt(DailyDetailData.startTime.substring(11, 13), 10);
+  //   console.log(tempHour);
+  //   console.log(
+  //     `분 정보 : ${parseInt(DailyDetailData.startTime.substring(14, 16), 10)}`
+  //   );
+  //   // setSelectedHour(
+  //   //   tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+  //   // );
+  // }
+
+  // useEffect(() => {
+  //   setDailyDrinkData(DailyDrinkData)
+  //   if (isAlcohol) {
+  //     setMemo(DailyDetailData.memo);
+  //     setSelectedHour(
+  //       tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+  //     );
+  //   }
+  // }, [isAlcohol, DailyDrinkData]);
 
   return (
     <View style={styles.total}>
@@ -116,11 +163,11 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>양</Text>
             <View style={styles.alcoholAmount}>
-              <Button icon="camera" mode="contained" onPress={handleDecrement}>
+              <Button mode="contained" onPress={handleDecrement}>
                 -
               </Button>
               <Text>{value}</Text>
-              <Button icon="camera" mode="contained" onPress={handleIncrement}>
+              <Button mode="contained" onPress={handleIncrement}>
                 +
               </Button>
             </View>
@@ -134,7 +181,6 @@ function RecordCreateScreen({ route, navigation }) {
           </View>
           <View style={styles.buttons}>
             <Button
-              icon="camera"
               mode="contained"
               onPress={() => {
                 setAlcoholRecord([]);
@@ -144,7 +190,6 @@ function RecordCreateScreen({ route, navigation }) {
               초기화
             </Button>
             <Button
-              icon="camera"
               mode="contained"
               onPress={() => {
                 const newRecord = {
@@ -201,15 +246,25 @@ function RecordCreateScreen({ route, navigation }) {
             numberOfLines={9}
           />
         </View>
-        <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => {
-            saveRecord();
-          }}
-        >
-          저장
-        </Button>
+        {isAlcohol ? (
+          <Button
+            mode="contained"
+            onPress={() => {
+              saveRecord();
+            }}
+          >
+            수정
+          </Button>
+        ) : (
+          <Button
+            mode="contained"
+            onPress={() => {
+              saveRecord();
+            }}
+          >
+            저장
+          </Button>
+        )}
       </View>
     </View>
   );

@@ -1,18 +1,22 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
+import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
 
-function DailyDetailScreen({ route }) {
+import { deleteDrink } from "../api/drinkRecordApi";
+
+function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
   const alcoholDays = route.params.alcoholDays;
   const isAlcohol = route.params.isAlcohol;
   const [isImg, setIsImg] = useState<boolean>(false);
+  const [isModal, setIsModal] = useState<boolean>(false);
 
   console.log(
     `날짜는 ${day}, 술마신날들은 ${alcoholDays}, 알코올상태는? ${isAlcohol}`
   );
+
   const [info, setInfo] = useState({
     startTime: "",
     detoxTime: "",
@@ -40,10 +44,40 @@ function DailyDetailScreen({ route }) {
     setAndFetch();
   }, []);
 
+  const openDeleteModal = () => {
+    setIsModal(true);
+  };
+
+  const hideDeleteModal = () => {
+    setIsModal(false);
+  };
+
+  const confirmDelete = () => {
+    deleteDrink(day);
+    hideDeleteModal();
+    navigation.navigate("Calendar");
+  };
+
   return (
     <View style={styles.total}>
       <View style={styles.header}>
         <Text>술력</Text>
+        <View style={styles.buttons}>
+          <Button
+            mode="contained"
+            onPress={() => {
+              navigation.navigate("RecordCreate", {
+                date: day,
+                isAlcohol: true,
+              });
+            }}
+          >
+            수정
+          </Button>
+          <Button mode="contained" onPress={openDeleteModal}>
+            삭제
+          </Button>
+        </View>
       </View>
       <View style={styles.summ}>
         <DailySummary
@@ -68,7 +102,17 @@ function DailyDetailScreen({ route }) {
         <Text>메모</Text>
         <Text>{info.memo}</Text>
       </View>
-      {/* <Text>{day}</Text> */}
+      <Portal>
+        <Modal
+          visible={isModal}
+          onDismiss={hideDeleteModal}
+          style={styles.containerStyle}
+        >
+          <Text>{day} 음주 기록을 삭제하시겠습니까?</Text>
+          <Button onPress={confirmDelete}>삭제</Button>
+          <Button onPress={hideDeleteModal}>취소</Button>
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -80,7 +124,13 @@ const styles = StyleSheet.create({
   },
   header: {
     height: "15%",
+    flexDirection: "row",
+    justifyContent: "space-between",
     backgroundColor: "red",
+  },
+  buttons: {
+    flexDirection: "row",
+    alignSelf: "flex-end",
   },
   summ: {
     height: "20%",
@@ -89,6 +139,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "black",
     margin: 5,
+  },
+  containerStyle: {
+    backgroundColor: "white",
+    padding: 20,
   },
 });
 
