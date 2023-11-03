@@ -1,4 +1,4 @@
-image: node:alpine
+image: node:latest
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -9,12 +9,14 @@ stages:
   - build
 
 before_script:
+  - cd S09P31E103/frontend/SoolSool
+  - yarn -v
   - yarn install --cache-folder .yarn
 
 eas-build-emulator:
   stage: build
   script:
-    - apk add --no-cache bash
+    - cd S09P31E103/frontend/SoolSool
     - npx eas-cli build -p android --profile emulator
     - npx eas-cli build -p ios --profile simulator
   only:
@@ -25,7 +27,7 @@ eas-build-emulator:
 eas-build-all:
   stage: build
   script:
-    - apk add --no-cache bash
+    - cd S09P31E103/frontend/SoolSool
     - npx eas-cli build --platform all --non-interactive
   only:
     - main/FE

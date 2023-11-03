@@ -24,10 +24,11 @@ import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 import { useEffect, useState } from "react";
 import * as Font from "expo-font";
-// import { mainFontTTF } from "./assets";
 
 import DailyDetailScreen from "./screens/DailyDetailScreen";
+import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
+import NotificationScreen from "./screens/NotificationScreen";
 // @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();
@@ -51,6 +52,9 @@ function BottomTabNavigator() {
         headerStyle: { backgroundColor: "#0477BF" },
         headerTintColor: "white",
         tabBarShowLabel: false,
+      }}
+      sceneContainerStyle={{
+        backgroundColor: "#fff",
       }}
     >
       <BottomTab.Screen
@@ -123,6 +127,7 @@ export default function App() {
               <Stack.Navigator
                 screenOptions={{
                   headerShown: false,
+                  contentStyle: { backgroundColor: "#fff" },
                 }}
                 initialRouteName="Login"
               >
@@ -130,6 +135,10 @@ export default function App() {
                 <Stack.Screen
                   name="KakaoLoginScreen"
                   component={KakaoLoginScreen}
+                />
+                <Stack.Screen
+                  name="KakaoRedirectScreen"
+                  component={KakaoRedirectScreen}
                 />
                 <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                 <Stack.Screen
@@ -146,7 +155,16 @@ export default function App() {
                   component={SettingsScreen}
                   options={{
                     headerShown: true,
-                    headerStyle: { backgroundColor: "#03174C" },
+                    headerStyle: { backgroundColor: "#0477BF" },
+                    headerTintColor: "white",
+                  }}
+                />
+                <Stack.Screen
+                  name="Notification"
+                  component={NotificationScreen}
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: "#0477BF" },
                     headerTintColor: "white",
                   }}
                 />

@@ -1,34 +1,54 @@
 import { useEffect, useState, useLayoutEffect } from "react";
 import { useQuery } from "react-query";
-import { StyleSheet, Text, ImageBackground, View } from "react-native";
-import UserProfile from "../components/MyPage/template/UserProfile";
+import { StyleSheet, ScrollView, View } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
-import MyPageUpperBar from "../components/MyPage/template/MyPageUpperBar";
-import { fetchUserProfile } from "../api/mypageApi";
-import { createDrink, fetchDrink } from "../api/drinkRecordApi";
+import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
-import { fetchNotice } from "../api/noticeApi";
-import axios from "axios";
 import SettingsIconButton from "../components/MyPage/SettingsIconButton";
+import Profile from "../components/MyPage/template/Profile";
 
-// interface UserStatistics {
-//   weekly: Record<string, [number, number][]>;
-//   yearly: Record<string, [number, number][]>;
-//   maxNonAlcPeriod: string;
-//   nowNonAlcPeriod: string;
-//   drinkYearAmount: string;
-// }
-
-interface UserData {
-  weight: number;
-  gender: string;
+interface UserProfile {
   address: string;
+  alcoholLimit: number;
+  gender: string;
+  height: number;
   nickname: string;
-  profileImage: string;
-  alcoholAmount: number;
+  profileImg: string | null;
+  weight: number;
 }
 
-function MyPageScreen({ navigation }) {
+interface AlcoholStatistics {
+  maxNonAlcPeriod: number; // 최장금주기간
+  nowNonAlcPeriod: number; // 현재금주기간
+  drinkYearAmount: number; // 올해음주량
+}
+
+interface UserProfileProps {
+  userProfile: UserProfile;
+  alcoholStatistics: AlcoholStatistics;
+  navigation: any;
+}
+
+function MyPageScreen(props: UserProfileProps) {
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    nickname: "",
+    profileImg: "",
+    gender: "",
+    height: 0,
+    weight: 0,
+    alcoholLimit: 0,
+    address: "",
+  });
+
+  const [alcoholStatistics, setAlcoholStatistics] = useState<AlcoholStatistics>(
+    {
+      maxNonAlcPeriod: 0, // 최장금주기간
+      nowNonAlcPeriod: 0, // 현재금주기간
+      drinkYearAmount: 0, // 올해음주량
+    }
+  );
+  const navigation = props.navigation;
+
   // 내비게이션 헤더에 설정페이지 이동 버튼 추가
   function handleHeaderButtonPressed() {
     navigation.navigate("Settings");
@@ -43,57 +63,48 @@ function MyPageScreen({ navigation }) {
     });
   }, []);
 
-  //공지사항조회함수
-  fetchNotice()
-    .then((res) => {
-      console.log("성공", res);
-    })
-    .catch((error) => {
-      console.error("실패", error);
-    });
+  const {
+    data: userProfileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useQuery("userProfileData", async () => await fetchUserProfile());
 
-  // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
-  const [userData, setUserData] = useState<UserData>({
-    weight: 70,
-    gender: "남자",
-    address: "부산시 녹산 어쩌구 SSAFY",
-    profileImage: "#",
-    nickname: "오예스",
-    alcoholAmount: 30,
-  });
+  const {
+    data: userNonAlcData,
+    isLoading: isNonAlcLoading,
+    isError: isNonAlcError,
+  } = useQuery("userNonAlcData", async () => await fetchUserNonAlc());
 
-  const [nonAlc, setNonAlc] = useState<number>(10);
+  console.log("오잉?", userProfileData);
 
-  // const {
-  //   data: userData,
-  //   isLoading,
-  //   isError,
-  // } = useQuery("userProfile", fetchUserProfile);
-
-  // if (isLoading) {
-  //   return <Text>Loading...</Text>;
-  // }
-
-  // if (isError) {
-  //   return <Text>Error...</Text>;
-  // }
+  useEffect(() => {
+    if (!isProfileLoading && userProfileData) {
+      setUserProfile(userProfileData);
+    }
+    if (!isNonAlcLoading && userNonAlcData) {
+      setAlcoholStatistics(userNonAlcData);
+    }
+  }, [userProfileData, isProfileLoading]);
 
   return (
-    <View style={styles.mainContainer}>
-      <UserProfile userData={userData} />
-      <UserNonAlc nonAlc={nonAlc} />
-      <UserStatistics />
-    </View>
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <Profile userData={userProfile} />
+        <UserNonAlc alcoholData={alcoholStatistics} />
+        <UserStatistics />
+      </View>
+    </ScrollView>
   );
 }
 //
 const styles = StyleSheet.create({
   mainContainer: {
-    // borderWidth: 1,
-    // borderColor: "black",
     flexDirection: "column",
-    gap: 15,
+    gap: 25,
     marginHorizontal: 15,
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
   },
 });
 
