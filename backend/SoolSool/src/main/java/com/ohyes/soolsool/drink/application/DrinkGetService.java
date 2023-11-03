@@ -98,10 +98,6 @@ public class DrinkGetService {
         List<Diary> diaries = diaryRepository.findAllByUserAndDrinkDateYearAndDrinkDateMonth(user,
             year, month);
 
-        if (diaries.isEmpty()) {
-            throw new NullPointerException("해당 월의 음주 기록이 없습니다.");
-        }
-
         // 각 일기의 drinks마다 가장 많은 양의 주종 저장
         diaries.forEach(d -> {
             List<Drink> drinks = d.getDrinks();
