@@ -53,15 +53,14 @@ function DailySummary(props) {
           </View>
           <View style={styles.informations}>
             <View style={styles.category}>
-              <View style={styles.eachAlcohol}>
-                {/* 나중에 여기에 술 아이콘 넣기 */}
-                <View style={styles.eachAlcoholIcon}>
-                  <Text>아이콘1</Text>
+              {alcoholList.slice(0, 3).map((alcohol, index) => (
+                <View style={styles.eachAlcohol} key={index}>
+                  <View style={styles.eachAlcoholIcon}>
+                    <Text>아이콘1</Text>
+                  </View>
+                  <Text>{alcohol.amount} ml</Text>
                 </View>
-                <Text>수량</Text>
-              </View>
-              <Text>아이콘2</Text>
-              <Text>아이콘3</Text>
+              ))}
             </View>
             <View style={styles.textInformations}>
               <Text>

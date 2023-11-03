@@ -157,14 +157,22 @@ function CalendarSixWeeks({}) {
           </View>
           <View style={styles.dailySummaryComponent}>
             {isSame ? (
-              <View>
-                <Text>{selectDay}</Text>
-                <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+              <View style={styles.dailySummaryTotal}>
+                <View style={styles.headerBox}>
+                  <Text>{selectDay}</Text>
+                </View>
+                <View style={styles.others}>
+                  <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+                </View>
               </View>
             ) : isFuture ? (
-              <View>
-                <Text>{selectDay}</Text>
-                <Text>미래 날짜는 입력이 불가능합니다</Text>
+              <View style={styles.dailySummaryTotal}>
+                <View style={styles.headerBox}>
+                  <Text>{selectDay}</Text>
+                </View>
+                <View style={styles.others}>
+                  <Text>미래 날짜는 입력이 불가능합니다</Text>
+                </View>
               </View>
             ) : (
               <DailySummary
@@ -205,24 +213,49 @@ const styles = StyleSheet.create({
   totalContainer: {
     height: "97.5%",
     backgroundColor: "balck",
-    borderWidth: 2,
-    borderColor: "red",
     flexDirection: "column",
+    // borderWidth: 2,
+    // borderColor: "red",
     // justifyContent: "space-between",
   },
   smallCalendar: {
     height: "80%",
-    borderWidth: 2,
-    borderColor: "orange",
+    // borderWidth: 2,
+    // borderColor: "orange",
   },
   largeCalendar: {
     height: "100%",
-    borderWidth: 2,
-    borderColor: "orange",
+    // borderWidth: 2,
+    // borderColor: "orange",
   },
   dailySummaryComponent: {
     height: "20%",
     backgroundColor: "balck",
+  },
+  dailySummaryTotal: {
+    flex: 1,
+    flexDirection: "column",
+    // backgroundColor: "yellow",
+    borderRadius: 10,
+    padding: 5,
+    justifyContent: "center",
+    alignContent: "center",
+    borderWidth: 2,
+    borderColor: "black",
+    margin: 5,
+  },
+  headerBox: {
+    height: "20%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 5,
+    // backgroundColor: "black",
+  },
+  others: {
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: "5%",
   },
 });
 

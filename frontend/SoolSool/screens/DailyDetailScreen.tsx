@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
 import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
 
-import { deleteDrink } from "../api/drinkRecordApi";
+import { removeDrink } from "../api/drinkRecordApi";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
@@ -53,7 +53,7 @@ function DailyDetailScreen({ route, navigation }) {
   };
 
   const confirmDelete = () => {
-    deleteDrink(day);
+    removeDrink(day);
     hideDeleteModal();
     navigation.navigate("Calendar");
   };
@@ -61,9 +61,12 @@ function DailyDetailScreen({ route, navigation }) {
   return (
     <View style={styles.total}>
       <View style={styles.header}>
-        <Text>술력</Text>
+        <View style={styles.mainText}>
+          <Text>술력</Text>
+          <Text>전구넣을 곳</Text>
+        </View>
         <View style={styles.buttons}>
-          <Button
+          {/* <Button
             mode="contained"
             onPress={() => {
               navigation.navigate("RecordCreate", {
@@ -73,7 +76,7 @@ function DailyDetailScreen({ route, navigation }) {
             }}
           >
             수정
-          </Button>
+          </Button> */}
           <Button mode="contained" onPress={openDeleteModal}>
             삭제
           </Button>
@@ -126,7 +129,12 @@ const styles = StyleSheet.create({
     height: "15%",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "red",
+    alignItems: "flex-end",
+    padding: "2%",
+    // backgroundColor: "red",
+  },
+  mainText: {
+    flexDirection: "row",
   },
   buttons: {
     flexDirection: "row",
