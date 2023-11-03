@@ -26,8 +26,9 @@ function CalendarSixWeeks({}) {
   useEffect(() => {
     console.log(`현재 날짜는? ${nowDate}`);
     const setAndFetch = async () => {
-      await setCurrentDay(nowDate);
-      fetchMonthRecord(nowDate) // currentDay로 실행시 적용 안됨
+      const tempDay = currentDay ? currentDay : nowDate;
+      await setCurrentDay(tempDay);
+      fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
         .then((res) => {
           // console.log("성공", res.drinks);
           setAlcoholInfo(res.deinks);
@@ -115,8 +116,8 @@ function CalendarSixWeeks({}) {
     fetchMonthRecord(shiftDay);
   };
 
-  const height1 = (height * 0.9) / 10;
-  const height2 = (height * 0.9) / 7.8;
+  const height1 = (height * 0.9) / 15;
+  const height2 = (height * 0.9) / 12;
 
   // const selectedDayStyle = {
   //   selected: {
