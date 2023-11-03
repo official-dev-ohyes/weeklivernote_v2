@@ -20,7 +20,6 @@ function HomeScreen() {
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
-  // const today = "2023-11-01";
 
   // useEffect(() => {
   //   const backAction = () => {

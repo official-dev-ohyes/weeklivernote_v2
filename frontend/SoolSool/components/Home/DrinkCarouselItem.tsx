@@ -127,8 +127,9 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 16,
+    fontSize: 20,
     textAlign: "center",
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

@@ -56,7 +56,6 @@ function DrinkController() {
   const maxIsDisabled = useMemo(() => value >= maxValue, [maxValue, value]);
 
   const today = getToday();
-  // const today = "2023-11-01";
 
   useEffect(() => {
     const selectedDrinkLog = currentDrinks[selectedDrink.id];
@@ -292,9 +291,11 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 36,
+    fontFamily: "Yeongdeok-Sea",
   },
   nameText: {
-    fontSize: 20,
+    fontSize: 24,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

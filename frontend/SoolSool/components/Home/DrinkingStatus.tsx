@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text, Image, ImageProps } from "react-native";
+import { StyleSheet, View, Image, Text, ImageProps } from "react-native";
+import { useAppTheme } from "../../App";
 
 interface DrinkingStatusProps {
   drinkInVolume: number;
@@ -40,14 +41,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleContainer: {
-    fontWeight: "bold",
-    fontSize: 36,
+    fontSize: 40,
+    fontFamily: "Yeongdeok-Sea",
   },
   subtitleContainer: {
     fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
   periodContainer: {
-    fontWeight: "bold",
+    fontSize: 24,
+    fontFamily: "Yeongdeok-Sea",
   },
   imageContainer: {
     backgroundColor: "#F6F6F6",
