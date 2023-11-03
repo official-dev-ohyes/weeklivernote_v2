@@ -4,7 +4,7 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
-  useTheme,
+  // useTheme,
 } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -113,8 +113,8 @@ const theme = {
   },
 };
 
-export type AppTheme = typeof theme;
-export const useAppTheme = () => useTheme<AppTheme>();
+// export type AppTheme = typeof theme;
+// export const useAppTheme = () => useTheme<AppTheme>();
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

@@ -3,7 +3,8 @@ import { FlatList, View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
-import { useAppTheme } from "../../App";
+// import { useAppTheme } from "../../App";
+import { useAppTheme } from "../../hooks/useAppTheme";
 
 interface Drink {
   id: number;

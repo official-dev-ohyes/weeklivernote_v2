@@ -26,7 +26,7 @@ const Wave = ({ size = 256, progress = 50 }) => {
   const clock = useClockValue();
 
   let imageSource;
-  if (progress === 0) {
+  if (progress <= 0) {
     imageSource = useImage(require("../../assets/Home/liver/liver-01.png"));
   } else if (progress > 0 && progress <= 50) {
     imageSource = useImage(require("../../assets/Home/liver/liver-02.png"));
