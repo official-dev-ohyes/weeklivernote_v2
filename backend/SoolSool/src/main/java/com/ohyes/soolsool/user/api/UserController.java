@@ -4,6 +4,7 @@ package com.ohyes.soolsool.user.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ohyes.soolsool.user.application.UserService;
 import com.ohyes.soolsool.user.application.UserStatService;
+import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
 import com.ohyes.soolsool.user.dto.UserModifyDto;
 import com.ohyes.soolsool.user.dto.UserRequestDto;
@@ -12,6 +13,7 @@ import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -85,8 +87,9 @@ public class UserController {
     @Operation(summary = "카카오 로그아웃",
         description = "토큰을 만료 시켜서 로그아웃 시킵니다.")
     public ResponseEntity<Object> userLogout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
 
-        String nickname = userService.userLogout(userDetails);
+        String nickname = userService.userLogout(user);
         return new ResponseEntity<>(new MessageResponse(nickname + " 로그아웃 성공"), HttpStatus.OK);
     }
 

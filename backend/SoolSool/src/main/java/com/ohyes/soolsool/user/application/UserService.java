@@ -302,8 +302,7 @@ public class UserService {
     }
 
     // 카카오 로그아웃
-    public String userLogout(UserDetailsImpl userDetails) {
-        User user = UserUtils.getUserFromToken(userDetails);
+    public String userLogout(User user) {
         String nickname = user.getNickname();
 
         try {
@@ -332,8 +331,8 @@ public class UserService {
 
     public String userDelete(UserDetailsImpl userDetails) {
         User user = UserUtils.getUserFromToken(userDetails);
-//        User user = userRepository.findBySocialId(socialID).orElse(null);;
-        String nickname = user.getNickname();
+        String nickname = userLogout(user);
+
 
         try {
             RestTemplate rt = new RestTemplate();
@@ -352,6 +351,7 @@ public class UserService {
                 entity,
                 String.class
             );
+
             userRepository.delete(user);
             return nickname;
         } catch (Exception e) {
