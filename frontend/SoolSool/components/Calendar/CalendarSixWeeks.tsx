@@ -199,7 +199,18 @@ function CalendarSixWeeks({}) {
                   backgroundColor: "rgba(255, 255, 255, 0.5)",
                 },
               },
+              "stylesheet.calendar.header": {
+                monthText: {
+                  fontFamily: "Yeongdeok-Sea",
+                  fontSize: 20,
+                },
+                dayHeader: {
+                  fontFamily: "Yeongdeok-Sea",
+                  fontSize: 14,
+                },
+              },
             }}
+            headerStyle={{}}
             onDayPress={handleDayPress}
             onPressArrowLeft={handlePressArrowLeft}
             onPressArrowRight={handelPressArrowRight}
