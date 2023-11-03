@@ -25,7 +25,14 @@ const Wave = ({ size = 256, progress = 50 }) => {
   const verticalOffset = useValue(100);
   const clock = useClockValue();
 
-  const liverImage = useImage(require("../../assets/Home/liver.png"));
+  let imageSource;
+  if (progress === 0) {
+    imageSource = useImage(require("../../assets/Home/liver/liver-01.png"));
+  } else if (progress > 0 && progress <= 50) {
+    imageSource = useImage(require("../../assets/Home/liver/liver-02.png"));
+  } else {
+    imageSource = useImage(require("../../assets/Home/liver/liver-03.png"));
+  }
 
   useEffect(() => {
     verticalOffset.current = (1 - progress / 100) * innerCircleSize;
@@ -60,7 +67,7 @@ const Wave = ({ size = 256, progress = 50 }) => {
     <>
       <Canvas style={{ width: size, height: size }}>
         <Image
-          image={liverImage}
+          image={imageSource}
           fit="contain"
           width={(size * 2) / 3}
           height={(size * 2) / 3}
