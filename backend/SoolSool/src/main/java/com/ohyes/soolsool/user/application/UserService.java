@@ -157,7 +157,7 @@ public class UserService {
 
             userRepository.save(user);
             Map<String, Object> data = new HashMap<>();
-            data.put("socialID", user.getSocialId());
+            data.put("socialID", kakaoProfileDto.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
             return data;
         }
@@ -332,6 +332,7 @@ public class UserService {
 
     public String userDelete(UserDetailsImpl userDetails) {
         User user = UserUtils.getUserFromToken(userDetails);
+//        User user = userRepository.findBySocialId(socialID).orElse(null);;
         String nickname = user.getNickname();
 
         try {
