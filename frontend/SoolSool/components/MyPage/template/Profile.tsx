@@ -1,7 +1,7 @@
 import { Text, Pressable, Image, StyleSheet, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { cheeseDuck } from "../../../assets";
+// import { cheeseDuck } from "../../../assets";
 import DetailProfile from "../DetailProfile";
 
 interface UserProfile {
@@ -23,7 +23,10 @@ function Profile(props: UserProfileProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Image source={cheeseDuck} style={styles.profileImage} />
+      <Image
+        source={{ uri: userData.profileImg }}
+        style={styles.profileImage}
+      />
 
       <Text style={styles.userInfoText}>{userData.nickname}</Text>
 
