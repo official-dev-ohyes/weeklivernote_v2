@@ -157,7 +157,7 @@ public class UserService {
 
             userRepository.save(user);
             Map<String, Object> data = new HashMap<>();
-            data.put("socialID", kakaoProfileDto.getSocialId());
+            data.put("socialId", kakaoProfileDto.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
             return data;
         }
