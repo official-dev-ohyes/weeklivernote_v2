@@ -268,11 +268,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#C6C6C6",
     padding: 4,
+    marginBottom: 8,
     width: "100%",
   },
   imageContainer: {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 60,
     resizeMode: "contain",
   },
   stepperContainer: {

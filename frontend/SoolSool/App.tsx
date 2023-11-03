@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
@@ -117,63 +118,69 @@ const theme = {
 export default function App() {
   return (
     <RecoilRoot>
-      <PaperProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          {/* <SafeAreaView style={styles.rootScreen}> */}
-          <View style={styles.rootScreen}>
-            <StatusBar style="dark" />
-            <NavigationContainer>
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: "#fff" },
-                }}
-                initialRouteName="Login"
-              >
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen
-                  name="KakaoLoginScreen"
-                  component={KakaoLoginScreen}
-                />
-                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                <Stack.Screen
-                  name="AddInfoStep2"
-                  component={AddInfoStep2Screen}
-                />
-                <Stack.Screen
-                  name="AddInfoStep3"
-                  component={AddInfoStep3Screen}
-                />
-                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-                <Stack.Screen
-                  name="Settings"
-                  component={SettingsScreen}
-                  options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: "#03174C" },
-                    headerTintColor: "white",
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView style={styles.rootScreen}>
+              {/* <View style={styles.rootScreen}> */}
+              <StatusBar style="auto" />
+              <NavigationContainer>
+                <Stack.Navigator
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: "#fff" },
                   }}
-                />
-                {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
-                <Stack.Screen
-                  name="DailyDetail"
-                  component={DailyDetailScreen}
-                  options={{
-                    headerShown: true,
-                  }}
-                />
-                <Stack.Screen
-                  name="RecordCreate"
-                  component={RecordCreateScreen}
-                  options={{
-                    headerShown: true,
-                  }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </View>
-        </QueryClientProvider>
-      </PaperProvider>
+                  initialRouteName="Login"
+                >
+                  <Stack.Screen name="Login" component={LoginScreen} />
+                  <Stack.Screen
+                    name="KakaoLoginScreen"
+                    component={KakaoLoginScreen}
+                  />
+                  <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                  <Stack.Screen
+                    name="AddInfoStep2"
+                    component={AddInfoStep2Screen}
+                  />
+                  <Stack.Screen
+                    name="AddInfoStep3"
+                    component={AddInfoStep3Screen}
+                  />
+                  <Stack.Screen
+                    name="BottomTab"
+                    component={BottomTabNavigator}
+                  />
+                  <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#03174C" },
+                      headerTintColor: "white",
+                    }}
+                  />
+                  {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
+                  <Stack.Screen
+                    name="DailyDetail"
+                    component={DailyDetailScreen}
+                    options={{
+                      headerShown: true,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="RecordCreate"
+                    component={RecordCreateScreen}
+                    options={{
+                      headerShown: true,
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+            {/* </View> */}
+          </QueryClientProvider>
+        </PaperProvider>
+      </SafeAreaProvider>
     </RecoilRoot>
   );
 }
@@ -181,6 +188,6 @@ export default function App() {
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    marginTop: Constants.statusBarHeight,
+    // marginTop: Constants.statusBarHeight,
   },
 });
