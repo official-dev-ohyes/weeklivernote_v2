@@ -116,8 +116,8 @@ function CalendarSixWeeks({}) {
     fetchMonthRecord(shiftDay);
   };
 
-  const height1 = (height * 0.9) / 15;
-  const height2 = (height * 0.9) / 12;
+  const height1 = (height * 0.9) / 13.5;
+  const height2 = (height * 0.9) / 10;
 
   // const selectedDayStyle = {
   //   selected: {
@@ -212,7 +212,7 @@ function CalendarSixWeeks({}) {
 
 const styles = StyleSheet.create({
   totalContainer: {
-    height: "97.5%",
+    height: "100%",
     backgroundColor: "balck",
     flexDirection: "column",
     // borderWidth: 2,

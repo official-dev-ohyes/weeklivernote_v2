@@ -4,15 +4,28 @@ import { CalendarList } from "react-native-calendars";
 import React, { useState } from "react";
 import CalendarMain from "../components/Calendar/CalendarMain";
 import CalendarSixWeeks from "../components/Calendar/CalendarSixWeeks";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function CalendarScreen() {
   return (
     <View>
-      <Text>술력</Text>
-      {/* 주 별 간격 조정 */}
-      {/* <CalendarMain /> */}
-      {/* 주 별 간격 미조정 */}
-      <CalendarSixWeeks />
+      <View style={styles.mainTextBox}>
+        <Text style={styles.headerText}>술력</Text>
+        <View style={styles.light}>
+          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
+          <MaterialCommunityIcons
+            name="lightbulb-on-outline"
+            size={30}
+            color="black"
+          />
+        </View>
+      </View>
+      <View style={styles.calendar}>
+        {/* 주 별 간격 조정 */}
+        {/* <CalendarMain /> */}
+        {/* 주 별 간격 미조정 */}
+        <CalendarSixWeeks />
+      </View>
     </View>
   );
 }
@@ -20,9 +33,32 @@ function CalendarScreen() {
 const styles = StyleSheet.create({
   mainBackground: {
     flex: 1,
+    flexDirection: "column",
     backgroundColor: "black",
-    borderWidth: 20,
-    borderColor: "red",
+  },
+  mainTextBox: {
+    height: "15%",
+    padding: "5%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    // backgroundColor: "pink",
+  },
+  headerText: {
+    fontSize: 40,
+    fontFamily: "Yeongdeok-Sea",
+    verticalAlign: "bottom",
+  },
+  light: {
+    height: "80%",
+    // backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: "2%",
+  },
+  calendar: {
+    height: "85%",
+    // borderWidth: 20,
+    // borderColor: "red",
   },
 });
 
