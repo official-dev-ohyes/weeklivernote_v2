@@ -79,7 +79,7 @@ export const removeDrink = async (drinkDate) => {
 export const fetchMonthRecord = async (day) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/monthly/${day}`);
-    // console.log("성공!", res.data);
+    console.log("성공!", res.data);
     return res.data;
   } catch (err) {
     console.log(err);

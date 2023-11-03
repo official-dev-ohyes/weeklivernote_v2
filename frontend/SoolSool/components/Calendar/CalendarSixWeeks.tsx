@@ -15,10 +15,11 @@ function CalendarSixWeeks({}) {
   }${today.getDate()}`;
 
   const [currentDay, setCurrentDay] = useState("");
+  const [isFuture, setIsFuture] = useState<boolean>(false);
   const { height } = Dimensions.get("window");
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
-  const [alcoholDays, setAlcoholDays] = useState([]);
+  const [alcoholDays, setAlcoholDays] = useState({});
   const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
@@ -34,19 +35,35 @@ function CalendarSixWeeks({}) {
           const drinkData = res.drinks;
           setAlcoholInfo(drinkData);
 
-          let days = [];
+          const tempDays = {};
           for (let i = 0; i < drinkData.length; i++) {
-            days.push(drinkData[i].date);
+            const tempDate = drinkData[i].date;
+            tempDays[tempDate] = { marked: true };
+            // days.push(`${drinkData[i].date}: { selected: true }`);
           }
-          setAlcoholDays(days);
-          console.log(`알코올 마신 날들은? ${days}`);
+          setAlcoholDays(tempDays);
+          // setAlcoholDays(days);
+          // console.log(`알코올 마신 날들은? ${days}`);
         })
         .catch((err) => {
           console.error("실패", err);
         });
     };
     setAndFetch();
-  }, [nowDate]);
+
+    if (selectDay) {
+      const checkFuture = () => {
+        const selectedTimeStamp = new Date(selectDay).getTime();
+        const nowTimestamp = new Date(nowDate).getTime();
+        if (nowTimestamp < selectedTimeStamp) {
+          setIsFuture(true);
+        } else {
+          setIsFuture(false);
+        }
+      };
+      checkFuture();
+    }
+  }, [nowDate, selectDay]);
 
   const handleDayPress = async (clickDay) => {
     const newMonth =
@@ -57,6 +74,7 @@ function CalendarSixWeeks({}) {
     if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
+      setIsFuture(false);
     } else {
       setSelectDay(newDate);
       setCurrentDay(newDate);
@@ -100,6 +118,22 @@ function CalendarSixWeeks({}) {
   const height1 = (height * 0.9) / 10;
   const height2 = (height * 0.9) / 7.8;
 
+  // const selectedDayStyle = {
+  //   selected: {
+  //     // backgroundColor: 'blue',
+  //     borderRadius: 16,
+  //   },
+  //   today: {
+  //     color: 'blue'
+  //   },
+  // };
+
+  // console.log(
+  //   // `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
+  // );
+
+  // console.log(`선택한 날짜는 ${selectDay}, 미래인가요? ${isFuture}`);
+
   return (
     <View style={styles.totalContainer}>
       {isSelectDay ? (
@@ -107,6 +141,7 @@ function CalendarSixWeeks({}) {
           <View style={styles.smallCalendar}>
             <Calendar
               current={currentDay}
+              markedDates={alcoholDays}
               // style={{ height: "100%" }}
               theme={{
                 "stylesheet.day.basic": {
@@ -122,7 +157,23 @@ function CalendarSixWeeks({}) {
           </View>
           <View style={styles.dailySummaryComponent}>
             {isSame ? (
-              <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+              <View style={styles.dailySummaryTotal}>
+                <View style={styles.headerBox}>
+                  <Text>{selectDay}</Text>
+                </View>
+                <View style={styles.others}>
+                  <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+                </View>
+              </View>
+            ) : isFuture ? (
+              <View style={styles.dailySummaryTotal}>
+                <View style={styles.headerBox}>
+                  <Text>{selectDay}</Text>
+                </View>
+                <View style={styles.others}>
+                  <Text>미래 날짜는 입력이 불가능합니다</Text>
+                </View>
+              </View>
             ) : (
               <DailySummary
                 summaryText={selectDay}
@@ -137,6 +188,7 @@ function CalendarSixWeeks({}) {
           <Calendar
             // style={{ height: "100%" }}
             current={currentDay}
+            markedDates={alcoholDays}
             theme={{
               "stylesheet.day.basic": {
                 base: {
@@ -161,24 +213,49 @@ const styles = StyleSheet.create({
   totalContainer: {
     height: "97.5%",
     backgroundColor: "balck",
-    borderWidth: 2,
-    borderColor: "red",
     flexDirection: "column",
+    // borderWidth: 2,
+    // borderColor: "red",
     // justifyContent: "space-between",
   },
   smallCalendar: {
     height: "80%",
-    borderWidth: 2,
-    borderColor: "orange",
+    // borderWidth: 2,
+    // borderColor: "orange",
   },
   largeCalendar: {
     height: "100%",
-    borderWidth: 2,
-    borderColor: "orange",
+    // borderWidth: 2,
+    // borderColor: "orange",
   },
   dailySummaryComponent: {
     height: "20%",
     backgroundColor: "balck",
+  },
+  dailySummaryTotal: {
+    flex: 1,
+    flexDirection: "column",
+    // backgroundColor: "yellow",
+    borderRadius: 10,
+    padding: 5,
+    justifyContent: "center",
+    alignContent: "center",
+    borderWidth: 2,
+    borderColor: "black",
+    margin: 5,
+  },
+  headerBox: {
+    height: "20%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 5,
+    // backgroundColor: "black",
+  },
+  others: {
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: "5%",
   },
 });
 

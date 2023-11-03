@@ -16,7 +16,7 @@ function DailySummary(props) {
   useEffect(() => {
     setIsAlcohol(false);
 
-    if (alcoholDays.includes(summaryText)) {
+    if (alcoholDays[summaryText]) {
       setIsAlcohol(true);
       fetchDailyDrink(summaryText)
         .then((res) => {
@@ -33,6 +33,8 @@ function DailySummary(props) {
         });
     }
   }, [summaryText]);
+
+  // console.log(`이 날짜의 이즈알코올은?! ${isAlcohol}`);
 
   return (
     <View style={styles.total}>
@@ -51,15 +53,14 @@ function DailySummary(props) {
           </View>
           <View style={styles.informations}>
             <View style={styles.category}>
-              <View style={styles.eachAlcohol}>
-                {/* 나중에 여기에 술 아이콘 넣기 */}
-                <View style={styles.eachAlcoholIcon}>
-                  <Text>아이콘1</Text>
+              {alcoholList.slice(0, 3).map((alcohol, index) => (
+                <View style={styles.eachAlcohol} key={index}>
+                  <View style={styles.eachAlcoholIcon}>
+                    <Text>아이콘1</Text>
+                  </View>
+                  <Text>{alcohol.amount} ml</Text>
                 </View>
-                <Text>수량</Text>
-              </View>
-              <Text>아이콘2</Text>
-              <Text>아이콘3</Text>
+              ))}
             </View>
             <View style={styles.textInformations}>
               <Text>
@@ -76,7 +77,10 @@ function DailySummary(props) {
       ) : (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("RecordCreate", { date: summaryText });
+            navigation.navigate("RecordCreate", {
+              date: summaryText,
+              isAlcohol: true,
+            });
           }}
         >
           <View style={styles.headerBox}>
