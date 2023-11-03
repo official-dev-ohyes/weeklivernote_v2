@@ -12,7 +12,14 @@ function DetoxingStatus({
   requiredTimeForDetox,
   detoxingFor,
 }: DetoxingStatusProps) {
-  const detoxingInProgress = (1 - detoxingFor / requiredTimeForDetox) * 100;
+  const detoxingInProgress =
+    requiredTimeForDetox !== 0
+      ? (1 - detoxingFor / requiredTimeForDetox) * 100
+      : 0;
+
+  const remainingTime = requiredTimeForDetox - detoxingFor;
+  const adjustedRemainingTime =
+    remainingTime > 0 ? remainingTime.toFixed(1) : "Drink Mindfully!";
 
   return (
     <View style={styles.statusContainer}>
@@ -22,9 +29,7 @@ function DetoxingStatus({
       ) : (
         <Text style={styles.subtitleContainer}>
           해독까지{"  "}
-          <Text style={styles.periodContainer}>
-            {(requiredTimeForDetox - detoxingFor).toFixed(1)}
-          </Text>
+          <Text style={styles.periodContainer}>{adjustedRemainingTime}</Text>
           시간
         </Text>
       )}
