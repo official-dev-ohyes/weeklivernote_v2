@@ -1,51 +1,46 @@
-import { StatusBar } from "expo-status-bar";
+import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
 } from "react-native-paper";
+import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
+import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
+import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./screens/LoginScreen";
-import AddInfoScreen from "./screens/AddInfoScreen";
-import HomeScreen from "./screens/HomeScreen";
-import CalendarScreen from "./screens/CalendarScreen";
-// import MapScreen from "./screens/MapScreen";
-import MyPageScreen from "./screens/MyPageScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
-import { RecoilRoot } from "recoil";
+import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
+import AddInfoScreen from "./screens/AddInfoScreen";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
-import { useEffect, useState } from "react";
-import * as Font from "expo-font";
 
+import HomeScreen from "./screens/HomeScreen";
+
+import CalendarScreen from "./screens/CalendarScreen";
 import DailyDetailScreen from "./screens/DailyDetailScreen";
-import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
+
+// import MapScreen from "./screens/MapScreen";
+
+import MyPageScreen from "./screens/MyPageScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
-// @@@@@@@@@@@@@@@@@@@@여기에 임포트 하고@@@@@@@@@@@@@@@@@@@@
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
+preventAutoHideAsync();
+
 function BottomTabNavigator() {
-  // const [isFont, setIsFont] = useState(false);
-
-  // useEffect(async () => {
-  //   await Font.loadAsync({
-  //     mainFont: mainFontTTF,
-  //     // "custom-font-otf": require("../assets/font/Yeongdeok_Sea.otf"),
-  //   });
-  //   setIsFont(true);
-  // }, []);
-
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -84,7 +79,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-                    title: "Map",
+          title: "Map",
         }}
       /> */}
       <BottomTab.Screen
@@ -116,12 +111,26 @@ const theme = {
 };
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
     <RecoilRoot>
       <SafeAreaProvider>
         <PaperProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
-            <SafeAreaView style={styles.rootScreen}>
+            <SafeAreaView style={styles.rootScreen} onLayout={onLayoutRootView}>
               <StatusBar style="auto" />
               <NavigationContainer>
                 <Stack.Navigator
@@ -158,7 +167,6 @@ export default function App() {
                       headerTintColor: "white",
                     }}
                   />
-                  {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
                   <Stack.Screen
                     name="DailyDetail"
                     component={DailyDetailScreen}
@@ -192,6 +200,5 @@ export default function App() {
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    // marginTop: Constants.statusBarHeight,
   },
 });

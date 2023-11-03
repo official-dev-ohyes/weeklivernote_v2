@@ -40,11 +40,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleContainer: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
     fontSize: 36,
+    fontFamily: "Yeongdeok-Sea",
   },
   subtitleContainer: {
     fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
   periodContainer: {
     fontWeight: "bold",

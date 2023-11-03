@@ -56,7 +56,6 @@ function DrinkController() {
   const maxIsDisabled = useMemo(() => value >= maxValue, [maxValue, value]);
 
   const today = getToday();
-  // const today = "2023-11-01";
 
   useEffect(() => {
     const selectedDrinkLog = currentDrinks[selectedDrink.id];
