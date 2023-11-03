@@ -19,8 +19,8 @@ function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
-  // const today = getToday();
-  const today = "2023-11-01";
+  const today = getToday();
+  // const today = "2023-11-01";
 
   // useEffect(() => {
   //   const backAction = () => {
@@ -51,16 +51,8 @@ function HomeScreen() {
 
   useEffect(() => {
     if (data) {
-      if (data === "NONE") {
-        const drinkTodayData = {
-          drinkTotal: 0,
-          alcoholAmount: 0,
-          drinkStartTime: null,
-          height: 0,
-          weight: 0,
-          gender: "",
-        };
-        setDrinkToday(new DrinkToday(drinkTodayData));
+      if (data.drinkTotal === 0) {
+        setDrinkToday(new DrinkToday(data));
       } else {
         const drinkTodayData = {
           drinkTotal: data.drinkTotal,

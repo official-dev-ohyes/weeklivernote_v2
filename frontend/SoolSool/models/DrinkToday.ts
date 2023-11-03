@@ -44,6 +44,10 @@ export class DrinkToday {
   gender: string;
 
   get bloodAlcoholContent(): number {
+    if (this.drinkTotal === 0) {
+      return 0;
+    }
+
     let genderConstant: number;
     if (this.gender === "여자") {
       genderConstant = 0.64;

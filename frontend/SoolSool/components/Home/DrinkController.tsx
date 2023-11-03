@@ -55,8 +55,8 @@ function DrinkController() {
   const minIsDisabled = useMemo(() => value <= minValue, [minValue, value]);
   const maxIsDisabled = useMemo(() => value >= maxValue, [maxValue, value]);
 
-  // const today = getToday();
-  const today = "2023-11-01";
+  const today = getToday();
+  // const today = "2023-11-01";
 
   useEffect(() => {
     const selectedDrinkLog = currentDrinks[selectedDrink.id];
@@ -115,10 +115,10 @@ function DrinkController() {
       if (newValue === 0) {
         deleteDrink(drinkData)
           .then((res) => {
-            console.log("Successfully delete a new drink log.", res);
+            console.log("Successfully delete the drink log.", res);
           })
           .catch((err) => {
-            console.log("Fail to delete a drink log.", err);
+            console.log("Fail to delete the drink log.", err);
           });
 
         setCurrentDrinks((prev) => {
@@ -129,10 +129,10 @@ function DrinkController() {
       } else {
         updateDrink(drinkData)
           .then((res) => {
-            console.log("Successfully update a new drink log.", res);
+            console.log("Successfully update the drink log.", res);
           })
           .catch((err) => {
-            console.log("Fail to update a new drink log.", err);
+            console.log("Fail to update the drink log.", err);
           });
       }
     }
@@ -165,10 +165,10 @@ function DrinkController() {
     } else {
       updateDrink(drinkData)
         .then((res) => {
-          console.log("Successfully update a new drink log.", res);
+          console.log("Successfully update the drink log.", res);
         })
         .catch((err) => {
-          console.log("Fail to update a new drink log.", err);
+          console.log("Fail to update the drink log.", err);
         });
     }
   };

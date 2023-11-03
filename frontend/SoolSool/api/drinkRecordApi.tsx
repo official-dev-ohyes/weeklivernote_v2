@@ -4,16 +4,27 @@ import axiosInstance from "./axiosConfig";
 export const fetchDrink = async (drinkDate) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/${drinkDate}`);
-
-    if (res.status === 400) {
-      return "NONE";
-    }
     return res.data;
   } catch (err) {
-    console.log("axios 호출 실패하는 이유", err);
-    throw new Error("drink record 조회 get 요청 실패");
+    if (err.response.status === 400) {
+      return generateAlternativeData();
+    } else {
+      console.log("axios 호출 실패하는 이유", err);
+      throw new Error("drink record 조회 get 요청 실패");
+    }
   }
 };
+
+function generateAlternativeData() {
+  return {
+    drinkTotal: 0,
+    alcoholAmount: 0,
+    drinkStartTime: null,
+    height: 0,
+    weight: 0,
+    gender: "",
+  };
+}
 
 // 음주 기록 추가
 export const createDrink = async (drinkData) => {
@@ -31,7 +42,7 @@ export const createDrink = async (drinkData) => {
 export const updateDrink = async (drinkData) => {
   try {
     const res = await axiosInstance.patch(`/v1/drink`, drinkData);
-    console.log("성공했다면", res.data);
+    // console.log("성공했다면", res.data);
     return res.data;
   } catch (err) {
     console.log("axios 호출 실패");
@@ -42,11 +53,12 @@ export const updateDrink = async (drinkData) => {
 // 음주 기록 삭제 (개별 술 기록 삭제)
 export const deleteDrink = async (drinkData) => {
   try {
-    const res = await axiosInstance.delete(`/v1/drink-one`, drinkData);
-    console.log("성공했다면", res.data);
+    const res = await axiosInstance.delete(`/v1/drink-one`, {
+      data: drinkData,
+    });
     return res.data;
   } catch (err) {
-    console.log("axios 호출 실패");
+    // console.log("axios 호출 실패");
     throw new Error("drink record 기록 delete 요청 실패");
   }
 };
@@ -55,10 +67,10 @@ export const deleteDrink = async (drinkData) => {
 export const removeDrink = async (drinkDate) => {
   try {
     const res = await axiosInstance.delete(`/v1/drink/daily/${drinkDate}`);
-    console.log("성공했다면", res.data);
+    // console.log("성공했다면", res.data);
     return res.data;
   } catch (err) {
-    console.log("axios 호출 실패");
+    // console.log("axios 호출 실패");
     throw new Error("drink record 기록 delete 요청 실패");
   }
 };
