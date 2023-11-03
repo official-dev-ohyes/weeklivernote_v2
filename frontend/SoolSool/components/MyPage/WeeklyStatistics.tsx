@@ -48,7 +48,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               initialSpacing={0}
               yAxisLabelWidth={7}
               hideAxesAndRules
-              frontColor="#0477BF"
+              frontColor="#FFCC4A"
             />
           </View>
           <View style={styles.linechart}>
