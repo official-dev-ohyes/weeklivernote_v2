@@ -15,6 +15,7 @@ function CalendarSixWeeks({}) {
   }${today.getDate()}`;
 
   const [currentDay, setCurrentDay] = useState("");
+  const [isFuture, setIsFuture] = useState<boolean>(false);
   const { height } = Dimensions.get("window");
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
@@ -49,7 +50,20 @@ function CalendarSixWeeks({}) {
         });
     };
     setAndFetch();
-  }, [nowDate]);
+
+    if (selectDay) {
+      const checkFuture = () => {
+        const selectedTimeStamp = new Date(selectDay).getTime();
+        const nowTimestamp = new Date(nowDate).getTime();
+        if (nowTimestamp < selectedTimeStamp) {
+          setIsFuture(true);
+        } else {
+          setIsFuture(false);
+        }
+      };
+      checkFuture();
+    }
+  }, [nowDate, selectDay]);
 
   const handleDayPress = async (clickDay) => {
     const newMonth =
@@ -60,6 +74,7 @@ function CalendarSixWeeks({}) {
     if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
+      setIsFuture(false);
     } else {
       setSelectDay(newDate);
       setCurrentDay(newDate);
@@ -113,9 +128,11 @@ function CalendarSixWeeks({}) {
   //   },
   // };
 
-  console.log(
-    `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
-  );
+  // console.log(
+  //   // `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
+  // );
+
+  // console.log(`선택한 날짜는 ${selectDay}, 미래인가요? ${isFuture}`);
 
   return (
     <View style={styles.totalContainer}>
@@ -140,7 +157,15 @@ function CalendarSixWeeks({}) {
           </View>
           <View style={styles.dailySummaryComponent}>
             {isSame ? (
-              <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+              <View>
+                <Text>{selectDay}</Text>
+                <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+              </View>
+            ) : isFuture ? (
+              <View>
+                <Text>{selectDay}</Text>
+                <Text>미래 날짜는 입력이 불가능합니다</Text>
+              </View>
             ) : (
               <DailySummary
                 summaryText={selectDay}
