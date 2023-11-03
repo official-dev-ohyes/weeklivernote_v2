@@ -16,17 +16,27 @@ interface UserProfile {
 
 interface UserProfileProps {
   userData: UserProfile;
+  navigation: any;
 }
 
 function Profile(props: UserProfileProps) {
-  const { userData } = props;
+  const { userData, navigation } = props;
+
+  const handleEdit = () => {
+    navigation.navigator("EditProfile");
+  };
 
   return (
     <View style={styles.mainContainer}>
-      <Image
-        source={{ uri: userData.profileImg }}
-        style={styles.profileImage}
-      />
+      <View style={styles.profileContainer}>
+        <Image
+          source={{ uri: userData.profileImg }}
+          style={styles.profileImage}
+        />
+        <Pressable style={styles.editIcon} onPress={() => handleEdit}>
+          <Ionicons name="pencil" color={"white"} size={15} />
+        </Pressable>
+      </View>
 
       <Text style={styles.userInfoText}>{userData.nickname}</Text>
 
@@ -49,6 +59,10 @@ const styles = StyleSheet.create({
     gap: 15,
     borderRadius: 20,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#0477BF",
+    padding: 15,
+    marginTop: 20,
   },
   userInfoLabel: {
     fontSize: 16,
@@ -57,6 +71,7 @@ const styles = StyleSheet.create({
   },
   userInfoText: {
     fontSize: 17,
+    // marginTop: 10,
     marginBottom: 3,
   },
   addressText: {
@@ -79,7 +94,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 500,
-    marginTop: 40,
+    marginTop: 5,
     borderWidth: 2,
     borderColor: "#0477BF",
   },
@@ -87,6 +102,17 @@ const styles = StyleSheet.create({
     // flex: 1,
     width: "100%",
   },
+  editIcon: {
+    width: "auto",
+    height: "auto",
+    padding: 5,
+    backgroundColor: "#0477BF",
+    borderRadius: 50,
+    position: "absolute",
+    top: 98,
+    right: 10,
+  },
+  profileContainer: {},
 });
 
 export default Profile;
