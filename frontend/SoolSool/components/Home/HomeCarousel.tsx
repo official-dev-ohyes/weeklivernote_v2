@@ -45,8 +45,8 @@ const Indicator = ({ scrollX }) => {
           <Animated.View
             key={`indicator-${i}`}
             style={{
-              height: 10,
-              width: 10,
+              height: 6,
+              width: 6,
               borderRadius: 5,
               backgroundColor: "#0477BF",
               // backgroundColor: "#A5BBFF",
@@ -134,7 +134,7 @@ export default function HomeCarousel() {
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false }
         )}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 180 }}
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         renderItem={({ item }) => {

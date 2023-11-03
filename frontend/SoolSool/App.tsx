@@ -1,11 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
 } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import Constants from "expo-constants";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -84,7 +84,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-                    title: "지도",
+                    title: "Map",
         }}
       /> */}
       <BottomTab.Screen
@@ -94,7 +94,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "MyPage",
+          title: "My Page",
         }}
       />
     </BottomTab.Navigator>
@@ -118,76 +118,73 @@ const theme = {
 export default function App() {
   return (
     <RecoilRoot>
-      <PaperProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          {/* <SafeAreaView style={styles.rootScreen}> */}
-          <View style={styles.rootScreen}>
-            <StatusBar style="dark" />
-            <NavigationContainer>
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: "#fff" },
-                }}
-                initialRouteName="Login"
-              >
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen
-                  name="KakaoLoginScreen"
-                  component={KakaoLoginScreen}
-                />
-                <Stack.Screen
-                  name="KakaoRedirectScreen"
-                  component={KakaoRedirectScreen}
-                />
-                <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                <Stack.Screen
-                  name="AddInfoStep2"
-                  component={AddInfoStep2Screen}
-                />
-                <Stack.Screen
-                  name="AddInfoStep3"
-                  component={AddInfoStep3Screen}
-                />
-                <Stack.Screen name="BottomTab" component={BottomTabNavigator} />
-                <Stack.Screen
-                  name="Settings"
-                  component={SettingsScreen}
-                  options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: "#0477BF" },
-                    headerTintColor: "white",
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView style={styles.rootScreen}>
+              <StatusBar style="auto" />
+              <NavigationContainer>
+                <Stack.Navigator
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: "#fff" },
                   }}
-                />
-                <Stack.Screen
-                  name="Notification"
-                  component={NotificationScreen}
-                  options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: "#0477BF" },
-                    headerTintColor: "white",
-                  }}
-                />
-                {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
-                <Stack.Screen
-                  name="DailyDetail"
-                  component={DailyDetailScreen}
-                  options={{
-                    headerShown: true,
-                  }}
-                />
-                <Stack.Screen
-                  name="RecordCreate"
-                  component={RecordCreateScreen}
-                  options={{
-                    headerShown: true,
-                  }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </View>
-        </QueryClientProvider>
-      </PaperProvider>
+                  initialRouteName="Login"
+                >
+                  <Stack.Screen name="Login" component={LoginScreen} />
+                  <Stack.Screen
+                    name="KakaoLoginScreen"
+                    component={KakaoLoginScreen}
+                  />
+                  <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                  <Stack.Screen
+                    name="AddInfoStep2"
+                    component={AddInfoStep2Screen}
+                  />
+                  <Stack.Screen
+                    name="AddInfoStep3"
+                    component={AddInfoStep3Screen}
+                  />
+                  <Stack.Screen
+                    name="BottomTab"
+                    component={BottomTabNavigator}
+                  />
+                  <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                    }}
+                  />
+                  {/*@@@@@@@@@@@@@@@@@@@@여기에 추가해야 이동할 수 있다@@@@@@@@@@@@@@@@@@@@*/}
+                  <Stack.Screen
+                    name="DailyDetail"
+                    component={DailyDetailScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                      title: "Calendar",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="RecordCreate"
+                    component={RecordCreateScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                      title: "Calendar",
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+          </QueryClientProvider>
+        </PaperProvider>
+      </SafeAreaProvider>
     </RecoilRoot>
   );
 }
@@ -195,6 +192,6 @@ export default function App() {
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,
-    marginTop: Constants.statusBarHeight,
+    // marginTop: Constants.statusBarHeight,
   },
 });

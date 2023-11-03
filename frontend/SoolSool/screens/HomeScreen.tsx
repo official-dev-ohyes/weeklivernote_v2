@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 
 import { StyleSheet, View, Text, BackHandler } from "react-native";
@@ -9,24 +8,19 @@ import HomeCarousel from "../components/Home/HomeCarousel";
 import SafeDriveInfo from "../components/Home/SafeDriveInfo";
 import DrinkController from "../components/Home/DrinkController";
 import { drinkTodayAtom } from "../recoil/drinkTodayAtom";
-import { useRecoilState } from "recoil";
+import { currentDrinksAtom } from "../recoil/currentDrinksAtom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
+import { fetchDrink } from "../api/drinkRecordApi";
+import { getToday } from "../utils/timeUtils";
+import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
-  const date = new Date("2023-11-01T15:30:00");
-
-  useEffect(() => {
-    setDrinkToday(
-      new DrinkToday({
-        drinkTotal: 1000,
-        alcoholAmount: 35.8,
-        drinkStartTime: date.toDateString(),
-        height: 157,
-        weight: 58,
-        gender: "female",
-      })
-    );
-  }, []);
+  // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
+  const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
+  const today = getToday();
+  // const today = "2023-11-01";
 
   // useEffect(() => {
   //   const backAction = () => {
@@ -44,39 +38,60 @@ function HomeScreen() {
   //   };
   // }, []);
 
-  // const fetchDrinkTodayData = async () => {
-  //   try {
-  //     const response = await axios.get("/api/v1/drink");
-  //     return response.data;
-  //   } catch (error) {
-  //     throw new Error("당일 음주 정보 조회 실패");
-  //   }
-  // };
+  const { data, isLoading, isError } = useQuery("drinkToday", async () => {
+    const response = await fetchDrink(today);
+    return response;
+  });
 
-  // const { data, isLoading, isError } = useQuery(
-  //   "drinkToday",
-  //   fetchDrinkTodayData
-  // );
+  const queryClient = useQueryClient();
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setDrinkToday(new DrinkToday(data));
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    queryClient.invalidateQueries("drinkToday");
+  }, [currentDrinks]);
 
-  // if (isLoading) {
-  //   return (
-  //     <View>
-  //       {/* <ActivityIndicator animating={true} color={}/> */}
-  //       <ActivityIndicator animating={true} />
-  //       <Text>Loading...</Text>
-  //     </View>
-  //   );
-  // }
+  useEffect(() => {
+    if (data) {
+      if (data.drinkTotal === 0) {
+        setDrinkToday(new DrinkToday(data));
+      } else {
+        const drinkTodayData = {
+          drinkTotal: data.drinkTotal,
+          alcoholAmount: data.alcoholAmount,
+          drinkStartTime: data.drinkStartTime,
+          height: data.height,
+          weight: data.weight,
+          gender: data.gender,
+        };
 
-  // if (isError) {
-  //   return <Text>Error!!!</Text>;
-  // }
+        setDrinkToday(new DrinkToday(drinkTodayData));
+
+        const currentDrinksObject = {};
+        data.drinks.forEach((drink) => {
+          const id = getIdByCategoryAndUnit(drink.category, drink.drinkUnit);
+          if (currentDrinksObject.hasOwnProperty(id)) {
+            currentDrinksObject[id] += drink.drinkAmount;
+          } else {
+            currentDrinksObject[id] = drink.drinkAmount;
+          }
+        });
+
+        setCurrentDrinks(currentDrinksObject);
+      }
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <View>
+        <ActivityIndicator animating={true} color="#0477BF" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return <Text>Error!!!</Text>;
+  }
 
   if (!drinkToday) {
     return (
@@ -91,7 +106,11 @@ function HomeScreen() {
     <>
       <HomeCarousel />
       <View style={styles.controllerContainer}>
-        <SafeDriveInfo />
+        <SafeDriveInfo
+          bloodAlcoholContent={drinkToday.bloodAlcoholContent}
+          drinkStartTime={drinkToday.drinkStartTime}
+          requiredTimeToDrive={drinkToday.cannotDriveFor}
+        />
         <DrinkController />
       </View>
     </>
