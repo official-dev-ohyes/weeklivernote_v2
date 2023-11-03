@@ -1,9 +1,11 @@
 import { Alert } from "react-native";
 
-export const showErrorAndRetry = () => {
+export const showErrorAndRetry = (title: string, content: string) => {
   Alert.alert(
-    "다음에 다시 시도하세요",
-    "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요.",
+    // "다음에 다시 시도하세요",
+    // "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요.",
+    title,
+    content,
     [
       {
         text: "확인", // 알림에 표시될 버튼 텍스트
