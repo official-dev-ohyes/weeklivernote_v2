@@ -21,21 +21,21 @@ function HomeScreen() {
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
 
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     return true;
-  //   };
+  useEffect(() => {
+    const backAction = () => {
+      return true;
+    };
 
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     backAction
-  //   );
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
 
-  //   return () => {
-  //     backHandler.remove();
-  //     console.log("I'm leaving");
-  //   };
-  // }, []);
+    return () => {
+      backHandler.remove();
+      console.log("I'm leaving");
+    };
+  }, []);
 
   const { data, isLoading, isError } = useQuery("drinkToday", async () => {
     const response = await fetchDrink(today);
