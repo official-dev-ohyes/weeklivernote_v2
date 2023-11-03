@@ -9,14 +9,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChartDataDto {
+public class ChartDrinkDataDto {
 
     private double value;
     private String label;
     @JsonIgnore
     private LocalDate date;
 
-    public ChartDataDto(LocalDate date, double value) {
+    public ChartDrinkDataDto(LocalDate date, double value) {
         this.value = value;
         this.label = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA);
         this.date = date;

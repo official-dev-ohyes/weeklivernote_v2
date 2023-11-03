@@ -5,7 +5,8 @@ import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
-import com.ohyes.soolsool.user.dto.ChartDataDto;
+import com.ohyes.soolsool.user.dto.ChartAlcDataDto;
+import com.ohyes.soolsool.user.dto.ChartDrinkDataDto;
 import com.ohyes.soolsool.user.dto.UserStatChartResponseDto;
 import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.user.dto.WeeklyCharDto;
@@ -61,7 +62,6 @@ public class UserStatService {
             .build();
     }
 
-
     public UserStatChartResponseDto getUserStatChart(Long socialId) {
         User user = userRepository.findBySocialId(socialId)
             .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
@@ -70,19 +70,19 @@ public class UserStatService {
         LocalDate startDate = now.minusDays(6);
 
         // weekly 술 총량
-        Map<LocalDate, ChartDataDto> drinkDataMap = getChartDataMap(startDate);
-        List<ChartDataDto> drinkData = drinkRepository.getDrinkData(user.getSocialId(), startDate,
+        Map<LocalDate, ChartDrinkDataDto> drinkDataMap = getChartDrinkDataMap(startDate);
+        List<ChartDrinkDataDto> drinkData = drinkRepository.getDrinkData(user.getSocialId(), startDate,
             now);
-        updateChartDataMap(drinkDataMap, drinkData);
+        updateChartDrinkDataMap(drinkDataMap, drinkData);
 
-        ArrayList<ChartDataDto> sortedDrinkList = getSortedChartDataList(drinkDataMap);
+        ArrayList<ChartDrinkDataDto> sortedDrinkList = getSortedChartDrinkDataList(drinkDataMap);
 
         // weekly 알코올 총량
-        Map<LocalDate, ChartDataDto> alcDataMap = getChartDataMap(startDate);
-        List<ChartDataDto> alcData = drinkRepository.getAlcData(user.getSocialId(), startDate, now);
-        updateChartDataMap(alcDataMap, alcData);
+        Map<LocalDate, ChartAlcDataDto> alcDataMap = getChartAlcDataMap(startDate);
+        List<ChartAlcDataDto> alcData = drinkRepository.getAlcData(user.getSocialId(), startDate, now);
+        updateChartAlcDataMap(alcDataMap, alcData);
 
-        ArrayList<ChartDataDto> sortedAlcList = getSortedChartDataList(alcDataMap);
+        ArrayList<ChartAlcDataDto> sortedAlcList = getSortedChartAlcDataList(alcDataMap);
 
         // weekly bar/line data 반환 객체 생성
         WeeklyCharDto weeklyChart = new WeeklyCharDto();
@@ -137,27 +137,49 @@ public class UserStatService {
     }
 
     // weekly 차트 빈 값 0으로 채우기
-    private Map<LocalDate, ChartDataDto> getChartDataMap(LocalDate startDate) {
-        Map<LocalDate, ChartDataDto> dataMap = new HashMap<>();
+    private Map<LocalDate, ChartDrinkDataDto> getChartDrinkDataMap(LocalDate startDate) {
+        Map<LocalDate, ChartDrinkDataDto> dataMap = new HashMap<>();
         for (int i = 0; i < 7; i++) {
             LocalDate date = startDate.plusDays(i);
-            dataMap.put(date, new ChartDataDto(date, 0.0));
+            dataMap.put(date, new ChartDrinkDataDto(date, 0.0));
+        }
+        return dataMap;
+    }
+
+    private Map<LocalDate, ChartAlcDataDto> getChartAlcDataMap(LocalDate startDate) {
+        Map<LocalDate, ChartAlcDataDto> dataMap = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = startDate.plusDays(i);
+            dataMap.put(date, new ChartAlcDataDto(date, 0.0));
         }
         return dataMap;
     }
 
     // weekly 차트 불러온 데이터 채우기
-    private void updateChartDataMap(Map<LocalDate, ChartDataDto> dataMap,
-        List<ChartDataDto> newData) {
-        for (ChartDataDto data : newData) {
+    private void updateChartDrinkDataMap(Map<LocalDate, ChartDrinkDataDto> dataMap,
+        List<ChartDrinkDataDto> newData) {
+        for (ChartDrinkDataDto data : newData) {
+            dataMap.put(data.getDate(), data);
+        }
+    }
+
+    private void updateChartAlcDataMap(Map<LocalDate, ChartAlcDataDto> dataMap,
+        List<ChartAlcDataDto> newData) {
+        for (ChartAlcDataDto data : newData) {
             dataMap.put(data.getDate(), data);
         }
     }
 
     // weekly 차트 정렬
-    private ArrayList<ChartDataDto> getSortedChartDataList(Map<LocalDate, ChartDataDto> dataMap) {
-        ArrayList<ChartDataDto> sortedList = new ArrayList<>(dataMap.values());
-        sortedList.sort(Comparator.comparing(ChartDataDto::getDate));
+    private ArrayList<ChartDrinkDataDto> getSortedChartDrinkDataList(Map<LocalDate, ChartDrinkDataDto> dataMap) {
+        ArrayList<ChartDrinkDataDto> sortedList = new ArrayList<>(dataMap.values());
+        sortedList.sort(Comparator.comparing(ChartDrinkDataDto::getDate));
+        return sortedList;
+    }
+
+    private ArrayList<ChartAlcDataDto> getSortedChartAlcDataList(Map<LocalDate, ChartAlcDataDto> dataMap) {
+        ArrayList<ChartAlcDataDto> sortedList = new ArrayList<>(dataMap.values());
+        sortedList.sort(Comparator.comparing(ChartAlcDataDto::getDate));
         return sortedList;
     }
 
