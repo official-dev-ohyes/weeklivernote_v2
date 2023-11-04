@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     // justifyContent: "space-between",
   },
   smallCalendar: {
-    height: "80%",
+    height: "75%",
     // borderWidth: 2,
     // borderColor: "orange",
   },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     // borderColor: "orange",
   },
   dailySummaryComponent: {
-    height: "20%",
+    height: "25%",
     backgroundColor: "balck",
   },
   dailySummaryTotal: {

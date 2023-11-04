@@ -37,10 +37,10 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   mainTextBox: {
-    height: "15%",
+    height: "10%",
     padding: "5%",
+    // paddingBottom: "-3%",
     flexDirection: "row",
-    alignItems: "flex-end",
     // backgroundColor: "pink",
   },
   headerText: {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
   },
   calendar: {
-    height: "85%",
+    height: "90%",
     // borderWidth: 20,
     // borderColor: "red",
   },
