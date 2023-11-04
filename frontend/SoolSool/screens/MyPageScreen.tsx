@@ -1,60 +1,111 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { useQuery } from "react-query";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
+import UserStatistics from "../components/MyPage/template/UserStatistics";
+import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
+import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 import SettingsIconButton from "../components/MyPage/SettingsIconButton";
-import UserProfile from "../components/MyPage/UserProfile";
-import UserStatistics from "../components/MyPage/UserStatistics";
+import Profile from "../components/MyPage/template/Profile";
 
-// interface UserStatistics {
-//   weekly: Record<string, [number, number][]>;
-//   yearly: Record<string, [number, number][]>;
-//   maxNonAlcPeriod: string;
-//   nowNonAlcPeriod: string;
-//   drinkYearAmount: string;
-// }
-
-function MyPageScreen({ navigation }) {
-  // const [userStatistics, setUserStatistics] = useState<UserStatistics>({ weekly: {}, yearly: {}, maxNonAlcPeriod: "", nowNonAlcPeriod: "", drinkYearAmount: "" });
-
-  //유저프로필 정보를 불러오는 함수
-  const fetchUserProfileData = async () => {
-    try {
-      const response = await axios.get("/api/v1/user/info");
-      return response.data;
-    } catch (error) {
-      throw new Error("user profile data를 가져오는데 실패");
-    }
-  };
-
-  const {
-    data: userData,
-    isLoading,
-    isError,
-  } = useQuery("userProfile", fetchUserProfileData);
-
-  function handleHeaderButtonPressed() {
-    navigation.navigate("Settings");
-  }
-
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (isError) {
-    return <Text>Error...</Text>;
-  }
-
-  return (
-    <View>
-      <Text>My Page</Text>
-      <SettingsIconButton onPress={handleHeaderButtonPressed} />
-      <UserProfile userData={userData} />
-      {/* <UserStatistics userStatistics={userStatistics} /> */}
-    </View>
-  );
+interface UserProfile {
+  address: string;
+  alcoholLimit: number;
+  gender: string;
+  height: number;
+  nickname: string;
+  profileImg: string | null;
+  weight: number;
 }
 
-const styles = StyleSheet.create({});
+interface AlcoholStatistics {
+  maxNonAlcPeriod: number; // 최장금주기간
+  nowNonAlcPeriod: number; // 현재금주기간
+  drinkYearAmount: number; // 올해음주량
+}
+
+interface UserProfileProps {
+  userProfile: UserProfile;
+  alcoholStatistics: AlcoholStatistics;
+  navigation: any;
+}
+
+function MyPageScreen(props: UserProfileProps) {
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    nickname: "",
+    profileImg: "",
+    gender: "",
+    height: 0,
+    weight: 0,
+    alcoholLimit: 0,
+    address: "",
+  });
+
+  const [alcoholStatistics, setAlcoholStatistics] = useState<AlcoholStatistics>(
+    {
+      maxNonAlcPeriod: 0, // 최장금주기간
+      nowNonAlcPeriod: 0, // 현재금주기간
+      drinkYearAmount: 0, // 올해음주량
+    }
+  );
+  const navigation = props.navigation;
+
+  // 내비게이션 헤더에 설정페이지 이동 버튼 추가
+  function handleHeaderButtonPressed() {
+    navigation.navigate("Settings");
+    // navigation을 프롭스로 받아와야하나?
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <SettingsIconButton onPress={handleHeaderButtonPressed} />;
+      },
+    });
+  }, []);
+
+  const {
+    data: userProfileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useQuery("userProfileData", async () => await fetchUserProfile());
+
+  const {
+    data: userNonAlcData,
+    isLoading: isNonAlcLoading,
+    isError: isNonAlcError,
+  } = useQuery("userNonAlcData", async () => await fetchUserNonAlc());
+
+  // console.log("오잉?", userProfileData);
+
+  useEffect(() => {
+    if (!isProfileLoading && userProfileData) {
+      setUserProfile(userProfileData);
+    }
+    if (!isNonAlcLoading && userNonAlcData) {
+      setAlcoholStatistics(userNonAlcData);
+    }
+  }, [userProfileData, isProfileLoading]);
+
+  return (
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <Profile navigation={navigation} userData={userProfile} />
+        <UserNonAlc alcoholData={alcoholStatistics} />
+        <UserStatistics />
+      </View>
+    </ScrollView>
+  );
+}
+//
+const styles = StyleSheet.create({
+  mainContainer: {
+    flexDirection: "column",
+    gap: 25,
+    marginHorizontal: 15,
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+});
 
 export default MyPageScreen;

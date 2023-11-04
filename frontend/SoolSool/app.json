@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SoolSool",
-    "slug": "SoolSool",
+    "name": "weekliver",
+    "slug": "weekliver",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,31 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.official_ohyes.weekliver",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#ffffff",
+        "package": "com.official_ohyes.weekliver",
+        "versionCode": 1
+      },
+      "config": {
+        "cleartext": {
+          "usesCleartext": true
+        }
+      },
+      "package": "com.official_ohyes.weekliver"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8dd86352-2afe-4dc4-91ef-64a3bf3b2075"
+      }
     }
   }
 }
