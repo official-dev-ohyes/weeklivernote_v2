@@ -14,12 +14,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 
 function AddInfoStep3Screen({ navigation, route }) {
-  const { height, weight, gender, address } = route.params;
+  const { height, weight, gender, address, socialId } = route.params;
 
   const [selectedDrinkKind, setSelectedDrinkKind] = useState(null);
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState("잔");
-
+  console.log("마지막단계에도 socialId가 있나?", socialId);
   const handleDrinkKindSelection = (drinkKind) => {
     if (selectedDrinkKind === drinkKind) {
       // 이미 선택된 버튼을 다시 누를 경우 선택 해제
@@ -60,10 +60,10 @@ function AddInfoStep3Screen({ navigation, route }) {
       drinkAmount: amount,
     };
 
-    saveUserInfo(weight, height, gender, address, drinkInfo)
+    saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
       .then(async (res) => {
-        console.log("제출 성공", res.tokenInfo.acessToken);
-        const accessToken = res.tokenInfo.acessToken;
+        console.log("제출 성공", res.tokenInfo.accessToken);
+        const accessToken = res.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
         navigation.navigate("BottomTab");
       })

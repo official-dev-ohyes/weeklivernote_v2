@@ -24,8 +24,10 @@ function KakaoRedirectScreen({ route, navigation }) {
       console.log("로그인에 성공했습니다");
 
       if (response.data.message) {
-        console.log("첫 회원이시군요!");
-        navigation.navigate("AddInfo");
+        const socialId = response.data.socialId;
+        console.log("첫 회원이시군요!", response.data.socialId);
+        console.log("혹시모르니까 확인!", response.data);
+        navigation.navigate("AddInfo", { socialId: socialId });
       } else {
         const accessToken = response.data.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);

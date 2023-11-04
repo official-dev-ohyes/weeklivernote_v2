@@ -7,9 +7,9 @@ import CustomSlider from "./CustomSlider";
 // nonAlc:number;
 // }
 
-function BodyDetail({ navigation, gender }) {
+function BodyDetail({ navigation, gender, socialId }) {
   // const navigation = useNavigation();
-
+  console.log("여기까지는?", socialId);
   const [height, setHeight] = React.useState(0.5);
   const [weight, setWeight] = React.useState(0.5);
 
@@ -18,6 +18,7 @@ function BodyDetail({ navigation, gender }) {
       height: Math.round(height * 100),
       weight: Math.round(weight * 100),
       gender: gender,
+      socialId: socialId,
     });
   };
 
