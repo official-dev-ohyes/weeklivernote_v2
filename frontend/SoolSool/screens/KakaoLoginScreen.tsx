@@ -1,12 +1,14 @@
 import { StyleSheet, View, ImageBackground, Button } from "react-native";
 import axios from "axios";
 import { WebView } from "react-native-webview";
+import { useState } from "react";
 
 const RESTAPI_KEY = process.env.RESTAPI_KEY;
 const REDIRECT_URI = "https://soolsool.site/kakao/callback";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 function KakaoLoginScreen({ navigation }) {
+
   // 백으로부터 AccessToken 및 유저데이터 받아오는 함수
   // const fetchAccessToken = async (code: string) => {
   //   console.log(code, "로axios요청을 하는중...");

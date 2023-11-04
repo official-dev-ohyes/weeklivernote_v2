@@ -179,6 +179,15 @@ export default function App() {
                     }}
                   />
                   <Stack.Screen
+                    name="Notification"
+                    component={NotificationScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                    }}
+                  />
+                  <Stack.Screen
                     name="DailyDetail"
                     component={DailyDetailScreen}
                     options={{
