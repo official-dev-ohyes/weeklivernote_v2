@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
 import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { removeDrink } from "../api/drinkRecordApi";
 
 function DailyDetailScreen({ route, navigation }) {
@@ -60,10 +62,15 @@ function DailyDetailScreen({ route, navigation }) {
 
   return (
     <View style={styles.total}>
-      <View style={styles.header}>
-        <View style={styles.mainText}>
-          <Text>술력</Text>
-          <Text>전구넣을 곳</Text>
+      <View style={styles.mainTextBox}>
+        <Text style={styles.headerText}>술력</Text>
+        <View style={styles.light}>
+          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
+          <MaterialCommunityIcons
+            name="lightbulb-on-outline"
+            size={30}
+            color="black"
+          />
         </View>
         <View style={styles.buttons}>
           {/* <Button
@@ -125,20 +132,34 @@ const styles = StyleSheet.create({
     height: "80%",
     flex: 1,
   },
-  header: {
-    height: "15%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    padding: "2%",
-    // backgroundColor: "red",
+  mainBackground: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "black",
   },
-  mainText: {
+  mainTextBox: {
+    height: "15%",
+    padding: "5%",
     flexDirection: "row",
+    alignItems: "flex-end",
+    // backgroundColor: "pink",
+  },
+  headerText: {
+    fontSize: 40,
+    fontFamily: "Yeongdeok-Sea",
+    verticalAlign: "bottom",
+  },
+  light: {
+    height: "80%",
+    // backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: "2%",
   },
   buttons: {
+    flex: 1,
     flexDirection: "row",
-    alignSelf: "flex-end",
+    justifyContent: "flex-end",
   },
   summ: {
     height: "20%",
