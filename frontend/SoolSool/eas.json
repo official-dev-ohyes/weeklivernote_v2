@@ -28,7 +28,12 @@
 				"RESTAPI_KEY": "b6ffe641bddfb241b3677f88c7462119"
 			}
 		},
-		"production": {}
+		"production": {
+			"env": {
+				"REACT_APP_BACK_URL": "https://soolsool.life/api",
+				"RESTAPI_KEY": "b6ffe641bddfb241b3677f88c7462119"
+			}
+		}
 	},
 	"submit": {
 		"production": {}
