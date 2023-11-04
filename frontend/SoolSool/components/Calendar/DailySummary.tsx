@@ -4,6 +4,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchDailyDrink } from "../../api/drinkRecordApi";
 import { useNavigation } from "@react-navigation/native";
 
+import {
+  getDrinkImageById,
+  getIdByOnlyCategory,
+  getSmallDrinkImageById,
+} from "../../utils/drinkUtils";
+import { ImageBackground } from "expo-image";
+
 function DailySummary(props) {
   const { summaryText, alcoholDays } = props;
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
@@ -56,9 +63,16 @@ function DailySummary(props) {
               {alcoholList.slice(0, 3).map((alcohol, index) => (
                 <View style={styles.eachAlcohol} key={index}>
                   <View style={styles.eachAlcoholIcon}>
-                    <Text>아이콘1</Text>
+                    <ImageBackground
+                      source={getDrinkImageById(
+                        getIdByOnlyCategory(alcohol.drink)
+                      )}
+                      style={styles.imageContainer}
+                      resizeMode="contain"
+                    />
+                    {/* 잔 용량으로 나눠주기 */}
+                    <Text>{alcohol.count} ml</Text>
                   </View>
-                  <Text>{alcohol.amount} ml</Text>
                 </View>
               ))}
             </View>
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
   eachAlcoholIcon: {
     height: "80%",
     justifyContent: "center",
-    backgroundColor: "blue",
+    // backgroundColor: "blue",
   },
   textInformations: {
     width: "50%",
@@ -174,6 +188,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+  },
+  imageContainer: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
   },
 });
 
