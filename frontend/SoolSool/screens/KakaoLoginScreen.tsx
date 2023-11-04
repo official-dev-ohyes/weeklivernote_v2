@@ -40,9 +40,9 @@ function KakaoLoginScreen({ navigation }) {
     const condition = target.indexOf(exp);
     if (condition !== -1) {
       const requestCode = target.substring(condition + exp.length);
-      console.log("url로부터 인가코드를 파싱중...");
+      // console.log("url로부터 인가코드를 파싱중...");
       // fetchAccessToken(requestCode);
-      console.log("파싱잘되었나?", requestCode);
+      // console.log("파싱잘되었나?", requestCode);
       // URL 리다이렉트 처리를 위해 "Redirect" 화면으로 이동
       navigation.navigate("KakaoRedirectScreen", { requestCode: requestCode });
     }

@@ -23,7 +23,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
   useEffect(() => {
     if (!isLoading && monthlyStatisticsData) {
-      console.log("왜?", monthlyStatisticsData);
+      // console.log("왜?", monthlyStatisticsData);
       setBarData(monthlyStatisticsData.yearly);
     }
   }, [monthlyStatisticsData, isLoading]);

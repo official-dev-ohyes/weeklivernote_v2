@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 // import { cheeseDuck } from "../../../assets";
 import DetailProfile from "../DetailProfile";
 import { showErrorAndRetry } from "../../../utils/showErrorUtils";
+import { defaultImage } from "../../../assets";
 
 interface UserProfile {
   address: string;
@@ -24,18 +25,19 @@ function Profile(props: UserProfileProps) {
   const { userData, navigation } = props;
 
   const handleEdit = () => {
-    console.log("에딧아이콘 클릭");
-    showErrorAndRetry("준비 중", "조금만 기다려줘...");
+    // console.log("에딧아이콘 클릭");
+    showErrorAndRetry("준비 중", "추후 업데이트 예정입니다");
     // navigation.navigate("EditProfile");
   };
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.profileContainer}>
-        <Image
-          source={{ uri: userData.profileImg }}
-          style={styles.profileImage}
-        />
+      <Image
+        source={userData.profileImg ? { uri: userData.profileImg } : defaultImage}
+        style={styles.profileImage}
+      />
+
         <Pressable style={styles.editIcon} onPress={handleEdit}>
           <Ionicons name="pencil" color={"white"} size={15} />
         </Pressable>

@@ -75,7 +75,7 @@ function MyPageScreen(props: UserProfileProps) {
     isError: isNonAlcError,
   } = useQuery("userNonAlcData", async () => await fetchUserNonAlc());
 
-  console.log("오잉?", userProfileData);
+  // console.log("오잉?", userProfileData);
 
   useEffect(() => {
     if (!isProfileLoading && userProfileData) {

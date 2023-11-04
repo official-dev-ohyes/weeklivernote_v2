@@ -9,6 +9,7 @@ import veryHighImage from "./Home/intoxication/drunken-level-04.png";
 import severeImage from "./Home/intoxication/drunken-level-05.png";
 import nonAlcIcon from "./nonAlcIcon.png";
 import logo from "./logo.png";
+import defaultImage from "./defaultImage.png";
 
 import drink01 from "./Home/drinks/drink-01.png";
 import drink02 from "./Home/drinks/drink-02.png";
@@ -56,4 +57,5 @@ export {
   drink13,
   drink14,
   logo,
+  defaultImage
 };

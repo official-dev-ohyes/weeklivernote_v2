@@ -62,13 +62,13 @@ function AddInfoStep3Screen({ navigation, route }) {
 
     saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
       .then(async (res) => {
-        console.log("제출 성공", res.tokenInfo.accessToken);
+        // console.log("제출 성공", res.tokenInfo.accessToken);
         const accessToken = res.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
         navigation.navigate("BottomTab");
       })
       .catch((error) => {
-        console.error("추가정보 입력 실패", error);
+        // console.error("추가정보 입력 실패", error);
         showErrorAndRetry(
           "다음에 다시 시도하세요",
           "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
@@ -131,7 +131,6 @@ function AddInfoStep3Screen({ navigation, route }) {
         </Button>
         <Button
           mode="contained"
-          buttonColor={"#384BAD"}
           onPress={handleSubmitInfo}
         >
           Submit

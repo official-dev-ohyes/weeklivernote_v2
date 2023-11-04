@@ -8,7 +8,7 @@ export const saveUserInfo = async (
   address,
   drinkInfo
 ) => {
-  console.log("data확인", socialId, weight, height, gender, address, drinkInfo);
+  // console.log("data확인", socialId, weight, height, gender, address, drinkInfo);
   try {
     const res = await axiosInstance.patch(`/v1/user`, {
       socialId: socialId,

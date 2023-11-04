@@ -42,7 +42,7 @@ function BodyDetail({ navigation, gender, socialId }) {
         <CustomSlider value={height} onValueChange={handleHeightValueChange} />
         <Text>Progress: {Math.round(height * 100)}cm</Text>
       </View>
-      <Button mode="contained" buttonColor={"#384BAD"} onPress={goToNextStep}>
+      <Button mode="contained" onPress={goToNextStep}>
         Next
       </Button>
     </View>
