@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useQuery } from "react-query";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
   createDrink,
@@ -146,8 +147,16 @@ function RecordCreateScreen({ route, navigation }) {
 
   return (
     <View style={styles.total}>
-      <View style={styles.header}>
-        <Text>{day}</Text>
+      <View style={styles.mainTextBox}>
+        <Text style={styles.headerText}>{day}</Text>
+        <View style={styles.light}>
+          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
+          <MaterialCommunityIcons
+            name="lightbulb-on-outline"
+            size={30}
+            color="black"
+          />
+        </View>
       </View>
       <View style={styles.contents}>
         <View style={styles.tagArea}>
@@ -236,9 +245,9 @@ function RecordCreateScreen({ route, navigation }) {
           </View>
         </View>
         <View style={styles.memo}>
-          <View>
+          {/* <View>
             <Text>사진 입력 자리</Text>
-          </View>
+          </View> */}
           <Text>Memo</Text>
           {/* 한글 입력이 안돼요ㅠㅠ */}
           <TextInput
@@ -251,7 +260,15 @@ function RecordCreateScreen({ route, navigation }) {
             numberOfLines={9}
           />
         </View>
-        {isAlcohol ? (
+        <Button
+          mode="contained"
+          onPress={() => {
+            saveRecord();
+          }}
+        >
+          저장
+        </Button>
+        {/* {isAlcohol ? (
           <Button
             mode="contained"
             onPress={() => {
@@ -269,7 +286,7 @@ function RecordCreateScreen({ route, navigation }) {
           >
             저장
           </Button>
-        )}
+        )} */}
       </View>
     </View>
   );
@@ -280,9 +297,29 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "black",
   },
-  header: {
+  mainBackground: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "black",
+  },
+  mainTextBox: {
     height: "15%",
-    backgroundColor: "pink",
+    padding: "5%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    // backgroundColor: "pink",
+  },
+  headerText: {
+    fontSize: 40,
+    fontFamily: "Yeongdeok-Sea",
+    verticalAlign: "bottom",
+  },
+  light: {
+    height: "80%",
+    // backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: "2%",
   },
   contents: {
     height: "85%",
