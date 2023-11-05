@@ -25,3 +25,11 @@ export const getIdByCategoryAndUnit = (
   );
   return matchingDrink ? matchingDrink.id : null;
 };
+
+export const getIdByOnlyCategory = (category: string): number | null => {
+  const matchingDrink = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  console.log(`매칭 드링크 정보 보세요@@@@@@@${matchingDrink}`);
+  return matchingDrink ? matchingDrink.id : null;
+};
