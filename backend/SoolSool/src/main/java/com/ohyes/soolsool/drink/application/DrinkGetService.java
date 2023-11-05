@@ -11,8 +11,9 @@ import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.drink.dto.DrinkPercent;
 import com.ohyes.soolsool.drink.dto.MonthlyDrinkInfoDto;
 import com.ohyes.soolsool.drink.dto.TotalDrinkInfoDto;
-import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,13 +32,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DrinkGetService {
 
-    private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
 
-    public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, Long socialId) {
+    public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        User user = UserUtils.getUserFromToken(userDetails);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
             .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
@@ -87,9 +86,8 @@ public class DrinkGetService {
             .build();
     }
 
-    public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, Long socialId) {
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+    public MonthlyDrinkInfoDto monthlyDrinkGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
         List<DailyMainDrink> dailyMainDrinks = new ArrayList<>();
 
         // 년, 월이 일치하는 일기들 검색
@@ -144,10 +142,9 @@ public class DrinkGetService {
             .build();
     }
 
-    public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, Long socialId) {
+    public DailyDrinkDto dailyDrinkGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        User user = UserUtils.getUserFromToken(userDetails);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
             .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
@@ -194,10 +191,9 @@ public class DrinkGetService {
             .build();
     }
 
-    public DailyDetailDrinkDto dailyDetailDrinkGet(LocalDate drinkDate, Long socialId) {
+    public DailyDetailDrinkDto dailyDetailDrinkGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
         // 유저와 날짜가 일치하는 일기 찾기
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+        User user = UserUtils.getUserFromToken(userDetails);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
             .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
 
