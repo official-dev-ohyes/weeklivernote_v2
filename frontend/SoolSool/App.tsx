@@ -52,7 +52,7 @@ function BottomTabNavigator() {
         tabBarShowLabel: false,
       }}
       sceneContainerStyle={{
-        backgroundColor: "#fff",
+        backgroundColor: "#ffffff",
       }}
     >
       <BottomTab.Screen

@@ -1,10 +1,11 @@
 import { TouchableOpacity, StyleSheet, Image, View, Text } from "react-native";
 import { Button } from "react-native-paper";
-import { kakaoLoginButton, logo } from "../assets";
+import { characterSet, kakaoLoginButton, logo } from "../assets";
 import { WebView } from "react-native-webview";
 import {useState} from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import Toast from 'react-native-root-toast';
 
 const RESTAPI_KEY = process.env.RESTAPI_KEY;
 const REDIRECT_URI = "https://soolsool.site/kakao/callback";
@@ -39,6 +40,13 @@ function LoginScreen({ navigation }) {
       );
 
       console.log("로그인에 성공했습니다");
+      Toast.show('로그인에 성공했습니다', {
+        duration: Toast.durations.SHORT,
+        position: 0,
+        shadow: true,
+        animation: true,
+        opacity: 0.8
+      });
 
       if (response.data.message) {
         const socialId = response.data.socialId;
@@ -108,7 +116,7 @@ function LoginScreen({ navigation }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.contentContainer}>
-        <Image source={logo} style={styles.logoImage} />
+        <Image source={characterSet} style={styles.logoImage} />
         <View style={styles.textContainer}>
           <Text style={styles.text}>마신 술을 기록하고</Text>
           <Text style={styles.text}>내 상태를 확인해요</Text>
@@ -138,12 +146,12 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     marginBottom: "auto",
     gap: 30,
-    // backgroundColor: "#ffffff",
-    // flex: 1,
+    backgroundColor: "#0477BF",
+    height: "100%"
   },
   kakaoLoginButton: {
-    width: 300,
-    height: 70,
+    width: 280,
+    height: 60,
     marginTop: 20,
     marginRight: "auto",
     marginLeft: "auto",
@@ -151,14 +159,14 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     width: 350,
-    height: 170,
+    height: 220,
     marginRight: "auto",
     marginLeft: "auto",
   },
   contentContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 80,
+    gap: 60,
     alignItems: "center",
   },
   textContainer: {
@@ -166,7 +174,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   text: {
-    fontSize: 17,
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+    color: "white"
   },
   temp: {
     display: "flex",

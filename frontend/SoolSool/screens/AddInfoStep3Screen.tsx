@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
+  Alert
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "react-native-paper";
@@ -54,26 +55,31 @@ function AddInfoStep3Screen({ navigation, route }) {
   };
 
   const handleSubmitInfo = () => {
-    const drinkInfo = {
-      category: selectedDrinkKind,
-      drinkUnit: unit,
-      drinkAmount: amount,
-    };
-
-    saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
-      .then(async (res) => {
-        console.log("제출 성공", res.tokenInfo.accessToken);
-        const accessToken = res.tokenInfo.accessToken;
-        await AsyncStorage.setItem("accessToken", accessToken);
-        navigation.navigate("BottomTab");
-      })
-      .catch((error) => {
-        // console.error("추가정보 입력 실패", error);
-        showErrorAndRetry(
-          "다음에 다시 시도하세요",
-          "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
-        );
-      });
+    if (selectedDrinkKind && unit && amount)  {
+      const drinkInfo = {
+        category: selectedDrinkKind,
+        drinkUnit: unit,
+        drinkAmount: amount,
+      };
+  
+      saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
+        .then(async (res) => {
+          console.log("제출 성공", res.tokenInfo.accessToken);
+          const accessToken = res.tokenInfo.accessToken;
+          await AsyncStorage.setItem("accessToken", accessToken);
+          navigation.navigate("BottomTab");
+        })
+        .catch((error) => {
+          // console.error("추가정보 입력 실패", error);
+          showErrorAndRetry(
+            "다음에 다시 시도하세요",
+            "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
+          );
+        });
+    } else {
+      Alert.alert("알림", "모든 항목을 선택해주세요.");
+    }
+  
   };
 
   return (

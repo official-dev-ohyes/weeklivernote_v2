@@ -27,6 +27,7 @@ import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
 
 import addInfoImage from "./addInfoImage.png";
+import characterSet from "./characterSet.png";
 import loadingSpinner from "./loadingSpinner.gif";
 
 export {
@@ -57,5 +58,6 @@ export {
   drink13,
   drink14,
   logo,
-  defaultImage
+  defaultImage,
+  characterSet
 };

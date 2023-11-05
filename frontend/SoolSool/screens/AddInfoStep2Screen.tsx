@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
-import { useRoute } from "@react-navigation/native";
+import Toast from 'react-native-root-toast';
 
 function AddInfoStep2Screen({ navigation, route }) {
   const { height, weight, gender, socialId } = route.params;
@@ -42,7 +42,7 @@ function AddInfoStep2Screen({ navigation, route }) {
   console.log("내 구글 api key...", process.env.GOOGLE_API_KEY);
 
   // useEffect(() => {
-  //   console.log("주소가들어오나?", selectedAddress);
+    // console.log("주소가들어오나?", selectedAddress);
   // }, [selectedAddress]);
 
   return (
