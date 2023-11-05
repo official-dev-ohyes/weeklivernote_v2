@@ -185,11 +185,19 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>양</Text>
             <View style={styles.alcoholAmount}>
-              <Button mode="contained" onPress={handleDecrement}>
+              <Button
+                mode="contained"
+                onPress={handleDecrement}
+                buttonColor={"#0477BF"}
+              >
                 -
               </Button>
               <Text>{value}</Text>
-              <Button mode="contained" onPress={handleIncrement}>
+              <Button
+                mode="contained"
+                onPress={handleIncrement}
+                buttonColor={"#0477BF"}
+              >
                 +
               </Button>
             </View>
@@ -208,6 +216,7 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.buttons}>
             <Button
               style={styles.button}
+              buttonColor={"#0477BF"}
               mode="contained"
               onPress={() => {
                 setAlcoholRecord([]);
@@ -234,6 +243,7 @@ function RecordCreateScreen({ route, navigation }) {
                 console.log(alcoholRecord);
               }}
               labelStyle={styles.buttonInnerText}
+              buttonColor={"#0477BF"}
             >
               추가
             </Button>
@@ -296,6 +306,7 @@ function RecordCreateScreen({ route, navigation }) {
             saveRecord();
           }}
           labelStyle={styles.buttonInnerText}
+          buttonColor={"#0477BF"}
         >
           저장
         </Button>
@@ -354,7 +365,7 @@ const styles = StyleSheet.create({
   },
   contents: {
     height: "87%",
-    backgroundColor: "lightgray",
+    backgroundColor: "#F6F6F6",
     padding: 10,
     justifyContent: "space-around",
     margin: "3%",
@@ -455,7 +466,7 @@ const styles = StyleSheet.create({
     marginBottom: "1%",
   },
   record: {
-    backgroundColor: "lightgrey",
+    backgroundColor: "#F6F6F6",
     marginVertical: 5,
     padding: 10,
   },

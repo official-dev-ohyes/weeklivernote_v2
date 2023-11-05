@@ -4,11 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchDailyDrink } from "../../api/drinkRecordApi";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  getDrinkImageById,
-  getIdByOnlyCategory,
-  getSmallDrinkImageById,
-} from "../../utils/drinkUtils";
+import { getDrinkImageById, getIdByOnlyCategory } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
 
 function DailySummary(props) {
@@ -71,19 +67,19 @@ function DailySummary(props) {
                       resizeMode="contain"
                     />
                     {/* 잔 용량으로 나눠주기 */}
-                    <Text>{alcohol.count} ml</Text>
+                    <Text style={styles.drinkStyle}>{alcohol.count} ml</Text>
                   </View>
                 </View>
               ))}
             </View>
             <View style={styles.textInformations}>
-              <Text>
+              <Text style={styles.totalText}>
                 {dailyInfo.totalDrink}
-                <Text> ml</Text>
+                <Text style={styles.unit}> ml</Text>
               </Text>
-              <Text>
+              <Text style={styles.totalText}>
                 {dailyInfo.topConc.toFixed(3)}
-                <Text> %</Text>
+                <Text style={styles.unit}> %</Text>
               </Text>
             </View>
           </View>
@@ -119,18 +115,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "#0477BF",
+    backgroundColor: "#F6F6F6",
     margin: 5,
   },
   headerBox: {
-    height: "20%",
+    height: "25%",
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 5,
     // backgroundColor: "black",
   },
   headerText: {
-    // 높이의 몇 퍼센트로 하고 싶은걸
+    fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
   },
   informations: {
     height: "80%",
@@ -163,6 +161,9 @@ const styles = StyleSheet.create({
     padding: 5,
     flexDirection: "column",
     justifyContent: "space-around",
+    marginBottom: "3%",
+    marginLeft: "5%",
+    // backgroundColor: "pink",
   },
   New: {
     height: "80%",
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   },
   plus: {
     fontSize: 50,
-    color: "black",
+    color: "#0477BF",
     textAlign: "center",
     textAlignVertical: "center", // 수직 가운데 정렬 (Android에서 사용)
     // flex: 1, // 수직 가운데 정렬 (iOS에서 사용)
@@ -193,6 +194,19 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     resizeMode: "contain",
+  },
+  drinkStyle: {
+    textAlign: "center",
+    fontSize: 15,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  totalText: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  unit: {
+    fontSize: 16,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 
