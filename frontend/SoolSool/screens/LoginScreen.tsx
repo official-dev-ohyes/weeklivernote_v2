@@ -29,7 +29,7 @@ function LoginScreen({ navigation }) {
     console.log("이렇게되면 fetchAccessToken 요청 성공");
     try {
       const response = await axios.get(
-        "https://soolsool.site/api/v1/user/login",
+        process.env.REACT_APP_BACK_URL+"/v1/user/login",
         {
           params: {
             code,
@@ -117,14 +117,14 @@ function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={handleLogin}>
         <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
       </TouchableOpacity>
-      <View style={styles.temp}>
+      {/* <View style={styles.temp}>
         <Button mode="contained" onPress={navigateToAddInfo}>
           추가 정보 입력
         </Button>
         <Button mode="contained" onPress={navigateToBottomTab}>
           메인으로
         </Button>
-      </View>
+      </View> */}
     </View>
   );
 }
