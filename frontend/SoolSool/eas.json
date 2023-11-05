@@ -4,8 +4,13 @@
 	},
 	"build": {
 		"development": {
+			"channel": "development",
 			"developmentClient": true,
-			"distribution": "internal"
+			"distribution": "internal",
+			"extends": "emulator",
+			"android": {
+				"buildType": "apk"
+			}
 		},
 		"preview": {
 			"distribution": "internal"
@@ -32,7 +37,8 @@
 			"env": {
 				"REACT_APP_BACK_URL": "https://soolsool.life/api",
 				"RESTAPI_KEY": "b6ffe641bddfb241b3677f88c7462119"
-			}
+			},
+			"autoIncrement": true
 		}
 	},
 	"submit": {
