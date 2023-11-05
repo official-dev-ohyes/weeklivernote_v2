@@ -37,16 +37,19 @@ function BodyInfo({ navigation, socialId }) {
   return (
     <View style={styles.mainContainer}>
       <View>
-        <Text>신체정보를 기준으로 알코올 농도를 계산합니다.</Text>
+        <Text style={styles.infoText}>'주간일기'사용을 위해 정보를 입력해주세요🙂</Text>
       </View>
 
       <View style={styles.titleContainer}>
+      <View style={styles.titleSubContainer}>
         <Text style={styles.title}>신체정보</Text>
         <Icon
           source="lightbulb-on-outline"
           color={MD3Colors.error10}
           size={40}
-        />
+          />
+      </View>
+          <Text style={styles.mainText}>신체정보를 기준으로 알코올 농도를 계산합니다.</Text>
       </View>
       <View style={styles.columnContainer}>
         <Text style={styles.text}>성별 </Text>
@@ -78,10 +81,15 @@ const styles = StyleSheet.create({
   mainContainer: {
     // backgroundColor: "#FFFF",
     flexDirection: "column",
-    gap: 25,
+    gap: 20,
     borderRadius: 20,
   },
   titleContainer: {
+    flexDirection: "column",
+    width: "100%",
+    // justifyContent: "space-evenly",
+  },
+  titleSubContainer: {
     flexDirection: "row",
     width: "100%",
     // justifyContent: "space-evenly",
@@ -93,7 +101,7 @@ const styles = StyleSheet.create({
   },
   columnContainer: {
     flexDirection: "column",
-    gap: 20,
+    gap: 2,
   },
   button: {
     backgroundColor: "#0477BF",
@@ -105,7 +113,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 30,
+    fontSize: 25,
+    fontFamily: "Yeongdeok-Sea",
   },
   buttonText: {
     color: "white", // 텍스트 색상을 흰색으로 변경
@@ -113,6 +122,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
   // 선택된 버튼 스타일
   selectedButton: {
@@ -121,6 +131,14 @@ const styles = StyleSheet.create({
   selectedButtonText: {
     color: "#FFFFFF", // 선택 시 텍스트색 변경
   },
+  mainText:{
+    fontFamily: "Yeongdeok-Sea",
+  },
+  infoText:{
+    fontSize: 16,
+    color: "blue",
+    fontFamily: "Yeongdeok-Sea",
+  }
 });
 
 export default BodyInfo;

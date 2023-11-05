@@ -62,7 +62,7 @@ function AddInfoStep3Screen({ navigation, route }) {
 
     saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
       .then(async (res) => {
-        // console.log("제출 성공", res.tokenInfo.accessToken);
+        console.log("제출 성공", res.tokenInfo.accessToken);
         const accessToken = res.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
         navigation.navigate("BottomTab");

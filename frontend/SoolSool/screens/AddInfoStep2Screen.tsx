@@ -48,8 +48,10 @@ function AddInfoStep2Screen({ navigation, route }) {
   return (
     <View style={styles.mainContainer}>
       <DotIndicator activeIndex={2} />
-      <Text>추후 주소 정보를 입력 받습니다.</Text>
-      <Text>현재는 Next를 눌러 다음 단계로 이동해주세요.</Text>
+      <View>
+      <Text style={styles.text}>추후 주소 정보를 입력 받습니다.</Text>
+      <Text style={styles.text}>현재는 Next를 눌러 다음 단계로 이동해주세요.</Text>
+      </View>
       {/* <PlacesInput
         googleApiKey={process.env.GOOGLE_API_KEY}
         onSelect={(address) => setSelectedAddress(address)}
@@ -128,11 +130,17 @@ function AddInfoStep2Screen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   mainContainer: {
+    display: "flex",
+    flexDirection: "column",
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-between",
     width: "90%",
     marginRight: "auto",
     marginLeft: "auto",
+  },
+  text: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 
