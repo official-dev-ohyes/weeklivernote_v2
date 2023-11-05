@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class WeeklyCharDto {
 
-    private List<ChartDataDto> bar;
-    private List<ChartDataDto> line;
+    private List<ChartDrinkDataDto> bar;
+    private List<ChartAlcDataDto> line;
 }

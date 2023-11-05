@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findBySocialId(Long socialId);
-    Optional<User> deleteBySocialId(Long socialId);
 }
