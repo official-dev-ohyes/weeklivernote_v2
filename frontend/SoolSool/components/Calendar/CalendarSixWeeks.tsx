@@ -150,6 +150,16 @@ function CalendarSixWeeks({}) {
                     height: height1,
                   },
                 },
+                "stylesheet.calendar.header": {
+                  monthText: {
+                    fontFamily: "Yeongdeok-Sea",
+                    fontSize: 20,
+                  },
+                  dayHeader: {
+                    fontFamily: "Yeongdeok-Sea",
+                    fontSize: 14,
+                  },
+                },
               }}
               onDayPress={handleDayPress}
               onPressArrowLeft={handlePressArrowLeft}
@@ -160,19 +170,23 @@ function CalendarSixWeeks({}) {
             {isSame ? (
               <View style={styles.dailySummaryTotal}>
                 <View style={styles.headerBox}>
-                  <Text>{selectDay}</Text>
+                  <Text style={styles.headerText}>{selectDay}</Text>
                 </View>
                 <View style={styles.others}>
-                  <Text>내일 새벽 5시에 업데이트 됩니다</Text>
+                  <Text style={styles.innerText}>
+                    내일 새벽 5시에 업데이트 됩니다
+                  </Text>
                 </View>
               </View>
             ) : isFuture ? (
               <View style={styles.dailySummaryTotal}>
                 <View style={styles.headerBox}>
-                  <Text>{selectDay}</Text>
+                  <Text style={styles.headerText}>{selectDay}</Text>
                 </View>
                 <View style={styles.others}>
-                  <Text>미래 날짜는 입력이 불가능합니다</Text>
+                  <Text style={styles.innerText}>
+                    미래 날짜는 입력이 불가능합니다
+                  </Text>
                 </View>
               </View>
             ) : (
@@ -247,13 +261,13 @@ const styles = StyleSheet.create({
   dailySummaryTotal: {
     flex: 1,
     flexDirection: "column",
-    // backgroundColor: "yellow",
+    backgroundColor: "#f6f6f6",
     borderRadius: 10,
     padding: 5,
     justifyContent: "center",
     alignContent: "center",
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "#0477BF",
     margin: 5,
   },
   headerBox: {
@@ -268,6 +282,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingBottom: "5%",
+  },
+  innerText: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  headerText: {
+    fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

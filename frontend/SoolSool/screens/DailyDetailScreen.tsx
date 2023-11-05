@@ -84,7 +84,12 @@ function DailyDetailScreen({ route, navigation }) {
           >
             수정
           </Button> */}
-          <Button mode="contained" onPress={openDeleteModal}>
+          <Button
+            mode="contained"
+            onPress={openDeleteModal}
+            buttonColor={"#0477BF"}
+            labelStyle={styles.buttonInnerText}
+          >
             삭제
           </Button>
         </View>
@@ -96,12 +101,13 @@ function DailyDetailScreen({ route, navigation }) {
           isAlcohol={isAlcohol}
         />
       </View>
-      <View style={styles.house}>
+      {/* <View style={styles.house}>
         <Text>그래프1</Text>
         <Text>그래프2</Text>
-      </View>
+      </View> */}
       <View style={styles.house}>
-        <Text>시간? 숙취증상</Text>
+        <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
+        <Text>{info.startTime.substring(11, 16)}</Text>
       </View>
       {isImg ? (
         <View style={styles.house}>
@@ -109,8 +115,12 @@ function DailyDetailScreen({ route, navigation }) {
         </View>
       ) : null}
       <View style={styles.house}>
-        <Text>메모</Text>
-        <Text>{info.memo}</Text>
+        <Text style={styles.smallHeaderText}>메모</Text>
+        {info.memo ? (
+          <Text style={styles.innerText}>{info.memo}</Text>
+        ) : (
+          <Text style={styles.innerText}>작성된 메모가 없어요</Text>
+        )}
       </View>
       <Portal>
         <Modal
@@ -118,9 +128,27 @@ function DailyDetailScreen({ route, navigation }) {
           onDismiss={hideDeleteModal}
           style={styles.containerStyle}
         >
-          <Text>{day} 음주 기록을 삭제하시겠습니까?</Text>
-          <Button onPress={confirmDelete}>삭제</Button>
-          <Button onPress={hideDeleteModal}>취소</Button>
+          <Text style={styles.deleteText}>
+            {day} 음주 기록을 삭제하시겠습니까?
+          </Text>
+          <View style={styles.deleteButtons}>
+            <Button
+              mode="contained"
+              onPress={confirmDelete}
+              buttonColor={"#0477BF"}
+              labelStyle={styles.buttonInnerText}
+            >
+              삭제
+            </Button>
+            <Button
+              mode="contained"
+              onPress={hideDeleteModal}
+              buttonColor={"#0477BF"}
+              labelStyle={styles.buttonInnerText}
+            >
+              취소
+            </Button>
+          </View>
         </Modal>
       </Portal>
     </View>
@@ -163,15 +191,43 @@ const styles = StyleSheet.create({
   },
   summ: {
     height: "20%",
+    // backgroundColor: "pink",
   },
   house: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "#0477BF",
+    backgroundColor: "#F6F6F6",
+    borderRadius: 5,
     margin: 5,
+    marginTop: "5%",
+    padding: "3%",
   },
   containerStyle: {
     backgroundColor: "white",
     padding: 20,
+  },
+  buttonInnerText: {
+    fontSize: 17,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  smallHeaderText: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+    marginBottom: "2%",
+  },
+  innerText: {
+    fontSize: 15,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  deleteText: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+    textAlign: "center",
+  },
+  deleteButtons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: "15%",
   },
 });
 
