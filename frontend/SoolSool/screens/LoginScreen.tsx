@@ -86,7 +86,7 @@ function LoginScreen({ navigation }) {
 
 
   if(showWebView){
-    console.log("웹뷰띄우는데까지는 성공")
+    // console.log("웹뷰띄우는데까지는 성공")
     return (
       <WebView
       originWhitelist={["*"]}
@@ -110,7 +110,7 @@ function LoginScreen({ navigation }) {
       <View style={styles.contentContainer}>
         <Image source={logo} style={styles.logoImage} />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>마신술을 기록하고</Text>
+          <Text style={styles.text}>마신 술을 기록하고</Text>
           <Text style={styles.text}>내 상태를 확인해요</Text>
         </View>
       </View>
