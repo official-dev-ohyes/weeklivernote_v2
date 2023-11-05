@@ -20,11 +20,11 @@ function NowAddedAlcohols({ alcoholRecord }) {
       <View style={styles.oneline}>
         {alcoholRecord.slice(0, 4).map((record, index) => (
           <View key={index} style={styles.alcoholInfo}>
-            <Text>
+            <Text style={styles.innerText}>
               {record.category}
-              <Text> ({record.drinkUnit}) </Text>
+              <Text style={styles.innerText}> {record.drinkAmount}</Text>
+              <Text style={styles.innerText}>{record.drinkUnit} </Text>
             </Text>
-            <Text>{record.drinkAmount}</Text>
           </View>
         ))}
       </View>
@@ -58,8 +58,13 @@ const styles = StyleSheet.create({
   alcoholInfo: {
     margin: "1%",
     padding: "1%",
-    backgroundColor: "pink",
+    backgroundColor: "white",
     flexDirection: "row",
+    borderRadius: 5,
+  },
+  innerText: {
+    fontSize: 15,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

@@ -168,9 +168,17 @@ function RecordCreateScreen({ route, navigation }) {
             <View style={styles.category}>
               <ModalDropdown
                 defaultValue={"주종 선택"}
+                defaultValueStyle={styles.buttonInnerText} // @@@@@@@@@@@@@왜 안먹지@@@@@@@@@@@@@
                 // defaultValue={selectedAlcohol || "주종 선택"}
                 options={alcoholCategory}
                 onSelect={(index, value) => setSelectedAlcohol(value)}
+                dropdownStyle={{ width: "60%" }}
+                renderButtonText={(text) => {
+                  return <Text style={styles.buttonInnerText}>{text}</Text>;
+                }}
+                renderRow={(option) => {
+                  return <Text style={styles.dropDownText}>{option}</Text>;
+                }}
               />
             </View>
           </View>
@@ -190,20 +198,27 @@ function RecordCreateScreen({ route, navigation }) {
                 defaultValue="단위 선택"
                 options={["잔", "병"]}
                 onSelect={(index, value) => setSelectedUnit(value)}
+                dropdownStyle={{ width: "11%", height: "5%" }}
+                renderRow={(option) => {
+                  return <Text style={styles.dropDownText}>{option}</Text>;
+                }}
               />
             </View>
           </View>
           <View style={styles.buttons}>
             <Button
+              style={styles.button}
               mode="contained"
               onPress={() => {
                 setAlcoholRecord([]);
                 setValue(0);
               }}
+              labelStyle={styles.buttonInnerText}
             >
               초기화
             </Button>
             <Button
+              style={styles.button}
               mode="contained"
               onPress={() => {
                 const newRecord = {
@@ -218,29 +233,43 @@ function RecordCreateScreen({ route, navigation }) {
                 // setSelectedUnit("");
                 console.log(alcoholRecord);
               }}
+              labelStyle={styles.buttonInnerText}
             >
               추가
             </Button>
           </View>
         </View>
         <View style={styles.time}>
-          <Text style={styles.timeHeader}>술자리 시작</Text>
+          <Text style={styles.texts}>술자리 시작</Text>
           <View style={styles.timer}>
             <ModalDropdown
               defaultValue="선택"
               options={["AM", "PM"]}
               onSelect={(index, value) => setSelectedAmPm(value)}
+              // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@클릭 시 색깔도 이상함@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
+              renderRow={(option) => {
+                return <Text style={styles.dropDownText}>{option}</Text>;
+              }}
             />
             <ModalDropdown
               defaultValue="시"
               options={hour}
               onSelect={(index, value) => setSelectedHour(value)}
+              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
+              renderRow={(option) => {
+                return <Text style={styles.dropDownText}>{option}</Text>;
+              }}
             />
             <Text>:</Text>
             <ModalDropdown
               defaultValue="분"
               options={minute}
               onSelect={(index, value) => setSelectedMinute(value)}
+              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
+              renderRow={(option) => {
+                return <Text style={styles.dropDownText}>{option}</Text>;
+              }}
             />
           </View>
         </View>
@@ -248,16 +277,17 @@ function RecordCreateScreen({ route, navigation }) {
           {/* <View>
             <Text>사진 입력 자리</Text>
           </View> */}
-          <Text>Memo</Text>
+          <Text style={styles.texts}>Memo</Text>
           {/* 한글 입력이 안돼요ㅠㅠ */}
           <TextInput
-            label="술자리 기록을 남겨보세요"
+            // label="술자리 기록을 남겨보세요"
             keyboardType="default"
             mode="outlined"
             value={memo}
             onChangeText={(memo) => setMemo(memo)}
             multiline={true}
             numberOfLines={9}
+            contentStyle={styles.buttonInnerText}
           />
         </View>
         <Button
@@ -265,6 +295,7 @@ function RecordCreateScreen({ route, navigation }) {
           onPress={() => {
             saveRecord();
           }}
+          labelStyle={styles.buttonInnerText}
         >
           저장
         </Button>
@@ -303,7 +334,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   mainTextBox: {
-    height: "15%",
+    height: "10%",
     padding: "5%",
     flexDirection: "row",
     alignItems: "flex-end",
@@ -322,18 +353,21 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
   },
   contents: {
-    height: "85%",
-    backgroundColor: "yellow",
+    height: "87%",
+    backgroundColor: "lightgray",
     padding: 10,
     justifyContent: "space-around",
+    margin: "3%",
+    borderRadius: 15,
   },
   tagArea: {
     height: "10%",
-    backgroundColor: "white",
+    // backgroundColor: "white",
   },
   alcoholArea: {
     height: "25%",
     backgroundColor: "white",
+    borderRadius: 5,
     // 수직방향 정렬 맞추기
   },
   alcoholInput: {
@@ -343,7 +377,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     // justifyContent: "center",
-    backgroundColor: "skyblue",
+    // backgroundColor: "skyblue",
   },
   word: {
     flex: 1,
@@ -351,12 +385,15 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // alignItems: "center",
     textAlign: "center",
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
   category: {
-    flex: 4,
+    flex: 2.7,
     height: "90%",
     margin: "1%",
-    backgroundColor: "yellow",
+    justifyContent: "center",
+    // backgroundColor: "yellow",
   },
   // @@@@@@@@@@@@@@@@@@@@@나중에 세밀하게 수정하기@@@@@@@@@@@@@@@@@@@@@
   alcoholAmount: {
@@ -368,47 +405,68 @@ const styles = StyleSheet.create({
     marginTop: "1%",
     marginBottom: "1%",
     marginRight: "0.5%",
-    backgroundColor: "white",
+    // backgroundColor: "white",
   },
   alcoholUnit: {
-    flex: 1,
+    flex: 0.5,
     height: "90%",
-    marginTop: "1%",
-    marginBottom: "1%",
-    marginRight: "0.5%",
-    backgroundColor: "white",
+    padding: "1%",
+    margin: "3%",
+    // backgroundColor: "pink",
+    justifyContent: "center",
   },
   buttons: {
     flexDirection: "row",
     justifyContent: "space-around",
   },
+  button: {
+    flex: 1,
+    margin: "1%",
+  },
   time: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
+    // alignContent: ",
+    justifyContent: "space-around",
     height: "10%",
-    backgroundColor: "white",
-  },
-  timeHeader: {
-    flex: 3,
+    marginTop: "1%",
+    // backgroundColor: "white",
   },
   timer: {
-    flex: 7,
+    height: "60%",
     flexDirection: "row",
-    // backgroundColor: "purple",
     justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 5,
   },
   timeInput: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   memo: {
-    height: "40%",
-    backgroundColor: "white",
+    height: "35%",
+    marginTop: "1%",
+    // backgroundColor: "white",
+  },
+  texts: {
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
+    marginBottom: "1%",
   },
   record: {
     backgroundColor: "lightgrey",
     marginVertical: 5,
     padding: 10,
+  },
+  buttonInnerText: {
+    fontSize: 17,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  dropDownText: {
+    fontSize: 15,
+    fontFamily: "Yeongdeok-Sea",
+    margin: "2%",
   },
 });
 

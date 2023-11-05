@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   mainTextBox: {
-    height: "10%",
+    height: "13%",
     padding: "5%",
     // paddingBottom: "-3%",
     flexDirection: "row",
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
   },
   calendar: {
-    height: "90%",
+    height: "87%",
     // borderWidth: 20,
     // borderColor: "red",
   },
