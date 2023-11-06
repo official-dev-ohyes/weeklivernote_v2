@@ -113,7 +113,15 @@ public class UserStatService {
             userRepository.save(user);
         } else {    // 기록 삭제 시 유저의 최근 일기 drinkDate 로 업데이트
             List<Diary> diaries = diaryRepository.findByUserOrderByDrinkDateDesc(user);
-            user.setStartNonalcoholDate(diaries.get(0).getDrinkDate());
+            LocalDate startNonAlcDate;
+
+            // 최근 일기가 없으면 가입 날짜, 있으면 최근 일기의 날짜로 업데이트
+            if (diaries.isEmpty()) {
+                startNonAlcDate = user.getCreatedAt().toLocalDate();
+            } else {
+                startNonAlcDate = diaries.get(0).getDrinkDate();
+            }
+            user.setStartNonalcoholDate(startNonAlcDate);
             userRepository.save(user);
         }
     }
