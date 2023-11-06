@@ -8,14 +8,15 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-import { useRecoilState, useSetRecoilState } from "recoil";
+// import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
 import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
-import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+// import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
 import {
   createDrink,
   updateDrink,
@@ -38,7 +39,7 @@ function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const numberOfCurrentDrinks = Object.keys(currentDrinks).length;
-  const setDrinkToday = useSetRecoilState(drinkTodayAtom);
+  // const setDrinkToday = useSetRecoilState(drinkTodayAtom);
   const defaultDrink = {
     id: 2,
     name: "소주",
@@ -184,7 +185,11 @@ function DrinkController() {
           onDismiss={handleModalClose}
           contentContainerStyle={styles.modalContainer}
         >
-          <DrinkCarousel data={drinksData} sendData={getSelectedDrink} />
+          <DrinkCarousel
+            data={drinksData}
+            sendData={getSelectedDrink}
+            onClose={handleModalClose}
+          />
         </Modal>
       </Portal>
 

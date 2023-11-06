@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
-// import { useAppTheme } from "../../App";
 import { useAppTheme } from "../../hooks/useAppTheme";
+import SwipeMotion from "./SwipeMotion";
 
 interface Drink {
   id: number;
@@ -17,9 +17,14 @@ interface Drink {
 type DrinkCarouselProps = {
   data: Drink[];
   sendData: (drink: Drink) => void;
+  onClose: () => void;
 };
 
-const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
+const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
+  data,
+  sendData,
+  onClose,
+}) => {
   const {
     colors: { mainBlue },
   } = useAppTheme();
@@ -30,6 +35,17 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
     unit: "잔",
     alcoholPercentage: 19,
   });
+  const [showInstruction, SetShowInstruction] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      SetShowInstruction(false);
+    }, 1500);
+
+    return () => {
+      SetShowInstruction(true);
+    };
+  }, []);
 
   const contentOffset = useSharedValue(0);
   const flatListRef = useRef(null);
@@ -48,10 +64,12 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
 
   const handleClick = () => {
     sendData(centeredItem);
+    onClose();
   };
 
   return (
     <View style={styles.rootcontainer}>
+      {showInstruction && <SwipeMotion />}
       <FlatList
         data={data}
         ref={flatListRef}
