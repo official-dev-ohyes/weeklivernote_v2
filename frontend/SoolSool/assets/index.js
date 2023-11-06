@@ -26,6 +26,8 @@ import drink12 from "./Home/drinks/drink-12.png";
 import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
 
+import swipe from "./Home/swipe.png";
+
 import addInfoImage from "./addInfoImage.png";
 import characterSet from "./characterSet.png";
 import loadingSpinner from "./loadingSpinner.gif";
@@ -57,7 +59,8 @@ export {
   drink12,
   drink13,
   drink14,
+  swipe,
   logo,
   defaultImage,
-  characterSet
+  characterSet,
 };
