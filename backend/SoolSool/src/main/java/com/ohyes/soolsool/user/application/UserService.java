@@ -116,8 +116,9 @@ public class UserService {
         Long socialId = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
             .get("nickname").asText();
-        String profileImg = jsonNode.get("kakao_account").get("profile")
+        String tempImg = jsonNode.get("kakao_account").get("profile")
             .get("profile_image_url").asText();
+        String profileImg = "https://" + tempImg.substring(7);
 
         return new KakaoProfileDto(socialId, nickname, profileImg);
 
@@ -156,6 +157,14 @@ public class UserService {
 
 
             userRepository.save(user);
+            Map<String, Object> data = new HashMap<>();
+            data.put("socialId", kakaoProfileDto.getSocialId());
+            data.put("message", "추가 정보 등록이 필요한 회원입니다.");
+            return data;
+        }
+
+        if (user.getRefreshToken().equals("REFRESH_TOKEN")) {
+            log.info(user.getRefreshToken());
             Map<String, Object> data = new HashMap<>();
             data.put("socialId", kakaoProfileDto.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
