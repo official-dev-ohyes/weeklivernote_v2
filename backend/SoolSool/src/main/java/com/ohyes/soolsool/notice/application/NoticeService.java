@@ -4,6 +4,7 @@ import com.ohyes.soolsool.notice.dao.NoticeRepository;
 import com.ohyes.soolsool.notice.domain.Notice;
 import com.ohyes.soolsool.notice.dto.NoticeDetail;
 import com.ohyes.soolsool.notice.dto.NoticeResponseDto;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class NoticeService {
             NoticeDetail noticeDetail = NoticeDetail.builder()
                 .title(e.getTitle())
                 .content(e.getContent())
+                .date(LocalDate.from(e.getCreateAt()))
                 .build();
 
             noticeDetails.add(noticeDetail);
