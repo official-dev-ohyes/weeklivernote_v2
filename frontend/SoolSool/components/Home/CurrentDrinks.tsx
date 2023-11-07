@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     marginHorizontal: 4,
+    borderColor: "transparent",
   },
 });
 
