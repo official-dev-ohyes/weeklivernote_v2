@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 function CalendarSixWeeks({}) {
   // 진짜 오늘 정보 저장
@@ -23,48 +24,50 @@ function CalendarSixWeeks({}) {
   const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(`현재 날짜는? ${nowDate}`);
-    const setAndFetch = async () => {
-      const tempDay = currentDay ? currentDay : nowDate;
-      await setCurrentDay(tempDay);
-      fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
-        .then((res) => {
-          // console.log("성공", res.drinks);
-          setAlcoholInfo(res.deinks);
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log(`현재 날짜는? ${nowDate}`);
+      const setAndFetch = async () => {
+        const tempDay = currentDay ? currentDay : nowDate;
+        await setCurrentDay(tempDay);
+        fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
+          .then((res) => {
+            // console.log("성공", res.drinks);
+            setAlcoholInfo(res.deinks);
 
-          const drinkData = res.drinks;
-          setAlcoholInfo(drinkData);
+            const drinkData = res.drinks;
+            setAlcoholInfo(drinkData);
 
-          const tempDays = {};
-          for (let i = 0; i < drinkData.length; i++) {
-            const tempDate = drinkData[i].date;
-            tempDays[tempDate] = { marked: true };
-            // days.push(`${drinkData[i].date}: { selected: true }`);
-          }
-          setAlcoholDays(tempDays);
-          // setAlcoholDays(days);
-          // console.log(`알코올 마신 날들은? ${days}`);
-        })
-        .catch((err) => {
-          console.error("실패", err);
-        });
-    };
-    setAndFetch();
-
-    if (selectDay) {
-      const checkFuture = () => {
-        const selectedTimeStamp = new Date(selectDay).getTime();
-        const nowTimestamp = new Date(nowDate).getTime();
-        if (nowTimestamp < selectedTimeStamp) {
-          setIsFuture(true);
-        } else {
-          setIsFuture(false);
-        }
+            const tempDays = {};
+            for (let i = 0; i < drinkData.length; i++) {
+              const tempDate = drinkData[i].date;
+              tempDays[tempDate] = { marked: true };
+              // days.push(`${drinkData[i].date}: { selected: true }`);
+            }
+            setAlcoholDays(tempDays);
+            // setAlcoholDays(days);
+            // console.log(`알코올 마신 날들은? ${days}`);
+          })
+          .catch((err) => {
+            console.error("실패", err);
+          });
       };
-      checkFuture();
-    }
-  }, [nowDate, selectDay]);
+      setAndFetch();
+
+      if (selectDay) {
+        const checkFuture = () => {
+          const selectedTimeStamp = new Date(selectDay).getTime();
+          const nowTimestamp = new Date(nowDate).getTime();
+          if (nowTimestamp < selectedTimeStamp) {
+            setIsFuture(true);
+          } else {
+            setIsFuture(false);
+          }
+        };
+        checkFuture();
+      }
+    }, [nowDate, selectDay, navigator])
+  );
 
   const handleDayPress = async (clickDay) => {
     const newMonth =
