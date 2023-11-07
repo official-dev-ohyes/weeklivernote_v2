@@ -60,7 +60,7 @@ public class CalculateService {
 
         // 성별, 체중에 따른 혈중 알코올 농도 계산
         float index;
-        if (user.getGender().equals("남")) {
+        if (user.getGender().equals("남자")) {
             index = 8.6F;
         } else {
             index = 6.4F;
