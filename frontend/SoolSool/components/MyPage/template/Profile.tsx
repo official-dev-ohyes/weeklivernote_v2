@@ -1,7 +1,6 @@
 import { Text, Pressable, Image, StyleSheet, View } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-// import { cheeseDuck } from "../../../assets";
 import DetailProfile from "../DetailProfile";
 import { showErrorAndRetry } from "../../../utils/showErrorUtils";
 import { defaultImage } from "../../../assets";
@@ -33,10 +32,12 @@ function Profile(props: UserProfileProps) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.profileContainer}>
-      <Image
-        source={userData.profileImg ? { uri: userData.profileImg } : defaultImage}
-        style={styles.profileImage}
-      />
+        <Image
+          source={
+            userData.profileImg ? { uri: userData.profileImg } : defaultImage
+          }
+          style={styles.profileImage}
+        />
 
         <Pressable style={styles.editIcon} onPress={handleEdit}>
           <Ionicons name="pencil" color={"white"} size={15} />

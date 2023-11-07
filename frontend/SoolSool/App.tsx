@@ -46,8 +46,8 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#000000" },
-        headerTintColor: "white",
+        headerStyle: { backgroundColor: "#E3D5EC" },
+        headerTintColor: "black",
         headerTitleAlign: "center",
         tabBarShowLabel: false,
       }}

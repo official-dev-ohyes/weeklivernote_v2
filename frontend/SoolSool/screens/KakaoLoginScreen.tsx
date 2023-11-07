@@ -1,76 +1,79 @@
-import { StyleSheet, View, ImageBackground, Button } from "react-native";
-import axios from "axios";
+import { StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import Toast from "react-native-root-toast";
 
 const RESTAPI_KEY = process.env.RESTAPI_KEY;
 const REDIRECT_URI = "https://soolsool.site/kakao/callback";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 function KakaoLoginScreen({ navigation }) {
+  const fetchAccessToken = async (code: string) => {
+    console.log("fetchAccessToken 요청 성공");
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_BACK_URL + "/v1/user/login",
+        {
+          params: {
+            code,
+            grant_type: "authorization_code",
+          },
+        }
+      );
 
-  // 백으로부터 AccessToken 및 유저데이터 받아오는 함수
-  // const fetchAccessToken = async (code: string) => {
-  //   console.log(code, "로axios요청을 하는중...");
-  //   try {
-  //     const response = await axios.get(
-  //       "https://soolsool.site/api/v1/user/login",
-  //       {
-  //         params: {
-  //           code,
-  //           grant_type: "authorization_code",
-  //         },
-  //       }
-  //     );
+      console.log("로그인에 성공했습니다");
+      Toast.show("로그인에 성공했습니다", {
+        duration: Toast.durations.SHORT,
+        position: 0,
+        shadow: true,
+        animation: true,
+        opacity: 0.8,
+      });
 
-  //     console.log("로그인 성공했죠", response.data.tokenInfo.accessToken);
-
-  //     // const accessToken = response.data.tokeninfo.accessToken;
-
-  //     // await AsyncStorage.setItem("accessToken", accessToken);
-  //     navigation.navigate("BottomTab");
-  //   } catch (e) {
-  //     console.log("로그인 실패", e);
-  //   }
-  // };
-
-  //url에서 인가코드를 파싱해오는 함수
-  const getCode = (target: string) => {
-    const exp = "code=";
-    const condition = target.indexOf(exp);
-    if (condition !== -1) {
-      const requestCode = target.substring(condition + exp.length);
-      // console.log("url로부터 인가코드를 파싱중...");
-      // fetchAccessToken(requestCode);
-      // console.log("파싱잘되었나?", requestCode);
-      // URL 리다이렉트 처리를 위해 "Redirect" 화면으로 이동
-      navigation.navigate("KakaoRedirectScreen", { requestCode: requestCode });
+      if (response.data.message) {
+        const socialId = response.data.socialId;
+        console.log("첫 회원이시군요!", response.data.socialId);
+        navigation.navigate("AddInfo", { socialId: socialId });
+      } else {
+        console.log("이미 가입된 회원이니까 메인 화면으로");
+        const accessToken = response.data.tokenInfo.accessToken;
+        await AsyncStorage.setItem("accessToken", accessToken);
+        navigation.navigate("BottomTab");
+      }
+    } catch (e) {
+      console.log("리다이렉트 페이지에서 실패", e);
     }
   };
 
+  const handleShouldStartLoad = (event: any) => {
+    const url = event.url;
+    // url에 붙어오는 code= 가있다면 뒤부터 parse하여 인가 코드 get
+    const exp = "code=";
+    const searchIdx = url.indexOf(exp);
+    if (searchIdx !== -1) {
+      const code = url.substring(searchIdx + exp.length);
+      console.log("인가 코드", code);
+      fetchAccessToken(code);
+      return false;
+    }
+    return true;
+  };
+
   return (
-    <View style={styles.backgroundImage}>
-      <WebView
-        originWhitelist={["*"]}
-        scalesPageToFit={false}
-        source={{
-          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${RESTAPI_KEY}&redirect_uri=${REDIRECT_URI}`,
-        }}
-        injectedJavaScript={INJECTED_JAVASCRIPT}
-        javaScriptEnabled={true}
-        onMessage={(event) => {
-          const data = event.nativeEvent.url;
-          getCode(data);
-        }}
-      />
-    </View>
+    <WebView
+      originWhitelist={["*"]}
+      scalesPageToFit={false}
+      source={{
+        uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${RESTAPI_KEY}&redirect_uri=${REDIRECT_URI}`,
+      }}
+      injectedJavaScript={INJECTED_JAVASCRIPT}
+      javaScriptEnabled={true}
+      onShouldStartLoadWithRequest={handleShouldStartLoad}
+    />
   );
 }
 
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default KakaoLoginScreen;

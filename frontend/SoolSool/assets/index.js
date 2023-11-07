@@ -1,5 +1,4 @@
 import iconImage from "./icon.png";
-import cheeseDuck from "./cheeseDuck.jpg";
 import kakaoLoginButton from "./kakao_login_button.png";
 import soberImage from "./Home/intoxication/drunken-level-00.png";
 import mildImage from "./Home/intoxication/drunken-level-01.png";
@@ -31,12 +30,12 @@ import swipe from "./Home/swipe.png";
 import addInfoImage from "./addInfoImage.png";
 import characterSet from "./characterSet.png";
 import loadingSpinner from "./loadingSpinner.gif";
+import mainbackground from "./mainbackground.jpg";
 
 export {
   loadingSpinner,
   addInfoImage,
   iconImage,
-  cheeseDuck,
   soberImage,
   mildImage,
   moderateImage,
@@ -63,4 +62,5 @@ export {
   logo,
   defaultImage,
   characterSet,
+  mainbackground,
 };
