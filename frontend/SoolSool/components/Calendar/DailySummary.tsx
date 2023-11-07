@@ -3,9 +3,11 @@ import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchDailyDrink } from "../../api/drinkRecordApi";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { getDrinkImageById, getIdByOnlyCategory } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 function DailySummary(props) {
   const { summaryText, alcoholDays } = props;
@@ -16,26 +18,28 @@ function DailySummary(props) {
   // 술 종류가 몇 개인지 알아오는 로직 추가하기
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  useEffect(() => {
-    setIsAlcohol(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsAlcohol(false);
 
-    if (alcoholDays[summaryText]) {
-      setIsAlcohol(true);
-      fetchDailyDrink(summaryText)
-        .then((res) => {
-          console.log(res);
-          setDailyInfo(res);
-          let alcohols = [];
-          for (let i = 0; i < res.drinks.length; i++) {
-            alcohols.push(res.drinks[i]);
-          }
-          setAlcoholList(alcohols);
-        })
-        .catch((error) => {
-          console.error("실패", error);
-        });
-    }
-  }, [summaryText]);
+      if (alcoholDays[summaryText]) {
+        setIsAlcohol(true);
+        fetchDailyDrink(summaryText)
+          .then((res) => {
+            console.log(res);
+            setDailyInfo(res);
+            let alcohols = [];
+            for (let i = 0; i < res.drinks.length; i++) {
+              alcohols.push(res.drinks[i]);
+            }
+            setAlcoholList(alcohols);
+          })
+          .catch((error) => {
+            console.error("실패", error);
+          });
+      }
+    }, [summaryText, navigation])
+  );
 
   // console.log(`이 날짜의 이즈알코올은?! ${isAlcohol}`);
 
@@ -73,14 +77,36 @@ function DailySummary(props) {
               ))}
             </View>
             <View style={styles.textInformations}>
-              <Text style={styles.totalText}>
-                {dailyInfo.totalDrink}
-                <Text style={styles.unit}> ml</Text>
-              </Text>
-              <Text style={styles.totalText}>
-                {dailyInfo.topConc.toFixed(3)}
-                <Text style={styles.unit}> %</Text>
-              </Text>
+              <View style={styles.iconAndTextBox}>
+                <MaterialCommunityIcons
+                  name="cup-water"
+                  size={24}
+                  color="#0477BF"
+                  marginRight={"7%"}
+                />
+                {/* <AntDesign
+                  name="dashboard"
+                  size={24}
+                  color="black"
+                  marginRight={"7%"}
+                /> */}
+                <Text style={styles.totalText}>
+                  {dailyInfo.totalDrink}
+                  <Text style={styles.unit}> ml</Text>
+                </Text>
+              </View>
+              <View style={styles.iconAndTextBox}>
+                <MaterialCommunityIcons
+                  name="blood-bag"
+                  size={24}
+                  color="red" // @@@@@@@@@@@@@@@@@메인이랑 맞추자@@@@@@@@@@@@@@@@@
+                  marginRight={"7%"}
+                />
+                <Text style={styles.totalText}>
+                  {dailyInfo.topConc.toFixed(3)}
+                  <Text style={styles.unit}> %</Text>
+                </Text>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -128,7 +154,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
   },
   informations: {
     height: "80%",
@@ -165,6 +191,10 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     // backgroundColor: "pink",
   },
+  iconAndTextBox: {
+    flexDirection: "row",
+    // backgroundColor: "black",
+  },
   New: {
     height: "80%",
     justifyContent: "center",
@@ -198,15 +228,15 @@ const styles = StyleSheet.create({
   drinkStyle: {
     textAlign: "center",
     fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
   },
   totalText: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
   },
   unit: {
     fontSize: 16,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
   },
 });
 
