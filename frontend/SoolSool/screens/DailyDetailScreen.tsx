@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
