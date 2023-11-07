@@ -35,7 +35,6 @@ function HomeScreen() {
 
       return () => {
         backHandler.remove();
-        console.log("I'm leaving");
       };
     }, [])
   );
