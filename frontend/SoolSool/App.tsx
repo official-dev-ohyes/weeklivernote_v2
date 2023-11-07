@@ -1,4 +1,4 @@
-import 'expo-dev-client';
+import "expo-dev-client";
 import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
@@ -30,12 +30,11 @@ import CalendarScreen from "./screens/CalendarScreen";
 import DailyDetailScreen from "./screens/DailyDetailScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
 
-// import MapScreen from "./screens/MapScreen";
-
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
+import MapScreen from "./screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,8 +46,9 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#0477BF" },
+        headerStyle: { backgroundColor: "#000000" },
         headerTintColor: "white",
+        headerTitleAlign: "center",
         tabBarShowLabel: false,
       }}
       sceneContainerStyle={{
@@ -75,7 +75,7 @@ function BottomTabNavigator() {
           title: "Calender",
         }}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Map"
         component={MapScreen}
         options={{
@@ -84,7 +84,7 @@ function BottomTabNavigator() {
           ),
           title: "Map",
         }}
-      /> */}
+      />
       <BottomTab.Screen
         name="MyPage"
         component={MyPageScreen}
