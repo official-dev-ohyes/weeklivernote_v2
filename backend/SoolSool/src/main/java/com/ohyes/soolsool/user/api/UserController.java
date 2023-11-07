@@ -51,6 +51,11 @@ public class UserController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
+//    @GetMapping("v1/user/apple/login")
+//    @Operation(summary = "애플 소셜 회원가입 및 로그인",
+//        description = "이미 회원 정보가 있으면 로그인 없으면 회원가입 진행하고 추가 정보 입력 필요합니다.")
+//    public ResponseEntity<Object> userAppleLogin(@RequestParam(value = "code") String code, @RequestParam(value = ""))
+
     // 회원 추가 정보 입력
     @PatchMapping("/v1/user")
     @Operation(summary = "회원 추가 정보 입력",
