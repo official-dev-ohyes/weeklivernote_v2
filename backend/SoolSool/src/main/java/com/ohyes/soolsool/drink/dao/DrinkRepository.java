@@ -1,7 +1,8 @@
 package com.ohyes.soolsool.drink.dao;
 
 import com.ohyes.soolsool.drink.domain.Drink;
-import com.ohyes.soolsool.user.dto.ChartDataDto;
+import com.ohyes.soolsool.user.dto.ChartAlcDataDto;
+import com.ohyes.soolsool.user.dto.ChartDrinkDataDto;
 import com.ohyes.soolsool.user.dto.YearlyChartDataDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +31,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
     long getTotalDrinkAmountInBottle(@Param("socialId") Long socialId, @Param("year") int year);
 
     @Query(
-        "SELECT new com.ohyes.soolsool.user.dto.ChartDataDto(d.diary.drinkDate, "
+        "SELECT new com.ohyes.soolsool.user.dto.ChartDrinkDataDto(d.diary.drinkDate, "
             + "ROUND(sum(case when d.drinkUnit = '잔' then c.glass * d.drinkAmount "
             + "when d.drinkUnit = '병' then c.bottle * d.drinkAmount else 0 end), 2)) "
             + "as totalDrinkAmount " +
@@ -40,10 +41,10 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND di.drinkDate between :startDate and :now " +
             "GROUP BY d.diary.drinkDate")
-    List<ChartDataDto> getDrinkData(Long socialId, LocalDate startDate, LocalDate now);
+    List<ChartDrinkDataDto> getDrinkData(Long socialId, LocalDate startDate, LocalDate now);
 
     @Query(
-        "SELECT new com.ohyes.soolsool.user.dto.ChartDataDto(d.diary.drinkDate, "
+        "SELECT new com.ohyes.soolsool.user.dto.ChartAlcDataDto(d.diary.drinkDate, "
             + "ROUND(sum(case when d.drinkUnit = '잔' then (c.glass * d.drinkAmount * c.volume * 0.7984 / 100) "
             + "when d.drinkUnit = '병' then (c.bottle * d.drinkAmount * 0.7984 / 100) else 0 end), 2)) "
             + "as totalDrinkAmount " +
@@ -53,7 +54,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND di.drinkDate between :startDate and :now " +
             "GROUP BY d.diary.drinkDate")
-    List<ChartDataDto> getAlcData(Long socialId, LocalDate startDate, LocalDate now);
+    List<ChartAlcDataDto> getAlcData(Long socialId, LocalDate startDate, LocalDate now);
 
     @Query(
         "SELECT new com.ohyes.soolsool.user.dto.YearlyChartDataDto(MONTH(d.diary.drinkDate), "

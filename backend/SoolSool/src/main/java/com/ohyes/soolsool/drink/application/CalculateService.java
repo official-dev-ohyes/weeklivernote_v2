@@ -3,8 +3,9 @@ package com.ohyes.soolsool.drink.application;
 import com.ohyes.soolsool.drink.dao.CategoryRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
-import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
+import com.ohyes.soolsool.util.UserDetailsImpl;
+import com.ohyes.soolsool.util.UserUtils;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CalculateService {
 
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
     @Transactional
@@ -40,9 +40,8 @@ public class CalculateService {
     }
 
     @Transactional
-    public HashMap<String, Float> calculateConcAndDetoxTime(List<DrinkInfo> drinks, Long socialId) {
-        User user = userRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NullPointerException("해당 유저가 존재하지 않습니다."));
+    public HashMap<String, Float> calculateConcAndDetoxTime(List<DrinkInfo> drinks, UserDetailsImpl userDetails) {
+        User user = UserUtils.getUserFromToken(userDetails);
         AtomicInteger drinkTotal = new AtomicInteger();
         AtomicInteger alcoholAmount = new AtomicInteger();
 
@@ -61,7 +60,7 @@ public class CalculateService {
 
         // 성별, 체중에 따른 혈중 알코올 농도 계산
         float index;
-        if (user.getGender().equals("남")) {
+        if (user.getGender().equals("남자")) {
             index = 8.6F;
         } else {
             index = 6.4F;
