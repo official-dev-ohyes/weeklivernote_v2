@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 
-import { StyleSheet, View, Text, BackHandler } from "react-native";
+import { StyleSheet, View, Text, BackHandler, Button } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
@@ -15,7 +15,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
-
+import { schedulePushNotification } from "../components/Notification/LocalNotification";
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
@@ -35,7 +35,6 @@ function HomeScreen() {
 
       return () => {
         backHandler.remove();
-        console.log("I'm leaving");
       };
     }, [])
   );
@@ -113,6 +112,7 @@ function HomeScreen() {
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
         />
+        <Button title="test" onPress={schedulePushNotification}/>
         <DrinkController />
       </View>
     </>
