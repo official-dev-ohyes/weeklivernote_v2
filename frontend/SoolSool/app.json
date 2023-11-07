@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "weekliver",
-    "slug": "weekliver",
+    "name": "주간일기",
+    "slug": "weeklivernote",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,14 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.official_ohyes.weekliver",
+      "bundleIdentifier": "com.official_ohyes.weeklivernote",
       "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "package": "com.official_ohyes.weekliver",
+        "package": "com.official_ohyes.weeklivernote",
         "versionCode": 1
       },
       "config": {
@@ -31,14 +31,15 @@
           "usesCleartext": true
         }
       },
-      "package": "com.official_ohyes.weekliver"
+      "package": "com.official_ohyes.weeklivernote",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "8dd86352-2afe-4dc4-91ef-64a3bf3b2075"
+        "projectId": "b2fd2716-9256-4d89-8d34-f4db4cd13013"
       }
     }
   }

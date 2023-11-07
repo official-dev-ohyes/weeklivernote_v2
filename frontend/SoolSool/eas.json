@@ -7,9 +7,12 @@
 			"channel": "development",
 			"developmentClient": true,
 			"distribution": "internal",
-			"extends": "emulator",
 			"android": {
 				"buildType": "apk"
+			},
+			"env": {
+				"REACT_APP_BACK_URL": "https://soolsool.site/api",
+				"RESTAPI_KEY": "b6ffe641bddfb241b3677f88c7462119"
 			}
 		},
 		"preview": {
