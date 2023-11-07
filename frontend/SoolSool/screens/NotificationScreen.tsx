@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { useQuery } from "react-query";
+import { fetchNotice } from "../api/noticeApi";
 
-const noticeData = [
-  { id: 1, title: "😋", content: "이것은 첫 번째 공지사항입니다." },
-  { id: 2, title: "😐", content: "두 번째 공지사항 내용입니다." },
-  { id: 3, title: "😯", content: "세 번째 공지사항 내용입니다." },
-];
+// const noticeData = [
+//   { id: 1, title: "😋", content: "이것은 첫 번째 공지사항입니다." },
+//   { id: 2, title: "😐", content: "두 번째 공지사항 내용입니다." },
+//   { id: 3, title: "😯", content: "세 번째 공지사항 내용입니다." },
+// ];
 
 function NotificationCard({ title, content }) {
   return (
@@ -17,10 +19,22 @@ function NotificationCard({ title, content }) {
 }
 
 function NotificationScreen() {
+  const [noticeData, setNoticeData] = useState(null);
+
+  const { data: notificationData, isLoading } = useQuery(
+    "notificationData",
+    async () => await fetchNotice()
+  );
+
+  useEffect(() => {
+    console.log("공지사항 확인용", notificationData.notices);
+    setNoticeData(notificationData.notices);
+  }, [notificationData]);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.mainTitle}>공지사항</Text>
-      {noticeData.map((notice) => (
+      {noticeData?.map((notice) => (
         <NotificationCard
           key={notice.id}
           title={notice.title}

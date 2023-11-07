@@ -3,7 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 function MapScreen() {
   return (
     <View>
-      <Text>Map</Text>
+      <Text>현재 나의 위치</Text>
+      <Text>위도:</Text>
+      <Text>경도:</Text>
     </View>
   );
 }
