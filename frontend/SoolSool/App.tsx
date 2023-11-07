@@ -1,4 +1,4 @@
-import 'expo-dev-client';
+import "expo-dev-client";
 import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
@@ -40,6 +40,16 @@ import EditProfileScreen from "./screens/EditProfileScreen";
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
+
+import { setNotificationHandler } from "expo-notifications";
+
+setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 preventAutoHideAsync();
 

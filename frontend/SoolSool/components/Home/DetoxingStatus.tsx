@@ -18,8 +18,20 @@ function DetoxingStatus({
       : 0;
 
   const remainingTime = requiredTimeForDetox - detoxingFor;
-  const adjustedRemainingTime =
-    remainingTime > 0 ? remainingTime.toFixed(1) : "Drink Mindfully!";
+
+  const AdjustedRemainingTime = () => {
+    if (remainingTime > 0) {
+      return (
+        <Text style={styles.subtitleContainer}>
+          해독까지{"  "}
+          <Text style={styles.periodContainer}>{remainingTime.toFixed(1)}</Text>
+          시간
+        </Text>
+      );
+    } else {
+      <Text style={styles.periodContainer}>Drink Mindfully!</Text>;
+    }
+  };
 
   return (
     <View style={styles.statusContainer}>
@@ -27,11 +39,7 @@ function DetoxingStatus({
       {detoxingFor === undefined ? (
         <Text style={styles.periodContainer}>Drink Mindfully!</Text>
       ) : (
-        <Text style={styles.subtitleContainer}>
-          해독까지{"  "}
-          <Text style={styles.periodContainer}>{adjustedRemainingTime}</Text>
-          시간
-        </Text>
+        <AdjustedRemainingTime />
       )}
 
       <Wave size={200} progress={detoxingInProgress} />

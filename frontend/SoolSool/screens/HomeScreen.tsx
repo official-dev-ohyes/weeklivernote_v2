@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 
-import { StyleSheet, View, Text, BackHandler } from "react-native";
+import { StyleSheet, View, Text, BackHandler, Button } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
 import SafeDriveInfo from "../components/Home/SafeDriveInfo";
@@ -14,28 +15,29 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
-
+import { schedulePushNotification } from "../components/Notification/LocalNotification";
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
 
-  useEffect(() => {
-    const backAction = () => {
-      return true;
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const backAction = () => {
+        return true;
+      };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
 
-    return () => {
-      backHandler.remove();
-      console.log("I'm leaving");
-    };
-  }, []);
+      return () => {
+        backHandler.remove();
+      };
+    }, [])
+  );
 
   const { data, isLoading, isError } = useQuery("drinkToday", async () => {
     const response = await fetchDrink(today);
@@ -110,6 +112,7 @@ function HomeScreen() {
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
         />
+        <Button title="test" onPress={schedulePushNotification}/>
         <DrinkController />
       </View>
     </>
