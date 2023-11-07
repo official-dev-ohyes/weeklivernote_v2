@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
+import { Button, TextInput, IconButton } from "react-native-paper";
 import { useState, useEffect } from "react";
+import { Picker } from "@react-native-picker/picker";
 import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useQuery } from "react-query";
@@ -19,10 +20,10 @@ function RecordCreateScreen({ route, navigation }) {
   // const [DailyDrinkData, setDailyDrinkData] = useState([]);
 
   const [alcoholRecord, setAlcoholRecord] = useState([]);
-  const [selectedAlcohol, setSelectedAlcohol] = useState("");
+  const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
   const [value, setValue] = useState(0);
-  const [selectedUnit, setSelectedUnit] = useState("");
-  const [selectedAmPm, setSelectedAmPm] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState("잔");
+  const [selectedAmPm, setSelectedAmPm] = useState("PM");
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
   const [memo, setMemo] = useState("");
@@ -78,7 +79,15 @@ function RecordCreateScreen({ route, navigation }) {
     setValue(newValue);
   };
 
-  const saveRecord = () => {
+  const saveRecord = async () => {
+    if (!selectedHour || !selectedMinute || !selectedAmPm) {
+      Alert.alert("알림", "음주 시작 시간을 입력해주세요.");
+      return;
+    }
+    if (alcoholRecord.length === 0) {
+      Alert.alert("알림", "마신 술 정보를 추가하세요.");
+    }
+
     let date = day;
     let time;
     if (selectedAmPm === "AM") {
@@ -89,6 +98,13 @@ function RecordCreateScreen({ route, navigation }) {
         date = `${currentDate.getFullYear()}-${String(
           currentDate.getMonth() + 1
         ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+
+        const dailyDrink = await fetchDailyDrink(date);
+
+        if (dailyDrink) {
+          Alert.alert("알림", "어제 날짜에 이미 음주 기록이 있습니다.");
+          return;
+        }
       }
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
@@ -146,7 +162,7 @@ function RecordCreateScreen({ route, navigation }) {
   // }, [isAlcohol, DailyDrinkData]);
 
   return (
-    <View style={styles.total}>
+    <ScrollView style={styles.total}>
       <View style={styles.mainTextBox}>
         <Text style={styles.headerText}>{day}</Text>
         <View style={styles.light}>
@@ -155,6 +171,9 @@ function RecordCreateScreen({ route, navigation }) {
             name="lightbulb-on-outline"
             size={30}
             color="black"
+            onPress={() => {
+              Alert.alert("알림", "05시 이전의 기록은 어제 날짜에 추가됩니다.");
+            }}
           />
         </View>
       </View>
@@ -166,51 +185,68 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>술</Text>
             <View style={styles.category}>
-              <ModalDropdown
-                defaultValue={"주종 선택"}
-                defaultValueStyle={styles.buttonInnerText} // @@@@@@@@@@@@@왜 안먹지@@@@@@@@@@@@@
-                // defaultValue={selectedAlcohol || "주종 선택"}
-                options={alcoholCategory}
-                onSelect={(index, value) => setSelectedAlcohol(value)}
-                dropdownStyle={{ width: "60%" }}
-                renderButtonText={(text) => {
-                  return <Text style={styles.buttonInnerText}>{text}</Text>;
-                }}
-                renderRow={(option) => {
-                  return <Text style={styles.dropDownText}>{option}</Text>;
-                }}
-              />
+              <View style={styles.alcoholInput}>
+                <View style={styles.category}>
+                  <Picker
+                    selectedValue={selectedAlcohol}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setSelectedAlcohol(itemValue)
+                    }
+                  >
+                    {alcoholCategory.map((category, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={category}
+                        value={category}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
             </View>
           </View>
           <View style={styles.alcoholInput}>
             <Text style={styles.word}>양</Text>
             <View style={styles.alcoholAmount}>
-              <Button
+              <IconButton icon="minus" onPress={handleDecrement} size={15} />
+              {/* <Button
                 mode="contained"
                 onPress={handleDecrement}
                 buttonColor={"#0477BF"}
               >
                 -
-              </Button>
+              </Button> */}
               <Text>{value}</Text>
-              <Button
+              <IconButton icon="plus" onPress={handleIncrement} size={15} />
+              {/* <Button
                 mode="contained"
                 onPress={handleIncrement}
                 buttonColor={"#0477BF"}
               >
                 +
-              </Button>
+              </Button> */}
             </View>
             <View style={styles.alcoholUnit}>
-              <ModalDropdown
-                defaultValue="단위 선택"
-                options={["잔", "병"]}
-                onSelect={(index, value) => setSelectedUnit(value)}
-                dropdownStyle={{ width: "11%", height: "5%" }}
-                renderRow={(option) => {
-                  return <Text style={styles.dropDownText}>{option}</Text>;
+              <Picker
+                selectedValue={selectedUnit}
+                onValueChange={(itemValue, itemIndex) => {
+                  if (
+                    ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"].includes(
+                      selectedAlcohol
+                    )
+                  ) {
+                    setSelectedUnit("잔");
+                  } else {
+                    setSelectedUnit(itemValue);
+                  }
                 }}
-              />
+                style={{ width: "85%", marginLeft: "10%" }}
+              >
+                <Picker.Item label="잔" value="잔" />
+                {!["소맥", "하이볼", "칵테일(약)", "칵테일(강)"].includes(
+                  selectedAlcohol
+                ) && <Picker.Item label="병" value="병" />}
+              </Picker>
             </View>
           </View>
           <View style={styles.buttons}>
@@ -235,11 +271,30 @@ function RecordCreateScreen({ route, navigation }) {
                   drinkUnit: selectedUnit,
                   drinkAmount: value,
                 };
-                setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
+                const existingRecordIndex = alcoholRecord.findIndex(
+                  (record) => {
+                    return (
+                      record.category === selectedAlcohol &&
+                      record.drinkUnit === selectedUnit
+                    );
+                  }
+                );
+
+                if (existingRecordIndex >= 0) {
+                  alcoholRecord[existingRecordIndex].drinkAmount += value;
+                } else {
+                  if (newRecord.drinkAmount > 0) {
+                    setAlcoholRecord((prevRecords) => [
+                      ...prevRecords,
+                      newRecord,
+                    ]);
+                  } else {
+                    Alert.alert("알림", "수량을 조절하세요.");
+                  }
+                }
                 setValue(0);
-                // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@여기다시 디폴트값으로 돌리고 싶다@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                // setSelectedAlcohol("");
-                // setSelectedUnit("");
+                setSelectedAlcohol("소주");
+                setSelectedUnit("잔");
                 console.log(alcoholRecord);
               }}
               labelStyle={styles.buttonInnerText}
@@ -252,35 +307,41 @@ function RecordCreateScreen({ route, navigation }) {
         <View style={styles.time}>
           <Text style={styles.texts}>술자리 시작</Text>
           <View style={styles.timer}>
-            <ModalDropdown
-              defaultValue="선택"
-              options={["AM", "PM"]}
-              onSelect={(index, value) => setSelectedAmPm(value)}
-              // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@클릭 시 색깔도 이상함@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
-              renderRow={(option) => {
-                return <Text style={styles.dropDownText}>{option}</Text>;
-              }}
-            />
-            <ModalDropdown
-              defaultValue="시"
-              options={hour}
-              onSelect={(index, value) => setSelectedHour(value)}
-              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
-              renderRow={(option) => {
-                return <Text style={styles.dropDownText}>{option}</Text>;
-              }}
-            />
-            <Text>:</Text>
-            <ModalDropdown
-              defaultValue="분"
-              options={minute}
-              onSelect={(index, value) => setSelectedMinute(value)}
-              dropdownStyle={{ width: "11%" }} // @@@@@@@@@@@@@@@@@@@@높이가 안넣어져요@@@@@@@@@@@@@@@@@@@@
-              renderRow={(option) => {
-                return <Text style={styles.dropDownText}>{option}</Text>;
-              }}
-            />
+            <Picker
+              selectedValue={selectedAmPm}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedAmPm(itemValue)
+              }
+              style={{ width: "29%" }}
+            >
+              <Picker.Item label="AM" value="AM" />
+              <Picker.Item label="PM" value="PM" />
+            </Picker>
+            <Picker
+              selectedValue={selectedHour}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedHour(itemValue)
+              }
+              style={{ width: "29%" }}
+            >
+              <Picker.Item label="시" value="" />
+              {hour.map((category, index) => (
+                <Picker.Item key={index} label={category} value={category} />
+              ))}
+            </Picker>
+            {/* <Text>:</Text> */}
+            <Picker
+              selectedValue={selectedMinute}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedMinute(itemValue)
+              }
+              style={{ width: "29%" }}
+            >
+              <Picker.Item label="분" value="" />
+              {minute.map((category, index) => (
+                <Picker.Item key={index} label={category} value={category} />
+              ))}
+            </Picker>
           </View>
         </View>
         <View style={styles.memo}>
@@ -288,7 +349,6 @@ function RecordCreateScreen({ route, navigation }) {
             <Text>사진 입력 자리</Text>
           </View> */}
           <Text style={styles.texts}>Memo</Text>
-          {/* 한글 입력이 안돼요ㅠㅠ */}
           <TextInput
             // label="술자리 기록을 남겨보세요"
             keyboardType="default"
@@ -330,7 +390,7 @@ function RecordCreateScreen({ route, navigation }) {
           </Button>
         )} */}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -345,7 +405,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
   mainTextBox: {
-    height: "10%",
+    height: "13%",
     padding: "5%",
     flexDirection: "row",
     alignItems: "flex-end",
@@ -353,7 +413,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
     verticalAlign: "bottom",
   },
   light: {
@@ -387,7 +447,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "center",
+    justifyContent: "center",
     // backgroundColor: "skyblue",
   },
   word: {
@@ -398,9 +458,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
+    // backgroundColor: "pink",
   },
   category: {
-    flex: 2.7,
+    flex: 2,
     height: "90%",
     margin: "1%",
     justifyContent: "center",
@@ -408,22 +469,22 @@ const styles = StyleSheet.create({
   },
   // @@@@@@@@@@@@@@@@@@@@@나중에 세밀하게 수정하기@@@@@@@@@@@@@@@@@@@@@
   alcoholAmount: {
-    flex: 2,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     height: "90%",
-    marginTop: "1%",
-    marginBottom: "1%",
-    marginRight: "0.5%",
+    // marginTop: "1%",
+    // marginBottom: "1%",
+    // marginRight: "0.5%",
     // backgroundColor: "white",
   },
   alcoholUnit: {
-    flex: 0.5,
+    flex: 1,
     height: "90%",
-    padding: "1%",
-    margin: "3%",
-    // backgroundColor: "pink",
+    // padding: "1%",
+    // margin: "3%",
+    // backgroundColor: "blue",
     justifyContent: "center",
   },
   buttons: {
@@ -431,7 +492,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   button: {
-    flex: 1,
+    flex: 2,
     margin: "1%",
   },
   time: {
@@ -453,7 +514,7 @@ const styles = StyleSheet.create({
   },
   timeInput: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
   },
   memo: {
     height: "35%",
