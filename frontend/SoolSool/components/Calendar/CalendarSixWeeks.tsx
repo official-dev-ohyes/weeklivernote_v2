@@ -5,7 +5,6 @@ import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "react-query";
-import { useEvent } from "react-native-reanimated";
 
 function CalendarSixWeeks({}) {
   // 진짜 오늘 정보 저장
@@ -22,7 +21,6 @@ function CalendarSixWeeks({}) {
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState({});
-  const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
   const tempDay = currentDay ? currentDay : nowDate;
