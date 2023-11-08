@@ -73,8 +73,9 @@ function DailyDetailScreen({ route, navigation }) {
           />
         </View>
         <View style={styles.buttons}>
-          {/* <Button
+          <Button
             mode="contained"
+            buttonColor={"#0477BF"}
             onPress={() => {
               navigation.navigate("RecordCreate", {
                 date: day,
@@ -83,12 +84,11 @@ function DailyDetailScreen({ route, navigation }) {
             }}
           >
             수정
-          </Button> */}
+          </Button>
           <Button
             mode="contained"
             onPress={openDeleteModal}
             buttonColor={"#0477BF"}
-            labelStyle={styles.buttonInnerText}
           >
             삭제
           </Button>
