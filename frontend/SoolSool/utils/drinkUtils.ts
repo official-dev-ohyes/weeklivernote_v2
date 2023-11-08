@@ -33,6 +33,15 @@ export const getIdByOnlyCategory = (category: string): number | null => {
   return matchingDrink ? matchingDrink.id : null;
 };
 
+// 마신 술 양을 잔 수로만 반환
+export const getShotAmountByDrinkCOunt = (category: string, num: number) => {
+  let amount = num;
+  const shot = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  return Math.floor(amount / shot.volume);
+};
+
 // 마신 술 양이 몇 병 몇 잔인지 반환
 export const getAmountByDrinkCount = (category: string, num: number) => {
   let amount = num;
