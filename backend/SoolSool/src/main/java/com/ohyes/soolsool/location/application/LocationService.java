@@ -26,6 +26,9 @@ public class LocationService {
         // 출발지부터 도착지까지 ODSAY 대중교통 길찾기 API 호출
         Map<String, Object> bestRoute = findRoute(locationRequestDto);
         System.out.println(bestRoute.toString());
+
+        // 시간 계산
+
         return bestRoute;
     }
 

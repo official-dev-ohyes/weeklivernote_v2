@@ -30,6 +30,8 @@ public class Notice {
     private byte noticePk;
 
     private String title;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @CreatedDate
