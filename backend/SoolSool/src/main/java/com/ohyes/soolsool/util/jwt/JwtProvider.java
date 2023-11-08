@@ -57,8 +57,8 @@ public class JwtProvider {
 
     public Authentication authenticateToken(String token) {
         try {
-            Long socialId =  JWT.require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token)
-                .getClaim("socialId").asLong();
+            String socialId = String.valueOf(JWT.require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token)
+                .getClaim("socialId"));
 
             if (socialId != null) {
                 User user = userRepository.findById(socialId).orElseThrow(

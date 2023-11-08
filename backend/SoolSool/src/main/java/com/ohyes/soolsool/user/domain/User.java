@@ -35,7 +35,7 @@ public class User {
 
     @Id
     @Column(name = "social_id")
-    private Long socialId;
+    private String socialId;
 
     @Column(name = "nickname")
     private String nickname;
@@ -98,7 +98,7 @@ public class User {
 
     // 생성자
     @Builder
-    public User(Long socialId, Category category, String nickname, String profileImg, String address,
+    public User(String socialId, Category category, String nickname, String profileImg, String address,
         String gender, int height, int weight, float alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
 

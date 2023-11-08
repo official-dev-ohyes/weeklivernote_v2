@@ -113,7 +113,7 @@ public class UserService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        Long socialId = jsonNode.get("id").asLong();
+        String socialId = String.valueOf(jsonNode.get("id"));
         String nickname = jsonNode.get("properties")
             .get("nickname").asText();
         String tempImg = jsonNode.get("kakao_account").get("profile")
@@ -125,7 +125,7 @@ public class UserService {
     }
 
     // 리프래쉬토큰 업데이트
-    private void updateRefreshToken(TokenDto tokenDto, Long socialId) {
+    private void updateRefreshToken(TokenDto tokenDto, String socialId) {
         Optional<User> userOptional = userRepository.findBySocialId(socialId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -187,7 +187,7 @@ public class UserService {
     // 회원 추가 정보 등록
     public Map<String, Object> userInfoAdd(UserRequestDto userRequestDto) {
 
-        Long socialId = userRequestDto.getSocialId();
+        String socialId = userRequestDto.getSocialId();
 
         User user = userRepository.findBySocialId(socialId).orElse(null);
         DrinkInfo drinkInfo = userRequestDto.getDrinkInfo();

@@ -20,7 +20,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND d.drinkUnit = '잔' " +
             "AND YEAR(di.drinkDate) = :year")
-    long getTotalDrinkAmountInGlass(@Param("socialId") Long socialId, @Param("year") int year);
+    long getTotalDrinkAmountInGlass(@Param("socialId") String socialId, @Param("year") int year);
 
     @Query("SELECT COALESCE(sum(c.bottle * d.drinkAmount), 0) FROM Drink d " +
             "JOIN d.diary di " +
@@ -28,7 +28,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND d.drinkUnit = '병' " +
             "AND YEAR(di.drinkDate) = :year")
-    long getTotalDrinkAmountInBottle(@Param("socialId") Long socialId, @Param("year") int year);
+    long getTotalDrinkAmountInBottle(@Param("socialId") String socialId, @Param("year") int year);
 
     @Query(
         "SELECT new com.ohyes.soolsool.user.dto.ChartDrinkDataDto(d.diary.drinkDate, "
@@ -41,7 +41,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND di.drinkDate between :startDate and :now " +
             "GROUP BY d.diary.drinkDate")
-    List<ChartDrinkDataDto> getDrinkData(Long socialId, LocalDate startDate, LocalDate now);
+    List<ChartDrinkDataDto> getDrinkData(String socialId, LocalDate startDate, LocalDate now);
 
     @Query(
         "SELECT new com.ohyes.soolsool.user.dto.ChartAlcDataDto(d.diary.drinkDate, "
@@ -54,7 +54,7 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND di.drinkDate between :startDate and :now " +
             "GROUP BY d.diary.drinkDate")
-    List<ChartAlcDataDto> getAlcData(Long socialId, LocalDate startDate, LocalDate now);
+    List<ChartAlcDataDto> getAlcData(String socialId, LocalDate startDate, LocalDate now);
 
     @Query(
         "SELECT new com.ohyes.soolsool.user.dto.YearlyChartDataDto(MONTH(d.diary.drinkDate), "
@@ -67,5 +67,5 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
             "WHERE di.user.socialId = :socialId " +
             "AND YEAR(d.diary.drinkDate) = :year " +
             "GROUP BY MONTH(d.diary.drinkDate)")
-    List<YearlyChartDataDto> getYearlyData(Long socialId, @Param("year") int year);
+    List<YearlyChartDataDto> getYearlyData(String socialId, @Param("year") int year);
 }

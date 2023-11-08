@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class KakaoProfileDto {
 
-    private Long socialId;
+    private String socialId;
 
     private String nickname;
 
