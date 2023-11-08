@@ -1,4 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useRecoilState } from "recoil";
+import { userNicknameAtom } from "../recoil/auth";
 
 function MapScreen() {
   return (

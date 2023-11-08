@@ -37,19 +37,23 @@ function BodyInfo({ navigation, socialId }) {
   return (
     <View style={styles.mainContainer}>
       <View>
-        <Text style={styles.infoText}>'주간일기'사용을 위해 정보를 입력해주세요🙂</Text>
+        <Text style={styles.infoText}>
+          '주간일기'사용을 위해 정보를 입력해주세요🙂
+        </Text>
       </View>
 
       <View style={styles.titleContainer}>
-      <View style={styles.titleSubContainer}>
-        <Text style={styles.title}>신체정보</Text>
-        <Icon
-          source="lightbulb-on-outline"
-          color={MD3Colors.error10}
-          size={40}
+        <View style={styles.titleSubContainer}>
+          <Text style={styles.title}>신체정보</Text>
+          <Icon
+            source="lightbulb-on-outline"
+            color={MD3Colors.error10}
+            size={40}
           />
-      </View>
-          <Text style={styles.mainText}>신체정보를 기준으로 알코올 농도를 계산합니다.</Text>
+        </View>
+        <Text style={styles.mainText}>
+          신체정보를 기준으로 알코올 농도를 계산합니다.
+        </Text>
       </View>
       <View style={styles.columnContainer}>
         <Text style={styles.text}>성별 </Text>
@@ -117,28 +121,27 @@ const styles = StyleSheet.create({
     fontFamily: "Yeongdeok-Sea",
   },
   buttonText: {
-    color: "white", // 텍스트 색상을 흰색으로 변경
-    fontSize: 20, // 텍스트 크기 설정 (선택 사항)
+    color: "white",
+    fontSize: 20,
   },
   text: {
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
   },
-  // 선택된 버튼 스타일
   selectedButton: {
-    backgroundColor: "#384BAD", // 선택 시 배경색 변경
+    backgroundColor: "#384BAD",
   },
   selectedButtonText: {
-    color: "#FFFFFF", // 선택 시 텍스트색 변경
+    color: "#FFFFFF",
   },
-  mainText:{
+  mainText: {
     fontFamily: "Yeongdeok-Sea",
   },
-  infoText:{
+  infoText: {
     fontSize: 16,
     color: "blue",
     fontFamily: "Yeongdeok-Sea",
-  }
+  },
 });
 
 export default BodyInfo;

@@ -1,5 +1,5 @@
 import { Text, Pressable, Image, StyleSheet, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import DetailProfile from "../DetailProfile";
 import { showErrorAndRetry } from "../../../utils/showErrorUtils";
@@ -23,10 +23,20 @@ interface UserProfileProps {
 function Profile(props: UserProfileProps) {
   const { userData, navigation } = props;
 
+  useEffect(() => {
+    console.log("이미지url", userData.profileImg);
+    console.log("닉네임", userData.nickname);
+    console.log("주소", userData.address);
+    console.log("성별", userData.gender);
+    console.log("신장", userData.height);
+    console.log("체중", userData.weight);
+    console.log("주량", userData.alcoholLimit);
+  }, []);
+
   const handleEdit = () => {
-    // console.log("에딧아이콘 클릭");
-    showErrorAndRetry("준비 중", "추후 업데이트 예정입니다");
-    // navigation.navigate("EditProfile");
+    console.log("에딧아이콘 클릭");
+    // showErrorAndRetry("준비 중", "추후 업데이트 예정입니다");
+    navigation.navigate("EditProfile");
   };
 
   return (

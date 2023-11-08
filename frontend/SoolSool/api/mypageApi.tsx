@@ -18,7 +18,7 @@ export const fetchUserNonAlc = async () => {
   }
 };
 
-export const editUser = async (
+export const updateUserProfile = async (
   nickname,
   weight,
   height,

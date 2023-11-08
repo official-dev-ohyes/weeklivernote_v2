@@ -19,7 +19,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
-import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
@@ -152,10 +151,6 @@ export default function App() {
                     name="KakaoLoginScreen"
                     component={KakaoLoginScreen}
                   />
-                  <Stack.Screen
-                    name="KakaoRedirectScreen"
-                    component={KakaoRedirectScreen}
-                  />
 
                   <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                   <Stack.Screen
@@ -173,6 +168,15 @@ export default function App() {
                   <Stack.Screen
                     name="Settings"
                     component={SettingsScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfileScreen}
                     options={{
                       headerShown: true,
                       headerStyle: { backgroundColor: "#0477BF" },
