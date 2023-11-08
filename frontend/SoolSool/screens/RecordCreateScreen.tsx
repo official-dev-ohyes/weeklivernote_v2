@@ -17,12 +17,10 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
   const isAlcohol = route.params.isAlcohol; // create, update 구분
-  // const [drinkData, setdrinkData] = useState([]);
-  // const [detailData, setdetailData] = useState([]);
-
+  const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
   const [alcoholRecord, setAlcoholRecord] = useState([]);
   const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(0); // 음주량
   const [selectedUnit, setSelectedUnit] = useState("잔");
   const [selectedAmPm, setSelectedAmPm] = useState("PM");
   const [selectedHour, setSelectedHour] = useState("");
@@ -68,18 +66,19 @@ function RecordCreateScreen({ route, navigation }) {
     "55",
   ];
 
+  // 음주량 수정
   const handleDecrement = () => {
     if (value > 0) {
       const newValue = value - 0.5;
       setValue(newValue);
     }
   };
-
   const handleIncrement = () => {
     const newValue = value + 0.5;
     setValue(newValue);
   };
 
+  // 주종별 음주 기록 추가
   const saveRecord = async () => {
     if (!selectedHour || !selectedMinute || !selectedAmPm) {
       Alert.alert("알림", "음주 시작 시간을 입력해주세요.");
@@ -110,10 +109,6 @@ function RecordCreateScreen({ route, navigation }) {
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
-    console.log("drinks:", JSON.stringify(alcoholRecord, null, 2));
-    console.log(`drinkDate : ${date}`);
-    console.log(`drinkTime : ${time}`);
-    console.log(`memo : ${memo}`);
     createDrink({
       drinks: [...alcoholRecord],
       drinkDate: date,
@@ -126,7 +121,7 @@ function RecordCreateScreen({ route, navigation }) {
     });
   };
 
-  // if (isAlcohol) {
+  // [업데이트] 기존 요약/상세 정보 불러오기
   const {
     data: DailyDrinkData,
     isLoading: dailyLoading,
@@ -139,34 +134,10 @@ function RecordCreateScreen({ route, navigation }) {
     isLoading: detailLoading,
     isError: detailError,
   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
-  // console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
-
-  // if (DailyDetailData) {
-  //   const tempHour = parseInt(
-  //     DailyDetailData.startTime.substring(11, 13),
-  //     10
-  //   );
-  //   setSelectedHour(
-  //     tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-  //   );
-  //   setSelectedMinute(
-  //     parseInt(DailyDetailData.startTime.substring(14, 16), 10).toString()
-  //   );
-  //   if (memo) {
-  //     setMemo(DailyDetailData.memo);
-  //   }
-  // }
-  // const tempHour = parseInt(DailyDetailData.startTime.substring(11, 13), 10);
-  // console.log(tempHour);
-  // console.log(
-  //   `분 정보 : ${parseInt(DailyDetailData.startTime.substring(14, 16), 10)}`
-  // );
-  // setSelectedHour(
-  //   tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-  // );
-  // }
+  // console.log(`요약조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
   useEffect(() => {
+    // 술자리 시작 시간, 메모, 사진 불러오기
     if (DailyDetailData) {
       const tempHour = parseInt(
         DailyDetailData.startTime.substring(11, 13),
@@ -189,6 +160,7 @@ function RecordCreateScreen({ route, navigation }) {
       }
     }
 
+    // 주종 별 음주량 불러오기
     if (DailyDrinkData) {
       for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
         const category = DailyDrinkData.drinks[i].drink;
@@ -235,7 +207,6 @@ function RecordCreateScreen({ route, navigation }) {
       <View style={styles.mainTextBox}>
         <Text style={styles.headerText}>{day}</Text>
         <View style={styles.light}>
-          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
             size={30}
@@ -278,50 +249,32 @@ function RecordCreateScreen({ route, navigation }) {
             <Text style={styles.word}>양</Text>
             <View style={styles.alcoholAmount}>
               <IconButton icon="minus" onPress={handleDecrement} size={15} />
-              {/* <Button
-                mode="contained"
-                onPress={handleDecrement}
-                buttonColor={"#0477BF"}
-              >
-                -
-              </Button> */}
               <Text>{value}</Text>
               <IconButton icon="plus" onPress={handleIncrement} size={15} />
-              {/* <Button
-                mode="contained"
-                onPress={handleIncrement}
-                buttonColor={"#0477BF"}
-              >
-                +
-              </Button> */}
             </View>
             <View style={styles.alcoholUnit}>
               <Picker
                 selectedValue={selectedUnit}
                 onValueChange={(itemValue, itemIndex) => {
-                  if (
-                    ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"].includes(
-                      selectedAlcohol
-                    )
-                  ) {
+                  if (onlyShotDrinks.includes(selectedAlcohol)) {
                     setSelectedUnit("잔");
                   } else {
                     setSelectedUnit(itemValue);
                   }
                 }}
-                style={{ width: "85%", marginLeft: "10%" }}
+                // style={{ width: "85%", marginLeft: "10%" }}
               >
                 <Picker.Item label="잔" value="잔" />
-                {!["소맥", "하이볼", "칵테일(약)", "칵테일(강)"].includes(
-                  selectedAlcohol
-                ) && <Picker.Item label="병" value="병" />}
+                {!onlyShotDrinks.includes(selectedAlcohol) && (
+                  <Picker.Item label="병" value="병" />
+                )}
               </Picker>
             </View>
           </View>
           <View style={styles.buttons}>
             <Button
               style={styles.button}
-              buttonColor={"#0477BF"}
+              buttonColor={"#363C4B"}
               mode="contained"
               onPress={() => {
                 setAlcoholRecord([]);
@@ -365,14 +318,14 @@ function RecordCreateScreen({ route, navigation }) {
                 setSelectedUnit("잔");
                 console.log(alcoholRecord);
               }}
-              buttonColor={"#0477BF"}
+              buttonColor={"#363C4B"}
             >
               추가
             </Button>
           </View>
         </View>
         <View style={styles.time}>
-          <Text style={styles.texts}>술자리 시작</Text>
+          <Text style={styles.texts}>술자리 시작 시간</Text>
           <View style={styles.timer}>
             <Picker
               selectedValue={selectedAmPm}
@@ -396,7 +349,6 @@ function RecordCreateScreen({ route, navigation }) {
                 <Picker.Item key={index} label={category} value={category} />
               ))}
             </Picker>
-            {/* <Text>:</Text> */}
             <Picker
               selectedValue={selectedMinute}
               onValueChange={(itemValue, itemIndex) =>
@@ -415,34 +367,34 @@ function RecordCreateScreen({ route, navigation }) {
           {/* <View>
             <Text>사진 입력 자리</Text>
           </View> */}
-          <Text style={styles.texts}>Memo</Text>
+          <Text style={styles.texts}>오늘의 기록</Text>
           <TextInput
-            // label="술자리 기록을 남겨보세요"
+            label="술자리 기록을 남겨보세요"
             keyboardType="default"
             mode="outlined"
             value={memo}
             onChangeText={(memo) => setMemo(memo)}
             multiline={true}
             numberOfLines={9}
-            contentStyle={styles.buttonInnerText}
+            outlineColor="#363C4B" // @@@@@@@@@@@@@@@@@@@@@@@되는지 확인 필요@@@@@@@@@@@@@@@@@@@@@@@
           />
         </View>
-        <Button
+        {/* <Button
           mode="contained"
           onPress={() => {
             saveRecord();
           }}
-          buttonColor={"#0477BF"}
+          buttonColor={"#363C4B"}
         >
           저장
-        </Button>
+        </Button> */}
         {isAlcohol ? (
           <Button
             mode="contained"
             onPress={() => {
               saveRecord();
             }}
-            buttonColor={"#0477BF"}
+            buttonColor={"#363C4B"}
           >
             수정
           </Button>
@@ -456,6 +408,15 @@ function RecordCreateScreen({ route, navigation }) {
             저장
           </Button>
         )}
+        {/* <Button
+          mode="contained"
+          onPress={() => {
+            saveRecord();
+          }}
+          buttonColor={"#363C4B"}
+        >
+          {isAlcohol ? "수정": "저장"}
+        </Button> */}
       </View>
     </ScrollView>
   );
@@ -464,7 +425,6 @@ function RecordCreateScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    // backgroundColor: "black",
   },
   mainBackground: {
     flex: 1,
@@ -476,16 +436,13 @@ const styles = StyleSheet.create({
     padding: "5%",
     flexDirection: "row",
     alignItems: "flex-end",
-    // backgroundColor: "pink",
   },
   headerText: {
     fontSize: 40,
-    // fontFamily: "Yeongdeok-Sea",
     verticalAlign: "bottom",
   },
   light: {
     height: "80%",
-    // backgroundColor: "blue",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: "2%",
@@ -500,13 +457,11 @@ const styles = StyleSheet.create({
   },
   tagArea: {
     height: "10%",
-    // backgroundColor: "white",
   },
   alcoholArea: {
     height: "25%",
     backgroundColor: "white",
     borderRadius: 5,
-    // 수직방향 정렬 맞추기
   },
   alcoholInput: {
     height: "32%",
@@ -515,43 +470,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: "skyblue",
   },
   word: {
     flex: 1,
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
     textAlign: "center",
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
-    // backgroundColor: "pink",
+    fontSize: 15,
   },
   category: {
     flex: 2,
     height: "90%",
     margin: "1%",
     justifyContent: "center",
-    // backgroundColor: "yellow",
   },
-  // @@@@@@@@@@@@@@@@@@@@@나중에 세밀하게 수정하기@@@@@@@@@@@@@@@@@@@@@
   alcoholAmount: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     height: "90%",
-    // marginTop: "1%",
-    // marginBottom: "1%",
-    // marginRight: "0.5%",
-    // backgroundColor: "white",
   },
   alcoholUnit: {
     flex: 1,
     height: "90%",
-    // padding: "1%",
-    // margin: "3%",
-    // backgroundColor: "blue",
     justifyContent: "center",
   },
   buttons: {
@@ -565,11 +505,9 @@ const styles = StyleSheet.create({
   time: {
     display: "flex",
     flexDirection: "column",
-    // alignContent: ",
     justifyContent: "space-around",
     height: "10%",
     marginTop: "1%",
-    // backgroundColor: "white",
   },
   timer: {
     height: "60%",
@@ -581,31 +519,19 @@ const styles = StyleSheet.create({
   },
   timeInput: {
     flexDirection: "row",
-    // justifyContent: "space-between",
   },
   memo: {
     height: "35%",
     marginTop: "1%",
-    // backgroundColor: "white",
   },
   texts: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 15,
     marginBottom: "1%",
   },
   record: {
     backgroundColor: "#F6F6F6",
     marginVertical: 5,
     padding: 10,
-  },
-  buttonInnerText: {
-    fontSize: 17,
-    fontFamily: "Yeongdeok-Sea",
-  },
-  dropDownText: {
-    fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
-    margin: "2%",
   },
 });
 
