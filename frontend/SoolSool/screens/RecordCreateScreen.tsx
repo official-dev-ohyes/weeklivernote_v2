@@ -210,8 +210,8 @@ function RecordCreateScreen({ route, navigation }) {
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
   return (
-    <ScrollView>
-      <View style={styles.total}>
+    <View style={styles.total}>
+      <ScrollView style={styles.scrollBox}>
         <View style={styles.mainTextBox}>
           <Text style={styles.headerText}>{day}</Text>
           <View style={styles.light}>
@@ -229,9 +229,11 @@ function RecordCreateScreen({ route, navigation }) {
           </View>
         </View>
         <View style={styles.contents}>
-          <View style={styles.tagArea}>
-            <NowAddedAlcohols alcoholRecord={alcoholRecord} />
-          </View>
+          {alcoholRecord.length > 0 ? (
+            <View style={styles.tagArea}>
+              <NowAddedAlcohols alcoholRecord={alcoholRecord} />
+            </View>
+          ) : null}
           <View style={styles.alcoholArea}>
             <View style={styles.alcoholInput}>
               <Text style={styles.word}>술</Text>
@@ -386,7 +388,7 @@ function RecordCreateScreen({ route, navigation }) {
               onChangeText={(memo) => setMemo(memo)}
               multiline={true}
               numberOfLines={5}
-              outlineColor="#363C4B" // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@안되네@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+              outlineColor="#363C4B"
             />
           </View>
           <Button
@@ -399,20 +401,24 @@ function RecordCreateScreen({ route, navigation }) {
             {isAlcohol ? "수정" : "저장"}
           </Button>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    display: "flex",
+    // display: "flex",
     // borderWidth: 10,
     // borderColor: "orange",
     height: "100%",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     // alignContent: "space-between",
+  },
+  scrollBox: {
+    display: "flex",
+    flexDirection: "column",
   },
   mainTextBox: {
     flex: 1,
@@ -433,10 +439,10 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
   },
   contents: {
-    // flex: 5,
-    height: "87%",
+    display: "flex",
+    height: 700,
     flexDirection: "column",
-    alignContent: "space-between",
+    // alignContent: "space-between",
     justifyContent: "space-between",
     padding: "1%",
     margin: "3%",
@@ -448,16 +454,18 @@ const styles = StyleSheet.create({
     height: "10%",
   },
   alcoholArea: {
-    height: "25%",
-    backgroundColor: "white",
+    height: "30%",
     borderRadius: 5,
+    justifyContent: "space-around",
+    // backgroundColor: "white",
   },
   alcoholInput: {
-    height: "32%",
+    height: "25%",
     margin: "1%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    // backgroundColor: "yellow",
   },
   word: {
     flex: 1,
@@ -467,7 +475,7 @@ const styles = StyleSheet.create({
   category: {
     flex: 2,
     height: "90%",
-    margin: "1%",
+    // margin: "1%",
     justifyContent: "center",
   },
   alcoholAmount: {
@@ -485,6 +493,7 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: "row",
     justifyContent: "space-around",
+    paddingBottom: "3%",
   },
   button: {
     flex: 2,
@@ -494,7 +503,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    height: "0%",
+    height: "10%",
     marginTop: "1%",
   },
   timer: {

@@ -147,7 +147,7 @@ function CalendarSixWeeks({}) {
                 </View>
                 <View style={styles.others}>
                   <Text style={styles.innerText}>
-                    내일 새벽 5시에 업데이트 됩니다
+                    내일 새벽 5시에 업데이트 됩니다.
                   </Text>
                 </View>
               </View>
@@ -158,7 +158,7 @@ function CalendarSixWeeks({}) {
                 </View>
                 <View style={styles.others}>
                   <Text style={styles.innerText}>
-                    미래 날짜는 입력이 불가능합니다
+                    미래 날짜는 입력이 불가능합니다.
                   </Text>
                 </View>
               </View>
@@ -238,11 +238,11 @@ const styles = StyleSheet.create({
     paddingBottom: "5%",
   },
   innerText: {
-    fontSize: 20,
+    fontSize: 17,
   },
   headerText: {
     fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
   },
 });
 

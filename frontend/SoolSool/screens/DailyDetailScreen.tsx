@@ -84,6 +84,7 @@ function DailyDetailScreen({ route, navigation }) {
                 isAlcohol: true,
               });
             }}
+            style={styles.botton}
           >
             수정
           </Button>
@@ -91,6 +92,7 @@ function DailyDetailScreen({ route, navigation }) {
             mode="contained"
             onPress={openDeleteModal}
             buttonColor={"#363C4B"}
+            style={styles.botton}
           >
             삭제
           </Button>
@@ -230,6 +232,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     margin: "15%",
+  },
+  botton: {
+    margin: "1%",
   },
 });
 
