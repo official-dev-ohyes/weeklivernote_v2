@@ -19,7 +19,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
-import KakaoRedirectScreen from "./screens/KakaoRedirectScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
 import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
 import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
@@ -30,12 +29,11 @@ import CalendarScreen from "./screens/CalendarScreen";
 import DailyDetailScreen from "./screens/DailyDetailScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
 
-// import MapScreen from "./screens/MapScreen";
-
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
+import MapScreen from "./screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -57,8 +55,9 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#0477BF" },
-        headerTintColor: "white",
+        headerStyle: { backgroundColor: "#E3D5EC" },
+        headerTintColor: "black",
+        headerTitleAlign: "center",
         tabBarShowLabel: false,
       }}
       sceneContainerStyle={{
@@ -85,7 +84,7 @@ function BottomTabNavigator() {
           title: "Calender",
         }}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Map"
         component={MapScreen}
         options={{
@@ -94,7 +93,7 @@ function BottomTabNavigator() {
           ),
           title: "Map",
         }}
-      /> */}
+      />
       <BottomTab.Screen
         name="MyPage"
         component={MyPageScreen}
@@ -162,10 +161,6 @@ export default function App() {
                     name="KakaoLoginScreen"
                     component={KakaoLoginScreen}
                   />
-                  <Stack.Screen
-                    name="KakaoRedirectScreen"
-                    component={KakaoRedirectScreen}
-                  />
 
                   <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                   <Stack.Screen
@@ -183,6 +178,15 @@ export default function App() {
                   <Stack.Screen
                     name="Settings"
                     component={SettingsScreen}
+                    options={{
+                      headerShown: true,
+                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerTintColor: "white",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfileScreen}
                     options={{
                       headerShown: true,
                       headerStyle: { backgroundColor: "#0477BF" },

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "react-native-paper";
@@ -13,9 +13,14 @@ import DotIndicator from "../components/AddInfo/DotIndicator ";
 import { saveUserInfo } from "../api/addInfoApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
+import { useSetRecoilState } from "recoil";
+import { userAlcoholLimitAtom, userNicknameAtom } from "../recoil/auth";
+import Toast from "react-native-root-toast";
 
 function AddInfoStep3Screen({ navigation, route }) {
   const { height, weight, gender, address, socialId } = route.params;
+  const setNickname = useSetRecoilState(userNicknameAtom);
+  const setAlcoholLimit = useSetRecoilState(userAlcoholLimitAtom);
 
   const [selectedDrinkKind, setSelectedDrinkKind] = useState(null);
   const [amount, setAmount] = useState("");
@@ -55,18 +60,29 @@ function AddInfoStep3Screen({ navigation, route }) {
   };
 
   const handleSubmitInfo = () => {
-    if (selectedDrinkKind && unit && amount)  {
+    if (selectedDrinkKind && unit && amount) {
       const drinkInfo = {
         category: selectedDrinkKind,
         drinkUnit: unit,
         drinkAmount: amount,
       };
-  
+
       saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
         .then(async (res) => {
           console.log("제출 성공", res.tokenInfo.accessToken);
           const accessToken = res.tokenInfo.accessToken;
           await AsyncStorage.setItem("accessToken", accessToken);
+          setNickname(res.data.nickname);
+          setAlcoholLimit(res.data.alcoholLimit);
+
+          Toast.show("로그인에 성공했습니다", {
+            duration: Toast.durations.SHORT,
+            position: 0,
+            shadow: true,
+            animation: true,
+            opacity: 0.8,
+          });
+
           navigation.navigate("BottomTab");
         })
         .catch((error) => {
@@ -79,7 +95,6 @@ function AddInfoStep3Screen({ navigation, route }) {
     } else {
       Alert.alert("알림", "모든 항목을 선택해주세요.");
     }
-  
   };
 
   return (
@@ -135,10 +150,7 @@ function AddInfoStep3Screen({ navigation, route }) {
         >
           Previous
         </Button>
-        <Button
-          mode="contained"
-          onPress={handleSubmitInfo}
-        >
+        <Button mode="contained" onPress={handleSubmitInfo}>
           Submit
         </Button>
       </View>

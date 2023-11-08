@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useState } from "react";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 import { Modal, Portal, Button } from "react-native-paper";
@@ -71,108 +78,111 @@ function SettingsScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section
-        title="알림"
-        content={
-          <View style={styles.alarmContainer}>
-            <Text>알림 켜기</Text>
-            <Switch
-              value={isNotificationEnabled} // 알림 켜기 또는 끄기 값 설정
-              onValueChange={toggleNotification} // 알림 켜기 또는 끄기 이벤트 핸들러
-            />
-          </View>
-        }
-      />
-
-      <Section
-        title="주간일기 1.0.0"
-        content={
-          <>
-            <TouchableOpacity onPress={handleGoToNotification}>
-              <Text>공지사항</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity
-              onPress={() =>
-                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
-              }
-            >
-              <Text>문의하기</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
-
-      <Section
-        title="이용약관"
-        content={
-          <>
-            <TouchableOpacity>
-              <Text>서비스 이용약관</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity
-              onPress={() =>
-                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
-              }
-            >
-              <Text>위치정보 이용약관</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity>
-              <Text>개인정보 처리방침</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
-
-      <Section
-        title="계정관리"
-        content={
-          <>
-            <TouchableOpacity onPress={handleLogOut}>
-              <Text>로그아웃</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity onPress={showModal}>
-              <Text>회원탈퇴</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
-
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={{
-            backgroundColor: "white",
-            padding: 20,
-            width: "90%",
-            borderRadius: 5,
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          <View style={styles.mainContainer}>
-            <Text style={styles.alertTitle}>주간일기</Text>
-            <View style={styles.textContainer}>
-              <Text>정말 탈퇴하시겠습니까?</Text>
-              <Text>모든 정보가 삭제됩니다.</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <Section
+          title="알림"
+          content={
+            <View style={styles.alarmContainer}>
+              <Text>알림 끄기/알림 켜기</Text>
+              <Switch
+                value={isNotificationEnabled} // 알림 켜기 또는 끄기 값 설정
+                onValueChange={toggleNotification} // 알림 켜기 또는 끄기 이벤트 핸들러
+                disabled={true}
+              />
             </View>
-            <View style={styles.buttonContainer}>
-              <Button mode="contained" onPress={confirmSignOut}>
-                확인
-              </Button>
-              <Button mode="outlined" onPress={hideModal}>
-                취소
-              </Button>
+          }
+        />
+
+        <Section
+          title="주간일기 1.0.0"
+          content={
+            <>
+              <TouchableOpacity onPress={handleGoToNotification}>
+                <Text>공지사항</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                onPress={() =>
+                  showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+                }
+              >
+                <Text>문의하기</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
+
+        <Section
+          title="이용약관"
+          content={
+            <>
+              <TouchableOpacity>
+                <Text>서비스 이용약관</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                onPress={() =>
+                  showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+                }
+              >
+                <Text>위치정보 이용약관</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity>
+                <Text>개인정보 처리방침</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
+
+        <Section
+          title="계정관리"
+          content={
+            <>
+              <TouchableOpacity onPress={handleLogOut}>
+                <Text>로그아웃</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity onPress={showModal}>
+                <Text>회원탈퇴</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
+
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+              width: "90%",
+              borderRadius: 5,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <View style={styles.mainContainer}>
+              <Text style={styles.alertTitle}>주간일기</Text>
+              <View style={styles.textContainer}>
+                <Text>정말 탈퇴하시겠습니까?</Text>
+                <Text>모든 정보가 삭제됩니다.</Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button mode="contained" onPress={confirmSignOut}>
+                  확인
+                </Button>
+                <Button mode="outlined" onPress={hideModal}>
+                  취소
+                </Button>
+              </View>
             </View>
-          </View>
-        </Modal>
-      </Portal>
-    </View>
+          </Modal>
+        </Portal>
+      </View>
+    </ScrollView>
   );
 }
 

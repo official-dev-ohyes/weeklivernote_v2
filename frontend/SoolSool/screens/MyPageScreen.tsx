@@ -1,11 +1,12 @@
-import { useEffect, useState, useLayoutEffect } from "react";
-import { useQuery } from "react-query";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { StyleSheet, ScrollView, View } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 import SettingsIconButton from "../components/MyPage/SettingsIconButton";
 import Profile from "../components/MyPage/template/Profile";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface UserProfile {
   address: string;
@@ -30,6 +31,7 @@ interface UserProfileProps {
 }
 
 function MyPageScreen(props: UserProfileProps) {
+  const queryClient = useQueryClient();
   const [userProfile, setUserProfile] = useState<UserProfile>({
     nickname: "",
     profileImg: "",
@@ -77,14 +79,27 @@ function MyPageScreen(props: UserProfileProps) {
 
   // console.log("오잉?", userProfileData);
 
-  useEffect(() => {
-    if (!isProfileLoading && userProfileData) {
-      setUserProfile(userProfileData);
-    }
-    if (!isNonAlcLoading && userNonAlcData) {
-      setAlcoholStatistics(userNonAlcData);
-    }
-  }, [userProfileData, isProfileLoading]);
+  // useEffect(() => {
+  //   if (!isProfileLoading && userProfileData) {
+  //     setUserProfile(userProfileData);
+  //   }
+  //   if (!isNonAlcLoading && userNonAlcData) {
+  //     setAlcoholStatistics(userNonAlcData);
+  //   }
+  // }, [userProfileData, isProfileLoading, navigator]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("여기로 안빠지나?");
+      queryClient.invalidateQueries("userProfileData");
+      if (!isProfileLoading && userProfileData) {
+        setUserProfile(userProfileData);
+      }
+      if (!isNonAlcLoading && userNonAlcData) {
+        setAlcoholStatistics(userNonAlcData);
+      }
+    }, [userProfileData, isProfileLoading])
+  );
 
   return (
     <ScrollView>
