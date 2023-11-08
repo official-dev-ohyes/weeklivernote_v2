@@ -211,7 +211,7 @@ export default function App() {
                     component={DailyDetailScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerStyle: { backgroundColor: "#363C4B" },
                       headerTintColor: "white",
                       title: "Calendar",
                     }}
@@ -221,7 +221,7 @@ export default function App() {
                     component={RecordCreateScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerStyle: { backgroundColor: "#363C4B" },
                       headerTintColor: "white",
                       title: "Calendar",
                     }}

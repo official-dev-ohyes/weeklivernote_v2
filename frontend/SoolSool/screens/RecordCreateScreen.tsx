@@ -340,6 +340,7 @@ function RecordCreateScreen({ route, navigation }) {
             <Text style={styles.texts}>술자리 시작 시간</Text>
             <View style={styles.timer}>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedAmPm}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedAmPm(itemValue)
@@ -350,6 +351,7 @@ function RecordCreateScreen({ route, navigation }) {
                 <Picker.Item label="PM" value="PM" />
               </Picker>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedHour}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedHour(itemValue)
@@ -362,6 +364,7 @@ function RecordCreateScreen({ route, navigation }) {
                 ))}
               </Picker>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedMinute}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedMinute(itemValue)
@@ -447,7 +450,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: "1%",
     margin: "3%",
-    borderRadius: 15,
+    borderRadius: 5,
     backgroundColor: "#ffffff",
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
@@ -478,7 +481,7 @@ const styles = StyleSheet.create({
   },
   word: {
     flex: 0.5,
-    // textAlign: "center",
+    fontWeight: "bold",
     fontSize: 16,
   },
   category: {
@@ -533,7 +536,8 @@ const styles = StyleSheet.create({
   },
   texts: {
     fontSize: 17,
-    marginBottom: "1%",
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   record: {
     backgroundColor: "#F6F6F6",
