@@ -172,6 +172,11 @@ public class UserService {
         }
 
         TokenDto tokenDto = jwtProvider.createToken(user);
+        DrinkInfo drinkInfo = DrinkInfo.builder()
+            .category(user.getDrinkCategory())
+            .drinkUnit(user.getDrinkUnit())
+            .drinkAmount(user.getDrinkAmount())
+            .build();
 
         updateRefreshToken(tokenDto, kakaoProfileDto.getSocialId());
 
@@ -179,9 +184,9 @@ public class UserService {
         data.put("userName", user.getNickname());
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
+        data.put("drinkInfo", drinkInfo);
 
         return data;
-
     }
 
     // 회원 추가 정보 등록
@@ -220,6 +225,9 @@ public class UserService {
         user.setWeight(userRequestDto.getWeight());
         user.setAlcoholLimit(alcoholLimit);
         user.setRefreshToken(userRequestDto.getRefreshToken());
+        user.setDrinkCategory(drinkInfo.getCategory());
+        user.setDrinkUnit(drinkInfo.getDrinkUnit());
+        user.setDrinkAmount(drinkInfo.getDrinkAmount());
 
         userRepository.save(user);
 
@@ -231,9 +239,9 @@ public class UserService {
         data.put("userName", user.getNickname());
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
+        data.put("drinkInfo", drinkInfo);
 
         return data;
-
     }
 
     // 회원 추가 정보 조회
@@ -248,6 +256,12 @@ public class UserService {
         int weight = user.getWeight();
         float alcoholLimit = user.getAlcoholLimit();
 
+        DrinkInfo drinkInfo = DrinkInfo.builder()
+            .category(user.getDrinkCategory())
+            .drinkUnit(user.getDrinkUnit())
+            .drinkAmount(user.getDrinkAmount())
+            .build();
+
         return UserResponseDto.builder()
             .nickname(nickname)
             .profileImg(profileImg)
@@ -256,6 +270,7 @@ public class UserService {
             .height(height)
             .weight(weight)
             .alcoholLimit(alcoholLimit)
+            .drinkInfo(drinkInfo)
             .build();
 
     }
