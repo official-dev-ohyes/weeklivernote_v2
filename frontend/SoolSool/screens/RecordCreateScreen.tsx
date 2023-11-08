@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { Button, TextInput, IconButton } from "react-native-paper";
 import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker";
-import ModalDropdown from "react-native-modal-dropdown";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useQuery } from "react-query";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,8 +15,8 @@ import {
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
   const isAlcohol = route.params.isAlcohol; // create, update 구분
-  const [DailyDrinkData, setDailyDrinkData] = useState([]);
-  // const [DailyDrinkData, setDailyDrinkData] = useState([]);
+  // const [drinkData, setdrinkData] = useState([]);
+  // const [detailData, setdetailData] = useState([]);
 
   const [alcoholRecord, setAlcoholRecord] = useState([]);
   const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
@@ -126,40 +125,68 @@ function RecordCreateScreen({ route, navigation }) {
   };
 
   // if (isAlcohol) {
-  //   const {
-  //     data: DailyDrinkData,
-  //     isLoading: dailyLoading,
-  //     isError: dailyError,
-  //   } = useQuery("DailyDrinkQuery", async () => await fetchDailyDrink(day));
-  //   console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
+  const {
+    data: DailyDrinkData,
+    isLoading: dailyLoading,
+    isError: dailyError,
+  } = useQuery("DailyDrinkQuery", async () => await fetchDailyDrink(day));
+  console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
 
-  //   const {
-  //     data: DailyDetailData,
-  //     isLoading: detailLoading,
-  //     isError: detailError,
-  //   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
-  //   console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
-  //   // setMemo(DailyDetailData.memo);
-  //   console.log(`시간은 이렇게 생겼습니다. ${DailyDetailData.startTime}`);
-  //   const tempHour = parseInt(DailyDetailData.startTime.substring(11, 13), 10);
-  //   console.log(tempHour);
-  //   console.log(
-  //     `분 정보 : ${parseInt(DailyDetailData.startTime.substring(14, 16), 10)}`
+  const {
+    data: DailyDetailData,
+    isLoading: detailLoading,
+    isError: detailError,
+  } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
+  console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
+
+  // if (DailyDetailData) {
+  //   const tempHour = parseInt(
+  //     DailyDetailData.startTime.substring(11, 13),
+  //     10
   //   );
-  //   // setSelectedHour(
-  //   //   tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-  //   // );
+  //   setSelectedHour(
+  //     tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+  //   );
+  //   setSelectedMinute(
+  //     parseInt(DailyDetailData.startTime.substring(14, 16), 10).toString()
+  //   );
+  //   if (memo) {
+  //     setMemo(DailyDetailData.memo);
+  //   }
+  // }
+  // const tempHour = parseInt(DailyDetailData.startTime.substring(11, 13), 10);
+  // console.log(tempHour);
+  // console.log(
+  //   `분 정보 : ${parseInt(DailyDetailData.startTime.substring(14, 16), 10)}`
+  // );
+  // setSelectedHour(
+  //   tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+  // );
   // }
 
-  // useEffect(() => {
-  //   setDailyDrinkData(DailyDrinkData)
-  //   if (isAlcohol) {
-  //     setMemo(DailyDetailData.memo);
-  //     setSelectedHour(
-  //       tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-  //     );
-  //   }
-  // }, [isAlcohol, DailyDrinkData]);
+  useEffect(() => {
+    if (DailyDetailData) {
+      const tempHour = parseInt(
+        DailyDetailData.startTime.substring(11, 13),
+        10
+      );
+      if (tempHour < 12) {
+        setSelectedAmPm("AM");
+      }
+      setSelectedHour(
+        tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+      );
+      setSelectedMinute(
+        `${parseInt(
+          DailyDetailData.startTime.substring(14, 16),
+          10
+        ).toString()}`
+      );
+      if (memo) {
+        setMemo(DailyDetailData.memo);
+      }
+    }
+  }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
   return (
     <ScrollView style={styles.total}>
@@ -258,7 +285,6 @@ function RecordCreateScreen({ route, navigation }) {
                 setAlcoholRecord([]);
                 setValue(0);
               }}
-              labelStyle={styles.buttonInnerText}
             >
               초기화
             </Button>
@@ -297,7 +323,6 @@ function RecordCreateScreen({ route, navigation }) {
                 setSelectedUnit("잔");
                 console.log(alcoholRecord);
               }}
-              labelStyle={styles.buttonInnerText}
               buttonColor={"#0477BF"}
             >
               추가
@@ -324,7 +349,7 @@ function RecordCreateScreen({ route, navigation }) {
               }
               style={{ width: "29%" }}
             >
-              <Picker.Item label="시" value="" />
+              <Picker.Item label={selectedHour} value="" />
               {hour.map((category, index) => (
                 <Picker.Item key={index} label={category} value={category} />
               ))}
@@ -337,7 +362,7 @@ function RecordCreateScreen({ route, navigation }) {
               }
               style={{ width: "29%" }}
             >
-              <Picker.Item label="분" value="" />
+              <Picker.Item label={selectedMinute} value="" />
               {minute.map((category, index) => (
                 <Picker.Item key={index} label={category} value={category} />
               ))}
@@ -365,17 +390,17 @@ function RecordCreateScreen({ route, navigation }) {
           onPress={() => {
             saveRecord();
           }}
-          labelStyle={styles.buttonInnerText}
           buttonColor={"#0477BF"}
         >
           저장
         </Button>
-        {/* {isAlcohol ? (
+        {isAlcohol ? (
           <Button
             mode="contained"
             onPress={() => {
               saveRecord();
             }}
+            buttonColor={"#0477BF"}
           >
             수정
           </Button>
@@ -388,7 +413,7 @@ function RecordCreateScreen({ route, navigation }) {
           >
             저장
           </Button>
-        )} */}
+        )}
       </View>
     </ScrollView>
   );
