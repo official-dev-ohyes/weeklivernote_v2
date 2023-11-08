@@ -36,12 +36,14 @@ function DailySummary(props) {
 
       if (alcoholDays[summaryText]) {
         setIsAlcohol(true);
-        setDailyInfo(DailyDrinkData);
-        let alcohols = [];
-        for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
-          alcohols.push(DailyDrinkData.drinks[i]);
+        if (DailyDrinkData) {
+          setDailyInfo(DailyDrinkData);
+          let alcohols = [];
+          for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+            alcohols.push(DailyDrinkData.drinks[i]);
+          }
+          setAlcoholList(alcohols);
         }
-        setAlcoholList(alcohols);
       }
     }, [summaryText, navigation, DailyDrinkData])
   );

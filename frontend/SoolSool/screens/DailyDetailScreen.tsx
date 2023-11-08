@@ -2,11 +2,12 @@ import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
-import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
+import { Modal, Portal, Button } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { removeDrink } from "../api/drinkRecordApi";
+import { useQuery } from "react-query";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
@@ -28,32 +29,26 @@ function DailyDetailScreen({ route, navigation }) {
     drinks: {},
   });
 
-  useEffect(() => {
-    const setAndFetch = async () => {
-      console.log(`요청날짜는 ${day}`);
-      fetchDailyDetail(day)
-        .then((res) => {
-          setInfo(res);
-          if (res.img) {
-            setIsImg(true);
-          }
-          console.log(res);
-        })
-        .catch((err) => {
-          console.error("실패", err);
-        });
-    };
-    setAndFetch();
-  }, []);
+  const {
+    data: DailyDetailData,
+    isLoading: dailyDetailLoading,
+    isError: dailyDetailError,
+  } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
 
+  useEffect(() => {
+    // console.log(DailyDetailData);
+    if (DailyDetailData) {
+      setInfo(DailyDetailData);
+    }
+  }, [DailyDetailData]);
+
+  // 글 삭제 모달 및 삭제
   const openDeleteModal = () => {
     setIsModal(true);
   };
-
   const hideDeleteModal = () => {
     setIsModal(false);
   };
-
   const confirmDelete = () => {
     removeDrink(day);
     hideDeleteModal();
@@ -140,7 +135,7 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={confirmDelete}
               buttonColor={"#363C4B"}
-              labelStyle={styles.buttonInnerText}
+              // labelStyle={styles.buttonInnerText}
             >
               삭제
             </Button>
@@ -148,7 +143,7 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={hideDeleteModal}
               buttonColor={"#363C4B"}
-              labelStyle={styles.buttonInnerText}
+              // labelStyle={styles.buttonInnerText}
             >
               취소
             </Button>
