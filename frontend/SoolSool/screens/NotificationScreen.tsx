@@ -9,11 +9,12 @@ import { fetchNotice } from "../api/noticeApi";
 //   { id: 3, title: "😯", content: "세 번째 공지사항 내용입니다." },
 // ];
 
-function NotificationCard({ title, content }) {
+function NotificationCard({ title, content, date }) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{title}</Text>
       <Text style={styles.cardContent}>{content}</Text>
+      <Text style={styles.cardDate}>{date}</Text>
     </View>
   );
 }
@@ -39,6 +40,7 @@ function NotificationScreen() {
           key={notice.id}
           title={notice.title}
           content={notice.content}
+          date={notice.date}
         />
       ))}
     </ScrollView>
@@ -47,7 +49,10 @@ function NotificationScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
@@ -56,8 +61,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#F6F6F6",
-    padding: 10,
     marginBottom: 20,
+    padding: 10,
   },
   cardTitle: {
     fontSize: 20,
@@ -67,9 +72,13 @@ const styles = StyleSheet.create({
   cardContent: {
     fontSize: 16,
   },
+  cardDate: {
+    fontSize: 12,
+  },
   mainTitle: {
     fontSize: 30,
     fontWeight: "bold",
+    marginBottom: 10,
   },
 });
 

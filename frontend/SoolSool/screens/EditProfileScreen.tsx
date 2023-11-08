@@ -37,7 +37,7 @@ function EditProfileScreen({ navigation }) {
       setWeight(userProfileData.weight);
       setAddress(userProfileData.address);
       setNickname(userProfileData.nickname);
-      setSelectedGender(userProfileData.gender);
+      setGender(userProfileData.gender);
     }
   }, [isLoading, userProfileData]);
 
@@ -50,7 +50,7 @@ function EditProfileScreen({ navigation }) {
   const submitEditedProfile = async () => {
     if (
       !nickname ||
-      !selectedGender ||
+      !gender ||
       !height ||
       !weight ||
       !address ||
@@ -97,17 +97,17 @@ function EditProfileScreen({ navigation }) {
   };
 
   useEffect(() => {
-    // console.log("Nickname changed:", nickname);
-    // console.log("Selected Gender changed:", selectedGender);
-    // console.log("Height changed:", height);
-    // console.log("Weight changed:", weight);
-    // console.log("Address changed:", address);
-    // console.log("Selected Drink Kind changed:", selectedDrinkKind);
-    // console.log("Amount changed:", amount);
-    // console.log("Unit changed:", unit);
+    console.log("Nickname changed:", nickname);
+    console.log("Selected Gender changed:", gender);
+    console.log("Height changed:", height);
+    console.log("Weight changed:", weight);
+    console.log("Address changed:", address);
+    console.log("Selected Drink Kind changed:", selectedDrinkKind);
+    console.log("Amount changed:", amount);
+    console.log("Unit changed:", unit);
   }, [
     nickname,
-    selectedGender,
+    gender,
     height,
     weight,
     address,
@@ -133,15 +133,15 @@ function EditProfileScreen({ navigation }) {
             <Text>성별</Text>
             <View style={styles.genderContainer}>
               <Button
-                mode={selectedGender === "남자" ? "contained" : "outlined"}
-                onPress={() => setSelectedGender("남자")}
+                mode={gender === "남자" ? "contained" : "outlined"}
+                onPress={() => setGender("남자")}
               >
                 남자
               </Button>
               {/* 여자 버튼 */}
               <Button
-                mode={selectedGender === "여자" ? "contained" : "outlined"}
-                onPress={() => setSelectedGender("여자")}
+                mode={gender === "여자" ? "contained" : "outlined"}
+                onPress={() => setGender("여자")}
               >
                 여자
               </Button>

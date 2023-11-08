@@ -70,15 +70,23 @@ function Profile(props: UserProfileProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#FFFF",
+    backgroundColor: "white",
     flexDirection: "column",
     gap: 15,
-    borderRadius: 20,
+    borderRadius: 30,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#0477BF",
-    padding: 15,
-    marginTop: 20,
+    paddingVertical: 30,
+    paddingHorizontal: 15,
+    marginTop: 30,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   userInfoLabel: {
     fontSize: 16,
@@ -104,15 +112,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 5,
-    backgroundColor: "#0477BF",
+    backgroundColor: "#363C4B",
   },
   profileImage: {
     width: 120,
     height: 120,
     borderRadius: 500,
     marginTop: 5,
-    borderWidth: 2,
-    borderColor: "#0477BF",
   },
   userDetail: {
     // flex: 1,
@@ -122,7 +128,7 @@ const styles = StyleSheet.create({
     width: "auto",
     height: "auto",
     padding: 5,
-    backgroundColor: "#0477BF",
+    backgroundColor: "#363C4B",
     borderRadius: 50,
     position: "absolute",
     top: 98,

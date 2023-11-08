@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     fontFamily: "Yeongdeok-Sea",
   },
   nameText: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
   },
 });

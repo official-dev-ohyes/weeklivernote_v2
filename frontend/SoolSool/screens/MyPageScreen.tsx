@@ -104,9 +104,11 @@ function MyPageScreen(props: UserProfileProps) {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
-        <Profile navigation={navigation} userData={userProfile} />
-        <UserNonAlc alcoholData={alcoholStatistics} />
-        <UserStatistics />
+        <View style={styles.subContainer}>
+          <Profile navigation={navigation} userData={userProfile} />
+          <UserNonAlc alcoholData={alcoholStatistics} />
+          <UserStatistics />
+        </View>
       </View>
     </ScrollView>
   );
@@ -114,6 +116,10 @@ function MyPageScreen(props: UserProfileProps) {
 //
 const styles = StyleSheet.create({
   mainContainer: {
+    height: "100%",
+    // backgroundColor: "#2E4173",
+  },
+  subContainer: {
     flexDirection: "column",
     gap: 25,
     marginHorizontal: 15,

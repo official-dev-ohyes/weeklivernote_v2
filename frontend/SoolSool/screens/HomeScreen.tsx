@@ -23,11 +23,26 @@ import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import { schedulePushNotification } from "../components/Notification/LocalNotification";
 import { mainbackground } from "../assets";
-function HomeScreen() {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+function HomeScreen({ navigation }) {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("accessToken");
+        if (token === null) {
+          navigation.navigate("Login");
+        }
+      } catch (error) {
+        console.error("토큰을 가져오는 중에 오류가 발생했습니다:", error);
+      }
+    };
+    fetchToken();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {

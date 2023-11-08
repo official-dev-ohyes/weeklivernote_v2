@@ -18,19 +18,19 @@ interface DetailProfileProps {
 
 function DetailProfile(props: DetailProfileProps) {
   const { userData } = props;
-
+  console.log("d", userData);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.infoContainer}>
-        <Text>성별 {userData.gender}</Text>
-        <Text>신장 {userData.height} cm</Text>
-        <Text>체중 {userData.weight} kg</Text>
+        <Text style={styles.text}>성별 {userData.gender}</Text>
+        <Text style={styles.text}>신장 {userData.height} cm</Text>
+        <Text style={styles.text}>체중 {userData.weight} kg</Text>
       </View>
 
       <View style={styles.alcLimitContainer}>
-        <Ionicons name="beer-outline" size={20} />
-        <Text>주량</Text>
-        <Text>{userData.alcoholLimit} ml</Text>
+        <Ionicons name="beer-outline" size={20} color={"white"} />
+        <Text style={styles.text}>주량</Text>
+        <Text style={styles.text}>{userData.alcoholLimit} ml</Text>
       </View>
     </View>
   );
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 2,
-    backgroundColor: "#F6F6F6",
+    // backgroundColor: "#363C4B",
     borderRadius: 20,
     padding: 15,
     display: "flex",
@@ -54,13 +54,16 @@ const styles = StyleSheet.create({
   },
   alcLimitContainer: {
     flex: 1,
-    backgroundColor: "#F6F6F6",
+    // backgroundColor: "#363C4B",
     borderRadius: 20,
     padding: 15,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: 10,
+  },
+  text: {
+    color: "black",
   },
 });
 

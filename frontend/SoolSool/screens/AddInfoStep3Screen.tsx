@@ -69,11 +69,11 @@ function AddInfoStep3Screen({ navigation, route }) {
 
       saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
         .then(async (res) => {
-          console.log("제출 성공", res.tokenInfo.accessToken);
+          console.log("제출 성공", res);
           const accessToken = res.tokenInfo.accessToken;
           await AsyncStorage.setItem("accessToken", accessToken);
-          setNickname(res.data.nickname);
-          setAlcoholLimit(res.data.alcoholLimit);
+          setNickname(res.userName);
+          setAlcoholLimit(res.alcoholLimit);
 
           Toast.show("로그인에 성공했습니다", {
             duration: Toast.durations.SHORT,
@@ -86,7 +86,7 @@ function AddInfoStep3Screen({ navigation, route }) {
           navigation.navigate("BottomTab");
         })
         .catch((error) => {
-          // console.error("추가정보 입력 실패", error);
+          console.error("추가정보 입력 실패", error);
           showErrorAndRetry(
             "다음에 다시 시도하세요",
             "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, ScrollView } from "react-native";
+import { StyleSheet, Image, View, ScrollView, Text } from "react-native";
 import BodyInfo from "../components/AddInfo/BodyInfo";
 import { addInfoImage } from "../assets";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
@@ -8,11 +8,14 @@ function AddInfoScreen({ navigation, route }) {
   console.log("소셜아이디", socialId);
   return (
     <ScrollView>
-    <View style={styles.mainContainer}>
-      <DotIndicator activeIndex={1} />
-      <Image source={addInfoImage} style={styles.characterImage} />
-      <BodyInfo navigation={navigation} socialId={socialId} />
-    </View>
+      <View style={styles.mainContainer}>
+        <DotIndicator activeIndex={1} />
+        <Text style={styles.infoText}>
+          '주간일기'사용을 위해 정보를 입력해주세요🙂
+        </Text>
+        <Image source={addInfoImage} style={styles.characterImage} />
+        <BodyInfo navigation={navigation} socialId={socialId} />
+      </View>
     </ScrollView>
   );
 }
@@ -24,14 +27,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: "auto",
     marginLeft: "auto",
-    gap: 15,
     // backgroundColor: "#ffffff",
     // flex: 1,
+    gap: 50,
   },
   characterImage: {
-    width: "90%",
-    height: 200,
-    resizeMode: "contain",
+    width: 300,
+    height: 190,
+    // resizeMode: "contain",
+  },
+  infoText: {
+    fontSize: 16,
   },
 });
 

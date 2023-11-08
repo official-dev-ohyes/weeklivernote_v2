@@ -35,20 +35,30 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
     gap: 20,
+    padding: 10,
   },
   circleContainer: {
     flexDirection: "column",
     flex: 1,
     width: 100,
-    height: 110,
-    backgroundColor: "#0477BF",
+    height: 100,
+    backgroundColor: "#363C4B",
     gap: 5,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 500,
+    // borderRadius: 500,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   stringText: {
-    fontSize: 15,
+    fontSize: 12,
     color: "white",
   },
   numberText: {

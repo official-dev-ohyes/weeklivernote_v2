@@ -154,7 +154,7 @@ export default function App() {
                     headerShown: false,
                     contentStyle: { backgroundColor: "#fff" },
                   }}
-                  initialRouteName="Login"
+                  initialRouteName="BottomTab"
                 >
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen

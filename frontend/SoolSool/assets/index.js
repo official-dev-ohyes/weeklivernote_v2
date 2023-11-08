@@ -31,7 +31,7 @@ import addInfoImage from "./addInfoImage.png";
 import characterSet from "./characterSet.png";
 import loadingSpinner from "./loadingSpinner.gif";
 import mainbackground from "./mainbackground.jpg";
-import subbackground from "./subbackground.png";
+import subbackground from "./subbackground.jpg";
 
 export {
   loadingSpinner,
