@@ -1,4 +1,4 @@
-package com.ohyes.soolsool.notice.domain;
+package com.ohyes.soolsool.location.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,28 +11,33 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Notice {
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notice_pk")
-    private byte noticePk;
+    @Column(name = "location_pk")
+    private Integer locationPk;
 
-    private String title;
+    @Column(name = "now_lat")
+    private double nowLat;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String content;
+    @Column(name = "now_long")
+    private double nowLong;
+
+    @Column(name = "home_lat")
+    private double homeLat;
+
+    @Column(name = "home_long")
+    private double homeLong;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -43,8 +48,10 @@ public class Notice {
     private LocalDateTime updatedAt;
 
     @Builder
-    private Notice(String title, String content) {
-        this.title = title;
-        this.content = content;
+    private Location(double nowLat, double nowLong, double homeLat, double homeLong) {
+        this.nowLat = nowLat;
+        this.nowLong = nowLong;
+        this.homeLat = homeLat;
+        this.homeLong = homeLong;
     }
 }

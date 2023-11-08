@@ -2,6 +2,7 @@ package com.ohyes.soolsool.user.domain;
 
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.domain.Diary;
+import com.ohyes.soolsool.location.domain.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class User {
 
     @Id
     @Column(name = "social_id")
-    private Long socialId;
+    private String socialId;
 
     @Column(name = "nickname")
     private String nickname;
@@ -55,6 +57,15 @@ public class User {
 
     @Column(name = "alcohol_limit")
     private float alcoholLimit;
+
+    @Column(name = "drink_category")
+    private String drinkCategory;
+
+    @Column(name = "drink_unit")
+    private String drinkUnit;
+
+    @Column(name = "drink_amount")
+    private float drinkAmount;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -81,9 +92,13 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Diary> diaries = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "location_pk")
+    private Location location;
+
     // 생성자
     @Builder
-    public User(Long socialId, Category category, String nickname, String profileImg, String address,
+    public User(String socialId, Category category, String nickname, String profileImg, String address,
         String gender, int height, int weight, float alcoholLimit, String refreshToken,
         int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
 

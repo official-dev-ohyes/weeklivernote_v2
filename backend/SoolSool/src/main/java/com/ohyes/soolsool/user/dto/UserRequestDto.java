@@ -13,7 +13,7 @@ import lombok.Setter;
 public class UserRequestDto {
 
     @Schema(example = "1234567890")
-    private Long socialId;
+    private String socialId;
 
     @Schema(example = "부산시 강서구 화전동")
     private String address;
@@ -32,7 +32,7 @@ public class UserRequestDto {
     private DrinkInfo drinkInfo;
 
     @Builder
-    private UserRequestDto(Long socialID, String address, String gender, int height, int weight,
+    private UserRequestDto(String socialID, String address, String gender, int height, int weight,
         String refreshToken, DrinkInfo drinkInfo) {
 
         this.socialId = socialID;
@@ -41,9 +41,7 @@ public class UserRequestDto {
         this.height = height;
         this.weight = weight;
         this.refreshToken = refreshToken;
-
         this.drinkInfo = drinkInfo;
 
     }
-
 }

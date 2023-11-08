@@ -69,3 +69,6 @@ cloud:
       bucket: soolsool
     stack:
       auto: false
+
+odsay:
+  api-key: ${ODSAY_API_KEY}
