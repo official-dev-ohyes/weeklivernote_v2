@@ -75,6 +75,8 @@ public class UserService {
         params.add("code", code);
         params.add("client_secret", client_secret);
 
+        log.error("redirect_uri : " + redirect_uri);
+
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
             new HttpEntity<>(params, headers);
 
