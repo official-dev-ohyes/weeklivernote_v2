@@ -12,6 +12,7 @@ import {
 } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
 import { Icon, MD3Colors } from "react-native-paper";
+import { useQuery } from "react-query";
 
 function DailySummary(props) {
   const { summaryText, alcoholDays } = props;
@@ -20,34 +21,31 @@ function DailySummary(props) {
   const [alcoholList, setAlcoholList] = useState([]);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  const {
+    data: DailyDrinkData,
+    isLoading: DailyDrinkLoading,
+    isError: DailyDrinkError,
+  } = useQuery(
+    "DailyDrinkQuery",
+    async () => await fetchDailyDrink(summaryText)
+  );
+
   useFocusEffect(
     React.useCallback(() => {
       setIsAlcohol(false);
 
       if (alcoholDays[summaryText]) {
         setIsAlcohol(true);
-        fetchDailyDrink(summaryText)
-          .then((res) => {
-            console.log(res);
-            setDailyInfo(res);
-            let alcohols = [];
-            for (let i = 0; i < res.drinks.length; i++) {
-              alcohols.push(res.drinks[i]);
-            }
-            setAlcoholList(alcohols);
-          })
-          .catch((error) => {
-            console.error("실패", error);
-          });
+        if (DailyDrinkData) {
+          setDailyInfo(DailyDrinkData);
+          let alcohols = [];
+          for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+            alcohols.push(DailyDrinkData.drinks[i]);
+          }
+          setAlcoholList(alcohols);
+        }
       }
-      // else {
-      //   setIsAlcohol(false);
-      // }
-    }, [summaryText, navigation])
-  );
-
-  console.log(
-    `날짜를 확인합시다!!!! ${summaryText} 알코올 마신 날이다 참 거짓!!!!!!!! ${isAlcohol}`
+    }, [summaryText, navigation, DailyDrinkData])
   );
 
   return (

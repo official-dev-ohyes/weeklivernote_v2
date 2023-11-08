@@ -2,11 +2,12 @@ import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
-import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
+import { Modal, Portal, Button } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { removeDrink } from "../api/drinkRecordApi";
+import { useQuery } from "react-query";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
@@ -14,10 +15,6 @@ function DailyDetailScreen({ route, navigation }) {
   const isAlcohol = route.params.isAlcohol;
   const [isImg, setIsImg] = useState<boolean>(false);
   const [isModal, setIsModal] = useState<boolean>(false);
-
-  console.log(
-    `날짜는 ${day}, 술마신날들은 ${alcoholDays}, 알코올상태는? ${isAlcohol}`
-  );
 
   const [info, setInfo] = useState({
     startTime: "",
@@ -28,32 +25,25 @@ function DailyDetailScreen({ route, navigation }) {
     drinks: {},
   });
 
-  useEffect(() => {
-    const setAndFetch = async () => {
-      console.log(`요청날짜는 ${day}`);
-      fetchDailyDetail(day)
-        .then((res) => {
-          setInfo(res);
-          if (res.img) {
-            setIsImg(true);
-          }
-          console.log(res);
-        })
-        .catch((err) => {
-          console.error("실패", err);
-        });
-    };
-    setAndFetch();
-  }, []);
+  const {
+    data: DailyDetailData,
+    isLoading: dailyDetailLoading,
+    isError: dailyDetailError,
+  } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
 
+  useEffect(() => {
+    if (DailyDetailData) {
+      setInfo(DailyDetailData);
+    }
+  }, [DailyDetailData]);
+
+  // 글 삭제 모달 및 삭제
   const openDeleteModal = () => {
     setIsModal(true);
   };
-
   const hideDeleteModal = () => {
     setIsModal(false);
   };
-
   const confirmDelete = () => {
     removeDrink(day);
     hideDeleteModal();
@@ -84,6 +74,7 @@ function DailyDetailScreen({ route, navigation }) {
                 isAlcohol: true,
               });
             }}
+            style={styles.botton}
           >
             수정
           </Button>
@@ -91,6 +82,7 @@ function DailyDetailScreen({ route, navigation }) {
             mode="contained"
             onPress={openDeleteModal}
             buttonColor={"#363C4B"}
+            style={styles.botton}
           >
             삭제
           </Button>
@@ -138,7 +130,6 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={confirmDelete}
               buttonColor={"#363C4B"}
-              labelStyle={styles.buttonInnerText}
             >
               삭제
             </Button>
@@ -146,7 +137,6 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={hideDeleteModal}
               buttonColor={"#363C4B"}
-              labelStyle={styles.buttonInnerText}
             >
               취소
             </Button>
@@ -208,28 +198,24 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
   },
-  buttonInnerText: {
-    fontSize: 17,
-    fontFamily: "Yeongdeok-Sea",
-  },
   smallHeaderText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     marginBottom: "2%",
   },
   innerText: {
     fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
   },
   deleteText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     textAlign: "center",
   },
   deleteButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
     margin: "15%",
+  },
+  botton: {
+    margin: "1%",
   },
 });
 
