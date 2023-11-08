@@ -41,9 +41,7 @@ public class UserRequestDto {
         this.height = height;
         this.weight = weight;
         this.refreshToken = refreshToken;
-
         this.drinkInfo = drinkInfo;
 
     }
-
 }
