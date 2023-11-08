@@ -12,6 +12,8 @@ import {
   fetchDailyDetail,
 } from "../api/drinkRecordApi";
 
+import { getAmountByDrinkCount } from "../utils/drinkUtils";
+
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
   const isAlcohol = route.params.isAlcohol; // create, update 구분
@@ -130,14 +132,14 @@ function RecordCreateScreen({ route, navigation }) {
     isLoading: dailyLoading,
     isError: dailyError,
   } = useQuery("DailyDrinkQuery", async () => await fetchDailyDrink(day));
-  console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
+  // console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
 
   const {
     data: DailyDetailData,
     isLoading: detailLoading,
     isError: detailError,
   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
-  console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
+  // console.log(`상세조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
   // if (DailyDetailData) {
   //   const tempHour = parseInt(
@@ -184,6 +186,46 @@ function RecordCreateScreen({ route, navigation }) {
       );
       if (memo) {
         setMemo(DailyDetailData.memo);
+      }
+    }
+
+    if (DailyDrinkData) {
+      for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+        const category = DailyDrinkData.drinks[i].drink;
+        const drinkCount = DailyDrinkData.drinks[i].count;
+        const result = getAmountByDrinkCount(category, drinkCount);
+        console.log(result);
+
+        const newBottleRecord = {
+          category: category,
+          drinkUnit: "병",
+          drinkAmount: result[0],
+        };
+        const newShotRecord = {
+          category: category,
+          drinkUnit: "잔",
+          drinkAmount: result[1],
+        };
+        const existingRecordIndex = alcoholRecord.findIndex((record) => {
+          return (
+            record.category === selectedAlcohol &&
+            record.drinkUnit === selectedUnit
+          );
+        });
+
+        if (existingRecordIndex >= 0) {
+          alcoholRecord[existingRecordIndex].drinkAmount += value;
+        } else {
+          if (newBottleRecord.drinkAmount) {
+            setAlcoholRecord((prevRecords) => [
+              ...prevRecords,
+              newBottleRecord,
+              newShotRecord,
+            ]);
+          } else {
+            setAlcoholRecord((prevRecords) => [...prevRecords, newShotRecord]);
+          }
+        }
       }
     }
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
