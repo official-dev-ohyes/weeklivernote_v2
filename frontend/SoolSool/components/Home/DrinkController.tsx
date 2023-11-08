@@ -219,6 +219,7 @@ function DrinkController() {
             icon="minus"
             onPress={handleDecrement}
             disabled={minIsDisabled}
+            iconColor="white"
             size={32}
           />
           <Pressable onPress={handleModalOpen}>
@@ -242,6 +243,7 @@ function DrinkController() {
             icon="plus"
             onPress={handleIncrement}
             disabled={maxIsDisabled}
+            iconColor="white"
             size={32}
           />
         </View>
@@ -257,7 +259,7 @@ function DrinkController() {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 15,
     padding: 16,
     alignItems: "center",
@@ -301,6 +303,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
 });
 

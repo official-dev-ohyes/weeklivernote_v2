@@ -55,10 +55,18 @@ const styles = StyleSheet.create({
     fontFamily: "Yeongdeok-Sea",
     color: "white",
   },
-  imageContainer: {},
+  imageContainer: {
+    width: 200,
+    height: 200,
+    backgroundColor: "rgba(255,255,255,0.5)",
+    borderRadius: 500,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
   image: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
   },
 });
 

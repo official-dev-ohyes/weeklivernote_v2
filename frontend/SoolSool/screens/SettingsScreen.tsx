@@ -80,7 +80,7 @@ function SettingsScreen({ navigation }) {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Section
+        {/* <Section
           title="알림"
           content={
             <View style={styles.alarmContainer}>
@@ -92,7 +92,7 @@ function SettingsScreen({ navigation }) {
               />
             </View>
           }
-        />
+        /> */}
 
         <Section
           title="주간일기 1.0.0"

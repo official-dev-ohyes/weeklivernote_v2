@@ -22,14 +22,23 @@ function DetailProfile(props: DetailProfileProps) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.infoContainer}>
-        <Text style={styles.text}>성별 {userData.gender}</Text>
-        <Text style={styles.text}>신장 {userData.height} cm</Text>
-        <Text style={styles.text}>체중 {userData.weight} kg</Text>
+        <View style={styles.rowContainer}>
+          <Text style={styles.boldText}>성별</Text>
+          <Text style={styles.text}>{userData.gender}</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={styles.boldText}>신장</Text>
+          <Text style={styles.text}>{userData.height} cm</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={styles.boldText}>체중</Text>
+          <Text style={styles.text}>{userData.weight} kg</Text>
+        </View>
       </View>
 
       <View style={styles.alcLimitContainer}>
         <Ionicons name="beer-outline" size={20} color={"white"} />
-        <Text style={styles.text}>주량</Text>
+        <Text style={styles.boldText}>주량</Text>
         <Text style={styles.text}>{userData.alcoholLimit} ml</Text>
       </View>
     </View>
@@ -63,7 +72,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   text: {
+    fontSize: 15,
     color: "black",
+  },
+  rowContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+  },
+  boldText: {
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
 

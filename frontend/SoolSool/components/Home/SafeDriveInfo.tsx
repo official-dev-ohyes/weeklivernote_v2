@@ -57,11 +57,12 @@ const styles = StyleSheet.create({
     width: "48%",
     padding: 12,
     borderRadius: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   chipText: {
     fontSize: 18,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
 });
 

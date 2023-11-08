@@ -17,7 +17,6 @@ import { showErrorAndRetry } from "../utils/showErrorUtils";
 function EditProfileScreen({ navigation }) {
   const [nickname, setNickname] = useState("");
   const [gender, setGender] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [address, setAddress] = useState("");
@@ -31,15 +30,15 @@ function EditProfileScreen({ navigation }) {
     isError,
   } = useQuery("userProfileData", async () => await fetchUserProfile());
 
-  useEffect(() => {
-    if (!isLoading && userProfileData) {
-      setHeight(userProfileData.height);
-      setWeight(userProfileData.weight);
-      setAddress(userProfileData.address);
-      setNickname(userProfileData.nickname);
-      setGender(userProfileData.gender);
-    }
-  }, [isLoading, userProfileData]);
+  // useEffect(() => {
+  //   if (!isLoading && userProfileData) {
+  //     setHeight(userProfileData.height);
+  //     setWeight(userProfileData.weight);
+  //     setAddress(userProfileData.address);
+  //     setNickname(userProfileData.nickname);
+  //     setGender(userProfileData.gender);
+  //   }
+  // }, [isLoading, userProfileData]);
 
   const volumeUnits = ["잔", "병"];
 
@@ -120,6 +119,7 @@ function EditProfileScreen({ navigation }) {
     <ScrollView>
       <Provider>
         <View style={styles.mainContainer}>
+          <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.contentContainer}>
             <Text>닉네임</Text>
             <TextInput
@@ -135,6 +135,7 @@ function EditProfileScreen({ navigation }) {
               <Button
                 mode={gender === "남자" ? "contained" : "outlined"}
                 onPress={() => setGender("남자")}
+                style={styles.Button}
               >
                 남자
               </Button>
@@ -142,6 +143,7 @@ function EditProfileScreen({ navigation }) {
               <Button
                 mode={gender === "여자" ? "contained" : "outlined"}
                 onPress={() => setGender("여자")}
+                style={styles.Button}
               >
                 여자
               </Button>
@@ -208,7 +210,11 @@ function EditProfileScreen({ navigation }) {
             />
           </View>
           <Divider />
-          <Button mode="contained" onPress={submitEditedProfile}>
+          <Button
+            mode="contained"
+            onPress={submitEditedProfile}
+            buttonColor="#363C4B"
+          >
             수정
           </Button>
           <Button mode="outlined" onPress={handleCancelEdit}>
@@ -228,6 +234,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     gap: 15,
+    marginTop: 20,
   },
   genderContainer: {
     display: "flex",
@@ -260,6 +267,12 @@ const styles = StyleSheet.create({
   },
   Kind: {
     width: 120,
+  },
+  title: {
+    fontSize: 30,
+  },
+  Button: {
+    flex: 1,
   },
 });
 

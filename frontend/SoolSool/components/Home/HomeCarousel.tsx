@@ -123,7 +123,7 @@ export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
-    <ImageBackground source={subbackground} style={styles.background}>
+    <ImageBackground source={mainbackground} style={styles.background}>
       <StatusBar hidden />
       {/* <Backdrop scrollX={scrollX} /> */}
       {/* <Square scrollX={scrollX} /> */}
