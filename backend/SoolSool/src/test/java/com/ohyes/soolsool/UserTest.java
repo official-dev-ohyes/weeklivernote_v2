@@ -18,14 +18,14 @@ public class UserTest {
         userRepository.deleteAllInBatch();
 
         User user = User.builder()
-            .socialId(1L)
+            .socialId("1")
             .nickname("스끼다시")
             .address("삼성전기")
             .gender("여")
             .height(158)
             .weight(48)
             .alcoholLimit(8.2F)
-            .maxNonalcoholPeriod(12)
+            .maxNonalcoholPeriod(0)
             .build();
         userRepository.save(user);
     }
