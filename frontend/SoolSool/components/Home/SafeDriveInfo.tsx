@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "48%",
     padding: 12,
-    borderRadius: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 5,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   chipText: {
-    fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 16,
+    // fontFamily: "Yeongdeok-Sea",
     color: "white",
   },
 });

@@ -18,7 +18,7 @@ interface DetailProfileProps {
 
 function DetailProfile(props: DetailProfileProps) {
   const { userData } = props;
-  console.log("d", userData);
+  // console.log("d", userData);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.infoContainer}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 2,
     // backgroundColor: "#363C4B",
-    borderRadius: 20,
+    // borderRadius: 20,
     padding: 15,
     display: "flex",
     flexDirection: "column",

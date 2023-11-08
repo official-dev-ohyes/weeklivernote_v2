@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "column",
     gap: 15,
-    borderRadius: 30,
+    // borderRadius: 30,
     alignItems: "center",
     paddingVertical: 30,
     paddingHorizontal: 15,

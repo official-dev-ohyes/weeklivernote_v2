@@ -25,38 +25,44 @@ function LoginScreen({ navigation }) {
 
   return (
     <ImageBackground source={mainbackground} style={styles.background}>
-      <View style={styles.contentContainer}>
-        <Image source={characterSet} style={styles.logoImage} />
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>마신 술을 기록하고</Text>
-          <Text style={styles.text}>내 상태를 확인해요</Text>
+      <View style={styles.mainContainer}>
+        <View style={styles.contentContainer}>
+          <Image source={characterSet} style={styles.logoImage} />
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>마신 술을 기록하고</Text>
+            <Text style={styles.text}>내 상태를 확인해요</Text>
+          </View>
+        </View>
+        <TouchableOpacity onPress={handleLogin}>
+          <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
+        </TouchableOpacity>
+        <View style={styles.temp}>
+          <Button mode="contained" onPress={navigateToAddInfo}>
+            추가 정보 입력
+          </Button>
+          <Button mode="contained" onPress={navigateToBottomTab}>
+            메인으로
+          </Button>
         </View>
       </View>
-      <TouchableOpacity onPress={handleLogin}>
-        <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
-      </TouchableOpacity>
-      {/* <View style={styles.temp}>
-        <Button mode="contained" onPress={navigateToAddInfo}>
-          추가 정보 입력
-        </Button>
-        <Button mode="contained" onPress={navigateToBottomTab}>
-          메인으로
-        </Button>
-      </View> */}
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
+    height: "100%",
+  },
+  mainContainer: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: "auto",
+    marginTop: 50,
     marginBottom: "auto",
-    gap: 30,
+    gap: 90,
     height: "100%",
+    // backgroundColor: "red",
   },
   kakaoLoginButton: {
     width: 280,
@@ -75,7 +81,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 0,
     alignItems: "center",
   },
   textContainer: {

@@ -210,8 +210,8 @@ function RecordCreateScreen({ route, navigation }) {
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
   return (
-    <ScrollView>
-      <View style={styles.total}>
+    <View style={styles.total}>
+      <ScrollView style={styles.scrollBox}>
         <View style={styles.mainTextBox}>
           <Text style={styles.headerText}>{day}</Text>
           <View style={styles.light}>
@@ -399,20 +399,24 @@ function RecordCreateScreen({ route, navigation }) {
             {isAlcohol ? "수정" : "저장"}
           </Button>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    display: "flex",
+    // display: "flex",
     // borderWidth: 10,
     // borderColor: "orange",
     height: "100%",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     // alignContent: "space-between",
+  },
+  scrollBox: {
+    display: "flex",
+    flexDirection: "column",
   },
   mainTextBox: {
     flex: 1,
@@ -433,8 +437,8 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
   },
   contents: {
-    // flex: 5,
-    height: "87%",
+    display: "flex",
+    height: 800,
     flexDirection: "column",
     alignContent: "space-between",
     justifyContent: "space-between",
@@ -442,7 +446,6 @@ const styles = StyleSheet.create({
     margin: "3%",
     borderRadius: 15,
     backgroundColor: "#F6F6F6",
-    // backgroundColor: "black",
   },
   tagArea: {
     height: "10%",

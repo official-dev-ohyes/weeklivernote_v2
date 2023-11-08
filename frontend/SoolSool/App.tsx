@@ -55,7 +55,7 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "rgba(0,0,0,0.9)" },
+        headerStyle: { backgroundColor: "#363C4B" },
         headerTintColor: "white",
         headerTitleAlign: "center",
         tabBarShowLabel: false,
@@ -117,7 +117,7 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     mainPink: "#F2A7C3",
-    mainBlue: "#0477BF",
+    mainBlue: "#363C4B",
     mainGreen: "#03A678",
     mainYellow: "#F2D06B",
     mainRed: "#F25E5E",
@@ -181,8 +181,9 @@ export default function App() {
                     component={SettingsScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerStyle: { backgroundColor: "#363C4B" },
                       headerTintColor: "white",
+                      headerTitleAlign: "center",
                     }}
                   />
                   <Stack.Screen
@@ -190,8 +191,9 @@ export default function App() {
                     component={EditProfileScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerStyle: { backgroundColor: "#363C4B" },
                       headerTintColor: "white",
+                      headerTitleAlign: "center",
                     }}
                   />
                   <Stack.Screen
@@ -199,8 +201,9 @@ export default function App() {
                     component={NotificationScreen}
                     options={{
                       headerShown: true,
-                      headerStyle: { backgroundColor: "#0477BF" },
+                      headerStyle: { backgroundColor: "#363C4B" },
                       headerTintColor: "white",
+                      headerTitleAlign: "center",
                     }}
                   />
                   <Stack.Screen

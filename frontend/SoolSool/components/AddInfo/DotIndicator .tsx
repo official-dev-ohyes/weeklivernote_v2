@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   activeDot: {
-    backgroundColor: "green", // 활성화된 동그라미
+    backgroundColor: "#363C4B", // 활성화된 동그라미
   },
   inactiveDot: {
-    backgroundColor: "gray", // 비활성화된 동그라미
+    backgroundColor: "lightgrey", // 비활성화된 동그라미
   },
 });
 

@@ -28,9 +28,11 @@ function NotificationScreen() {
   );
 
   useEffect(() => {
-    console.log("공지사항 확인용", notificationData.notices);
-    setNoticeData(notificationData.notices);
-  }, [notificationData]);
+    if (!isLoading && notificationData) {
+      console.log("공지사항 확인용", notificationData);
+      setNoticeData(notificationData.notices);
+    }
+  }, [notificationData, isLoading]);
 
   return (
     <ScrollView style={styles.container}>

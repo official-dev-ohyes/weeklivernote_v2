@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
     marginVertical: 24,
-    padding: 0,
+    padding: 4,
     display: "flex",
     alignItems: "center",
-    marginTop: 100,
+    marginTop: 50,
   },
   titleContainer: {
     fontSize: 40,
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
     color: "white",
+    marginBottom: 20,
   },
   periodContainer: {
     fontSize: 24,
@@ -56,9 +57,9 @@ const styles = StyleSheet.create({
     color: "white",
   },
   imageContainer: {
-    width: 200,
-    height: 200,
-    backgroundColor: "rgba(255,255,255,0.5)",
+    width: 190,
+    height: 190,
+    backgroundColor: "rgba(255,255,255,0.1)",
     borderRadius: 500,
     display: "flex",
     flexDirection: "row",
