@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    width: "45%",
+    width: "48%",
     padding: 12,
     borderRadius: 15,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
   },
   chipText: {
     fontSize: 18,

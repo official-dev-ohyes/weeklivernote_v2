@@ -1,8 +1,14 @@
 import React, { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
-
-import { StyleSheet, View, Text, BackHandler, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  BackHandler,
+  Button,
+  ImageBackground,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
@@ -16,6 +22,7 @@ import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import { schedulePushNotification } from "../components/Notification/LocalNotification";
+import { mainbackground } from "../assets";
 function HomeScreen() {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
@@ -112,7 +119,7 @@ function HomeScreen() {
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
         />
-        <Button title="test" onPress={schedulePushNotification}/>
+        {/* <Button title="test" onPress={schedulePushNotification} /> */}
         <DrinkController />
       </View>
     </>
@@ -120,12 +127,12 @@ function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  rootScreen: {
-    margin: 12,
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-  },
+  // rootScreen: {
+  //   margin: 12,
+  //   display: "flex",
+  //   alignItems: "center",
+  //   flex: 1,
+  // },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
@@ -133,7 +140,13 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -400,
+    marginTop: -320,
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  background: {
+    height: "100%",
   },
 });
 

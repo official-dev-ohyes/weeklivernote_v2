@@ -257,7 +257,7 @@ function DrinkController() {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
     borderRadius: 15,
     padding: 16,
     alignItems: "center",

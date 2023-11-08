@@ -5,8 +5,10 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  ImageBackground,
 } from "react-native";
 import UserStatus from "./UserStatus";
+import { mainbackground, subbackground } from "../../assets";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -121,7 +123,7 @@ export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={subbackground} style={styles.background}>
       <StatusBar hidden />
       {/* <Backdrop scrollX={scrollX} /> */}
       {/* <Square scrollX={scrollX} /> */}
@@ -154,14 +156,15 @@ export default function HomeCarousel() {
         }}
       />
       <Indicator scrollX={scrollX} />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
+  background: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

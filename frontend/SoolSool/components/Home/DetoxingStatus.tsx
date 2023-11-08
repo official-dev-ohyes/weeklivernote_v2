@@ -58,15 +58,18 @@ const styles = StyleSheet.create({
   titleContainer: {
     fontSize: 40,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   subtitleContainer: {
     fontSize: 20,
     paddingBottom: 16,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   periodContainer: {
     fontSize: 24,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
 });
 

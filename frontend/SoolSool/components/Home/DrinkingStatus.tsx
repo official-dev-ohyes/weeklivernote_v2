@@ -1,5 +1,4 @@
 import { StyleSheet, View, Image, Text, ImageProps } from "react-native";
-import { useAppTheme } from "../../App";
 
 interface DrinkingStatusProps {
   drinkInVolume: number;
@@ -39,30 +38,27 @@ const styles = StyleSheet.create({
     padding: 0,
     display: "flex",
     alignItems: "center",
+    marginTop: 100,
   },
   titleContainer: {
     fontSize: 40,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   subtitleContainer: {
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   periodContainer: {
     fontSize: 24,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
-  imageContainer: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 200,
-    marginVertical: 24,
-    padding: 8,
-  },
+  imageContainer: {},
   image: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",
-    margin: 30,
+    width: 300,
+    height: 300,
   },
 });
 
