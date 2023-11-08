@@ -137,6 +137,7 @@ function CalendarSixWeeks({}) {
               onDayPress={handleDayPress}
               onPressArrowLeft={handlePressArrowLeft}
               onPressArrowRight={handelPressArrowRight}
+              style={styles.calenderStyle}
             />
           </View>
           <View style={styles.dailySummaryComponent}>
@@ -157,9 +158,7 @@ function CalendarSixWeeks({}) {
                   <Text style={styles.headerText}>{selectDay}</Text>
                 </View>
                 <View style={styles.others}>
-                  <Text style={styles.innerText}>
-                    미래 날짜는 입력이 불가능합니다.
-                  </Text>
+                  <Text style={styles.innerText}>아직은 기록할 수 없어요</Text>
                 </View>
               </View>
             ) : (
@@ -191,6 +190,7 @@ function CalendarSixWeeks({}) {
             onDayPress={handleDayPress}
             onPressArrowLeft={handlePressArrowLeft}
             onPressArrowRight={handelPressArrowRight}
+            style={styles.calenderStyle}
           />
         </View>
       )}
@@ -216,14 +216,24 @@ const styles = StyleSheet.create({
   dailySummaryTotal: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "#ffffff",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
     borderRadius: 10,
-    padding: 5,
+    // padding: 5,
     justifyContent: "center",
     alignContent: "center",
-    borderWidth: 2,
-    borderColor: "#363C4B",
     margin: 5,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   headerBox: {
     height: "20%",
@@ -238,10 +248,28 @@ const styles = StyleSheet.create({
     paddingBottom: "5%",
   },
   innerText: {
-    fontSize: 17,
+    fontSize: 20,
+    fontFamily: "Yeongdeok-Sea",
   },
   headerText: {
     fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
+  },
+  calenderStyle: {
+    // backgroundColor: "red",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    borderRadius: 5,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
 });
 

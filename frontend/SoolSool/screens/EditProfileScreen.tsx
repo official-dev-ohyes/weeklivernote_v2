@@ -106,8 +106,8 @@ function EditProfileScreen({ navigation }) {
           <View style={styles.contentContainer}>
             <Text>닉네임</Text>
             <TextInput
-              placeholder="닉네임"
-              value={nickname || oldnickname}
+              placeholder={oldnickname.toString()}
+              value={nickname}
               style={styles.textInput}
               onChangeText={(text) => setNickname(text)}
             />
@@ -135,8 +135,8 @@ function EditProfileScreen({ navigation }) {
           <View style={styles.contentContainer}>
             <Text>신장</Text>
             <TextInput
-              placeholder="신장"
-              value={height || oldheight.toString()}
+              placeholder={oldheight.toString()}
+              value={height}
               style={styles.textInput}
               onChangeText={(text) => setHeight(text)}
             />
@@ -144,8 +144,8 @@ function EditProfileScreen({ navigation }) {
           <View style={styles.contentContainer}>
             <Text>체중</Text>
             <TextInput
-              placeholder="체중"
-              value={weight || oldweight.toString()}
+              placeholder={oldweight.toString()}
+              value={weight}
               style={styles.textInput}
               onChangeText={(text) => setWeight(text)}
             />
@@ -166,8 +166,8 @@ function EditProfileScreen({ navigation }) {
                 </Picker>
               </View>
               <TextInput
-                placeholder="주량"
-                value={amount || oldamount.toString()}
+                placeholder={oldamount.toString()}
+                value={amount}
                 style={styles.kindTextInput}
                 onChangeText={(text) => setAmount(text)}
               />
@@ -189,7 +189,7 @@ function EditProfileScreen({ navigation }) {
             <Text>주소</Text>
             <TextInput
               placeholder="주소지"
-              value={address || oldaddress}
+              value={address}
               style={styles.textInput}
               onChangeText={(text) => setAddress(text)}
             />

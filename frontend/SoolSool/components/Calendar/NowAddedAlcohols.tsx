@@ -49,11 +49,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   alcoholInfo: {
-    margin: "1%",
-    padding: "1%",
-    backgroundColor: "white",
-    flexDirection: "row",
-    borderRadius: 5,
+    margin: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    height: "100%",
+    borderWidth: 1,
+    borderColor: "#363C4B",
+    borderRadius: 50,
   },
   innerText: {
     fontSize: 14,

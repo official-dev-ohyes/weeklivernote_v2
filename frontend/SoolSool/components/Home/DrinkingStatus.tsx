@@ -15,7 +15,11 @@ function DrinkingStatus({
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{drinkInVolume}ml</Text>
       {drinkingFor === undefined ? (
-        <Text style={styles.periodContainer}>술을 마셨다면 기록해볼까요?</Text>
+        <Text style={styles.subtitleContainer}>
+          <Text style={styles.periodContainer}>
+            술을 마셨다면 기록해볼까요?
+          </Text>
+        </Text>
       ) : (
         <Text style={styles.subtitleContainer}>
           마신 지{"  "}

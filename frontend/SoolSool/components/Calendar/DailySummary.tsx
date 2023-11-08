@@ -127,24 +127,31 @@ function DailySummary(props) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    flexDirection: "column",
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 5,
-    justifyContent: "center",
-    alignContent: "center",
-    borderWidth: 2,
-    borderColor: "#363C4B",
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "#ffffff",
     margin: 5,
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   headerBox: {
     height: "25%",
     flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 5,
   },
   headerText: {
     fontSize: 18,
+    color: "#363C4B",
+    fontFamily: "Yeongdeok-Sea",
   },
   informations: {
     height: "80%",
@@ -180,14 +187,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   New: {
-    height: "80%",
-    justifyContent: "center",
-    alignContent: "center",
-    paddingBottom: "10%",
+    width: 70,
+    height: 70,
+    backgroundColor: "#363C4B",
+    borderRadius: 50,
+    marginRight: "auto",
+    marginLeft: "auto",
   },
   plus: {
     fontSize: 50,
-    color: "#363C4B",
+    color: "#FFFFFF",
     textAlign: "center",
     textAlignVertical: "center", // Android
     // flex: 1, // iOS

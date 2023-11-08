@@ -7,6 +7,11 @@ import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 import SettingsIconButton from "../components/MyPage/SettingsIconButton";
 import Profile from "../components/MyPage/template/Profile";
 import { useFocusEffect } from "@react-navigation/native";
+interface DrinkInfo {
+  category: string;
+  drinkAmount: number;
+  drinkUnit: string;
+}
 
 interface UserProfile {
   address: string;
@@ -16,6 +21,7 @@ interface UserProfile {
   nickname: string;
   profileImg: string | null;
   weight: number;
+  drinkInfo?: DrinkInfo;
 }
 
 interface AlcoholStatistics {
@@ -40,6 +46,7 @@ function MyPageScreen(props: UserProfileProps) {
     weight: 0,
     alcoholLimit: 0,
     address: "",
+    drinkInfo: null,
   });
 
   const [alcoholStatistics, setAlcoholStatistics] = useState<AlcoholStatistics>(
@@ -90,7 +97,7 @@ function MyPageScreen(props: UserProfileProps) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("여기로 안빠지나?");
+      console.log("여기로 안빠지나?", userProfileData);
       queryClient.invalidateQueries("userProfileData");
       if (!isProfileLoading && userProfileData) {
         setUserProfile(userProfileData);

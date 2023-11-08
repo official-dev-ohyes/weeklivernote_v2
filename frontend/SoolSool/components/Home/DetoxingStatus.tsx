@@ -29,7 +29,9 @@ function DetoxingStatus({
         </Text>
       );
     } else {
-      <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>;
+      <Text style={styles.subtitleContainer}>
+        <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+      </Text>;
     }
   };
 
@@ -37,7 +39,9 @@ function DetoxingStatus({
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{alcoholInGrams}g</Text>
       {detoxingFor === undefined ? (
-        <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+        <Text style={styles.subtitleContainer}>
+          <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+        </Text>
       ) : (
         <AdjustedRemainingTime />
       )}

@@ -1,6 +1,11 @@
-import { Text, View, StyleSheet, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Text, View, StyleSheet } from "react-native";
 import React from "react";
+
+interface DrinkInfo {
+  category: string;
+  drinkAmount: number;
+  drinkUnit: string;
+}
 
 interface UserProfile {
   address: string;
@@ -10,6 +15,7 @@ interface UserProfile {
   nickname: string;
   profileImg: string | null;
   weight: number;
+  drinkInfo: DrinkInfo;
 }
 
 interface DetailProfileProps {
@@ -37,9 +43,11 @@ function DetailProfile(props: DetailProfileProps) {
       </View>
 
       <View style={styles.alcLimitContainer}>
-        <Ionicons name="beer-outline" size={20} color={"white"} />
         <Text style={styles.boldText}>주량</Text>
-        <Text style={styles.text}>{userData.alcoholLimit} ml</Text>
+        <Text style={styles.text}>{userData?.drinkInfo?.category}</Text>
+        <Text style={styles.text}>
+          {userData?.drinkInfo?.drinkAmount} {userData?.drinkInfo?.drinkUnit}
+        </Text>
       </View>
     </View>
   );
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
     padding: 15,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    // alignItems: "center",
     gap: 10,
   },
   text: {
