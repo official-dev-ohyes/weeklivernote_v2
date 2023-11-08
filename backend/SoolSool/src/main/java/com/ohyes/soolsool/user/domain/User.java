@@ -56,6 +56,15 @@ public class User {
     @Column(name = "alcohol_limit")
     private float alcoholLimit;
 
+    @Column(name = "drink_category")
+    private String drinkCategory;
+
+    @Column(name = "drink_unit")
+    private String drinkUnit;
+
+    @Column(name = "drink_amount")
+    private float drinkAmount;
+
     @Column(name = "refresh_token")
     private String refreshToken;
 
