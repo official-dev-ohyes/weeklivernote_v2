@@ -135,7 +135,6 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={confirmDelete}
               buttonColor={"#363C4B"}
-              // labelStyle={styles.buttonInnerText}
             >
               삭제
             </Button>
@@ -143,7 +142,6 @@ function DailyDetailScreen({ route, navigation }) {
               mode="contained"
               onPress={hideDeleteModal}
               buttonColor={"#363C4B"}
-              // labelStyle={styles.buttonInnerText}
             >
               취소
             </Button>
@@ -205,22 +203,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
   },
-  buttonInnerText: {
-    fontSize: 17,
-    fontFamily: "Yeongdeok-Sea",
-  },
   smallHeaderText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     marginBottom: "2%",
   },
   innerText: {
     fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
   },
   deleteText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     textAlign: "center",
   },
   deleteButtons: {
