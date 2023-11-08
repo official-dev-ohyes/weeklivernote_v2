@@ -108,3 +108,13 @@ export const fetchDailyDetail = async (day) => {
     throw new Error("실패!");
   }
 };
+
+export const postImage = async (day) => {
+  try {
+    const res = await axiosInstance.post(`/v1/drink/photo/${day}`);
+    console.log("사진 post 요청 성공", res.data);
+    return res.data;
+  } catch (err) {
+    throw new Error("사진 post 요쳥 실패");
+  }
+};

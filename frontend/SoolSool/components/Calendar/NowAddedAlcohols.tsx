@@ -5,13 +5,8 @@ function NowAddedAlcohols({ alcoholRecord }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     setCount(alcoholRecord.length);
-    for (let i = 0; i < alcoholRecord.length; i++) {
-      // console.log(`넘어온 정보${i + 1}번째!`);
-      // console.log("술 종류:", alcoholRecord[i].category);
-      // console.log("양:", alcoholRecord[i].drinkAmount);
-      // console.log("단위:", alcoholRecord[i].drinkUnit);
-    }
-  }, [alcoholRecord]);
+    for (let i = 0; i < alcoholRecord.length; i++) {}
+  }, [alcoholRecord.length]);
 
   console.log(`지금 넘어온 술 기록 개수는 ${count}개`);
 

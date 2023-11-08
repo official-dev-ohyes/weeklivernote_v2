@@ -16,10 +16,6 @@ function DailyDetailScreen({ route, navigation }) {
   const [isImg, setIsImg] = useState<boolean>(false);
   const [isModal, setIsModal] = useState<boolean>(false);
 
-  console.log(
-    `날짜는 ${day}, 술마신날들은 ${alcoholDays}, 알코올상태는? ${isAlcohol}`
-  );
-
   const [info, setInfo] = useState({
     startTime: "",
     detoxTime: "",
@@ -36,7 +32,6 @@ function DailyDetailScreen({ route, navigation }) {
   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
 
   useEffect(() => {
-    // console.log(DailyDetailData);
     if (DailyDetailData) {
       setInfo(DailyDetailData);
     }

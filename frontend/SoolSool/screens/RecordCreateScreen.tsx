@@ -66,8 +66,6 @@ function RecordCreateScreen({ route, navigation }) {
     "55",
   ];
 
-  console.log(`지금 날짜는 ${day} 술마신 날이다 참거짓 확인 ${isAlcohol}`);
-
   // 음주량 수정
   const handleDecrement = () => {
     if (value > 0) {
@@ -104,6 +102,7 @@ function RecordCreateScreen({ route, navigation }) {
         const dailyDrink = await fetchDailyDrink(date);
 
         if (dailyDrink) {
+          // 추후 업데이트 기능으로 자동 연결 구현
           Alert.alert("알림", "어제 날짜에 이미 음주 기록이 있습니다.");
           return;
         }
@@ -119,7 +118,6 @@ function RecordCreateScreen({ route, navigation }) {
       hangover: "",
     }).then((res) => {
       navigation.navigate("Calendar");
-      console.log("찐성공");
     });
   };
 
@@ -457,7 +455,7 @@ const styles = StyleSheet.create({
     height: "30%",
     borderRadius: 5,
     justifyContent: "space-around",
-    // backgroundColor: "white",
+    backgroundColor: "white",
   },
   alcoholInput: {
     height: "25%",
@@ -465,7 +463,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "yellow",
   },
   word: {
     flex: 1,
@@ -523,7 +520,6 @@ const styles = StyleSheet.create({
   },
   texts: {
     fontSize: 17,
-    // marginTop: "3%",
     marginBottom: "1%",
   },
   record: {
