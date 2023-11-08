@@ -27,7 +27,7 @@ const Indicator = ({ scrollX }) => {
     <View
       style={{
         position: "absolute",
-        top: 20,
+        top: 30,
         flexDirection: "row",
       }}
     >
@@ -50,7 +50,7 @@ const Indicator = ({ scrollX }) => {
               height: 6,
               width: 6,
               borderRadius: 5,
-              backgroundColor: "#0477BF",
+              backgroundColor: "white",
               // backgroundColor: "#A5BBFF",
               opacity,
               margin: 10,

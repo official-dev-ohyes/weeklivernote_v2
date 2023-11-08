@@ -55,7 +55,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#FFFF",
+    // backgroundColor: "#FFFF",
     flexDirection: "column",
     gap: 10,
     borderRadius: 20,
@@ -63,9 +63,18 @@ const styles = StyleSheet.create({
   graphBox: {
     width: "100%",
     height: 240,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "white",
     marginHorizontal: "auto",
     borderRadius: 20,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   chartContainer: {
     width: "100%",

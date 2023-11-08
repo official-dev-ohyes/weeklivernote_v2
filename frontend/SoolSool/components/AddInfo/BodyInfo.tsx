@@ -50,7 +50,7 @@ function BodyInfo({ navigation, socialId }) {
         </Text>
       </View>
       <View style={styles.columnContainer}>
-        <Text style={styles.text}>성별 </Text>
+        <Text>성별 </Text>
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={getButtonStyle("남자")}

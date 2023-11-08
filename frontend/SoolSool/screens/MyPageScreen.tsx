@@ -117,7 +117,7 @@ function MyPageScreen(props: UserProfileProps) {
 const styles = StyleSheet.create({
   mainContainer: {
     height: "100%",
-    // backgroundColor: "#2E4173",
+    backgroundColor: "#F7F9FF",
   },
   subContainer: {
     flexDirection: "column",

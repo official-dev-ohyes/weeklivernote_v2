@@ -446,7 +446,6 @@ const styles = StyleSheet.create({
     margin: "3%",
     borderRadius: 15,
     backgroundColor: "#F6F6F6",
-    // backgroundColor: "black",
   },
   tagArea: {
     height: "10%",

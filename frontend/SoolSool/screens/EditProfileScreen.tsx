@@ -15,6 +15,38 @@ import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 
 function EditProfileScreen({ navigation }) {
+  const [oldnickname, setOldNickname] = useState("");
+  const [oldgender, setOldGender] = useState("");
+  const [oldheight, setOldHeight] = useState("");
+  const [oldweight, setOldWeight] = useState("");
+  const [oldaddress, setOldAddress] = useState("");
+  const [oldselectedDrinkKind, setOldSelectedDrinkKind] = useState("");
+  const [oldamount, setOldAmount] = useState("");
+  const [oldunit, setOldUnit] = useState("");
+  const [oldimageURL, setOldImageURL] = useState("");
+
+  const {
+    data: userProfileData,
+    isLoading,
+    isError,
+  } = useQuery("userProfileData", async () => await fetchUserProfile());
+
+  useEffect(() => {
+    console.log("ghgh", userProfileData);
+    if (!isLoading && userProfileData) {
+      setOldNickname(userProfileData.nickname);
+      setOldGender(userProfileData.gender);
+      setOldHeight(userProfileData.height);
+      setOldWeight(userProfileData.weight);
+      setOldAddress(userProfileData.address);
+      setOldSelectedDrinkKind(userProfileData.drinkKind);
+      setOldAmount(userProfileData.drinkInfo.drinkAmount);
+      setOldUnit(userProfileData.drinkInfo.drinkUnit);
+      setOldImageURL(userProfileData.profileImg);
+    }
+    // console.log("뭐야", oldheight);
+  }, [isLoading, userProfileData]);
+
   const [nickname, setNickname] = useState("");
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
@@ -23,22 +55,7 @@ function EditProfileScreen({ navigation }) {
   const [selectedDrinkKind, setSelectedDrinkKind] = useState("소주");
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState("잔");
-
-  const {
-    data: userProfileData,
-    isLoading,
-    isError,
-  } = useQuery("userProfileData", async () => await fetchUserProfile());
-
-  // useEffect(() => {
-  //   if (!isLoading && userProfileData) {
-  //     setHeight(userProfileData.height);
-  //     setWeight(userProfileData.weight);
-  //     setAddress(userProfileData.address);
-  //     setNickname(userProfileData.nickname);
-  //     setGender(userProfileData.gender);
-  //   }
-  // }, [isLoading, userProfileData]);
+  const [imageURL, setImageURL] = useState("");
 
   const volumeUnits = ["잔", "병"];
 
@@ -47,73 +64,39 @@ function EditProfileScreen({ navigation }) {
   };
 
   const submitEditedProfile = async () => {
-    if (
-      !nickname ||
-      !gender ||
-      !height ||
-      !weight ||
-      !address ||
-      !selectedDrinkKind ||
-      !amount ||
-      !unit
-    ) {
-      // 하나라도 null 또는 빈 문자열이면 알림을 표시합니다.
-      Alert.alert("알림", "모든 항목을 선택해주세요.");
-    } else {
-      const drinkInfo = {
-        category: selectedDrinkKind,
-        drinkUnit: unit,
-        drinkAmount: amount,
-      };
+    const drinkInfo = {
+      category: selectedDrinkKind || oldselectedDrinkKind,
+      drinkUnit: unit || oldunit,
+      drinkAmount: amount || oldamount,
+    };
 
-      await updateUserProfile(
-        nickname,
-        weight,
-        height,
-        gender,
-        address,
-        drinkInfo
-      )
-        .then((res) => {
-          console.log("업데이트 성공");
-          Toast.show("프로필 수정 성공", {
-            duration: Toast.durations.SHORT,
-            position: 0,
-            shadow: true,
-            animation: true,
-            opacity: 0.8,
-          });
-          navigation.navigate("MyPage");
-        })
-        .catch((error) => {
-          console.error("정보 수정 실패", error);
-          showErrorAndRetry(
-            "다음에 다시 시도하세요",
-            "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
-          );
+    await updateUserProfile(
+      nickname || oldnickname,
+      weight || oldweight,
+      height || oldheight,
+      gender || oldgender,
+      address || oldaddress,
+      drinkInfo
+    )
+      .then((res) => {
+        // console.log("업데이트 성공");
+        Toast.show("프로필 수정 성공", {
+          duration: Toast.durations.SHORT,
+          position: 0,
+          shadow: true,
+          animation: true,
+          opacity: 0.8,
         });
-    }
+        navigation.navigate("MyPage");
+      })
+      .catch((error) => {
+        console.error("정보 수정 실패", error);
+        showErrorAndRetry(
+          "다음에 다시 시도하세요",
+          "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
+        );
+      });
   };
-
-  useEffect(() => {
-    console.log("Nickname changed:", nickname);
-    console.log("Selected Gender changed:", gender);
-    console.log("Height changed:", height);
-    console.log("Weight changed:", weight);
-    console.log("Address changed:", address);
-    console.log("Selected Drink Kind changed:", selectedDrinkKind);
-    console.log("Amount changed:", amount);
-    console.log("Unit changed:", unit);
-  }, [
-    nickname,
-    gender,
-    height,
-    weight,
-    address,
-    selectedDrinkKind,
-    amount,
-    unit,
-  ]);
 
   return (
     <ScrollView>
@@ -124,7 +107,7 @@ function EditProfileScreen({ navigation }) {
             <Text>닉네임</Text>
             <TextInput
               placeholder="닉네임"
-              value={nickname}
+              value={nickname || oldnickname}
               style={styles.textInput}
               onChangeText={(text) => setNickname(text)}
             />
@@ -153,7 +136,7 @@ function EditProfileScreen({ navigation }) {
             <Text>신장</Text>
             <TextInput
               placeholder="신장"
-              value={height}
+              value={height || oldheight.toString()}
               style={styles.textInput}
               onChangeText={(text) => setHeight(text)}
             />
@@ -162,7 +145,7 @@ function EditProfileScreen({ navigation }) {
             <Text>체중</Text>
             <TextInput
               placeholder="체중"
-              value={weight}
+              value={weight || oldweight.toString()}
               style={styles.textInput}
               onChangeText={(text) => setWeight(text)}
             />
@@ -173,6 +156,7 @@ function EditProfileScreen({ navigation }) {
               <View style={styles.Kind}>
                 <Picker
                   selectedValue={selectedDrinkKind}
+                  mode="dropdown"
                   onValueChange={(itemValue, itemIndex) =>
                     setSelectedDrinkKind(itemValue)
                   }
@@ -183,13 +167,14 @@ function EditProfileScreen({ navigation }) {
               </View>
               <TextInput
                 placeholder="주량"
-                value={amount}
-                style={styles.textInput}
+                value={amount || oldamount.toString()}
+                style={styles.kindTextInput}
                 onChangeText={(text) => setAmount(text)}
               />
               <View style={styles.Unit}>
                 <Picker
                   selectedValue={unit}
+                  mode="dropdown"
                   onValueChange={(itemValue, itemIndex) => setUnit(itemValue)}
                 >
                   {/* <Picker.Item label="주량 단위 선택" value="" /> */}
@@ -204,7 +189,7 @@ function EditProfileScreen({ navigation }) {
             <Text>주소</Text>
             <TextInput
               placeholder="주소지"
-              value={address}
+              value={address || oldaddress}
               style={styles.textInput}
               onChangeText={(text) => setAddress(text)}
             />
@@ -259,6 +244,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     // width: "100%",
+  },
+  kindTextInput: {
+    backgroundColor: "#F6F6F6",
+    height: 50,
+    borderRadius: 10,
+    width: "20%",
   },
   contentContainer: {
     display: "flex",

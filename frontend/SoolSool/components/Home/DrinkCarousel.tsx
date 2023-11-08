@@ -123,12 +123,11 @@ const styles = StyleSheet.create({
     paddingTop: 200,
   },
   selectButton: {
-    padding: 4,
-    paddingBottom: 0,
+    padding: 5,
   },
   buttonText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 16,
+    // fontFamily: "Yeongdeok-Sea",
   },
 });
 
