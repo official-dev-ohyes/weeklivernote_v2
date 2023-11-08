@@ -1,11 +1,10 @@
 import "expo-dev-client";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
-  // useTheme,
 } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +12,7 @@ import { useFonts } from "expo-font";
 import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -39,9 +39,11 @@ const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
-import { setNotificationHandler } from "expo-notifications";
+import { Subscription } from "expo-modules-core";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "./utils/notificationUtils";
 
-setNotificationHandler({
+Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
@@ -123,9 +125,6 @@ const theme = {
   },
 };
 
-// export type AppTheme = typeof theme;
-// export const useAppTheme = () => useTheme<AppTheme>();
-
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
@@ -137,9 +136,47 @@ export default function App() {
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  // if (!fontsLoaded && !fontError) {
+  //   return null;
+  // }
+
+  // const [notification, setNotification] =
+  //   useState<Notifications.Notification>();
+  const notificationListener = useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(async (token) => {
+      if (token) {
+        await AsyncStorage.setItem("expoPushToken", token);
+      } else {
+        return;
+      }
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        // setNotification(notification);
+        console.log(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      if (
+        typeof notificationListener.current !== "undefined" &&
+        typeof responseListener.current !== "undefined"
+      ) {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
 
   return (
     <RecoilRoot>

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-// import { useQuery } from "react-query";
 import {
   StyleSheet,
   View,
@@ -8,15 +7,15 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-// import { useRecoilState, useSetRecoilState } from "recoil";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
 import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
-// import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import { currentAlcoholAtom } from "../../recoil/currentDrinksAtom";
+import { roundedUserAlcoholLimitSelector } from "../../recoil/auth";
 import {
   createDrink,
   updateDrink,
@@ -24,6 +23,7 @@ import {
   removeDrink,
 } from "../../api/drinkRecordApi";
 import { getToday } from "../../utils/timeUtils";
+import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
 interface Drink {
   id: number;
@@ -31,21 +31,25 @@ interface Drink {
   volume: number;
   unit: string;
   alcoholPercentage: number;
+  alcoholAmount: number;
 }
 
 const { width, height } = Dimensions.get("screen");
 
 function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState(0);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
+  const currentAlcoholConsumption = useRecoilValue(currentAlcoholAtom);
+  const userAlcoholLimit = useRecoilValue(roundedUserAlcoholLimitSelector);
   const numberOfCurrentDrinks = Object.keys(currentDrinks).length;
-  // const setDrinkToday = useSetRecoilState(drinkTodayAtom);
   const defaultDrink = {
     id: 2,
     name: "소주",
     volume: 50,
     unit: "잔",
     alcoholPercentage: 19,
+    alcoholAmount: 9.1,
   };
   const [selectedDrink, setSelectedDrink] = useState(defaultDrink);
   const imageSource = getDrinkImageById(selectedDrink.id);
@@ -75,6 +79,50 @@ function DrinkController() {
   const handleModalClose = () => {
     setIsDrinkModalOpen(false);
   };
+
+  useEffect(() => {
+    const alcoholLimitRatio =
+      (currentAlcoholConsumption / userAlcoholLimit) * 100;
+
+    console.log(
+      "주량 정보:",
+      currentAlcoholConsumption,
+      userAlcoholLimit,
+      alcoholLimitRatio
+    );
+
+    let newStatus = notificationStatus;
+
+    if (alcoholLimitRatio < 50 && notificationStatus !== 0) {
+      newStatus = 0;
+    } else if (
+      alcoholLimitRatio >= 50 &&
+      alcoholLimitRatio < 75 &&
+      notificationStatus !== 1
+    ) {
+      newStatus = 1;
+    } else if (
+      alcoholLimitRatio >= 75 &&
+      alcoholLimitRatio < 100 &&
+      notificationStatus !== 2
+    ) {
+      newStatus = 2;
+    } else if (alcoholLimitRatio >= 100 && notificationStatus !== 3) {
+      newStatus = 3;
+    }
+
+    if (newStatus !== notificationStatus) {
+      setNotificationStatus(newStatus);
+    }
+  }, [currentAlcoholConsumption]);
+
+  useEffect(() => {
+    if (notificationStatus === 0) {
+      return;
+    } else {
+      scheduleAlcoholLimitLocalNotification(notificationStatus);
+    }
+  }, [notificationStatus]);
 
   const handleLogChange = (key: number, newValue: number) => {
     setCurrentDrinks((prev) => ({
@@ -211,7 +259,7 @@ function DrinkController() {
             <View style={styles.divider} />
           </>
         ) : (
-          <></>
+          <View style={styles.placeholderContainer} />
         )}
 
         <View style={styles.stepperContainer}>
@@ -302,6 +350,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "Yeongdeok-Sea",
   },
+  placeholderContainer: {},
 });
 
 export default DrinkController;

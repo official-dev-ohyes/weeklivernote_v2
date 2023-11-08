@@ -33,3 +33,8 @@ export const getIdByOnlyCategory = (category: string): number | null => {
   console.log(`매칭 드링크 정보 보세요@@@@@@@${matchingDrink}`);
   return matchingDrink ? matchingDrink.id : null;
 };
+
+export const getAlcoholAmountById = (targetId: number): number | null => {
+  const matchingDrink = drinkData.find((item) => item.id === targetId);
+  return matchingDrink ? matchingDrink.alcoholAmount : null;
+};

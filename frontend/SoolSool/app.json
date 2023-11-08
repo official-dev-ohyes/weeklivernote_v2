@@ -29,6 +29,8 @@
           "usesCleartext": true
         }
       },
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
       "package": "com.official_ohyes.weeklivernote",
       "versionCode": 1
     },
