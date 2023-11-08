@@ -6,7 +6,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
 
 kakao:
-  redirect-uri: ${REDIRECT_URI}
+  redirect-uri: https://kauth.kakao.com/oauth/token
 
 cloud:
   aws:
