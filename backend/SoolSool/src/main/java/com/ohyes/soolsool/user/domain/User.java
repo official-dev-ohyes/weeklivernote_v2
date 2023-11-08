@@ -2,6 +2,7 @@ package com.ohyes.soolsool.user.domain;
 
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.domain.Diary;
+import com.ohyes.soolsool.location.domain.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -80,6 +82,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Diary> diaries = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "location_pk")
+    private Location location;
 
     // 생성자
     @Builder
