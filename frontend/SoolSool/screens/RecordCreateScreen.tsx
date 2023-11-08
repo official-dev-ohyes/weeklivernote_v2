@@ -66,6 +66,8 @@ function RecordCreateScreen({ route, navigation }) {
     "55",
   ];
 
+  console.log(`지금 날짜는 ${day} 술마신 날이다 참거짓 확인 ${isAlcohol}`);
+
   // 음주량 수정
   const handleDecrement = () => {
     if (value > 0) {
@@ -137,65 +139,70 @@ function RecordCreateScreen({ route, navigation }) {
   // console.log(`요약조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
   useEffect(() => {
-    // 술자리 시작 시간, 메모, 사진 불러오기
-    if (DailyDetailData) {
-      const tempHour = parseInt(
-        DailyDetailData.startTime.substring(11, 13),
-        10
-      );
-      if (tempHour < 12) {
-        setSelectedAmPm("AM");
-      }
-      setSelectedHour(
-        tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-      );
-      setSelectedMinute(
-        `${parseInt(
-          DailyDetailData.startTime.substring(14, 16),
+    if (isAlcohol) {
+      // 술자리 시작 시간, 메모, 사진 불러오기
+      if (DailyDetailData) {
+        const tempHour = parseInt(
+          DailyDetailData.startTime.substring(11, 13),
           10
-        ).toString()}`
-      );
-      if (memo) {
-        setMemo(DailyDetailData.memo);
+        );
+        if (tempHour < 12) {
+          setSelectedAmPm("AM");
+        }
+        setSelectedHour(
+          tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+        );
+        setSelectedMinute(
+          `${parseInt(
+            DailyDetailData.startTime.substring(14, 16),
+            10
+          ).toString()}`
+        );
+        if (DailyDetailData.memo) {
+          setMemo(DailyDetailData.memo);
+        }
       }
-    }
 
-    // 주종 별 음주량 불러오기
-    if (DailyDrinkData) {
-      for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
-        const category = DailyDrinkData.drinks[i].drink;
-        const drinkCount = DailyDrinkData.drinks[i].count;
-        const result = getAmountByDrinkCount(category, drinkCount);
-        console.log(result);
+      // 주종 별 음주량 불러오기
+      if (DailyDrinkData) {
+        for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+          const category = DailyDrinkData.drinks[i].drink;
+          const drinkCount = DailyDrinkData.drinks[i].count;
+          const result = getAmountByDrinkCount(category, drinkCount);
+          console.log(result);
 
-        const newBottleRecord = {
-          category: category,
-          drinkUnit: "병",
-          drinkAmount: result[0],
-        };
-        const newShotRecord = {
-          category: category,
-          drinkUnit: "잔",
-          drinkAmount: result[1],
-        };
-        const existingRecordIndex = alcoholRecord.findIndex((record) => {
-          return (
-            record.category === selectedAlcohol &&
-            record.drinkUnit === selectedUnit
-          );
-        });
+          const newBottleRecord = {
+            category: category,
+            drinkUnit: "병",
+            drinkAmount: result[0],
+          };
+          const newShotRecord = {
+            category: category,
+            drinkUnit: "잔",
+            drinkAmount: result[1],
+          };
+          const existingRecordIndex = alcoholRecord.findIndex((record) => {
+            return (
+              record.category === selectedAlcohol &&
+              record.drinkUnit === selectedUnit
+            );
+          });
 
-        if (existingRecordIndex >= 0) {
-          alcoholRecord[existingRecordIndex].drinkAmount += value;
-        } else {
-          if (newBottleRecord.drinkAmount) {
-            setAlcoholRecord((prevRecords) => [
-              ...prevRecords,
-              newBottleRecord,
-              newShotRecord,
-            ]);
+          if (existingRecordIndex >= 0) {
+            alcoholRecord[existingRecordIndex].drinkAmount += value;
           } else {
-            setAlcoholRecord((prevRecords) => [...prevRecords, newShotRecord]);
+            if (newBottleRecord.drinkAmount) {
+              setAlcoholRecord((prevRecords) => [
+                ...prevRecords,
+                newBottleRecord,
+                newShotRecord,
+              ]);
+            } else {
+              setAlcoholRecord((prevRecords) => [
+                ...prevRecords,
+                newShotRecord,
+              ]);
+            }
           }
         }
       }
@@ -388,7 +395,7 @@ function RecordCreateScreen({ route, navigation }) {
         >
           저장
         </Button> */}
-        {isAlcohol ? (
+        {/* {isAlcohol ? (
           <Button
             mode="contained"
             onPress={() => {
@@ -407,16 +414,17 @@ function RecordCreateScreen({ route, navigation }) {
           >
             저장
           </Button>
-        )}
-        {/* <Button
+        )} */}
+        {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@되는지 확인 필요@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
+        <Button
           mode="contained"
           onPress={() => {
             saveRecord();
           }}
           buttonColor={"#363C4B"}
         >
-          {isAlcohol ? "수정": "저장"}
-        </Button> */}
+          {isAlcohol ? "수정" : "저장"}
+        </Button>
       </View>
     </ScrollView>
   );

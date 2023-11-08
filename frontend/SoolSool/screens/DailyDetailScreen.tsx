@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
@@ -65,17 +65,19 @@ function DailyDetailScreen({ route, navigation }) {
       <View style={styles.mainTextBox}>
         <Text style={styles.headerText}>술력</Text>
         <View style={styles.light}>
-          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
             size={30}
             color="black"
+            onPress={() => {
+              Alert.alert("알림", "05시를 기준으로 하루를 초기화합니다.");
+            }}
           />
         </View>
         <View style={styles.buttons}>
           <Button
             mode="contained"
-            buttonColor={"#0477BF"}
+            buttonColor={"#363C4B"}
             onPress={() => {
               navigation.navigate("RecordCreate", {
                 date: day,
@@ -88,7 +90,7 @@ function DailyDetailScreen({ route, navigation }) {
           <Button
             mode="contained"
             onPress={openDeleteModal}
-            buttonColor={"#0477BF"}
+            buttonColor={"#363C4B"}
           >
             삭제
           </Button>
@@ -135,7 +137,7 @@ function DailyDetailScreen({ route, navigation }) {
             <Button
               mode="contained"
               onPress={confirmDelete}
-              buttonColor={"#0477BF"}
+              buttonColor={"#363C4B"}
               labelStyle={styles.buttonInnerText}
             >
               삭제
@@ -143,7 +145,7 @@ function DailyDetailScreen({ route, navigation }) {
             <Button
               mode="contained"
               onPress={hideDeleteModal}
-              buttonColor={"#0477BF"}
+              buttonColor={"#363C4B"}
               labelStyle={styles.buttonInnerText}
             >
               취소
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
   },
   house: {
     borderWidth: 2,
-    borderColor: "#0477BF",
+    borderColor: "#363C4B",
     backgroundColor: "#F6F6F6",
     borderRadius: 5,
     margin: 5,

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { CalendarList } from "react-native-calendars";
 import React, { useState } from "react";
@@ -17,6 +17,9 @@ function CalendarScreen() {
             name="lightbulb-on-outline"
             size={30}
             color="black"
+            onPress={() => {
+              Alert.alert("알림", "05시를 기준으로 하루를 초기화합니다.");
+            }}
           />
         </View>
       </View>

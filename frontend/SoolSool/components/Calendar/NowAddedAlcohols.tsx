@@ -34,9 +34,9 @@ function NowAddedAlcohols({ alcoholRecord }) {
             <View key={index} style={styles.alcoholInfo}>
               <Text>
                 {record.category}
-                <Text> ({record.drinkUnit}) </Text>
+                <Text> {record.drinkAmount}</Text>
+                <Text>{record.drinkUnit} </Text>
               </Text>
-              <Text>{record.drinkAmount}</Text>
             </View>
           ))}
         </View>
@@ -48,12 +48,10 @@ function NowAddedAlcohols({ alcoholRecord }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    // backgroundColor: "black",
   },
   oneline: {
     flex: 0.5,
     flexDirection: "row",
-    // backgroundColor: "blue",
   },
   alcoholInfo: {
     margin: "1%",
@@ -63,8 +61,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   innerText: {
-    fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 14,
+    // fontFamily: "Yeongdeok-Sea",
   },
 });
 
