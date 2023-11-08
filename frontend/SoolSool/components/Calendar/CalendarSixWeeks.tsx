@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "react-query";
+import { useEvent } from "react-native-reanimated";
 
 function CalendarSixWeeks({}) {
   // 진짜 오늘 정보 저장
@@ -23,32 +25,30 @@ function CalendarSixWeeks({}) {
   const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
+  const tempDay = currentDay ? currentDay : nowDate;
+
+  const {
+    data: MonthlyData,
+    isLoading: monthlyLoading,
+    isError: monthlyError,
+  } = useQuery("MonthlyQuery", async () => await fetchMonthRecord(tempDay));
+
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
       console.log(`현재 날짜는? ${nowDate}`);
-      const setAndFetch = async () => {
-        const tempDay = currentDay ? currentDay : nowDate;
-        await setCurrentDay(tempDay);
-        fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
-          .then((res) => {
-            setAlcoholInfo(res.deinks);
+      if (tempDay) {
+        setCurrentDay(tempDay);
+      }
+      if (MonthlyData) {
+        const tempDays = {};
 
-            const drinkData = res.drinks;
-            setAlcoholInfo(drinkData);
-
-            const tempDays = {};
-            for (let i = 0; i < drinkData.length; i++) {
-              const tempDate = drinkData[i].date;
-              tempDays[tempDate] = { marked: true };
-            }
-            setAlcoholDays(tempDays);
-          })
-          .catch((err) => {
-            console.error("실패", err);
-          });
-      };
-      setAndFetch();
+        for (let i = 0; i < MonthlyData.drinks.length; i++) {
+          const tempDate = MonthlyData.drinks[i].date;
+          tempDays[tempDate] = { marked: true };
+        }
+        setAlcoholDays(tempDays);
+      }
 
       if (selectDay) {
         const checkFuture = () => {
@@ -62,7 +62,7 @@ function CalendarSixWeeks({}) {
         };
         checkFuture();
       }
-    }, [nowDate, selectDay, navigator])
+    }, [nowDate, selectDay, navigator, MonthlyData])
   );
 
   // 특정일 클릭
@@ -242,7 +242,6 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    // fontFamily: "Yeongdeok-Sea",
   },
 });
 
