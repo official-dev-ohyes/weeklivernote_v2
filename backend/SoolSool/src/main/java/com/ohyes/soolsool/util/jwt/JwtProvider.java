@@ -57,11 +57,11 @@ public class JwtProvider {
 
     public Authentication authenticateToken(String token) {
         try {
-            String socialId = String.valueOf(JWT.require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token)
-                .getClaim("socialId"));
+            String socialId = JWT.require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token)
+                .getClaim("socialId").asString();
 
             if (socialId != null) {
-                User user = userRepository.findById(socialId).orElseThrow(
+                User user = userRepository.findBySocialId(socialId).orElseThrow(
                     () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "[User] 가입하지 않은 사용자입니다.")
                 );
                 UserDetailsImpl userDetails = new UserDetailsImpl(user);
