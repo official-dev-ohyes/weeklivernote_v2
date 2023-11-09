@@ -12,6 +12,7 @@ interface Drink {
   volume: number;
   unit: string;
   alcoholPercentage: number;
+  alcoholAmount: number;
 }
 
 type DrinkCarouselProps = {
@@ -31,9 +32,10 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
   const [centeredItem, setCenteredItem] = useState({
     id: 2,
     name: "소주",
-    volume: 360,
+    volume: 60,
     unit: "잔",
     alcoholPercentage: 19,
+    alcoholAmount: 9.1,
   });
   const [showInstruction, SetShowInstruction] = useState(true);
 

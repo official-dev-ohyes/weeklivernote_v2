@@ -28,6 +28,7 @@ interface Drink {
   volume: number;
   unit: string;
   alcoholPercentage: number;
+  alcoholAmount: number;
 }
 
 const { width, height } = Dimensions.get("screen");
@@ -39,9 +40,10 @@ function DrinkController() {
   const defaultDrink = {
     id: 2,
     name: "소주",
-    volume: 50,
+    volume: 60,
     unit: "잔",
     alcoholPercentage: 19,
+    alcoholAmount: 9.1,
   };
   const [selectedDrink, setSelectedDrink] = useState(defaultDrink);
   const imageSource = getDrinkImageById(selectedDrink.id);
@@ -268,6 +270,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     position: "absolute",
     top: 10,
+    zIndex: 1,
   },
   divider: {
     borderBottomWidth: 1,
