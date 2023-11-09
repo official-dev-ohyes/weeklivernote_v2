@@ -15,7 +15,7 @@ interface UserProfile {
   nickname: string;
   profileImg: string | null;
   weight: number;
-  drinkInfo: DrinkInfo;
+  drinkInfo?: DrinkInfo;
 }
 
 interface DetailProfileProps {
