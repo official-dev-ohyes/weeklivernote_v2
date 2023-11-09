@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
-
 import { StyleSheet, View, Text, BackHandler } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
@@ -15,12 +14,25 @@ import { useRecoilState } from "recoil";
 import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
-
-function HomeScreen() {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+function HomeScreen({ navigation }) {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
-  // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("accessToken");
+        if (token === null) {
+          navigation.navigate("Login");
+        }
+      } catch (error) {
+        console.error("토큰을 가져오는 중에 오류가 발생했습니다:", error);
+      }
+    };
+    fetchToken();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -119,12 +131,12 @@ function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  rootScreen: {
-    margin: 12,
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-  },
+  // rootScreen: {
+  //   margin: 12,
+  //   display: "flex",
+  //   alignItems: "center",
+  //   flex: 1,
+  // },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
@@ -132,7 +144,13 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -400,
+    marginTop: -320,
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  background: {
+    height: "100%",
   },
 });
 

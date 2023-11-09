@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
-import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
+import { Modal, Portal, Button } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { removeDrink } from "../api/drinkRecordApi";
+import { useQuery } from "react-query";
+import AlcoholChart from "../components/Calendar/AlcoholChart";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
@@ -14,10 +16,6 @@ function DailyDetailScreen({ route, navigation }) {
   const isAlcohol = route.params.isAlcohol;
   const [isImg, setIsImg] = useState<boolean>(false);
   const [isModal, setIsModal] = useState<boolean>(false);
-
-  console.log(
-    `날짜는 ${day}, 술마신날들은 ${alcoholDays}, 알코올상태는? ${isAlcohol}`
-  );
 
   const [info, setInfo] = useState({
     startTime: "",
@@ -28,32 +26,28 @@ function DailyDetailScreen({ route, navigation }) {
     drinks: {},
   });
 
-  useEffect(() => {
-    const setAndFetch = async () => {
-      console.log(`요청날짜는 ${day}`);
-      fetchDailyDetail(day)
-        .then((res) => {
-          setInfo(res);
-          if (res.img) {
-            setIsImg(true);
-          }
-          console.log(res);
-        })
-        .catch((err) => {
-          console.error("실패", err);
-        });
-    };
-    setAndFetch();
-  }, []);
+  const {
+    data: DailyDetailData,
+    isLoading: dailyDetailLoading,
+    isError: dailyDetailError,
+  } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
 
+  useEffect(() => {
+    if (DailyDetailData) {
+      setInfo(DailyDetailData);
+      console.log(
+        `데이터 조회합시다 ${JSON.stringify(DailyDetailData, null, 2)}`
+      );
+    }
+  }, [DailyDetailData]);
+
+  // 글 삭제 모달 및 삭제
   const openDeleteModal = () => {
     setIsModal(true);
   };
-
   const hideDeleteModal = () => {
     setIsModal(false);
   };
-
   const confirmDelete = () => {
     removeDrink(day);
     hideDeleteModal();
@@ -65,30 +59,34 @@ function DailyDetailScreen({ route, navigation }) {
       <View style={styles.mainTextBox}>
         <Text style={styles.headerText}>술력</Text>
         <View style={styles.light}>
-          {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
             size={30}
             color="black"
+            onPress={() => {
+              Alert.alert("알림", "05시를 기준으로 하루를 초기화합니다.");
+            }}
           />
         </View>
         <View style={styles.buttons}>
-          {/* <Button
+          <Button
             mode="contained"
+            buttonColor={"#363C4B"}
             onPress={() => {
               navigation.navigate("RecordCreate", {
                 date: day,
                 isAlcohol: true,
               });
             }}
+            style={styles.botton}
           >
             수정
-          </Button> */}
+          </Button>
           <Button
             mode="contained"
             onPress={openDeleteModal}
-            buttonColor={"#0477BF"}
-            labelStyle={styles.buttonInnerText}
+            buttonColor={"#363C4B"}
+            style={styles.botton}
           >
             삭제
           </Button>
@@ -101,26 +99,59 @@ function DailyDetailScreen({ route, navigation }) {
           isAlcohol={isAlcohol}
         />
       </View>
-      {/* <View style={styles.house}>
-        <Text>그래프1</Text>
-        <Text>그래프2</Text>
-      </View> */}
-      <View style={styles.house}>
-        <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
-        <Text>{info.startTime.substring(11, 16)}</Text>
-      </View>
-      {isImg ? (
-        <View style={styles.house}>
-          <Text>사진</Text>
+      <View style={styles.contents}>
+        <View style={styles.time}>
+          <View style={styles.house}>
+            <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
+            <Text>{info.startTime.substring(11, 16)}</Text>
+          </View>
+          <View style={styles.house}>
+            <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
+            <Text>{info.detoxTime} 시간</Text>
+          </View>
         </View>
-      ) : null}
-      <View style={styles.house}>
-        <Text style={styles.smallHeaderText}>메모</Text>
-        {info.memo ? (
-          <Text style={styles.innerText}>{info.memo}</Text>
-        ) : (
-          <Text style={styles.innerText}>작성된 메모가 없어요</Text>
-        )}
+        {/* <View style={styles.chart}>
+          <AlcoholChart info={info} />
+        </View> */}
+        {/* <View style={styles.time}>
+          <View style={styles.house}>
+            <Text style={styles.smallHeaderText}>주종별 알코올 비율</Text>
+            {Array.isArray(info.drinks) && info.drinks.length > 0 ? (
+              info.drinks.map((drink, i) => (
+                <Text key={i}>
+                  {drink.category}: {drink.alcPercent}%
+                </Text>
+              ))
+            ) : (
+              <Text>음료 정보가 없습니다.</Text>
+            )}
+          </View>
+          <View style={styles.house}>
+            <Text style={styles.smallHeaderText}>주종별 음용 비율</Text>
+            {Array.isArray(info.drinks) && info.drinks.length > 0 ? (
+              info.drinks.map((drink, i) => (
+                <Text key={i}>
+                  {drink.category}: {drink.drinkPercent}%
+                </Text>
+              ))
+            ) : (
+              <Text>음료 정보가 없습니다.</Text>
+            )}
+          </View>
+        </View> */}
+        {isImg ? (
+          <View style={styles.house}>
+            <Text>사진</Text>
+          </View>
+        ) : null}
+        <View style={styles.house}>
+          <Text style={styles.smallHeaderText}>메모</Text>
+          {info.memo ? (
+            <Text style={styles.innerText}>{info.memo}</Text>
+          ) : (
+            <Text style={styles.innerText}>작성된 메모가 없어요</Text>
+          )}
+        </View>
       </View>
       <Portal>
         <Modal
@@ -135,16 +166,14 @@ function DailyDetailScreen({ route, navigation }) {
             <Button
               mode="contained"
               onPress={confirmDelete}
-              buttonColor={"#0477BF"}
-              labelStyle={styles.buttonInnerText}
+              buttonColor={"#363C4B"}
             >
               삭제
             </Button>
             <Button
               mode="contained"
               onPress={hideDeleteModal}
-              buttonColor={"#0477BF"}
-              labelStyle={styles.buttonInnerText}
+              buttonColor={"#363C4B"}
             >
               취소
             </Button>
@@ -193,41 +222,69 @@ const styles = StyleSheet.create({
     height: "20%",
     // backgroundColor: "pink",
   },
+  contents: {
+    height: "64%",
+    margin: "1%",
+    // backgroundColor: "black",
+  },
+  time: {
+    flexDirection: "row",
+  },
+  chart: {
+    height: "10%",
+    // margin: "1%",
+    backgroundColor: "#ffffff",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
+  },
   house: {
-    borderWidth: 2,
-    borderColor: "#0477BF",
-    backgroundColor: "#F6F6F6",
+    flex: 1,
+    // borderWidth: 2,
+    // borderColor: "#363C4B",
+    backgroundColor: "#ffffff",
     borderRadius: 5,
     margin: 5,
     marginTop: "5%",
     padding: "3%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   containerStyle: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "white",
     padding: 20,
   },
-  buttonInnerText: {
-    fontSize: 17,
-    fontFamily: "Yeongdeok-Sea",
-  },
   smallHeaderText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     marginBottom: "2%",
   },
   innerText: {
     fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
   },
   deleteText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 17,
     textAlign: "center",
   },
   deleteButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
     margin: "15%",
+  },
+  botton: {
+    margin: "1%",
   },
 });
 

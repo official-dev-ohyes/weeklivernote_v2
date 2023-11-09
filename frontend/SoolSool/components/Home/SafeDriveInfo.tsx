@@ -54,14 +54,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    width: "45%",
+    width: "48%",
     padding: 12,
-    borderRadius: 15,
-    backgroundColor: "#F6F6F6",
+    borderRadius: 5,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   chipText: {
-    fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 16,
+    // fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
 });
 

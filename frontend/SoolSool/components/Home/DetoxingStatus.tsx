@@ -29,7 +29,9 @@ function DetoxingStatus({
         </Text>
       );
     } else {
-      <Text style={styles.periodContainer}>Drink Mindfully!</Text>;
+      <Text style={styles.subtitleContainer}>
+        <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+      </Text>;
     }
   };
 
@@ -37,7 +39,9 @@ function DetoxingStatus({
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{alcoholInGrams}g</Text>
       {detoxingFor === undefined ? (
-        <Text style={styles.periodContainer}>Drink Mindfully!</Text>
+        <Text style={styles.subtitleContainer}>
+          <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+        </Text>
       ) : (
         <AdjustedRemainingTime />
       )}
@@ -54,19 +58,24 @@ const styles = StyleSheet.create({
     padding: 4,
     display: "flex",
     alignItems: "center",
+    marginTop: 55,
   },
   titleContainer: {
     fontSize: 40,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   subtitleContainer: {
     fontSize: 20,
-    paddingBottom: 16,
+    // paddingBottom: 16,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
+    marginBottom: 20,
   },
   periodContainer: {
     fontSize: 24,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
 });
 

@@ -1,5 +1,4 @@
 import { StyleSheet, View, Image, Text, ImageProps } from "react-native";
-import { useAppTheme } from "../../App";
 
 interface DrinkingStatusProps {
   drinkInVolume: number;
@@ -16,7 +15,11 @@ function DrinkingStatus({
     <View style={styles.statusContainer}>
       <Text style={styles.titleContainer}>{drinkInVolume}ml</Text>
       {drinkingFor === undefined ? (
-        <Text style={styles.periodContainer}>Drink Mindfully!</Text>
+        <Text style={styles.subtitleContainer}>
+          <Text style={styles.periodContainer}>
+            술을 마셨다면 기록해볼까요?
+          </Text>
+        </Text>
       ) : (
         <Text style={styles.subtitleContainer}>
           마신 지{"  "}
@@ -36,33 +39,39 @@ const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
     marginVertical: 24,
-    padding: 0,
+    padding: 4,
     display: "flex",
     alignItems: "center",
+    marginTop: 50,
   },
   titleContainer: {
     fontSize: 40,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   subtitleContainer: {
     fontSize: 20,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
+    marginBottom: 20,
   },
   periodContainer: {
     fontSize: 24,
     fontFamily: "Yeongdeok-Sea",
+    color: "white",
   },
   imageContainer: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 200,
-    marginVertical: 24,
-    padding: 8,
+    width: 190,
+    height: 190,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: 500,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   image: {
-    width: 120,
-    height: 120,
-    resizeMode: "contain",
-    margin: 30,
+    width: 250,
+    height: 250,
   },
 });
 

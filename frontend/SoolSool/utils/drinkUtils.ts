@@ -30,8 +30,35 @@ export const getIdByOnlyCategory = (category: string): number | null => {
   const matchingDrink = drinkData.find(
     (item) => item.name === category && item.unit === "잔"
   );
-  console.log(`매칭 드링크 정보 보세요@@@@@@@${matchingDrink}`);
   return matchingDrink ? matchingDrink.id : null;
+};
+
+// 마신 술 양을 잔 수로만 반환
+export const getShotAmountByDrinkCOunt = (category: string, num: number) => {
+  let amount = num;
+  const shot = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  return Math.floor(amount / shot.volume);
+};
+
+// 마신 술 양이 몇 병 몇 잔인지 반환
+export const getAmountByDrinkCount = (category: string, num: number) => {
+  let amount = num;
+  const bottle = drinkData.find(
+    (item) => item.name === category && item.unit === "병"
+  );
+
+  let bottleAmount = 0;
+  if (bottle) {
+    bottleAmount = Math.floor(amount / bottle.volume);
+    amount -= bottleAmount * bottle.volume;
+  }
+  const shot = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  let shotAmount = Math.floor(amount / shot.volume);
+  return [bottleAmount, shotAmount];
 };
 
 export const getAlcoholAmountById = (targetId: number): number | null => {

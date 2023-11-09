@@ -7,15 +7,13 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
 import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
-import { currentAlcoholAtom } from "../../recoil/currentDrinksAtom";
-import { roundedUserAlcoholLimitSelector } from "../../recoil/auth";
 import {
   createDrink,
   updateDrink,
@@ -248,7 +246,7 @@ function DrinkController() {
               icon="refresh"
               size={20}
               onPress={handleLogReset}
-              iconColor="#6C6C6C"
+              iconColor="#FFFFFF"
               style={styles.iconContainer}
             />
             <CurrentDrinks
@@ -259,7 +257,10 @@ function DrinkController() {
             <View style={styles.divider} />
           </>
         ) : (
-          <View style={styles.placeholderContainer} />
+          <>
+            <View style={styles.emptyContainer} />
+            <View style={styles.divider} />
+          </>
         )}
 
         <View style={styles.stepperContainer}>
@@ -267,6 +268,7 @@ function DrinkController() {
             icon="minus"
             onPress={handleDecrement}
             disabled={minIsDisabled}
+            iconColor="white"
             size={32}
           />
           <Pressable onPress={handleModalOpen}>
@@ -290,6 +292,7 @@ function DrinkController() {
             icon="plus"
             onPress={handleIncrement}
             disabled={maxIsDisabled}
+            iconColor="white"
             size={32}
           />
         </View>
@@ -305,8 +308,8 @@ function DrinkController() {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 8,
     padding: 16,
     alignItems: "center",
   },
@@ -320,7 +323,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#C6C6C6",
     padding: 4,
-    marginBottom: 8,
+    marginBottom: 12,
     width: "100%",
   },
   imageContainer: {
@@ -347,10 +350,14 @@ const styles = StyleSheet.create({
     fontFamily: "Yeongdeok-Sea",
   },
   nameText: {
-    fontSize: 24,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 15,
+
+    marginTop: 5,
+    color: "white",
   },
-  placeholderContainer: {},
+  emptyContainer: {
+    height: 68,
+  },
 });
 
 export default DrinkController;

@@ -15,15 +15,15 @@ import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 
 function EditProfileScreen({ navigation }) {
-  const [nickname, setNickname] = useState("");
-  const [gender, setGender] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [address, setAddress] = useState("");
-  const [selectedDrinkKind, setSelectedDrinkKind] = useState("소주");
-  const [amount, setAmount] = useState("");
-  const [unit, setUnit] = useState("잔");
+  const [oldnickname, setOldNickname] = useState("");
+  const [oldgender, setOldGender] = useState("");
+  const [oldheight, setOldHeight] = useState("");
+  const [oldweight, setOldWeight] = useState("");
+  const [oldaddress, setOldAddress] = useState("");
+  const [oldselectedDrinkKind, setOldSelectedDrinkKind] = useState("");
+  const [oldamount, setOldAmount] = useState("");
+  const [oldunit, setOldUnit] = useState("");
+  const [oldimageURL, setOldImageURL] = useState("");
 
   const {
     data: userProfileData,
@@ -32,14 +32,30 @@ function EditProfileScreen({ navigation }) {
   } = useQuery("userProfileData", async () => await fetchUserProfile());
 
   useEffect(() => {
+    console.log("ghgh", userProfileData);
     if (!isLoading && userProfileData) {
-      setHeight(userProfileData.height);
-      setWeight(userProfileData.weight);
-      setAddress(userProfileData.address);
-      setNickname(userProfileData.nickname);
-      setSelectedGender(userProfileData.gender);
+      setOldNickname(userProfileData.nickname);
+      setOldGender(userProfileData.gender);
+      setOldHeight(userProfileData.height);
+      setOldWeight(userProfileData.weight);
+      setOldAddress(userProfileData.address);
+      setOldSelectedDrinkKind(userProfileData.drinkKind);
+      setOldAmount(userProfileData.drinkInfo.drinkAmount);
+      setOldUnit(userProfileData.drinkInfo.drinkUnit);
+      setOldImageURL(userProfileData.profileImg);
     }
+    // console.log("뭐야", oldheight);
   }, [isLoading, userProfileData]);
+
+  const [nickname, setNickname] = useState("");
+  const [gender, setGender] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [address, setAddress] = useState("");
+  const [selectedDrinkKind, setSelectedDrinkKind] = useState("소주");
+  const [amount, setAmount] = useState("");
+  const [unit, setUnit] = useState("잔");
+  const [imageURL, setImageURL] = useState("");
 
   const volumeUnits = ["잔", "병"];
 
@@ -48,82 +64,49 @@ function EditProfileScreen({ navigation }) {
   };
 
   const submitEditedProfile = async () => {
-    if (
-      !nickname ||
-      !selectedGender ||
-      !height ||
-      !weight ||
-      !address ||
-      !selectedDrinkKind ||
-      !amount ||
-      !unit
-    ) {
-      // 하나라도 null 또는 빈 문자열이면 알림을 표시합니다.
-      Alert.alert("알림", "모든 항목을 선택해주세요.");
-    } else {
-      const drinkInfo = {
-        category: selectedDrinkKind,
-        drinkUnit: unit,
-        drinkAmount: amount,
-      };
+    const drinkInfo = {
+      category: selectedDrinkKind || oldselectedDrinkKind,
+      drinkUnit: unit || oldunit,
+      drinkAmount: amount || oldamount,
+    };
 
-      await updateUserProfile(
-        nickname,
-        weight,
-        height,
-        gender,
-        address,
-        drinkInfo
-      )
-        .then((res) => {
-          console.log("업데이트 성공");
-          Toast.show("프로필 수정 성공", {
-            duration: Toast.durations.SHORT,
-            position: 0,
-            shadow: true,
-            animation: true,
-            opacity: 0.8,
-          });
-          navigation.navigate("MyPage");
-        })
-        .catch((error) => {
-          console.error("정보 수정 실패", error);
-          showErrorAndRetry(
-            "다음에 다시 시도하세요",
-            "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
-          );
+    await updateUserProfile(
+      nickname || oldnickname,
+      weight || oldweight,
+      height || oldheight,
+      gender || oldgender,
+      address || oldaddress,
+      drinkInfo
+    )
+      .then((res) => {
+        // console.log("업데이트 성공");
+        Toast.show("프로필 수정 성공", {
+          duration: Toast.durations.SHORT,
+          position: 0,
+          shadow: true,
+          animation: true,
+          opacity: 0.8,
         });
-    }
+        navigation.navigate("MyPage");
+      })
+      .catch((error) => {
+        console.error("정보 수정 실패", error);
+        showErrorAndRetry(
+          "다음에 다시 시도하세요",
+          "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
+        );
+      });
   };
-
-  useEffect(() => {
-    // console.log("Nickname changed:", nickname);
-    // console.log("Selected Gender changed:", selectedGender);
-    // console.log("Height changed:", height);
-    // console.log("Weight changed:", weight);
-    // console.log("Address changed:", address);
-    // console.log("Selected Drink Kind changed:", selectedDrinkKind);
-    // console.log("Amount changed:", amount);
-    // console.log("Unit changed:", unit);
-  }, [
-    nickname,
-    selectedGender,
-    height,
-    weight,
-    address,
-    selectedDrinkKind,
-    amount,
-    unit,
-  ]);
 
   return (
     <ScrollView>
       <Provider>
         <View style={styles.mainContainer}>
+          <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.contentContainer}>
             <Text>닉네임</Text>
             <TextInput
-              placeholder="닉네임"
+              placeholder={oldnickname.toString()}
               value={nickname}
               style={styles.textInput}
               onChangeText={(text) => setNickname(text)}
@@ -133,15 +116,17 @@ function EditProfileScreen({ navigation }) {
             <Text>성별</Text>
             <View style={styles.genderContainer}>
               <Button
-                mode={selectedGender === "남자" ? "contained" : "outlined"}
-                onPress={() => setSelectedGender("남자")}
+                mode={gender === "남자" ? "contained" : "outlined"}
+                onPress={() => setGender("남자")}
+                style={styles.Button}
               >
                 남자
               </Button>
               {/* 여자 버튼 */}
               <Button
-                mode={selectedGender === "여자" ? "contained" : "outlined"}
-                onPress={() => setSelectedGender("여자")}
+                mode={gender === "여자" ? "contained" : "outlined"}
+                onPress={() => setGender("여자")}
+                style={styles.Button}
               >
                 여자
               </Button>
@@ -150,7 +135,7 @@ function EditProfileScreen({ navigation }) {
           <View style={styles.contentContainer}>
             <Text>신장</Text>
             <TextInput
-              placeholder="신장"
+              placeholder={oldheight.toString()}
               value={height}
               style={styles.textInput}
               onChangeText={(text) => setHeight(text)}
@@ -159,7 +144,7 @@ function EditProfileScreen({ navigation }) {
           <View style={styles.contentContainer}>
             <Text>체중</Text>
             <TextInput
-              placeholder="체중"
+              placeholder={oldweight.toString()}
               value={weight}
               style={styles.textInput}
               onChangeText={(text) => setWeight(text)}
@@ -171,6 +156,7 @@ function EditProfileScreen({ navigation }) {
               <View style={styles.Kind}>
                 <Picker
                   selectedValue={selectedDrinkKind}
+                  mode="dropdown"
                   onValueChange={(itemValue, itemIndex) =>
                     setSelectedDrinkKind(itemValue)
                   }
@@ -180,14 +166,15 @@ function EditProfileScreen({ navigation }) {
                 </Picker>
               </View>
               <TextInput
-                placeholder="주량"
+                placeholder={oldamount.toString()}
                 value={amount}
-                style={styles.textInput}
+                style={styles.kindTextInput}
                 onChangeText={(text) => setAmount(text)}
               />
               <View style={styles.Unit}>
                 <Picker
                   selectedValue={unit}
+                  mode="dropdown"
                   onValueChange={(itemValue, itemIndex) => setUnit(itemValue)}
                 >
                   {/* <Picker.Item label="주량 단위 선택" value="" /> */}
@@ -208,7 +195,11 @@ function EditProfileScreen({ navigation }) {
             />
           </View>
           <Divider />
-          <Button mode="contained" onPress={submitEditedProfile}>
+          <Button
+            mode="contained"
+            onPress={submitEditedProfile}
+            buttonColor="#363C4B"
+          >
             수정
           </Button>
           <Button mode="outlined" onPress={handleCancelEdit}>
@@ -228,6 +219,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     gap: 15,
+    marginTop: 20,
   },
   genderContainer: {
     display: "flex",
@@ -253,6 +245,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // width: "100%",
   },
+  kindTextInput: {
+    backgroundColor: "#F6F6F6",
+    height: 50,
+    borderRadius: 10,
+    width: "20%",
+  },
   contentContainer: {
     display: "flex",
     flexDirection: "column",
@@ -260,6 +258,12 @@ const styles = StyleSheet.create({
   },
   Kind: {
     width: 120,
+  },
+  title: {
+    fontSize: 30,
+  },
+  Button: {
+    flex: 1,
   },
 });
 

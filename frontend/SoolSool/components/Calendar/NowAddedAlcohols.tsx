@@ -5,13 +5,8 @@ function NowAddedAlcohols({ alcoholRecord }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     setCount(alcoholRecord.length);
-    for (let i = 0; i < alcoholRecord.length; i++) {
-      // console.log(`넘어온 정보${i + 1}번째!`);
-      // console.log("술 종류:", alcoholRecord[i].category);
-      // console.log("양:", alcoholRecord[i].drinkAmount);
-      // console.log("단위:", alcoholRecord[i].drinkUnit);
-    }
-  }, [alcoholRecord]);
+    for (let i = 0; i < alcoholRecord.length; i++) {}
+  }, [alcoholRecord.length]);
 
   console.log(`지금 넘어온 술 기록 개수는 ${count}개`);
 
@@ -34,9 +29,9 @@ function NowAddedAlcohols({ alcoholRecord }) {
             <View key={index} style={styles.alcoholInfo}>
               <Text>
                 {record.category}
-                <Text> ({record.drinkUnit}) </Text>
+                <Text> {record.drinkAmount}</Text>
+                <Text>{record.drinkUnit} </Text>
               </Text>
-              <Text>{record.drinkAmount}</Text>
             </View>
           ))}
         </View>
@@ -48,23 +43,23 @@ function NowAddedAlcohols({ alcoholRecord }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    // backgroundColor: "black",
   },
   oneline: {
     flex: 0.5,
     flexDirection: "row",
-    // backgroundColor: "blue",
   },
   alcoholInfo: {
-    margin: "1%",
-    padding: "1%",
-    backgroundColor: "white",
-    flexDirection: "row",
-    borderRadius: 5,
+    margin: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    height: "100%",
+    borderWidth: 1,
+    borderColor: "#363C4B",
+    borderRadius: 50,
   },
   innerText: {
-    fontSize: 15,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 14,
+    // fontFamily: "Yeongdeok-Sea",
   },
 });
 

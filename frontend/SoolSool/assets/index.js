@@ -26,13 +26,15 @@ import drink13 from "./Home/drinks/drink-13.png";
 import drink14 from "./Home/drinks/drink-14.png";
 
 import swipe from "./Home/swipe.png";
-
+import adaptiveIcon from "./adaptive-icon.png";
 import addInfoImage from "./addInfoImage.png";
 import characterSet from "./characterSet.png";
 import loadingSpinner from "./loadingSpinner.gif";
 import mainbackground from "./mainbackground.jpg";
+import subbackground from "./subbackground.jpg";
 
 export {
+  adaptiveIcon,
   loadingSpinner,
   addInfoImage,
   iconImage,
@@ -63,4 +65,5 @@ export {
   defaultImage,
   characterSet,
   mainbackground,
+  subbackground,
 };

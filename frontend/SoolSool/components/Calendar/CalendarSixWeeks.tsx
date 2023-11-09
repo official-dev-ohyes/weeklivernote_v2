@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
-import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "react-query";
 
 function CalendarSixWeeks({}) {
   // 진짜 오늘 정보 저장
@@ -21,38 +21,32 @@ function CalendarSixWeeks({}) {
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState({});
-  const [alcoholInfo, setAlcoholInfo] = useState([]);
   const [isSame, setIsSame] = useState<boolean>(false);
 
+  const tempDay = currentDay ? currentDay : nowDate;
+
+  const {
+    data: MonthlyData,
+    isLoading: monthlyLoading,
+    isError: monthlyError,
+  } = useQuery("MonthlyQuery", async () => await fetchMonthRecord(tempDay));
+
+  // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
       console.log(`현재 날짜는? ${nowDate}`);
-      const setAndFetch = async () => {
-        const tempDay = currentDay ? currentDay : nowDate;
-        await setCurrentDay(tempDay);
-        fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
-          .then((res) => {
-            // console.log("성공", res.drinks);
-            setAlcoholInfo(res.deinks);
+      if (tempDay) {
+        setCurrentDay(tempDay);
+      }
+      if (MonthlyData) {
+        const tempDays = {};
 
-            const drinkData = res.drinks;
-            setAlcoholInfo(drinkData);
-
-            const tempDays = {};
-            for (let i = 0; i < drinkData.length; i++) {
-              const tempDate = drinkData[i].date;
-              tempDays[tempDate] = { marked: true };
-              // days.push(`${drinkData[i].date}: { selected: true }`);
-            }
-            setAlcoholDays(tempDays);
-            // setAlcoholDays(days);
-            // console.log(`알코올 마신 날들은? ${days}`);
-          })
-          .catch((err) => {
-            console.error("실패", err);
-          });
-      };
-      setAndFetch();
+        for (let i = 0; i < MonthlyData.drinks.length; i++) {
+          const tempDate = MonthlyData.drinks[i].date;
+          tempDays[tempDate] = { marked: true };
+        }
+        setAlcoholDays(tempDays);
+      }
 
       if (selectDay) {
         const checkFuture = () => {
@@ -66,15 +60,15 @@ function CalendarSixWeeks({}) {
         };
         checkFuture();
       }
-    }, [nowDate, selectDay, navigator])
+    }, [nowDate, selectDay, navigator, MonthlyData])
   );
 
+  // 특정일 클릭
   const handleDayPress = async (clickDay) => {
     const newMonth =
       clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
     const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
     const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
-    // console.log(`변경된 날짜는? ${newDate}`);
     if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
@@ -88,20 +82,20 @@ function CalendarSixWeeks({}) {
       } else {
         setIsSame(false);
       }
+
       setIsSelectDay(true);
     }
   };
 
+  // 이전/다음 달 이동 로직
   const handlePressArrowLeft = async (newMonth) => {
     newMonth();
     shiftMonth("previous");
   };
-
   const handelPressArrowRight = async (newMonth) => {
     newMonth();
     shiftMonth("next");
   };
-
   const shiftMonth = (to) => {
     const current = new Date(currentDay);
     let shiftDay;
@@ -114,29 +108,13 @@ function CalendarSixWeeks({}) {
         current.getMonth() < 10 ? "0" : ""
       }${current.getMonth()}-${"01"}`;
     }
-    // console.log(`이동한 날짜는 ${shiftDay}`);
     setCurrentDay(shiftDay);
     fetchMonthRecord(shiftDay);
   };
 
+  // 캘린더 칸별 높이 -> 주 수 조절 시 상세 조정 필요
   const height1 = (height * 0.9) / 13.5;
   const height2 = (height * 0.9) / 10;
-
-  // const selectedDayStyle = {
-  //   selected: {
-  //     // backgroundColor: 'blue',
-  //     borderRadius: 16,
-  //   },
-  //   today: {
-  //     color: 'blue'
-  //   },
-  // };
-
-  // console.log(
-  //   // `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
-  // );
-
-  // console.log(`선택한 날짜는 ${selectDay}, 미래인가요? ${isFuture}`);
 
   return (
     <View style={styles.totalContainer}>
@@ -153,20 +131,11 @@ function CalendarSixWeeks({}) {
                     height: height1,
                   },
                 },
-                "stylesheet.calendar.header": {
-                  monthText: {
-                    fontFamily: "Yeongdeok-Sea",
-                    fontSize: 20,
-                  },
-                  dayHeader: {
-                    fontFamily: "Yeongdeok-Sea",
-                    fontSize: 14,
-                  },
-                },
               }}
               onDayPress={handleDayPress}
               onPressArrowLeft={handlePressArrowLeft}
               onPressArrowRight={handelPressArrowRight}
+              style={styles.calenderStyle}
             />
           </View>
           <View style={styles.dailySummaryComponent}>
@@ -177,7 +146,7 @@ function CalendarSixWeeks({}) {
                 </View>
                 <View style={styles.others}>
                   <Text style={styles.innerText}>
-                    내일 새벽 5시에 업데이트 됩니다
+                    내일 새벽 5시에 업데이트 됩니다.
                   </Text>
                 </View>
               </View>
@@ -187,9 +156,7 @@ function CalendarSixWeeks({}) {
                   <Text style={styles.headerText}>{selectDay}</Text>
                 </View>
                 <View style={styles.others}>
-                  <Text style={styles.innerText}>
-                    미래 날짜는 입력이 불가능합니다
-                  </Text>
+                  <Text style={styles.innerText}>아직은 기록할 수 없어요</Text>
                 </View>
               </View>
             ) : (
@@ -216,21 +183,12 @@ function CalendarSixWeeks({}) {
                   backgroundColor: "rgba(255, 255, 255, 0.5)",
                 },
               },
-              "stylesheet.calendar.header": {
-                monthText: {
-                  fontFamily: "Yeongdeok-Sea",
-                  fontSize: 20,
-                },
-                dayHeader: {
-                  fontFamily: "Yeongdeok-Sea",
-                  fontSize: 14,
-                },
-              },
             }}
             headerStyle={{}}
             onDayPress={handleDayPress}
             onPressArrowLeft={handlePressArrowLeft}
             onPressArrowRight={handelPressArrowRight}
+            style={styles.calenderStyle}
           />
         </View>
       )}
@@ -241,21 +199,13 @@ function CalendarSixWeeks({}) {
 const styles = StyleSheet.create({
   totalContainer: {
     height: "100%",
-    backgroundColor: "balck",
     flexDirection: "column",
-    // borderWidth: 2,
-    // borderColor: "red",
-    // justifyContent: "space-between",
   },
   smallCalendar: {
     height: "75%",
-    // borderWidth: 2,
-    // borderColor: "orange",
   },
   largeCalendar: {
     height: "100%",
-    // borderWidth: 2,
-    // borderColor: "orange",
   },
   dailySummaryComponent: {
     height: "25%",
@@ -264,21 +214,30 @@ const styles = StyleSheet.create({
   dailySummaryTotal: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "#ffffff",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
     borderRadius: 10,
-    padding: 5,
+    // padding: 5,
     justifyContent: "center",
     alignContent: "center",
-    borderWidth: 2,
-    borderColor: "#0477BF",
     margin: 5,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   headerBox: {
     height: "20%",
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 5,
-    // backgroundColor: "black",
   },
   others: {
     height: "80%",
@@ -294,8 +253,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Yeongdeok-Sea",
   },
+  calenderStyle: {
+    // backgroundColor: "red",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    borderRadius: 5,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
+  },
 });
 
 export default CalendarSixWeeks;
-
-// 페이지 벗어날 때, 선택된 날 없도록 초기화 하기 -> 에뮬레이터 문제인지 확인하기

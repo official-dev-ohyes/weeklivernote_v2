@@ -36,27 +36,21 @@ function BodyInfo({ navigation, socialId }) {
 
   return (
     <View style={styles.mainContainer}>
-      <View>
-        <Text style={styles.infoText}>
-          '주간일기'사용을 위해 정보를 입력해주세요🙂
-        </Text>
-      </View>
-
       <View style={styles.titleContainer}>
         <View style={styles.titleSubContainer}>
           <Text style={styles.title}>신체정보</Text>
           <Icon
             source="lightbulb-on-outline"
             color={MD3Colors.error10}
-            size={40}
+            size={30}
           />
         </View>
         <Text style={styles.mainText}>
-          신체정보를 기준으로 알코올 농도를 계산합니다.
+          ※ 신체정보를 기준으로 알코올 농도를 계산합니다.
         </Text>
       </View>
       <View style={styles.columnContainer}>
-        <Text style={styles.text}>성별 </Text>
+        <Text>성별 </Text>
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={getButtonStyle("남자")}
@@ -91,6 +85,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "column",
     width: "100%",
+    gap: 10,
     // justifyContent: "space-evenly",
   },
   titleSubContainer: {
@@ -108,40 +103,31 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   button: {
-    backgroundColor: "#0477BF",
+    backgroundColor: "#DBEBF5",
     borderRadius: 10,
-    width: "45%",
-    height: 80,
+    width: "48%",
+    height: 60,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
     fontSize: 25,
-    fontFamily: "Yeongdeok-Sea",
   },
   buttonText: {
-    color: "white",
-    fontSize: 20,
+    color: "black",
+    fontSize: 15,
   },
   text: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
   },
   selectedButton: {
-    backgroundColor: "#384BAD",
+    backgroundColor: "#363C4B",
   },
   selectedButtonText: {
-    color: "#FFFFFF",
+    color: "#ffffff",
   },
-  mainText: {
-    fontFamily: "Yeongdeok-Sea",
-  },
-  infoText: {
-    fontSize: 16,
-    color: "blue",
-    fontFamily: "Yeongdeok-Sea",
-  },
+  mainText: {},
 });
 
 export default BodyInfo;
