@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 function ProfileImagePicker({ imageURL, newImageURL, setNewImageURL }) {
   const [image, setImage] = useState(imageURL);
-  // console.log("나오나?", imageURL);
+  console.log("나오나?", imageURL);
   const handleEditImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -22,10 +22,10 @@ function ProfileImagePicker({ imageURL, newImageURL, setNewImageURL }) {
   };
   useEffect(() => {
     // console.log("뭐야ㅏㅏㅏㅏㅏㅏㅏ", newImageURL);
-  }, [newImageURL]);
+  }, [image]);
   return (
     <Pressable onPress={handleEditImage}>
-      <Image source={{ uri: image || "#" }} style={styles.profileImage} />
+      <Image source={{ uri: image || "" }} style={styles.profileImage} />
     </Pressable>
   );
 }

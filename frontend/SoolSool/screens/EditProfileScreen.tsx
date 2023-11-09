@@ -65,6 +65,18 @@ function EditProfileScreen({ navigation }) {
   };
 
   const submitEditedProfile = async () => {
+    if (weight || height) {
+      if (
+        parseInt(weight) < 30 ||
+        parseInt(weight) > 200 ||
+        parseInt(height) < 120 ||
+        parseInt(height) > 220
+      ) {
+        Alert.alert("알림", "체중 및 신장 데이터가 적합하지 않습니다.");
+        return;
+      }
+    }
+
     const drinkInfo = {
       category: selectedDrinkKind || oldselectedDrinkKind,
       drinkUnit: unit || oldunit,
