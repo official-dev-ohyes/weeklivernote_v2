@@ -158,7 +158,7 @@ export default function App() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         // setNotification(notification);
-        console.log(notification);
+        // console.log("Log from App.tsx: ", notification);
       });
 
     responseListener.current =

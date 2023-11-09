@@ -7,13 +7,15 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
 import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
+import { currentAlcoholAtom } from "../../recoil/currentDrinksAtom";
+import { roundedUserAlcoholLimitSelector } from "../../recoil/auth";
 import {
   createDrink,
   updateDrink,
@@ -79,8 +81,9 @@ function DrinkController() {
   };
 
   useEffect(() => {
-    const alcoholLimitRatio =
-      (currentAlcoholConsumption / userAlcoholLimit) * 100;
+    const alcoholLimitRatio = userAlcoholLimit
+      ? (currentAlcoholConsumption / userAlcoholLimit) * 100
+      : 0;
 
     console.log(
       "주량 정보:",

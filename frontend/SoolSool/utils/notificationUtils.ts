@@ -33,7 +33,7 @@ export async function registerForPushNotificationsAsync() {
 
     console.log(token);
   } else {
-    alert("Must use physical device for Push Notifications");
+    alert("알림을 받기 위해서는 실제 기기를 이용해주세요.");
   }
 
   if (Platform.OS === "android") {
