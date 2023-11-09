@@ -27,7 +27,7 @@ const Indicator = ({ scrollX }) => {
     <View
       style={{
         position: "absolute",
-        top: 20,
+        top: 30,
         flexDirection: "row",
       }}
     >
@@ -50,7 +50,7 @@ const Indicator = ({ scrollX }) => {
               height: 6,
               width: 6,
               borderRadius: 5,
-              backgroundColor: "#0477BF",
+              backgroundColor: "white",
               // backgroundColor: "#A5BBFF",
               opacity,
               margin: 10,
@@ -123,7 +123,7 @@ export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
-    <ImageBackground source={subbackground} style={styles.background}>
+    <ImageBackground source={mainbackground} style={styles.background}>
       <StatusBar hidden />
       {/* <Backdrop scrollX={scrollX} /> */}
       {/* <Square scrollX={scrollX} /> */}

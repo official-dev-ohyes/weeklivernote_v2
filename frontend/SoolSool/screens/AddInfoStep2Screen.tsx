@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DotIndicator from "../components/AddInfo/DotIndicator ";
-import Toast from 'react-native-root-toast';
+import Toast from "react-native-root-toast";
 
 function AddInfoStep2Screen({ navigation, route }) {
   const { height, weight, gender, socialId } = route.params;
@@ -42,15 +42,16 @@ function AddInfoStep2Screen({ navigation, route }) {
   console.log("내 구글 api key...", process.env.GOOGLE_API_KEY);
 
   // useEffect(() => {
-    // console.log("주소가들어오나?", selectedAddress);
+  // console.log("주소가들어오나?", selectedAddress);
   // }, [selectedAddress]);
 
   return (
     <View style={styles.mainContainer}>
       <DotIndicator activeIndex={2} />
-      <View>
-      <Text style={styles.text}>추후 주소 정보를 입력 받습니다.</Text>
-      <Text style={styles.text}>현재는 Next를 눌러 다음 단계로 이동해주세요.</Text>
+      <View style={styles.nextTime}>
+        <Text style={styles.text}>추후 주소 정보를 입력 받습니다.</Text>
+        <Text style={styles.text}>현재는 Next를 눌러</Text>
+        <Text style={styles.text}>다음 단계로 이동해주세요.</Text>
       </View>
       {/* <PlacesInput
         googleApiKey={process.env.GOOGLE_API_KEY}
@@ -112,15 +113,15 @@ function AddInfoStep2Screen({ navigation, route }) {
           },
         }}
       /> */}
-      <View>
+      <View style={styles.buttonContainer}>
         <Button
-          mode="contained"
-          buttonColor={"#384BAD"}
+          mode="outlined"
+          // buttonColor={"#363C4B"}
           onPress={goToPreviousStep}
         >
           Previous
         </Button>
-        <Button mode="contained" onPress={goToNextStep}>
+        <Button mode="contained" buttonColor={"#363C4B"} onPress={goToNextStep}>
           Next
         </Button>
       </View>
@@ -135,12 +136,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     width: "90%",
+    paddingBottom: 20,
     marginRight: "auto",
     marginLeft: "auto",
   },
   text: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "Yeongdeok-Sea",
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 5,
+  },
+  nextTime: {
+    display: "flex",
+    alignItems: "center",
+    // textAlign: "center",
   },
 });
 

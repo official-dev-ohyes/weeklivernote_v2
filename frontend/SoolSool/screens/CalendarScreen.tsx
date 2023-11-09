@@ -8,10 +8,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function CalendarScreen() {
   return (
-    <View>
+    <View style={styles.mainBackground}>
       <View style={styles.mainTextBox}>
-        <Text style={styles.headerText}>술력</Text>
-        <View style={styles.light}>
+        <View style={styles.titleBox}>
+          <Text style={styles.headerText}>술력</Text>
           {/* 아래 클릭 시 새벽 5시 기준 초기화 정보 띄워주기 */}
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
@@ -37,26 +37,24 @@ const styles = StyleSheet.create({
   mainBackground: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "black",
+    backgroundColor: "#F7F9FF",
+    // backgroundColor: "blue",
   },
   mainTextBox: {
     height: "13%",
     padding: "5%",
     // paddingBottom: "-3%",
     flexDirection: "row",
-    // backgroundColor: "pink",
   },
   headerText: {
     fontSize: 40,
     fontFamily: "Yeongdeok-Sea",
     verticalAlign: "bottom",
   },
-  light: {
-    height: "80%",
-    // backgroundColor: "blue",
-    justifyContent: "center",
+  titleBox: {
+    display: "flex",
+    flexDirection: "row",
     alignItems: "center",
-    marginLeft: "2%",
   },
   calendar: {
     height: "87%",

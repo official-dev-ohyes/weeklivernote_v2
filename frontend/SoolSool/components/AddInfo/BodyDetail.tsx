@@ -2,55 +2,35 @@ import { Text, View, StyleSheet, Alert } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 
-// interface BodyDetailProps {
-// nonAlc:number;
-// }
-
 function BodyDetail({ navigation, gender, socialId }) {
-  // const navigation = useNavigation();
-  // console.log("여기까지는?", socialId);
   const [height, setHeight] = React.useState(null);
   const [weight, setWeight] = React.useState(null);
-  const [weightProgress, setWeightProgress] = useState(0);
-  const [heightProgress, setHeightProgress] = useState(0);
 
   const goToNextStep = () => {
     if (gender && weight && height) {
       // gender가 null이 아니면 다음 단계로 이동
-      navigation.navigate("AddInfoStep2", {
-        height: parseInt(height),
-        weight: parseInt(weight),
-        gender: gender,
-        socialId: socialId,
-      });
+      if (weight < 30 || weight > 200 || height < 120 || height > 220) {
+        Alert.alert("알림", "체중 및 신장 데이터가 적합하지 않습니다.");
+      } else {
+        navigation.navigate("AddInfoStep2", {
+          height: parseInt(height),
+          weight: parseInt(weight),
+          gender: gender,
+          socialId: socialId,
+        });
+      }
     } else {
       Alert.alert("알림", "모든 항목을 선택해주세요.");
     }
   };
 
-  // const handleWeightChange = (value) => {
-  //   if (value && (isNaN(value) || value < 30 || value > 30)) {
-  //     Alert.alert("알림", "알맞은 숫자를 입력하세요.");
-  //   } else {
-  //     setWeight(value);
-  //   }
-  // };
-
-  // const handleHeightChange = (value) => {
-  //   if (value && (isNaN(value) || value < 100 || value > 300)) {
-  //     Alert.alert("알림", "알맞은 숫자를 입력하세요.");
-  //   } else {
-  //     setHeight(value);
-  //   }
-  // };
-
   const hasWeightErrors = () => {
-    console.log("durl", parseInt(weight));
+    // console.log("durl", parseInt(weight));
     return parseInt(weight) < 30;
   };
 
   const hasHeightErrors = () => {
-    console.log("durl", parseInt(weight));
+    // console.log("durl", parseInt(weight));
     return parseInt(height) < 110;
   };
 

@@ -13,6 +13,13 @@ interface UserProfile {
   nickname: string;
   profileImg: string | null;
   weight: number;
+  drinkInfo: DrinkInfo;
+}
+
+interface DrinkInfo {
+  category: string;
+  drinkAmount: number;
+  drinkUnit: string;
 }
 
 interface UserProfileProps {
@@ -24,13 +31,18 @@ function Profile(props: UserProfileProps) {
   const { userData, navigation } = props;
 
   useEffect(() => {
-    console.log("이미지url", userData.profileImg);
-    console.log("닉네임", userData.nickname);
-    console.log("주소", userData.address);
-    console.log("성별", userData.gender);
-    console.log("신장", userData.height);
-    console.log("체중", userData.weight);
-    console.log("주량", userData.alcoholLimit);
+    // console.log("이미지url", userData.profileImg);
+    // console.log("닉네임", userData.nickname);
+    // console.log("주소", userData.address);
+    // console.log("성별", userData.gender);
+    // console.log("신장", userData.height);
+    // console.log("체중", userData.weight);
+    // console.log(
+    //   "주량",
+    //   userData.drinkInfo.category,
+    //   userData.drinkInfo.drinkAmount,
+    //   userData.drinkInfo.drinkUnit
+    // );
   }, []);
 
   const handleEdit = () => {
@@ -73,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "column",
     gap: 15,
-    borderRadius: 30,
+    // borderRadius: 30,
     alignItems: "center",
     paddingVertical: 30,
     paddingHorizontal: 15,

@@ -239,6 +239,7 @@ function RecordCreateScreen({ route, navigation }) {
                 <View style={styles.alcoholInput}>
                   <View style={styles.category}>
                     <Picker
+                      mode="dropdown"
                       selectedValue={selectedAlcohol}
                       onValueChange={(itemValue, itemIndex) =>
                         setSelectedAlcohol(itemValue)
@@ -265,6 +266,7 @@ function RecordCreateScreen({ route, navigation }) {
               </View>
               <View style={styles.alcoholUnit}>
                 <Picker
+                  mode="dropdown"
                   selectedValue={selectedUnit}
                   onValueChange={(itemValue, itemIndex) => {
                     if (onlyShotDrinks.includes(selectedAlcohol)) {
@@ -284,8 +286,8 @@ function RecordCreateScreen({ route, navigation }) {
             <View style={styles.buttons}>
               <Button
                 style={styles.button}
-                buttonColor={"#363C4B"}
-                mode="contained"
+                // buttonColor={"#363C4B"}
+                mode="outlined"
                 onPress={() => {
                   setAlcoholRecord([]);
                   setValue(0);
@@ -338,6 +340,7 @@ function RecordCreateScreen({ route, navigation }) {
             <Text style={styles.texts}>술자리 시작 시간</Text>
             <View style={styles.timer}>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedAmPm}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedAmPm(itemValue)
@@ -348,6 +351,7 @@ function RecordCreateScreen({ route, navigation }) {
                 <Picker.Item label="PM" value="PM" />
               </Picker>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedHour}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedHour(itemValue)
@@ -360,6 +364,7 @@ function RecordCreateScreen({ route, navigation }) {
                 ))}
               </Picker>
               <Picker
+                mode="dropdown"
                 selectedValue={selectedMinute}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedMinute(itemValue)
@@ -417,6 +422,7 @@ const styles = StyleSheet.create({
   scrollBox: {
     display: "flex",
     flexDirection: "column",
+    backgroundColor: "#F7F9FF",
   },
   mainTextBox: {
     flex: 1,
@@ -444,9 +450,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: "1%",
     margin: "3%",
-    borderRadius: 15,
-    backgroundColor: "#F6F6F6",
-    // backgroundColor: "black",
+    borderRadius: 5,
+    backgroundColor: "#ffffff",
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   tagArea: {
     height: "10%",
@@ -463,17 +477,19 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    // backgroundColor: "red",
   },
   word: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 15,
+    flex: 0.5,
+    fontWeight: "bold",
+    fontSize: 16,
   },
   category: {
     flex: 2,
     height: "90%",
     // margin: "1%",
     justifyContent: "center",
+    // backgroundColor: "blue",
   },
   alcoholAmount: {
     flex: 1,
@@ -520,7 +536,8 @@ const styles = StyleSheet.create({
   },
   texts: {
     fontSize: 17,
-    marginBottom: "1%",
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   record: {
     backgroundColor: "#F6F6F6",

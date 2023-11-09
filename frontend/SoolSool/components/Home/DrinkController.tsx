@@ -200,7 +200,7 @@ function DrinkController() {
               icon="refresh"
               size={20}
               onPress={handleLogReset}
-              iconColor="#6C6C6C"
+              iconColor="#FFFFFF"
               style={styles.iconContainer}
             />
             <CurrentDrinks
@@ -219,6 +219,7 @@ function DrinkController() {
             icon="minus"
             onPress={handleDecrement}
             disabled={minIsDisabled}
+            iconColor="white"
             size={32}
           />
           <Pressable onPress={handleModalOpen}>
@@ -242,6 +243,7 @@ function DrinkController() {
             icon="plus"
             onPress={handleIncrement}
             disabled={maxIsDisabled}
+            iconColor="white"
             size={32}
           />
         </View>
@@ -257,8 +259,8 @@ function DrinkController() {
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    borderRadius: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 8,
     padding: 16,
     alignItems: "center",
   },
@@ -299,8 +301,10 @@ const styles = StyleSheet.create({
     fontFamily: "Yeongdeok-Sea",
   },
   nameText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 15,
+    // fontFamily: "Yeongdeok-Sea",
+    marginTop: 5,
+    color: "white",
   },
 });
 
