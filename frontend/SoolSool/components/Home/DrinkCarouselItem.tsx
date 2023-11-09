@@ -12,6 +12,7 @@ interface Drink {
   volume: number;
   unit: string;
   alcoholPercentage: number;
+  alcoholAmount: number;
 }
 
 type DrinkCarouselItemProps = {
