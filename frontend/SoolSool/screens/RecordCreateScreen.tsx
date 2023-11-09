@@ -207,6 +207,15 @@ function RecordCreateScreen({ route, navigation }) {
     }
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
+  const gotoDetailPage = () => {
+    console.log("뒤로가기버튼 클릭");
+    navigation.navigate("DailyDetail", {
+      summaryText: day,
+      alcoholDays: [],
+      isAlcohol: isAlcohol,
+    });
+  };
+
   return (
     <View style={styles.total}>
       <ScrollView style={styles.scrollBox}>
@@ -227,11 +236,13 @@ function RecordCreateScreen({ route, navigation }) {
           </View>
         </View>
         <View style={styles.contents}>
-          {alcoholRecord.length > 0 ? (
-            <View style={styles.tagArea}>
-              <NowAddedAlcohols alcoholRecord={alcoholRecord} />
-            </View>
-          ) : null}
+          <View style={styles.tagArea}>
+            {alcoholRecord.length > 0 ? (
+              <View style={styles.tag}>
+                <NowAddedAlcohols alcoholRecord={alcoholRecord} />
+              </View>
+            ) : null}
+          </View>
           <View style={styles.alcoholArea}>
             <View style={styles.alcoholInput}>
               <Text style={styles.word}>술</Text>
@@ -394,15 +405,25 @@ function RecordCreateScreen({ route, navigation }) {
               outlineColor="#363C4B"
             />
           </View>
-          <Button
-            mode="contained"
-            onPress={() => {
-              saveRecord();
-            }}
-            buttonColor={"#363C4B"}
-          >
-            {isAlcohol ? "수정" : "저장"}
-          </Button>
+          <View style={styles.buttonContainer}>
+            <Button
+              style={styles.button}
+              mode="outlined"
+              onPress={gotoDetailPage}
+            >
+              돌아가기
+            </Button>
+            <Button
+              style={styles.button}
+              mode="contained"
+              onPress={() => {
+                saveRecord();
+              }}
+              buttonColor={"#363C4B"}
+            >
+              {isAlcohol ? "수정" : "저장"}
+            </Button>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -412,12 +433,7 @@ function RecordCreateScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    // display: "flex",
-    // borderWidth: 10,
-    // borderColor: "orange",
     height: "100%",
-    // justifyContent: "space-between",
-    // alignContent: "space-between",
   },
   scrollBox: {
     display: "flex",
@@ -448,7 +464,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     // alignContent: "space-between",
     justifyContent: "space-between",
-    padding: "1%",
+    paddingHorizontal: 20,
     margin: "3%",
     borderRadius: 5,
     backgroundColor: "#ffffff",
@@ -463,7 +479,11 @@ const styles = StyleSheet.create({
     elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   tagArea: {
-    height: "10%",
+    height: "auto",
+    marginVertical: 10,
+  },
+  tag: {
+    height: 70,
   },
   alcoholArea: {
     height: "30%",
@@ -510,7 +530,8 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 2,
-    margin: "1%",
+    // margin: "1%",
+    marginBottom: 10,
   },
   time: {
     display: "flex",
@@ -531,8 +552,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   memo: {
-    height: "35%",
     marginTop: "1%",
+    marginBottom: "1%",
+    // backgroundColor: "red",
   },
   texts: {
     fontSize: 17,
@@ -543,6 +565,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     marginVertical: 5,
     padding: 10,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    height: 100,
+    gap: 0,
   },
 });
 
