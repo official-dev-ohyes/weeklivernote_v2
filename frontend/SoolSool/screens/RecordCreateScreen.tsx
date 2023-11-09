@@ -10,6 +10,7 @@ import {
   createDrink,
   fetchDailyDrink,
   fetchDailyDetail,
+  removeDrink,
 } from "../api/drinkRecordApi";
 
 import { getAmountByDrinkCount } from "../utils/drinkUtils";
@@ -80,7 +81,7 @@ function RecordCreateScreen({ route, navigation }) {
 
   // 주종별 음주 기록 추가
   const saveRecord = async () => {
-    if (!selectedHour || !selectedMinute || !selectedAmPm) {
+    if (selectedHour === "시" || selectedMinute === "분") {
       Alert.alert("알림", "음주 시작 시간을 입력해주세요.");
       return;
     }
@@ -110,6 +111,7 @@ function RecordCreateScreen({ route, navigation }) {
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
+    removeDrink(day);
     createDrink({
       drinks: [...alcoholRecord],
       drinkDate: date,
@@ -146,10 +148,16 @@ function RecordCreateScreen({ route, navigation }) {
         );
         if (tempHour < 12) {
           setSelectedAmPm("AM");
+          setSelectedHour(tempHour < 10 ? `0${tempHour}` : `${tempHour}`);
+        } else if (tempHour === 12) {
+          setSelectedAmPm("PM");
+          setSelectedHour("12");
+        } else {
+          setSelectedAmPm("PM");
+          setSelectedHour(
+            tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
+          );
         }
-        setSelectedHour(
-          tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-        );
         setSelectedMinute(
           `${parseInt(
             DailyDetailData.startTime.substring(14, 16),
@@ -356,7 +364,7 @@ function RecordCreateScreen({ route, navigation }) {
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedAmPm(itemValue)
                 }
-                style={{ width: "29%" }}
+                style={{ width: "31%" }}
               >
                 <Picker.Item label="AM" value="AM" />
                 <Picker.Item label="PM" value="PM" />

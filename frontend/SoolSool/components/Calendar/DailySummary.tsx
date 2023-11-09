@@ -12,9 +12,10 @@ import {
 } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
 import { Icon, MD3Colors } from "react-native-paper";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 function DailySummary(props) {
+  const queryClient = useQueryClient();
   const { summaryText, alcoholDays } = props;
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
@@ -26,7 +27,7 @@ function DailySummary(props) {
     isLoading: DailyDrinkLoading,
     isError: DailyDrinkError,
   } = useQuery(
-    "DailyDrinkQuery",
+    ["DailyDrinkQuery", summaryText], // 두번째에 의존성 추가 가능
     async () => await fetchDailyDrink(summaryText)
   );
 

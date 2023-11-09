@@ -23,19 +23,6 @@ function NowAddedAlcohols({ alcoholRecord }) {
           </View>
         ))}
       </View>
-      {/* {count > 4 && (
-        <View style={styles.oneline}>
-          {alcoholRecord.slice(4).map((record, index) => (
-            <View key={index} style={styles.alcoholInfo}>
-              <Text>
-                {record.category}
-                <Text> {record.drinkAmount}</Text>
-                <Text>{record.drinkUnit} </Text>
-              </Text>
-            </View>
-          ))}
-        </View>
-      )} */}
     </View>
   );
 }
@@ -44,7 +31,6 @@ const styles = StyleSheet.create({
   total: {
     flex: 1,
     backgroundColor: "#f6f6f6",
-    // borderRadius: 5,
     paddingVertical: 5,
   },
   oneline: {
@@ -64,7 +50,6 @@ const styles = StyleSheet.create({
   },
   innerText: {
     fontSize: 14,
-    // fontFamily: "Yeongdeok-Sea",
   },
 });
 

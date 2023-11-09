@@ -29,7 +29,10 @@ function CalendarSixWeeks({}) {
     data: MonthlyData,
     isLoading: monthlyLoading,
     isError: monthlyError,
-  } = useQuery("MonthlyQuery", async () => await fetchMonthRecord(tempDay));
+  } = useQuery(
+    ["MonthlyQuery", currentDay, selectDay, navigator],
+    async () => await fetchMonthRecord(tempDay)
+  );
 
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
@@ -38,15 +41,27 @@ function CalendarSixWeeks({}) {
       if (tempDay) {
         setCurrentDay(tempDay);
       }
-      if (MonthlyData) {
-        const tempDays = {};
+      // if (MonthlyData) {
+      //   const tempDays = {};
 
-        for (let i = 0; i < MonthlyData.drinks.length; i++) {
-          const tempDate = MonthlyData.drinks[i].date;
-          tempDays[tempDate] = { marked: true };
+      //   for (let i = 0; i < MonthlyData.drinks.length; i++) {
+      //     const tempDate = MonthlyData.drinks[i].date;
+      //     tempDays[tempDate] = { marked: true };
+      //   }
+      //   setAlcoholDays(tempDays);
+      // }
+      const fetchData = async () => {
+        const data = await fetchMonthRecord(tempDay);
+        if (data) {
+          const tempDays = {};
+          for (let i = 0; i < data.drinks.length; i++) {
+            const tempDate = data.drinks[i].date;
+            tempDays[tempDate] = { marked: true };
+          }
+          setAlcoholDays(tempDays);
         }
-        setAlcoholDays(tempDays);
-      }
+      };
+      fetchData();
 
       if (selectDay) {
         const checkFuture = () => {

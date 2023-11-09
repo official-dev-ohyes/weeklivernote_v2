@@ -35,9 +35,6 @@ function DailyDetailScreen({ route, navigation }) {
   useEffect(() => {
     if (DailyDetailData) {
       setInfo(DailyDetailData);
-      console.log(
-        `데이터 조회합시다 ${JSON.stringify(DailyDetailData, null, 2)}`
-      );
     }
   }, [DailyDetailData]);
 

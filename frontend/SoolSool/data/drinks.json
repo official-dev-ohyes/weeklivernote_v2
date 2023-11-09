@@ -2,14 +2,14 @@
   {
     "id": 1,
     "name": "소주",
-    "volume": 350,
+    "volume": 360,
     "unit": "병",
     "alcoholPercentage": 19
   },
   {
     "id": 2,
     "name": "소주",
-    "volume": 50,
+    "volume": 60,
     "unit": "잔",
     "alcoholPercentage": 19
   },
@@ -93,7 +93,7 @@
   {
     "id": 14,
     "name": "위스키",
-    "volume": 50,
+    "volume": 30,
     "unit": "잔",
     "alcoholPercentage": 40
   }
