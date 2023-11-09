@@ -39,6 +39,12 @@ export const getShotAmountByDrinkCOunt = (category: string, num: number) => {
   const shot = drinkData.find(
     (item) => item.name === category && item.unit === "잔"
   );
+  console.log(
+    `들어온 용량은요 ${num}이고요 나눈 값은요 ${Math.floor(
+      amount / shot.volume
+    )}입니다`
+  );
+  console.log(`볼륨은요 ${shot.volume}입니다`);
   return Math.floor(amount / shot.volume);
 };
 
