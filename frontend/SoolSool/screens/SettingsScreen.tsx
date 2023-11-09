@@ -12,6 +12,7 @@ import { showErrorAndRetry } from "../utils/showErrorUtils";
 import { Modal, Portal, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logOut, signOut } from "../api/accountApi";
+import { sendEmail } from "../utils/mailUtils";
 
 function Section({ title, content }) {
   return (
@@ -102,11 +103,7 @@ function SettingsScreen({ navigation }) {
                 <Text>공지사항</Text>
               </TouchableOpacity>
               <Separator />
-              <TouchableOpacity
-                onPress={() =>
-                  showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
-                }
-              >
+              <TouchableOpacity onPress={sendEmail}>
                 <Text>문의하기</Text>
               </TouchableOpacity>
             </>
