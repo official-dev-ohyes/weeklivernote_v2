@@ -5,7 +5,6 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
-  // useTheme,
 } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,7 +32,7 @@ import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
-import MapScreen from "./screens/MapScreen";
+// import MapScreen from "./screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -85,7 +84,7 @@ function BottomTabNavigator() {
           title: "Calender",
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Map"
         component={MapScreen}
         options={{
@@ -94,7 +93,7 @@ function BottomTabNavigator() {
           ),
           title: "Map",
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="MyPage"
         component={MyPageScreen}
@@ -123,9 +122,6 @@ const theme = {
     mainRed: "#F25E5E",
   },
 };
-
-// export type AppTheme = typeof theme;
-// export const useAppTheme = () => useTheme<AppTheme>();
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
