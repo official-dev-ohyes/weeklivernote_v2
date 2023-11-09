@@ -83,7 +83,7 @@ export const fetchMonthRecord = async (day) => {
     return res.data;
   } catch (err) {
     console.log(err);
-    throw new Error("실패!");
+    throw new Error("월간 음주기록 조회 실패!");
   }
 };
 
@@ -94,7 +94,7 @@ export const fetchDailyDrink = async (day) => {
     // console.log("성공!", res);
     return res.data;
   } catch (err) {
-    throw new Error("실패!");
+    throw new Error(`음주기록 요약 조회 실패! 실패한 날짜는 ${day}`);
   }
 };
 
@@ -105,7 +105,7 @@ export const fetchDailyDetail = async (day) => {
     // console.log("성공!", res.data);
     return res.data;
   } catch (err) {
-    throw new Error("실패!");
+    throw new Error(`음주기록 상세 조회 실패! 실패한 날짜는 ${day}`);
   }
 };
 
