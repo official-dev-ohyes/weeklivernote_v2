@@ -24,7 +24,7 @@ interface DetailProfileProps {
 
 function DetailProfile(props: DetailProfileProps) {
   const { userData } = props;
-  // console.log("d", userData);
+  // console.log("d", userData.drinkInfo?.drinkAmount);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.infoContainer}>

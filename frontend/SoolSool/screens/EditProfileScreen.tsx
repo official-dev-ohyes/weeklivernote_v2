@@ -98,6 +98,11 @@ function EditProfileScreen({ navigation }) {
       });
   };
 
+  // useEffect(() => {
+  //   console.log("??", amount);
+  //   // console.log("뭐야", oldheight);
+  // }, [amount]);
+
   return (
     <ScrollView>
       <Provider>
