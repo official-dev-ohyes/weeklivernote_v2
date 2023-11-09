@@ -33,7 +33,7 @@ import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
-// import MapScreen from "./screens/MapScreen";
+import MapScreen from "./screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -85,7 +85,7 @@ function BottomTabNavigator() {
           title: "Calender",
         }}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Map"
         component={MapScreen}
         options={{
@@ -94,7 +94,7 @@ function BottomTabNavigator() {
           ),
           title: "Map",
         }}
-      /> */}
+      />
       <BottomTab.Screen
         name="MyPage"
         component={MyPageScreen}
