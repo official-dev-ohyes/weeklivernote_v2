@@ -301,6 +301,10 @@ public class UserService {
 
         // 주량 수정
         if (drinkInfo != null) {
+            user.setDrinkCategory(drinkInfo.getCategory());
+            user.setDrinkUnit(drinkInfo.getDrinkUnit());
+            user.setDrinkAmount(drinkInfo.getDrinkAmount());
+
             float alcoholLimit = 0;
 
             int amount;
