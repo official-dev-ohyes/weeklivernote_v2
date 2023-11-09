@@ -58,7 +58,7 @@ function BottomTabNavigator() {
         headerTintColor: "white",
         headerTitleAlign: "center",
         tabBarShowLabel: false,
-        tabBarStyle: { backgroundColor: "rgba(255,255,255,0.8)", height: 60 },
+        tabBarStyle: { backgroundColor: "#ffffff", height: 60 },
       }}
       sceneContainerStyle={{
         backgroundColor: "#ffffff",

@@ -13,7 +13,7 @@ function NowAddedAlcohols({ alcoholRecord }) {
   return (
     <View style={styles.total}>
       <View style={styles.oneline}>
-        {alcoholRecord.slice(0, 4).map((record, index) => (
+        {alcoholRecord.map((record, index) => (
           <View key={index} style={styles.alcoholInfo}>
             <Text style={styles.innerText}>
               {record.category}
@@ -23,7 +23,7 @@ function NowAddedAlcohols({ alcoholRecord }) {
           </View>
         ))}
       </View>
-      {count > 4 && (
+      {/* {count > 4 && (
         <View style={styles.oneline}>
           {alcoholRecord.slice(4).map((record, index) => (
             <View key={index} style={styles.alcoholInfo}>
@@ -35,7 +35,7 @@ function NowAddedAlcohols({ alcoholRecord }) {
             </View>
           ))}
         </View>
-      )}
+      )} */}
     </View>
   );
 }
@@ -43,13 +43,18 @@ function NowAddedAlcohols({ alcoholRecord }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
+    backgroundColor: "#f6f6f6",
+    // borderRadius: 5,
+    paddingVertical: 5,
   },
   oneline: {
     flex: 0.5,
     flexDirection: "row",
+    flexWrap: "wrap",
   },
   alcoholInfo: {
-    margin: 5,
+    marginRight: 5,
+    marginBottom: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
     height: "100%",

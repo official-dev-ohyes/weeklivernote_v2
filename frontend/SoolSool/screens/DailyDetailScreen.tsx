@@ -3,7 +3,7 @@ import { fetchDailyDetail } from "../api/drinkRecordApi";
 import { useEffect, useState } from "react";
 import DailySummary from "../components/Calendar/DailySummary";
 import { Modal, Portal, Button } from "react-native-paper";
-
+import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { removeDrink } from "../api/drinkRecordApi";
@@ -70,8 +70,7 @@ function DailyDetailScreen({ route, navigation }) {
         </View>
         <View style={styles.buttons}>
           <Button
-            mode="contained"
-            buttonColor={"#363C4B"}
+            mode="outlined"
             onPress={() => {
               navigation.navigate("RecordCreate", {
                 date: day,
@@ -153,7 +152,7 @@ function DailyDetailScreen({ route, navigation }) {
           )}
         </View>
       </View>
-      <Portal>
+      {/* <Portal>
         <Modal
           visible={isModal}
           onDismiss={hideDeleteModal}
@@ -177,6 +176,39 @@ function DailyDetailScreen({ route, navigation }) {
             >
               취소
             </Button>
+          </View>
+        </Modal>
+      </Portal> */}
+      <Portal>
+        <Modal
+          visible={isModal}
+          onDismiss={hideDeleteModal}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            width: "90%",
+            borderRadius: 5,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <View style={styles.mainContainer}>
+            <Text style={styles.alertTitle}>주간일기</Text>
+            <View style={styles.textContainer}>
+              <Text>정말 삭제하시겠습니까?</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button mode="outlined" onPress={hideDeleteModal}>
+                취소
+              </Button>
+              <Button
+                mode="contained"
+                buttonColor={"#363C4B"}
+                onPress={confirmDelete}
+              >
+                삭제
+              </Button>
+            </View>
           </View>
         </Modal>
       </Portal>
@@ -285,6 +317,24 @@ const styles = StyleSheet.create({
   },
   botton: {
     margin: "1%",
+  },
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 15,
+  },
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
   },
 });
 
