@@ -1,4 +1,6 @@
 import * as MailComposer from "expo-mail-composer";
+import { ToastAndroid, Platform } from "react-native";
+import Toast from "react-native-root-toast";
 
 export const sendEmail = async () => {
   let options = {
@@ -17,7 +19,7 @@ export const sendEmail = async () => {
       });
   });
 
-  let statusText = (type) => {
+  let statusText = (type: MailComposer.MailComposerStatus) => {
     switch (type) {
       case "cancelled":
         return "문의 메일이 임시저장되지 않았습니다";
@@ -25,19 +27,24 @@ export const sendEmail = async () => {
         return "문의 메일이 임시저장되었습니다";
       case "sent":
         return "문의 메일이 전송되었습니다";
-      case "undeterminded":
+      case "undetermined":
         return "오류가 발생했습니다";
     }
   };
 
   promise.then(
-    (result) => {
-      const message = statusText(result);
-      //   const message = statusText(result.status);
-      // makeToast(message);
+    (result: MailComposer.MailComposerResult) => {
+      const message = statusText(result.status);
+      if (Platform.OS != "android") {
+        Toast.show(message, {
+          duration: Toast.durations.SHORT,
+        });
+      } else {
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+      }
     },
     (err) => {
-      // makeToast(`에러: ${err}의 이유로 문제가 발생했습니다`, true);
+      console.log(err);
     }
   );
 };
