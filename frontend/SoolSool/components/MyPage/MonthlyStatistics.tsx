@@ -30,7 +30,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>연간 통계</Text>
+      <Text style={styles.text}>지난 12개월간 이만큼 마셨어요!</Text>
       <View style={styles.graphBox}>
         <View style={styles.chartContainer}>
           <View style={styles.barchart}>
@@ -45,6 +45,8 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
               yAxisLabelWidth={7}
               hideAxesAndRules
               frontColor="#FFCC4A"
+              isAnimated
+              roundedTop
             />
           </View>
         </View>
@@ -95,6 +97,10 @@ const styles = StyleSheet.create({
     right: 10,
     width: "100%",
     height: "100%",
+  },
+  text: {
+    fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

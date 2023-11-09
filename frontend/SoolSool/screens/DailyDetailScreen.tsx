@@ -69,7 +69,7 @@ function DailyDetailScreen({ route, navigation }) {
           />
         </View>
         <View style={styles.buttons}>
-          <Button
+          {/* <Button
             mode="outlined"
             onPress={() => {
               navigation.navigate("RecordCreate", {
@@ -80,7 +80,7 @@ function DailyDetailScreen({ route, navigation }) {
             style={styles.botton}
           >
             수정
-          </Button>
+          </Button> */}
           <Button
             mode="contained"
             onPress={openDeleteModal}
