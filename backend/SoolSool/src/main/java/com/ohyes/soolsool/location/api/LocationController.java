@@ -1,11 +1,10 @@
 package com.ohyes.soolsool.location.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ohyes.soolsool.location.application.LocationService;
 import com.ohyes.soolsool.location.dto.LocationRequestDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,9 +24,9 @@ public class LocationController {
     @PostMapping("/v2/location")
     public ResponseEntity<Object> lastChanceGet(@RequestBody LocationRequestDto locationRequestDto) {
         try {
-            Map<String, Object> resultMap = locationService.lastChanceGet(locationRequestDto);
+            JsonNode resultMap = locationService.lastChanceGet(locationRequestDto);
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()),
                 HttpStatus.BAD_REQUEST);
         }
