@@ -8,11 +8,10 @@ import {
   ImageBackground,
 } from "react-native";
 import UserStatus from "./UserStatus";
-import { mainbackground, subbackground } from "../../assets";
+import { mainbackground } from "../../assets";
 
-const { width, height } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 
-// const bgs = ["#A5BBFF", "#DDBEFE"];
 const DATA = [
   {
     key: "0",
@@ -51,7 +50,6 @@ const Indicator = ({ scrollX }) => {
               width: 6,
               borderRadius: 5,
               backgroundColor: "white",
-              // backgroundColor: "#A5BBFF",
               opacity,
               margin: 10,
               transform: [{ scale }],
@@ -63,70 +61,12 @@ const Indicator = ({ scrollX }) => {
   );
 };
 
-// const Backdrop = ({ scrollX }) => {
-//   const backgroundColor = scrollX.interpolate({
-//     inputRange: bgs.map((_, i) => i * width),
-//     outputRange: bgs.map((bg) => bg),
-//   });
-
-//   return (
-//     <Animated.View
-//       style={[
-//         StyleSheet.absoluteFillObject,
-//         {
-//           backgroundColor,
-//         },
-//       ]}
-//     />
-//   );
-// };
-
-// const Square = ({ scrollX }) => {
-//   const YOLO = Animated.modulo(
-//     Animated.divide(Animated.modulo(scrollX, width), new Animated.Value(width)),
-//     1
-//   );
-
-//   const rotate = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: ["35deg", "0deg", "35deg"],
-//   });
-//   const translateX = YOLO.interpolate({
-//     inputRange: [0, 0.5, 1],
-//     outputRange: [0, -height, 0],
-//   });
-
-//   return (
-//     <Animated.View
-//       style={{
-//         width: height,
-//         height,
-//         backgroundColor: "#fff",
-//         borderRadius: 86,
-//         position: "absolute",
-//         top: -height * 0.6,
-//         left: -height * 0.3,
-//         transform: [
-//           {
-//             rotate,
-//           },
-//           {
-//             translateX,
-//           },
-//         ],
-//       }}
-//     />
-//   );
-// };
-
 export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
     <ImageBackground source={mainbackground} style={styles.background}>
       <StatusBar hidden />
-      {/* <Backdrop scrollX={scrollX} /> */}
-      {/* <Square scrollX={scrollX} /> */}
       <Animated.FlatList
         data={DATA}
         keyExtractor={(item) => item.key}
