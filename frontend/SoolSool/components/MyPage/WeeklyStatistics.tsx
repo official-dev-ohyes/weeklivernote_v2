@@ -1,10 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import React from "react";
 import { BarChart, LineChart } from "react-native-gifted-charts";
-import {
-  // fetchStatistics,
-  fetchWeeklyStatistics,
-} from "../../api/statisticsApi";
+import { fetchWeeklyStatistics } from "../../api/statisticsApi";
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 
@@ -34,7 +31,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>주간 통계</Text>
+      <Text style={styles.text}>지난 7일간 이만큼 마셨어요!</Text>
       <View style={styles.graphBox}>
         <View style={styles.chartContainer}>
           <View style={styles.barchart}>
@@ -49,6 +46,8 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               yAxisLabelWidth={7}
               hideAxesAndRules
               frontColor="#FFCC4A"
+              isAnimated
+              roundedTop
             />
           </View>
           <View style={styles.linechart}>
@@ -59,7 +58,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               yAxisThickness={0}
               xAxisThickness={0}
               stepValue={500}
-              maxValue={300}
+              maxValue={2500}
               yAxisLabelWidth={0}
               hideAxesAndRules
               color="#363C4B"
@@ -113,6 +112,10 @@ const styles = StyleSheet.create({
     right: 10,
     width: "100%",
     height: "100%",
+  },
+  text: {
+    fontSize: 18,
+    fontFamily: "Yeongdeok-Sea",
   },
 });
 

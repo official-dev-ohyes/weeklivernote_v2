@@ -453,12 +453,13 @@ const styles = StyleSheet.create({
     // height: "13%",
     padding: "5%",
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     // backgroundColor: "red",
   },
   headerText: {
     fontSize: 40,
     verticalAlign: "bottom",
+    fontFamily: "Yeongdeok-Sea",
   },
   light: {
     height: "80%",
