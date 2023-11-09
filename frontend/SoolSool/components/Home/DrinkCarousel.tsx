@@ -30,12 +30,12 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
     colors: { mainBlue },
   } = useAppTheme();
   const [centeredItem, setCenteredItem] = useState({
-    id: 2,
+    id: 1,
     name: "소주",
-    volume: 60,
-    unit: "잔",
+    volume: 360,
+    unit: "병",
     alcoholPercentage: 19,
-    alcoholAmount: 9.1,
+    alcoholAmount: 54.6,
   });
   const [showInstruction, SetShowInstruction] = useState(true);
 
