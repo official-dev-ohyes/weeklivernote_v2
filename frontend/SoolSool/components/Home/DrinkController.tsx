@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-// import { useQuery } from "react-query";
 import {
   StyleSheet,
   View,
@@ -8,7 +7,6 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-// import { useRecoilState, useSetRecoilState } from "recoil";
 import { useRecoilState } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
 import { DrinkCarousel } from "./DrinkCarousel";
@@ -16,7 +14,6 @@ import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
-// import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
 import {
   createDrink,
   updateDrink,
@@ -39,7 +36,6 @@ function DrinkController() {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const numberOfCurrentDrinks = Object.keys(currentDrinks).length;
-  // const setDrinkToday = useSetRecoilState(drinkTodayAtom);
   const defaultDrink = {
     id: 2,
     name: "소주",
@@ -211,7 +207,10 @@ function DrinkController() {
             <View style={styles.divider} />
           </>
         ) : (
-          <></>
+          <>
+            <View style={styles.emptyContainer} />
+            <View style={styles.divider} />
+          </>
         )}
 
         <View style={styles.stepperContainer}>
@@ -274,7 +273,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#C6C6C6",
     padding: 4,
-    marginBottom: 8,
+    marginBottom: 12,
     width: "100%",
   },
   imageContainer: {
@@ -305,6 +304,9 @@ const styles = StyleSheet.create({
     // fontFamily: "Yeongdeok-Sea",
     marginTop: 5,
     color: "white",
+  },
+  emptyContainer: {
+    height: 68,
   },
 });
 

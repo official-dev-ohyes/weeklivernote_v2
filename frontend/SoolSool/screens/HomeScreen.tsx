@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
-import {
-  StyleSheet,
-  View,
-  Text,
-  BackHandler,
-  Button,
-  ImageBackground,
-} from "react-native";
+import { StyleSheet, View, Text, BackHandler } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
@@ -16,17 +9,14 @@ import SafeDriveInfo from "../components/Home/SafeDriveInfo";
 import DrinkController from "../components/Home/DrinkController";
 import { drinkTodayAtom } from "../recoil/drinkTodayAtom";
 import { currentDrinksAtom } from "../recoil/currentDrinksAtom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
-import { schedulePushNotification } from "../components/Notification/LocalNotification";
-import { mainbackground } from "../assets";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 function HomeScreen({ navigation }) {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
-  // const setCurrentDrinks = useSetRecoilState(currentDrinksAtom);
   const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
   const today = getToday();
 
@@ -134,7 +124,6 @@ function HomeScreen({ navigation }) {
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
         />
-        {/* <Button title="test" onPress={schedulePushNotification} /> */}
         <DrinkController />
       </View>
     </>
