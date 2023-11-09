@@ -59,7 +59,14 @@ export function calculateTimeAfterHours(startTime: string, hoursToAdd: number) {
   const hours = newTime.getHours();
   const minutes = newTime.getMinutes();
 
-  if (
+  const timeDifference = newTime.getTime() - now.getTime();
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  if (daysDifference > 1) {
+    return `${daysDifference}일 후 ${hours < 10 ? `0${hours}` : hours}:${
+      minutes < 10 ? `0${minutes}` : minutes
+    }`;
+  } else if (
     currentYear === newYear &&
     currentMonth === newMonth &&
     currentDay === newDay
