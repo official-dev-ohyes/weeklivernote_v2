@@ -91,7 +91,7 @@ export const fetchMonthRecord = async (day) => {
 export const fetchDailyDrink = async (day) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/daily/${day}`);
-    // console.log("성공!", res);
+    console.log(`${day} 날짜의 요약 정보 조회 요청 성공!`, res.data);
     return res.data;
   } catch (err) {
     throw new Error(`음주기록 요약 조회 실패! 실패한 날짜는 ${day}`);

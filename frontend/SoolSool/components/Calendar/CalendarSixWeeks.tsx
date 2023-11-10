@@ -30,7 +30,8 @@ function CalendarSixWeeks({}) {
     isLoading: monthlyLoading,
     isError: monthlyError,
   } = useQuery(
-    ["MonthlyQuery", currentDay, selectDay, navigator],
+    // ["MonthlyQuery", currentDay, selectDay, navigator],
+    ["MonthlyQuery", currentDay],
     async () => await fetchMonthRecord(tempDay)
   );
 
@@ -41,27 +42,29 @@ function CalendarSixWeeks({}) {
       if (tempDay) {
         setCurrentDay(tempDay);
       }
-      // if (MonthlyData) {
-      //   const tempDays = {};
+      if (MonthlyData) {
+        const tempDays = {};
 
-      //   for (let i = 0; i < MonthlyData.drinks.length; i++) {
-      //     const tempDate = MonthlyData.drinks[i].date;
-      //     tempDays[tempDate] = { marked: true };
-      //   }
-      //   setAlcoholDays(tempDays);
-      // }
-      const fetchData = async () => {
-        const data = await fetchMonthRecord(tempDay);
-        if (data) {
-          const tempDays = {};
-          for (let i = 0; i < data.drinks.length; i++) {
-            const tempDate = data.drinks[i].date;
-            tempDays[tempDate] = { marked: true };
-          }
-          setAlcoholDays(tempDays);
+        for (let i = 0; i < MonthlyData.drinks.length; i++) {
+          const tempDate = MonthlyData.drinks[i].date;
+          tempDays[tempDate] = { marked: true };
         }
-      };
-      fetchData();
+        setAlcoholDays(tempDays);
+      }
+      // else {
+      //   const fetchData = async () => {
+      //     const data = await fetchMonthRecord(tempDay);
+      //     if (data) {
+      //       const tempDays = {};
+      //       for (let i = 0; i < data.drinks.length; i++) {
+      //         const tempDate = data.drinks[i].date;
+      //         tempDays[tempDate] = { marked: true };
+      //       }
+      //       setAlcoholDays(tempDays);
+      //     }
+      //   };
+      //   fetchData();
+      // }
 
       if (selectDay) {
         const checkFuture = () => {
@@ -75,7 +78,8 @@ function CalendarSixWeeks({}) {
         };
         checkFuture();
       }
-    }, [nowDate, selectDay, navigator, MonthlyData])
+      // }, [nowDate, selectDay, navigator, MonthlyData])
+    }, [MonthlyData])
   );
 
   // 특정일 클릭
@@ -175,11 +179,7 @@ function CalendarSixWeeks({}) {
                 </View>
               </View>
             ) : (
-              <DailySummary
-                summaryText={selectDay}
-                alcoholDays={alcoholDays}
-                // navigation={navigation}
-              />
+              <DailySummary summaryText={selectDay} alcoholDays={alcoholDays} />
             )}
           </View>
         </View>
@@ -287,3 +287,5 @@ const styles = StyleSheet.create({
 });
 
 export default CalendarSixWeeks;
+
+// 기록을 추가/삭제 했을 때, 재 렌더링 로직 추가 필요

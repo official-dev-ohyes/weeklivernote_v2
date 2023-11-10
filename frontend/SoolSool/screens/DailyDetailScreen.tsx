@@ -12,6 +12,7 @@ import AlcoholChart from "../components/Calendar/AlcoholChart";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
+  console.log(`선택된 날짜의 정보를 확인합시다!!  날짜는 : ${day}`);
   const alcoholDays = route.params.alcoholDays;
   const isAlcohol = route.params.isAlcohol;
   const [isImg, setIsImg] = useState<boolean>(false);
@@ -31,6 +32,14 @@ function DailyDetailScreen({ route, navigation }) {
     isLoading: dailyDetailLoading,
     isError: dailyDetailError,
   } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
+
+  // 해독시간
+  const formatDetoxTime = (detoxTime) => {
+    const totalMinutes = Math.round(detoxTime * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}시간 ${minutes}분`;
+  };
 
   useEffect(() => {
     if (DailyDetailData) {
@@ -66,7 +75,7 @@ function DailyDetailScreen({ route, navigation }) {
           />
         </View>
         <View style={styles.buttons}>
-          {/* <Button
+          <Button
             mode="outlined"
             onPress={() => {
               navigation.navigate("RecordCreate", {
@@ -77,7 +86,7 @@ function DailyDetailScreen({ route, navigation }) {
             style={styles.botton}
           >
             수정
-          </Button> */}
+          </Button>
           <Button
             mode="contained"
             onPress={openDeleteModal}
@@ -103,12 +112,14 @@ function DailyDetailScreen({ route, navigation }) {
           </View>
           <View style={styles.house}>
             <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
-            <Text>{info.detoxTime} 시간</Text>
+            <Text>{formatDetoxTime(info.detoxTime)}</Text>
           </View>
         </View>
-        {/* <View style={styles.chart}>
-          <AlcoholChart info={info} />
-        </View> */}
+        <View style={styles.house}>
+          <View style={styles.chart}>
+            <AlcoholChart drinks={info.drinks} />
+          </View>
+        </View>
         {/* <View style={styles.time}>
           <View style={styles.house}>
             <Text style={styles.smallHeaderText}>주종별 알코올 비율</Text>
@@ -260,16 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   chart: {
-    height: "10%",
-    // margin: "1%",
-    backgroundColor: "#ffffff",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5, // 안드로이드에서 그림자 효과 추가
+    height: "100%",
   },
   house: {
     flex: 1,

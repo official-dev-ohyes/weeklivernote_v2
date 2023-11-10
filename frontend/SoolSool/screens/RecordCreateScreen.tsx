@@ -17,6 +17,7 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
+  console.log(`지금 고칠 날짜를 확인합시다!!  고치려는 날짜 : ${day}`);
   const isAlcohol = route.params.isAlcohol; // create, update 구분
   const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
   const [alcoholRecord, setAlcoholRecord] = useState([]);
@@ -111,7 +112,10 @@ function RecordCreateScreen({ route, navigation }) {
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
-    removeDrink(day);
+
+    if (isAlcohol) {
+      removeDrink(day);
+    }
     createDrink({
       drinks: [...alcoholRecord],
       drinkDate: date,
@@ -128,14 +132,20 @@ function RecordCreateScreen({ route, navigation }) {
     data: DailyDrinkData,
     isLoading: dailyLoading,
     isError: dailyError,
-  } = useQuery("DailyDrinkQuery", async () => await fetchDailyDrink(day));
+  } = useQuery(
+    ["DailyDrinkQuery", day],
+    async () => await fetchDailyDrink(day)
+  );
   // console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
 
   const {
     data: DailyDetailData,
     isLoading: detailLoading,
     isError: detailError,
-  } = useQuery("DailyDetailQuery", async () => await fetchDailyDetail(day));
+  } = useQuery(
+    ["DailyDetailQuery", day],
+    async () => await fetchDailyDetail(day)
+  );
   // console.log(`요약조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
   useEffect(() => {
@@ -196,6 +206,7 @@ function RecordCreateScreen({ route, navigation }) {
 
           if (existingRecordIndex >= 0) {
             alcoholRecord[existingRecordIndex].drinkAmount += value;
+            return;
           } else {
             if (newBottleRecord.drinkAmount) {
               setAlcoholRecord((prevRecords) => [
