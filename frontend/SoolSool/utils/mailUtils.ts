@@ -1,5 +1,4 @@
 import * as MailComposer from "expo-mail-composer";
-import { ToastAndroid, Platform } from "react-native";
 import Toast from "react-native-root-toast";
 
 export const sendEmail = async () => {
@@ -35,13 +34,9 @@ export const sendEmail = async () => {
   promise.then(
     (result: MailComposer.MailComposerResult) => {
       const message = statusText(result.status);
-      if (Platform.OS != "android") {
-        Toast.show(message, {
-          duration: Toast.durations.SHORT,
-        });
-      } else {
-        ToastAndroid.show(message, ToastAndroid.SHORT);
-      }
+      Toast.show(message, {
+        duration: Toast.durations.SHORT,
+      });
     },
     (err) => {
       console.log(err);
