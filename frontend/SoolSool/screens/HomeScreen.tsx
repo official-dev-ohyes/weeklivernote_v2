@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 import { StyleSheet, View, Text, BackHandler } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
@@ -53,61 +52,51 @@ function HomeScreen({ navigation }) {
     }, [])
   );
 
-  // 당일 음주 데이터 불러오기
-  const { data, isLoading, isError } = useQuery("drinkToday", async () => {
-    const response = await fetchDrink(today);
-    return response;
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const data = await fetchDrink(today);
+          console.log(61, data);
+          if (data) {
+            if (data.drinkTotal === 0) {
+              setDrinkToday(new DrinkToday(data));
+            } else {
+              const drinkTodayData = {
+                drinkTotal: data.drinkTotal,
+                alcoholAmount: data.alcoholAmount,
+                drinkStartTime: data.drinkStartTime,
+                height: data.height,
+                weight: data.weight,
+                gender: data.gender,
+              };
 
-  const queryClient = useQueryClient();
+              setDrinkToday(new DrinkToday(drinkTodayData));
 
-  useEffect(() => {
-    queryClient.invalidateQueries("drinkToday");
-  }, [currentDrinks]);
+              const currentDrinksObject = {};
+              data.drinks.forEach((drink) => {
+                const id = getIdByCategoryAndUnit(
+                  drink.category,
+                  drink.drinkUnit
+                );
+                if (currentDrinksObject.hasOwnProperty(id)) {
+                  currentDrinksObject[id] += drink.drinkAmount;
+                } else {
+                  currentDrinksObject[id] = drink.drinkAmount;
+                }
+              });
 
-  useEffect(() => {
-    if (data) {
-      if (data.drinkTotal === 0) {
-        setDrinkToday(new DrinkToday(data));
-      } else {
-        const drinkTodayData = {
-          drinkTotal: data.drinkTotal,
-          alcoholAmount: data.alcoholAmount,
-          drinkStartTime: data.drinkStartTime,
-          height: data.height,
-          weight: data.weight,
-          gender: data.gender,
-        };
-
-        setDrinkToday(new DrinkToday(drinkTodayData));
-
-        const currentDrinksObject = {};
-        data.drinks.forEach((drink) => {
-          const id = getIdByCategoryAndUnit(drink.category, drink.drinkUnit);
-          if (currentDrinksObject.hasOwnProperty(id)) {
-            currentDrinksObject[id] += drink.drinkAmount;
-          } else {
-            currentDrinksObject[id] = drink.drinkAmount;
+              setCurrentDrinks(currentDrinksObject);
+            }
           }
-        });
+        } catch (error) {
+          console.error("데이터를 가져오는 동안 에러 발생:", error);
+        }
+      };
 
-        setCurrentDrinks(currentDrinksObject);
-      }
-    }
-  }, [data]);
-
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator animating={true} color="#0477BF" />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return <Text>Error!!!</Text>;
-  }
+      fetchData();
+    }, [])
+  );
 
   if (!drinkToday) {
     return (
@@ -134,12 +123,6 @@ function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  // rootScreen: {
-  //   margin: 12,
-  //   display: "flex",
-  //   alignItems: "center",
-  //   flex: 1,
-  // },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
