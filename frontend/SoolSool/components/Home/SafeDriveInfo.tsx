@@ -23,7 +23,7 @@ const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
     <View style={styles.rootContainer}>
       <View style={styles.chipsContainer}>
         <Icon source="blood-bag" color={MD3Colors.error50} size={32} />
-        <Text style={styles.chipText}>{bloodAlcoholContent} %</Text>
+        <Text style={styles.chipText}>MAX {bloodAlcoholContent} %</Text>
       </View>
       <View style={styles.chipsContainer}>
         {canDriveFrom === "passed" ? (
