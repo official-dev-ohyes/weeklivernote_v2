@@ -1,8 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import * as Location from "expo-location";
 import { useEffect } from "react";
+import { Button } from "react-native-paper";
 
-function MapScreen() {
+function MapScreen({ navigation }) {
+  const goToHome = () => {
+    navigation.navigate("HomeRoute");
+  };
   const getLocation = async () => {
     try {
       // 위치 정보 권한 요청
@@ -33,6 +37,9 @@ function MapScreen() {
       <Text>현재 나의 위치</Text>
       <Text>위도:</Text>
       <Text>경도:</Text>
+      <Button mode="outlined" onPress={goToHome}>
+        집까지 가는 길
+      </Button>
     </View>
   );
 }
