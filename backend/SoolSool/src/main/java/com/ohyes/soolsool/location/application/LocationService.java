@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.location.dto.LocationRequestDto;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +21,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @Service
 @RequiredArgsConstructor
@@ -94,7 +96,7 @@ public class LocationService {
         return routes.get(shortestRouteIndex);
     }
 
-    public void calculateTime(JsonNode route) throws Exception{
+    public void calculateTime(JsonNode route) throws Exception {
         // 모든 subPath에 대해 가장 일찍 끊기는 막차 계산
         Map<String, List<Object>> pathTimes = new HashMap<>();
         JsonNode subPaths = route.get("subPath");
@@ -106,12 +108,39 @@ public class LocationService {
 
             // subPath의 해당 정류장 막차 시간 계산해서 저장
             if (trafficType == 1) { // 지하철
+                String stationID = subPaths.get(i).get("startID").asText();
+                String wayCode = subPaths.get(i).get("wayCode").asText();
+                JsonNode subwayDetail = findSubwayDetail(stationID, wayCode);
 
+                // 요일별, 상하행별 검색해야 하는 키 설정
+                String wayCodeKey = "0";
+                if (wayCode.equals("1")) {
+                    wayCodeKey = "up";
+                } else {
+                    wayCodeKey = "down";
+                }
 
+                String currentDayOfWeek = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault());
+                String dayKey = "0";
+                if (currentDayOfWeek.equals("토")) {
+                    dayKey = "SatList";
+                } else if (currentDayOfWeek.equals("일")) {
+                    dayKey = "SunList";
+                } else {
+                    dayKey = "OrdList";
+                }
 
+                // 키 마지막값 파싱
+                JsonNode timeInfo = subwayDetail.get("result").get(dayKey).get(wayCodeKey).get("time");
+                JsonNode lastTimeInfo = timeInfo.get(timeInfo.size() - 1);
+                String lastTimeHour = lastTimeInfo.get("Idx").asText();
+                String lastTimeMinuteList = lastTimeInfo.get("list").asText();
 
+                // 문자열을 공백으로 나누고 마지막 문자열 선택
+                String[] tokens = lastTimeMinuteList.split("\\s+");
+                String lastTimeMinute = tokens[tokens.length - 1].substring(0, 2);
 
-
+                pathTime.add(lastTimeHour + ":"+ lastTimeMinute);
             } else if (trafficType == 2) { // 버스
                 String busID = subPaths.get(i).get("lane").get(0).get("busID").asText();
                 int stationID = subPaths.get(i).get("startID").asInt();
@@ -144,14 +173,14 @@ public class LocationService {
         }
 
         // pathTimes에 저장된 시간값들로 출발 시간 계산
-
-
+        log.error("경로 소요 시간 및 막차 시간: " + pathTimes);
 
     }
 
     public JsonNode findBusDetail(String busID) throws Exception {
-        String urlInfo = "https://api.odsay.com/v1/api/busLaneDetail?lang=0&busID=" + busID + "&apiKey="
-            + URLEncoder.encode(apiKey, "UTF-8");
+        String urlInfo =
+            "https://api.odsay.com/v1/api/busLaneDetail?lang=0&busID=" + busID + "&apiKey="
+                + URLEncoder.encode(apiKey, "UTF-8");
 
         // HTTP 연결
         URL url = new URL(urlInfo);
@@ -178,7 +207,34 @@ public class LocationService {
         return busResult;
     }
 
-    public void findSubwayDetail() throws Exception {
+    public JsonNode findSubwayDetail(String stationID, String wayCode) throws Exception {
+        String urlInfo =
+            "https://api.odsay.com/v1/api/subwayTimeTable?lang=0&stationID=" + stationID
+                + "&wayCode=" + wayCode + "&apiKey="
+                + URLEncoder.encode(apiKey, "UTF-8");
 
+        // HTTP 연결
+        URL url = new URL(urlInfo);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
+
+        BufferedReader bufferedReader = new BufferedReader(
+            new InputStreamReader(conn.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            sb.append(line);
+        }
+        bufferedReader.close();
+        conn.disconnect();
+
+        // JSON 데이터를 JsonNode로 파싱
+        String jsonData = sb.toString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode subwayResult = objectMapper.readTree(jsonData);
+
+        return subwayResult;
     }
 }
