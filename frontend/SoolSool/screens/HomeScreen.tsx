@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { DrinkToday } from "../models/DrinkToday";
 import { StyleSheet, View, Text, BackHandler } from "react-native";
@@ -8,18 +8,19 @@ import HomeCarousel from "../components/Home/HomeCarousel";
 import SafeDriveInfo from "../components/Home/SafeDriveInfo";
 import DrinkController from "../components/Home/DrinkController";
 import { drinkTodayAtom } from "../recoil/drinkTodayAtom";
-import { currentDrinksAtom } from "../recoil/currentDrinksAtom";
 import { useRecoilState } from "recoil";
-
 import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 function HomeScreen({ navigation }) {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
-  const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
+  const [currentDrinks, setCurrentDrinks] = useState<Record<number, number>>(
+    {}
+  );
   const today = getToday();
 
+  // 회원 정보 없을 시 로그인 화면으로 이동
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -34,6 +35,7 @@ function HomeScreen({ navigation }) {
     fetchToken();
   }, []);
 
+  // 메인에서 뒤로가기 방지
   useFocusEffect(
     React.useCallback(() => {
       const backAction = () => {
@@ -51,6 +53,7 @@ function HomeScreen({ navigation }) {
     }, [])
   );
 
+  // 당일 음주 데이터 불러오기
   const { data, isLoading, isError } = useQuery("drinkToday", async () => {
     const response = await fetchDrink(today);
     return response;
@@ -124,7 +127,7 @@ function HomeScreen({ navigation }) {
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
         />
-        <DrinkController />
+        <DrinkController currentDrinks={currentDrinks} />
       </View>
     </>
   );
