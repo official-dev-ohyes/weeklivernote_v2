@@ -9,16 +9,16 @@ import lombok.Setter;
 @Setter
 public class LocationRequestDto {
 
-    @Schema(type = "number", format = "double", example = "37.58735447069855")
+    @Schema(type = "number", format = "double", example = "35.106264217962284")
     private double nowLat;
 
-    @Schema(type = "number", format = "double", example = "126.95656093597447")
+    @Schema(type = "number", format = "double", example = "128.9665174484257")
     private double nowLong;
 
-    @Schema(type = "number", format = "double", example = "37.550079720522426")
+    @Schema(type = "number", format = "double", example = "35.23500167069489")
     private double homeLat;
 
-    @Schema(type = "number", format = "double", example = "126.9164657592777")
+    @Schema(type = "number", format = "double", example = "129.01787638664285")
     private double homeLong;
 
     @Builder

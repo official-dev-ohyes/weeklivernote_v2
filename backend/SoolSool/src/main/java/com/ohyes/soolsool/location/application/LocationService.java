@@ -3,8 +3,11 @@ package com.ohyes.soolsool.location.application;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.location.dto.LocationRequestDto;
+import com.ohyes.soolsool.location.dto.LocationResponseDto;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,16 +33,19 @@ public class LocationService {
     @Value("${odsay.api-key}")
     private String apiKey;
 
-    public JsonNode lastChanceGet(LocationRequestDto locationRequestDto) throws Exception {
+    public LocationResponseDto lastChanceGet(LocationRequestDto locationRequestDto) throws Exception {
         // 출발지부터 도착지까지 ODSAY 대중교통 길찾기 API 호출 후 totalTime이 가장 적게 걸리는 경로 가져오기
         JsonNode shortRoute = findRoute(locationRequestDto);
 
         // 시간 계산
-        calculateTime(shortRoute);
-
+        String alarmTime = calculateTime(shortRoute);
+        log.info("예상 출발 시간: " + alarmTime);
         // 계산된 예상 출발 시간 및 막차 경로 반환
 
-        return shortRoute;
+        return LocationResponseDto.builder()
+            .alarmTime(alarmTime)
+            .shortRoute(shortRoute)
+            .build();
     }
 
     public JsonNode findRoute(LocationRequestDto locationRequestDto) throws Exception {
@@ -96,7 +102,7 @@ public class LocationService {
         return routes.get(shortestRouteIndex);
     }
 
-    public void calculateTime(JsonNode route) throws Exception {
+    public String calculateTime(JsonNode route) throws Exception {
         // 모든 subPath에 대해 가장 일찍 끊기는 막차 계산
         Map<String, List<Object>> pathTimes = new HashMap<>();
         JsonNode subPaths = route.get("subPath");
@@ -173,8 +179,9 @@ public class LocationService {
         }
 
         // pathTimes에 저장된 시간값들로 출발 시간 계산
-        log.error("경로 소요 시간 및 막차 시간: " + pathTimes);
+        log.info("경로 소요 시간 및 막차 시간: " + pathTimes);
 
+        return calculateAlarmTime(pathTimes);
     }
 
     public JsonNode findBusDetail(String busID) throws Exception {
@@ -236,5 +243,72 @@ public class LocationService {
         JsonNode subwayResult = objectMapper.readTree(jsonData);
 
         return subwayResult;
+    }
+
+    public String calculateAlarmTime(Map<String, List<Object>> pathTimes) throws Exception{
+        // 거꾸로 시간 계산
+        String alarmDateTime = "2023-01-02T03:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        for (int i = 0; i < pathTimes.size() - 1; i++) {
+            String stationTime = pathTimes.get(String.valueOf(pathTimes.size() - 1 - i)).get(1).toString();
+            String stationDateTime = convertedTime(stationTime);
+            log.info("24시 넘었을 시 시간 변환: " + stationDateTime);
+            int sectionTime = (int) pathTimes.get(String.valueOf(pathTimes.size() - 2 - i)).get(0);
+
+            if (compareTime(alarmDateTime, stationDateTime)) {
+                alarmDateTime = stationDateTime;
+            }
+
+            // alarmDateTime에서 sectionDateTime 빼기
+            LocalDateTime alarmDateTime2 = LocalDateTime.parse(alarmDateTime, DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime newDateTime = alarmDateTime2.minusMinutes(sectionTime);
+
+            // 결과를 문자열로 형식화
+            alarmDateTime = newDateTime.format(formatter);
+        }
+
+        // 맨 처음 시간 또한 비교 후 갱신
+        String stationTime = pathTimes.get("0").get(1).toString();
+        String stationDateTime = convertedTime(stationTime);
+        log.info("24시 넘었을 시 시간 변환: " + stationDateTime);
+        if (compareTime(alarmDateTime, stationDateTime)) {
+            alarmDateTime = stationDateTime;
+        }
+
+        return convertedTimeBefore30(alarmDateTime);
+    }
+
+    public String convertedTime(String stationTime) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String stationDateTime;
+        if (Integer.parseInt(stationTime.substring(0, 2)) >= 24) {
+            Date time = sdf.parse(stationTime);
+            time.setTime(time.getTime() - ((long) 1440 * 60 * 1000));
+            stationDateTime = "2023-01-02T" + sdf.format(time);
+        } else {
+            stationDateTime = "2023-01-01T" + stationTime;
+        }
+        return stationDateTime;
+    }
+
+    public String convertedTimeBefore30(String alarmDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime alarmDateTime2 = LocalDateTime.parse(alarmDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        String alarmBefore30 = alarmDateTime2.minusMinutes(30).format(formatter);
+
+        String alarmTime = alarmBefore30.substring(11, 16);
+        if (alarmBefore30.startsWith("2023-01-02")) {
+            int hour = Integer.parseInt(alarmTime.substring(0, 2)) + 24;
+            alarmTime = hour + alarmTime.substring(2, 5);
+        }
+        return alarmTime;
+    }
+
+    public boolean compareTime(String alarmDateTime, String stationDateTime) {
+        // 시간 문자열을 LocalDateTime 객체로 파싱 후 stationDateTime과 alarmDateTime 비교
+        LocalDateTime time1 = LocalDateTime.parse(alarmDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime time2 = LocalDateTime.parse(stationDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        return time1.isAfter(time2);
     }
 }
