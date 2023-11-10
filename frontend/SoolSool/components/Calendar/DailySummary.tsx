@@ -22,13 +22,20 @@ function DailySummary(props) {
   const [alcoholList, setAlcoholList] = useState([]);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
+  // console.log(
+  //   `알코올 데이즈의 모양을 봐요! ${JSON.stringify(alcoholDays, null, 2)}`
+  // );
+
   const {
     data: DailyDrinkData,
     isLoading: DailyDrinkLoading,
     isError: DailyDrinkError,
   } = useQuery(
     ["DailyDrinkQuery", summaryText], // 두번째에 의존성 추가 가능
-    async () => await fetchDailyDrink(summaryText)
+    async () => await fetchDailyDrink(summaryText),
+    {
+      enabled: isAlcohol, // 조건부 활성화
+    }
   );
 
   useFocusEffect(
@@ -46,7 +53,8 @@ function DailySummary(props) {
           setAlcoholList(alcohols);
         }
       }
-    }, [summaryText, navigation, DailyDrinkData])
+      // }, [summaryText, navigation, DailyDrinkData])
+    }, [DailyDrinkData, navigation])
   );
 
   return (
