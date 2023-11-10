@@ -34,11 +34,22 @@ public class DrinkGetService {
 
     private final DiaryRepository diaryRepository;
 
+    // 수정중!!!!!!!!!!!!!!!!!!!!
     public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
         // 유저와 날짜가 일치하는 일기 찾기
         User user = UserUtils.getUserFromToken(userDetails);
         Diary existingDiary = diaryRepository.findByDrinkDateAndUser(drinkDate, user)
-            .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
+            .orElse(null);
+
+        if (existingDiary == null) {
+            return TotalDrinkInfoDto.builder()
+                .drinks(new ArrayList<>())
+                .height(user.getHeight())
+                .weight(user.getWeight())
+                .gender(user.getGender())
+                .build();
+        }
+
         List<Drink> drinks = existingDiary.getDrinks();
 
         AtomicInteger drinkTotal = new AtomicInteger();
@@ -83,6 +94,8 @@ public class DrinkGetService {
             .height(user.getHeight())
             .weight(user.getWeight())
             .gender(user.getGender())
+            .todayBloodAlcohol(user.getTodayBloodAlcohol())
+            .todayBloodAlcohol(user.getTodayLiverAlcohol())
             .build();
     }
 

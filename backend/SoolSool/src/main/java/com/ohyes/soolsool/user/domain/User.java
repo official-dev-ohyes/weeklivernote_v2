@@ -76,6 +76,12 @@ public class User {
     @Column(name = "start_nonalcohol_date")
     private LocalDate startNonalcoholDate;
 
+    @Column(name = "today_blood_alcohol", columnDefinition = "float default 0.0")
+    private float todayBloodAlcohol;
+
+    @Column(name = "today_liver_alcohol", columnDefinition = "float default 0.0")
+    private float todayLiverAlcohol;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -98,9 +104,11 @@ public class User {
 
     // 생성자
     @Builder
-    public User(String socialId, Category category, String nickname, String profileImg, String address,
+    public User(String socialId, Category category, String nickname, String profileImg,
+        String address,
         String gender, int height, int weight, float alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
+        int maxNonalcoholPeriod, LocalDate startNonalcoholDate, float todayBloodAlcohol,
+        float todayLiverAlcohol) {
 
         this.socialId = socialId;
         this.category = category;
@@ -114,6 +122,8 @@ public class User {
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
         this.startNonalcoholDate = startNonalcoholDate;
+        this.todayBloodAlcohol = todayBloodAlcohol;
+        this.todayLiverAlcohol = todayLiverAlcohol;
     }
 
     public void updateRefreshToken(String updateRefreshToken) {
