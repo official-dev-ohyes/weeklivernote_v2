@@ -12,6 +12,7 @@ import AlcoholChart from "../components/Calendar/AlcoholChart";
 
 function DailyDetailScreen({ route, navigation }) {
   const day = route.params.summaryText;
+  console.log(`선택된 날짜의 정보를 확인합시다!!  날짜는 : ${day}`);
   const alcoholDays = route.params.alcoholDays;
   const isAlcohol = route.params.isAlcohol;
   const [isImg, setIsImg] = useState<boolean>(false);
@@ -66,7 +67,7 @@ function DailyDetailScreen({ route, navigation }) {
           />
         </View>
         <View style={styles.buttons}>
-          {/* <Button
+          <Button
             mode="outlined"
             onPress={() => {
               navigation.navigate("RecordCreate", {
@@ -77,7 +78,7 @@ function DailyDetailScreen({ route, navigation }) {
             style={styles.botton}
           >
             수정
-          </Button> */}
+          </Button>
           <Button
             mode="contained"
             onPress={openDeleteModal}
