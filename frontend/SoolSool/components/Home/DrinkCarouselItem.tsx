@@ -79,10 +79,6 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
         {
           translateY: translateY,
         },
-        // Padding left is better than translateX
-        // {
-        //   translateX: ListItemWidth / 2 + ListItemWidth,
-        // },
         {
           scale,
         },

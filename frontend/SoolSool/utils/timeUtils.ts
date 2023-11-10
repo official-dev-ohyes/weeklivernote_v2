@@ -32,7 +32,6 @@ export function calculateTimeDifference(targetDate: Date): number {
   const millisecondsInOneHour = 1000 * 60 * 60;
   const hoursDifference = differenceInMilliseconds / millisecondsInOneHour;
 
-  // const roundedHoursDifference = Math.floor(hoursDifference);
   const roundedHoursDifference = Math.round(hoursDifference * 10) / 10;
 
   return roundedHoursDifference;
