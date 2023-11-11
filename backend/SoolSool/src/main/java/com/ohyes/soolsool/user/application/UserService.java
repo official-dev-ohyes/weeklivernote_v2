@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.drink.dao.CategoryRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
+import com.ohyes.soolsool.gps.application.GpsService;
+import com.ohyes.soolsool.location.domain.Location;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
@@ -52,6 +54,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final JwtProvider jwtProvider;
+    private final GpsService gpsService;
 
     // 카카오 로그인
     public KakaoProfileDto kakaoLogin(String code) throws JsonProcessingException {
@@ -218,6 +221,12 @@ public class UserService {
         }
         alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
 
+        // 주소 입력 했을 경우 위도/경도 데이터 저장
+        if (!userRequestDto.getAddress().equals("주소지 미입력")) {
+            Location location = user.getLocation();
+            gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress());
+        }
+
         user.setSocialId(socialId);
         user.setAddress(userRequestDto.getAddress());
         user.setGender(userRequestDto.getGender());
@@ -288,6 +297,12 @@ public class UserService {
         }
         if (userModifyDto.getAddress() != null) {
             user.setAddress(userModifyDto.getAddress());
+
+            // 주소 입력 했을 경우 위도/경도 데이터 저장
+            if (!userModifyDto.getAddress().equals("주소지 미입력")) {
+                Location location = user.getLocation();
+                gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress());
+            }
         }
         if (userModifyDto.getGender() != null) {
             user.setGender(userModifyDto.getGender());
