@@ -1,87 +1,66 @@
-import React, { useRef, useEffect } from "react";
-import { StyleSheet, Text, View, Animated, Easing } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
 
 const RouteMotion = ({ sectionTimeArr }) => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: 2000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-      { iterations: -1 }
-    ).start();
-  }, [animatedValue]);
-
-  const renderBars = () => {
-    return sectionTimeArr.map((section, index) => {
-      const barColor =
-        section.trafficType === 1
-          ? "orange"
-          : section.trafficType === 2
-          ? "blue"
-          : "gray";
-
-      return (
-        <View key={index} style={styles.barContainer}>
-          <View style={[styles.bar, { backgroundColor: barColor }]} />
-          <Animated.View
-            style={[
-              styles.pointer,
-              {
-                transform: [
-                  {
-                    translateX: animatedValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, 100], // 0%부터 100%까지의 범위로 변경
-                    }),
-                  },
-                ],
-              },
-            ]}
-          />
-        </View>
-      );
-    });
-  };
+  const totalSectionTime = sectionTimeArr.reduce(
+    (acc, section) => acc + section.sectionTime,
+    0
+  );
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.motionContainer}>{renderBars()}</View> */}
+      {sectionTimeArr.map((section, index) => {
+        const barColor =
+          section.trafficType === 1
+            ? "#FF6D4D"
+            : section.trafficType === 2
+            ? "#6878FF"
+            : "lightgray";
+
+        const barWidth = (section.sectionTime / totalSectionTime) * 100;
+
+        return (
+          <View
+            key={index}
+            style={[
+              styles.bar,
+              {
+                backgroundColor: barColor,
+                width: `${barWidth}%`,
+                borderTopLeftRadius: index === 0 ? 5 : 0, // 첫번째 왼쪽 가장자리 둥글게
+                borderBottomLeftRadius: index === 0 ? 5 : 0, // 첫번째 왼쪽 가장자리 둥글게
+                borderTopRightRadius:
+                  index === sectionTimeArr.length - 1 ? 5 : 0, // 마지막 오른쪽 가장자리 둥글게
+                borderBottomRightRadius:
+                  index === sectionTimeArr.length - 1 ? 5 : 0, // 마지막 오른쪽 가장자리 둥글게
+              },
+            ]}
+          >
+            <Text style={styles.timeText}>{section.sectionTime}</Text>
+          </View>
+        );
+      })}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "brown",
-  },
-  motionContainer: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  barContainer: {
-    marginRight: 10,
-    position: "relative",
+    width: "100%",
+    marginRight: "auto",
+    marginLeft: "auto",
   },
   bar: {
-    height: 10,
-    width: 100,
+    height: 15,
+    display: "flex",
+    alignItems: "center",
   },
-  pointer: {
-    position: "absolute",
-    width: 20,
-    height: 20,
-    backgroundColor: "red",
-    borderRadius: 10,
-    top: -5,
-    left: 0,
+  timeText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 10,
   },
 });
 

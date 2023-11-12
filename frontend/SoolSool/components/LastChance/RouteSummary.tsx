@@ -25,19 +25,27 @@ function RouteSummary({ info, subPath }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.title}>
-        <Text>최단 경로</Text>
+        <Text style={styles.titleText}>최단 경로</Text>
+        <Text style={styles.contentText}>소요시간 총 {totalTime}분</Text>
+        <Text style={styles.contentText}>{payment}원</Text>
       </View>
       <View style={styles.summaryInfo}>
-        <Text>도보 총{totalWalk}걸음</Text>
-        <Text>소요시간 총 {totalTime}분</Text>
-        <Text>{payment}원</Text>
-        <Text>출발 {firstStartStation}</Text>
-        <Text>도착 {lastEndStation}</Text>
-        <Text>버스타고 {busStationCount}개 정류장</Text>
-        <Text>지하철타고 {subwayStationCount}개 정류장</Text>
+        <Text style={styles.contentText}>도보 총{totalWalk}걸음</Text>
+        <Text style={styles.contentText}>버스 {busStationCount}개 정류장</Text>
+        <Text style={styles.contentText}>
+          지하철 {subwayStationCount}개 정류장
+        </Text>
       </View>
       <View style={styles.routeGraph}>
-        <RouteMotion sectionTimeArr={sectionTimeArr} />
+        <View style={styles.startPointer}></View>
+        <View style={styles.marginContainer}>
+          <RouteMotion sectionTimeArr={sectionTimeArr} />
+        </View>
+        <View style={styles.endPointer}></View>
+      </View>
+      <View style={styles.summaryInfoBottom}>
+        <Text style={styles.contentText}>{firstStartStation}</Text>
+        <Text style={styles.contentText}>{lastEndStation}</Text>
       </View>
     </View>
   );
@@ -46,23 +54,60 @@ function RouteSummary({ info, subPath }) {
 const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
-    height: 150,
-    backgroundColor: "lightgrey",
+    height: 140,
+    // backgroundColor: "lightgrey",
     display: "flex",
     flexDirection: "column",
+    justifyContent: "flex-start",
+    gap: 12,
+    marginVertical: 5,
   },
   title: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "flex-end",
+  },
+  titleText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginRight: 5,
+    color: "green",
+  },
+  contentText: {
+    marginRight: 5,
   },
   summaryInfo: {
     display: "flex",
     flexDirection: "row",
+  },
+  summaryInfoBottom: {
+    display: "flex",
+    flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   routeGraph: {
     display: "flex",
     flexDirection: "row",
+  },
+  marginContainer: {
+    display: "flex",
+    flexDirection: "row",
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  startPointer: {
+    width: 15,
+    height: 15,
+    borderRadius: 20,
+    backgroundColor: "red",
+  },
+  endPointer: {
+    width: 15,
+    height: 15,
+    borderRadius: 20,
+    backgroundColor: "green",
   },
 });
 

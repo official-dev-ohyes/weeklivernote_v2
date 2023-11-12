@@ -15,7 +15,7 @@ import { fetchHomeRoute } from "../api/mapApi";
 import { HomeMarker, NowMarker } from "../assets";
 import HomeRouteDetail from "../components/LastChance/HomeRouteDetail";
 
-function HomeRouteScreen() {
+function HomeRouteScreen({ navigation }) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [region, setRegion] = useState({
     latitude: 35.1110783,
@@ -420,25 +420,28 @@ function HomeRouteScreen() {
   //   }
   // }, [RouteData, isLoading]);
 
-  const snapPoints = useMemo(() => ["15%", "80%"], []);
+  useEffect(() => {
+    // 컴포넌트가 마운트되면 bottomSheet를 초기에 보이도록 설정
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const snapPoints = useMemo(() => ["20%", "80%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
+  const handleTest = () => {
+    navigation.navigate("AddInfo");
+  };
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>
-        <Button
-          mode="contained-tonal"
-          onPress={handlePresentModalPress}
-          style={styles.button}
-        >
-          모달을 보여주세요
-        </Button>
         <MapView
           provider={PROVIDER_GOOGLE}
           style={styles.map}
@@ -474,15 +477,23 @@ function HomeRouteScreen() {
             strokeWidth={6}
           />
         </MapView>
-
+        <Button
+          mode="elevated"
+          onPress={handlePresentModalPress}
+          style={styles.button}
+        >
+          상세 경로 확인하기
+        </Button>
+        <Button mode="contained-tonal" onPress={handleTest}>
+          정보입력 바로가기
+        </Button>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          index={1}
+          index={0}
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
         >
           <View style={styles.contentContainer}>
-            {/* <Text>Awesome 🎉</Text> */}
             <HomeRouteDetail
               pathType={pathType}
               info={info}

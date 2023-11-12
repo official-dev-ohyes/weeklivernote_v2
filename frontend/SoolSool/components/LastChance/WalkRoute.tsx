@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   routhGraphContainer: {
     width: "5%",
-    backgroundColor: "grey",
+    backgroundColor: "lightgray",
   },
   rightContainer: {
     width: "75%",
