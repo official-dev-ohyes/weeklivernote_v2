@@ -1,7 +1,7 @@
 package com.ohyes.soolsool.user.dto;
 
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,10 +16,12 @@ public class UserResponseDto {
     private int weight;
     private float alcoholLimit;
     private DrinkInfo drinkInfo;
+    private GpsInfo gpsInfo;
 
     @Builder
     private UserResponseDto(String nickname, String profileImg,
-        String address, String gender, int height, int weight, float alcoholLimit, DrinkInfo drinkInfo) {
+        String address, String gender, int height, int weight, float alcoholLimit,
+        DrinkInfo drinkInfo, GpsInfo gpsInfo) {
 
         this.nickname = nickname;
         this.profileImg = profileImg;
@@ -29,5 +31,6 @@ public class UserResponseDto {
         this.weight = weight;
         this.alcoholLimit = alcoholLimit;
         this.drinkInfo = drinkInfo;
+        this.gpsInfo = gpsInfo;
     }
 }

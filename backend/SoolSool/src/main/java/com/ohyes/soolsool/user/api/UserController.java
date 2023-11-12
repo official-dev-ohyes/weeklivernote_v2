@@ -2,6 +2,7 @@ package com.ohyes.soolsool.user.api;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
 import com.ohyes.soolsool.user.application.UserService;
 import com.ohyes.soolsool.user.application.UserStatService;
 import com.ohyes.soolsool.user.domain.User;
@@ -14,7 +15,6 @@ import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
 import com.ohyes.soolsool.util.UserUtils;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,8 +83,8 @@ public class UserController {
     public ResponseEntity<Object> userInfoModify(@RequestBody UserModifyDto userModifyDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userService.userInfoModify(userModifyDto, userDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
+        GpsInfo gpsInfo = userService.userInfoModify(userModifyDto, userDetails);
+        return new ResponseEntity<>(gpsInfo, HttpStatus.OK);
     }
 
     @PostMapping("v1/user/logout")

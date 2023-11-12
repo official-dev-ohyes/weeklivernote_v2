@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NowGpsInfo {
+public class GpsInfo {
 
     @Schema(type = "number", format = "double", example = "35.085747")
-    private final double nowLatitude;
+    private final double latitude;
 
     @Schema(type = "number", format = "double", example = "128.878013")
-    private final double nowLongitude;
+    private final double longitude;
 }

@@ -1,7 +1,7 @@
 package com.ohyes.soolsool.gps.api;
 
 import com.ohyes.soolsool.gps.application.GpsService;
-import com.ohyes.soolsool.gps.dto.NowGpsInfo;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
@@ -26,9 +26,9 @@ public class GpsController {
     @Operation(summary = "사용자 현재 위치 정보 저장",
         description = "사용자의 현재 위치의 위도, 경도 정보를 저장합니다.")
     public ResponseEntity<Object> nowGpsInfoAdd(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, NowGpsInfo nowGpsInfo) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails, GpsInfo gpsInfo) {
         User user = UserUtils.getUserFromToken(userDetails);
-        gpsService.addUserNowGpsInfo(user, nowGpsInfo);
+        gpsService.addUserNowGpsInfo(user, gpsInfo);
         return new ResponseEntity<>(new MessageResponse("[GPS] 유저의 현재 위치가 저장되었습니다."),
             HttpStatus.CREATED);
     }
