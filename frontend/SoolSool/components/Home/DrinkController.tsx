@@ -21,7 +21,8 @@ import {
   removeDrink,
 } from "../../api/drinkRecordApi";
 import { getToday } from "../../utils/timeUtils";
-import { checkLocationPermission, locationPermissionAlert } from "../../utils/gpsUtils";
+import { checkLocationPermission, locationPermissionAlert, updateLocation } from "../../utils/gpsUtils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Drink {
   id: number;
@@ -138,54 +139,55 @@ function DrinkController() {
   };
 
   const handleIncrement = async () => {
-    const newValue = value + 1;
-    setValue(newValue);
-    handleLogChange(selectedDrink.id, newValue);
+		const newValue = value + 1;
+		setValue(newValue);
+		handleLogChange(selectedDrink.id, newValue);
 
-    const drinkData = {
-      drinks: [
-        {
-          category: selectedDrink.name,
-          drinkUnit: selectedDrink.unit,
-          drinkAmount: newValue,
-        },
-      ],
-      drinkDate: today,
-    };
+		const drinkData = {
+			drinks: [
+				{
+					category: selectedDrink.name,
+					drinkUnit: selectedDrink.unit,
+					drinkAmount: newValue,
+				},
+			],
+			drinkDate: today,
+		};
 
-    if (newValue === 1) {
-      // 권한 확인
-      const isPermissionDenied = checkLocationPermission();
+		// 권한 확인
+		const isPermissionDenied = await checkLocationPermission();
 
-      
-      if (isPermissionDenied) {
-				// 권한 허용 안한 상태일 경우 권한 허용 Alert 한번 띄우기
-				await locationPermissionAlert();
-			} else { // 권한 허용 했을 경우 위치 정보 
-      }
+		// 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
+		if (isPermissionDenied && newValue === 1) {
+			await locationPermissionAlert();
+		}
 
-      // 권한 허용 안한 상태일 경우 그냥 post
-      if (isPermissionDenied) {
-				createDrink(drinkData)
-          .then((res) => {
-            console.log("Successfully create a new drink log.", res);
-          })
-          .catch((err) => {
-            console.log("Fail to create a new drink log.", err);
-          });
-			} else {  // 권한 허용 상태이면 위치 정보도 보내깅
+    const keepUpdateLocation = JSON.parse((await AsyncStorage.getItem("keepUpdateLocation")) || "true");
 
-      }
-    } else {
-      updateDrink(drinkData)
-        .then((res) => {
-          console.log("Successfully update the drink log.", res);
-        })
-        .catch((err) => {
-          console.log("Fail to update the drink log.", err);
-        });
-    }
-  };
+    if (!isPermissionDenied && keepUpdateLocation) {	// 권한 허용 및 위치 조회 필요한 경우
+			// 위치 정보 조회 로직
+			const keepUpdate = await updateLocation();
+      await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(keepUpdate));
+		}
+
+		if (newValue === 1) {
+			createDrink(drinkData)
+				.then((res) => {
+					console.log("Successfully create a new drink log.", res);
+				})
+				.catch((err) => {
+					console.log("Fail to create a new drink log.", err);
+				});
+		} else {
+			updateDrink(drinkData)
+				.then((res) => {
+					console.log("Successfully update the drink log.", res);
+				})
+				.catch((err) => {
+					console.log("Fail to update the drink log.", err);
+				});
+		}
+	};
 
   const getSelectedDrink = (drink: Drink) => {
     setSelectedDrink(drink);

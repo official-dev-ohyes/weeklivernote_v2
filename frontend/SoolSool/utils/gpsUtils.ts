@@ -1,6 +1,13 @@
 import { Linking, Alert, Platform } from "react-native";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDistance } from "geolib";
+
+interface LocationType {
+	latitude: number;
+	longitude: number;
+	time?: number;
+}
 
 export async function getFirstLocationPermission() {
 	console.log("firstLanch 확인 함수 시작");
@@ -47,4 +54,72 @@ export async function locationPermissionAlert() {
 		return;
 	}
 	return;
+}
+
+export async function getLocation(): Promise<LocationType | null> {
+	try {
+		const location = await Location.getCurrentPositionAsync({
+			accuracy: Location.Accuracy.Highest,
+		});
+		const latitude = location.coords.latitude;
+		const longitude = location.coords.longitude;
+
+		console.log("현재 위치 - 위도:", latitude, "경도:", longitude);
+
+		return { latitude, longitude };
+	} catch (error) {
+		console.error("위치 정보를 가져오는 중 오류가 발생했습니다.", error);
+		return null;
+	}
+}
+
+export async function updateLocation(): Promise<boolean> {
+	const nowLocation: LocationType = JSON.parse((await AsyncStorage.getItem("nowLocation")) || "{}");
+	const destLocation: LocationType = JSON.parse((await AsyncStorage.getItem("destLocation")));
+	// const lastChanceTime = await AsyncStorage.getItem("lastChanceTime");
+	const lastChanceTime = "23:50";
+	const now = new Date();
+
+	console.log("현재 위치 : ", nowLocation);
+	console.log("길이 확인 : ", Object.keys(nowLocation).length);
+	console.log("도착지 위치 : ", destLocation);
+	
+	let location: LocationType = nowLocation;
+
+	if (getDistanceDiff(destLocation, location) <= 2) {
+		console.log("2km 이상인가요 ? ", location, destLocation);
+		return false;
+	}
+
+	if (Object.keys(nowLocation).length === 0) {
+		location = await getLocation();
+		if (location) {
+			console.log("처음 : ", location);
+			await AsyncStorage.setItem(
+				"nowLocation",
+				JSON.stringify({ ...location, time: now.getTime() })
+			);
+		}
+	} else if (now.getTime() - (nowLocation.time || 0) >= 3600000) {
+		location = await getLocation();
+		console.log("1시간 이상인가요 ? ", location, nowLocation?.time);
+		if (location && getDistanceDiff(nowLocation, location) >= 1) {
+			console.log("1km 이상인가요 ? ", location, nowLocation?.time);
+			await AsyncStorage.setItem(
+				"nowLocation",
+				JSON.stringify({ ...location, time: now.getTime() })
+			);
+		}
+	}
+
+	// if (lastChanceTime && new Date(lastChanceTime).getTime() < now.getTime()) {
+	// 	return false;
+	// }
+
+	return true;
+}
+
+function getDistanceDiff(targetLocation, location) {
+	const distance = getDistance(targetLocation, location);
+	return distance / 1000;
 }
