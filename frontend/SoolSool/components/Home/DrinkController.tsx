@@ -70,6 +70,12 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
 
   const today = getToday();
 
+  // useEffect(() => {
+  //   const defaultDrinkLog = currentDrinkList[defaultDrink.id];
+  //   console.log("soju", defaultDrinkLog);
+  //   setValue(defaultDrinkLog);
+  // }, [defaultDrink.id]);
+
   useEffect(() => {
     setCurrentDrinkList(currentDrinks);
   }, [currentDrinks]);
@@ -120,7 +126,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
       });
       throw error;
     }
-  }, 100);
+  }, 200);
 
   const handleDecrement = _.debounce(async () => {
     if (value > 0) {
@@ -175,7 +181,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
       const updatedDrinkToday = drinkToday.update(dataForUpdate);
       setDrinkToday(updatedDrinkToday);
     }
-  }, 100);
+  }, 200);
 
   const handleIncrement = _.debounce(async () => {
     const newValue = value + 1;
@@ -238,7 +244,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
     };
     const updatedDrinkToday = drinkToday.update(dataForUpdate);
     setDrinkToday(updatedDrinkToday);
-  }, 100);
+  }, 200);
 
   const getSelectedDrink = (drink: Drink) => {
     setSelectedDrink(drink);
