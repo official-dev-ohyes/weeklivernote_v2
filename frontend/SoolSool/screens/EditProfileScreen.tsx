@@ -14,6 +14,7 @@ import { fetchUserProfile, updateUserProfile } from "../api/mypageApi";
 import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 import ProfileImagePicker from "../components/EditProfile/ProfileImagePicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function EditProfileScreen({ navigation }) {
   const [oldnickname, setOldNickname] = useState("");
@@ -91,7 +92,9 @@ function EditProfileScreen({ navigation }) {
       address || oldaddress,
       drinkInfo
     )
-      .then((res) => {
+      .then(async (res) => {
+        const destLocation = res;
+				await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
         // console.log("업데이트 성공");
         Toast.show("프로필 수정 성공", {
           duration: Toast.durations.SHORT,
