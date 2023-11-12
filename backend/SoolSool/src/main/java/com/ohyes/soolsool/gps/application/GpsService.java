@@ -3,8 +3,11 @@ package com.ohyes.soolsool.gps.application;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.gps.dto.GpsInfo;
+import com.ohyes.soolsool.location.application.LocationService;
 import com.ohyes.soolsool.location.dao.LocationRepository;
 import com.ohyes.soolsool.location.domain.Location;
+import com.ohyes.soolsool.location.dto.AlarmTime;
+import com.ohyes.soolsool.location.dto.LocationRequestDto;
 import com.ohyes.soolsool.user.domain.User;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class GpsService {
     private String API_KEY;
     private static final String API_URL = "https://dapi.kakao.com/v2/local/search/address.json?query=";
     private final LocationRepository locationRepository;
+    private final LocationService locationService;
 
     // 주소에서 위도/경도 정보 조회 후 저장
     public GpsInfo getDestinationGpsInfo(Location location, String address) {
@@ -80,8 +84,8 @@ public class GpsService {
         return gpsInfo;
     }
 
-    // 유저의 현재 위치 정보 저장
-    public void addUserNowGpsInfo(User user, GpsInfo gpsInfo) {
+    // 유저의 현재 위치 정보 수정
+    public AlarmTime addUserNowGpsInfo(User user, GpsInfo gpsInfo) throws Exception {
         Location location = user.getLocation();
 
         location.setNowLat(gpsInfo.getLatitude());
@@ -89,5 +93,16 @@ public class GpsService {
 
         locationRepository.save(location);
         log.info("[GPS] 사용자의 현재 위치가 저장되었습니다.");
+
+        // 유저의 현재 위치 정보 갱신 될 때 마다 막차 경로 조회 및 저장
+        LocationRequestDto locationRequestDto = LocationRequestDto.builder()
+            .homeLat(user.getLocation().getHomeLat())
+            .homeLong(user.getLocation().getHomeLong())
+            .nowLat(gpsInfo.getLatitude())
+            .nowLong(gpsInfo.getLongitude())
+            .build();
+
+        // 막차 알림 시간 반환
+        return locationService.saveLastChance(locationRequestDto, user.getSocialId());
     }
 }
