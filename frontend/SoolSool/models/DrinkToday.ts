@@ -43,6 +43,15 @@ export class DrinkToday {
   weight: number;
   gender: string;
 
+  constructor(data: DrinkTodayData) {
+    this.drinkTotal = data.drinkTotal;
+    this.alcoholAmount = data.alcoholAmount;
+    this.drinkStartTime = data.drinkStartTime;
+    this.height = data.height;
+    this.weight = data.weight;
+    this.gender = data.gender;
+  }
+
   get bloodAlcoholContent(): number {
     if (this.drinkTotal === 0) {
       return 0;
@@ -98,12 +107,10 @@ export class DrinkToday {
     return Number(requiredTimeInHours);
   }
 
-  constructor(data: DrinkTodayData) {
-    this.drinkTotal = data.drinkTotal;
-    this.alcoholAmount = data.alcoholAmount;
-    this.drinkStartTime = data.drinkStartTime;
-    this.height = data.height;
-    this.weight = data.weight;
-    this.gender = data.gender;
+  update(updateData: Partial<DrinkTodayData>): DrinkToday {
+    return new DrinkToday({
+      ...this,
+      ...updateData,
+    });
   }
 }

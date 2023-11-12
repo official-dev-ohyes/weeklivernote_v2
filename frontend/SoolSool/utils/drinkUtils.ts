@@ -60,3 +60,20 @@ export const getAmountByDrinkCount = (category: string, num: number) => {
   let shotAmount = amount / shot.volume;
   return [bottleAmount, shotAmount];
 };
+
+export const getDrinkAndAlcoholAmountById = (
+  targetId: number
+): {
+  drinkAmount: number;
+  alcoholAmount: number;
+} | null => {
+  const matchingDrink = drinkData.find((item) => item.id === targetId);
+  const drinkAmount = matchingDrink ? matchingDrink.volume : null;
+  const alcoholAmount = matchingDrink ? matchingDrink.alcoholAmount : null;
+
+  if (drinkAmount != null && alcoholAmount != null) {
+    return { drinkAmount, alcoholAmount };
+  } else {
+    return null;
+  }
+};

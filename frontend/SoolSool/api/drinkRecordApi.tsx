@@ -1,30 +1,15 @@
 import axiosInstance from "./axiosConfig";
 
 // 일간 음주 총계 조회
-export const fetchDrink = async (drinkDate) => {
+export const fetchDrink = async (drinkDate: string) => {
   try {
     const res = await axiosInstance.get(`/v1/drink/${drinkDate}`);
     return res.data;
   } catch (err) {
-    if (err.response.status === 400) {
-      return generateAlternativeData();
-    } else {
-      console.log("axios 호출 실패하는 이유", err);
-      throw new Error("drink record 조회 get 요청 실패");
-    }
+    console.log("axios 호출 실패하는 이유", err);
+    throw new Error("drink record 조회 get 요청 실패");
   }
 };
-
-function generateAlternativeData() {
-  return {
-    drinkTotal: 0,
-    alcoholAmount: 0,
-    drinkStartTime: null,
-    height: 0,
-    weight: 0,
-    gender: "",
-  };
-}
 
 // 음주 기록 추가
 export const createDrink = async (drinkData) => {

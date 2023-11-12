@@ -13,7 +13,9 @@ function DrinkingStatus({
 }: DrinkingStatusProps) {
   return (
     <View style={styles.statusContainer}>
-      <Text style={styles.titleContainer}>{drinkInVolume}ml</Text>
+      <Text style={styles.titleContainer}>
+        {drinkInVolume.toLocaleString()}ml
+      </Text>
       {drinkingFor === undefined ? (
         <Text style={styles.subtitleContainer}>
           <Text style={styles.periodContainer}>
