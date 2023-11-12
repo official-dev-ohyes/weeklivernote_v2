@@ -21,6 +21,7 @@ import {
   removeDrink,
 } from "../../api/drinkRecordApi";
 import { getToday } from "../../utils/timeUtils";
+import { checkLocationPermission, locationPermissionAlert } from "../../utils/gpsUtils";
 
 interface Drink {
   id: number;
@@ -136,7 +137,7 @@ function DrinkController() {
     }
   };
 
-  const handleIncrement = () => {
+  const handleIncrement = async () => {
     const newValue = value + 1;
     setValue(newValue);
     handleLogChange(selectedDrink.id, newValue);
@@ -153,13 +154,28 @@ function DrinkController() {
     };
 
     if (newValue === 1) {
-      createDrink(drinkData)
-        .then((res) => {
-          console.log("Successfully create a new drink log.", res);
-        })
-        .catch((err) => {
-          console.log("Fail to create a new drink log.", err);
-        });
+      // 권한 확인
+      const isPermissionDenied = checkLocationPermission();
+
+      
+      if (isPermissionDenied) {
+				// 권한 허용 안한 상태일 경우 권한 허용 Alert 한번 띄우기
+				await locationPermissionAlert();
+			} else { // 권한 허용 했을 경우 위치 정보 
+      }
+
+      // 권한 허용 안한 상태일 경우 그냥 post
+      if (isPermissionDenied) {
+				createDrink(drinkData)
+          .then((res) => {
+            console.log("Successfully create a new drink log.", res);
+          })
+          .catch((err) => {
+            console.log("Fail to create a new drink log.", err);
+          });
+			} else {  // 권한 허용 상태이면 위치 정보도 보내깅
+
+      }
     } else {
       updateDrink(drinkData)
         .then((res) => {
