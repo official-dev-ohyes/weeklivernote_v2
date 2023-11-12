@@ -2,7 +2,7 @@ package com.ohyes.soolsool.gps.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ohyes.soolsool.gps.dto.NowGpsInfo;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
 import com.ohyes.soolsool.location.dao.LocationRepository;
 import com.ohyes.soolsool.location.domain.Location;
 import com.ohyes.soolsool.user.domain.User;
@@ -69,11 +69,11 @@ public class GpsService {
     }
 
     // 유저의 현재 위치 정보 저장
-    public void addUserNowGpsInfo(User user, NowGpsInfo nowGpsInfo) {
+    public void addUserNowGpsInfo(User user, GpsInfo gpsInfo) {
         Location location = user.getLocation();
 
-        location.setNowLat(nowGpsInfo.getNowLatitude());
-        location.setNowLong(nowGpsInfo.getNowLongitude());
+        location.setNowLat(gpsInfo.getLatitude());
+        location.setNowLong(gpsInfo.getLongitude());
 
         locationRepository.save(location);
         log.info("[GPS] 사용자의 현재 위치가 저장되었습니다.");
