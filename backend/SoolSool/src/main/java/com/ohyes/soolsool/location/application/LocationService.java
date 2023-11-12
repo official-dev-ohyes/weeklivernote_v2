@@ -2,8 +2,14 @@ package com.ohyes.soolsool.location.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohyes.soolsool.location.dto.AlarmTime;
 import com.ohyes.soolsool.location.dto.LocationRequestDto;
 import com.ohyes.soolsool.location.dto.LocationResponseDto;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,12 +24,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 
 @Service
 @RequiredArgsConstructor
@@ -33,20 +35,45 @@ public class LocationService {
     @Value("${odsay.api-key}")
     private String apiKey;
 
-    public LocationResponseDto lastChanceGet(LocationRequestDto locationRequestDto) throws Exception {
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
+
+    // redis에 저장된 user의 막차 경로 조회
+    public LocationResponseDto getLastChance(String socialId) throws Exception {
+        String key = socialId + ":route";
+        String jsonString = (String) redisTemplate.opsForValue().get(key);
+
+        // JSON 문자열 객체로 변환
+        return objectMapper.readValue(jsonString, LocationResponseDto.class);
+    }
+
+    // redis에 막차 정보 저장
+    public AlarmTime saveLastChance(LocationRequestDto locationRequestDto, String socialId)
+        throws Exception {
         // 출발지부터 도착지까지 ODSAY 대중교통 길찾기 API 호출 후 totalTime이 가장 적게 걸리는 경로 가져오기
         JsonNode shortRoute = findRoute(locationRequestDto);
 
         // 시간 계산
         String alarmTime = calculateTime(shortRoute);
         log.info("예상 출발 시간: " + alarmTime);
-        // 계산된 예상 출발 시간 및 막차 경로 반환
 
-        return LocationResponseDto.builder()
+        // 계산된 예상 출발 시간 및 막차 경로를 JSON 문자열로 변환
+        LocationResponseDto locationResponseDto = LocationResponseDto.builder()
             .alarmTime(alarmTime)
             .shortRoute(shortRoute)
             .build();
+        log.error("뭐지뭐야 " + alarmTime);
+        String jsonString = objectMapper.writeValueAsString(locationResponseDto);
+
+        // Redis 저장 키는 socialId를 이용하기
+        String key = socialId + ":route";
+        redisTemplate.opsForValue().set(key, jsonString);
+
+        return AlarmTime.builder()
+            .alarmTime(alarmTime)
+            .build();
     }
+
 
     public JsonNode findRoute(LocationRequestDto locationRequestDto) throws Exception {
         // 입력값 URL 세팅
