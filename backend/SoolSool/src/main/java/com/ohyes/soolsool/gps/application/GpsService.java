@@ -2,8 +2,10 @@ package com.ohyes.soolsool.gps.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohyes.soolsool.gps.dto.NowGpsInfo;
 import com.ohyes.soolsool.location.dao.LocationRepository;
 import com.ohyes.soolsool.location.domain.Location;
+import com.ohyes.soolsool.user.domain.User;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +58,7 @@ public class GpsService {
                 location.setHomeLong(longitude);
 
                 locationRepository.save(location);
-                log.info("[Location] 사용자 주소지의 위도/경도가 저장되었습니다.");
+                log.info("[GPS] 사용자 주소지의 위도/경도가 저장되었습니다.");
 
             } catch (Exception e) {
                 log.error("Error: " + e.getMessage());
@@ -64,5 +66,16 @@ public class GpsService {
         } else {
             log.error("Error: " + response.getStatusCode());
         }
+    }
+
+    // 유저의 현재 위치 정보 저장
+    public void addUserNowGpsInfo(User user, NowGpsInfo nowGpsInfo) {
+        Location location = user.getLocation();
+
+        location.setNowLat(nowGpsInfo.getNowLatitude());
+        location.setNowLong(nowGpsInfo.getNowLongitude());
+
+        locationRepository.save(location);
+        log.info("[GPS] 사용자의 현재 위치가 저장되었습니다.");
     }
 }
