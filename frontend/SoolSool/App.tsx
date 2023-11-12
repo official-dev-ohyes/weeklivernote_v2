@@ -40,6 +40,8 @@ const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 import { setNotificationHandler } from "expo-notifications";
+import HomeRouteScreen from "./screens/HomeRouteScreen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 setNotificationHandler({
   handleNotification: async () => ({
@@ -140,101 +142,113 @@ export default function App() {
   }
 
   return (
-    <RecoilRoot>
-      <SafeAreaProvider>
-        <RootSiblingParent>
-          <PaperProvider theme={theme}>
-            <QueryClientProvider client={queryClient}>
-              <SafeAreaView
-                style={styles.rootScreen}
-                onLayout={onLayoutRootView}
-              >
-                <StatusBar style="auto" />
-                <NavigationContainer>
-                  <Stack.Navigator
-                    screenOptions={{
-                      headerShown: false,
-                      contentStyle: { backgroundColor: "#fff" },
-                    }}
-                    initialRouteName="BottomTab"
-                  >
-                    <Stack.Screen name="Login" component={LoginScreen} />
-                    <Stack.Screen
-                      name="KakaoLoginScreen"
-                      component={KakaoLoginScreen}
-                    />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <RecoilRoot>
+        <SafeAreaProvider>
+          <RootSiblingParent>
+            <PaperProvider theme={theme}>
+              <QueryClientProvider client={queryClient}>
+                <SafeAreaView
+                  style={styles.rootScreen}
+                  onLayout={onLayoutRootView}
+                >
+                  <StatusBar style="auto" />
+                  <NavigationContainer>
+                    <Stack.Navigator
+                      screenOptions={{
+                        headerShown: false,
+                        contentStyle: { backgroundColor: "#fff" },
+                      }}
+                      initialRouteName="BottomTab"
+                    >
+                      <Stack.Screen name="Login" component={LoginScreen} />
+                      <Stack.Screen
+                        name="KakaoLoginScreen"
+                        component={KakaoLoginScreen}
+                      />
 
-                    <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                    <Stack.Screen
-                      name="AddInfoStep2"
-                      component={AddInfoStep2Screen}
-                    />
-                    <Stack.Screen
-                      name="AddInfoStep3"
-                      component={AddInfoStep3Screen}
-                    />
-                    <Stack.Screen
-                      name="BottomTab"
-                      component={BottomTabNavigator}
-                    />
-                    <Stack.Screen
-                      name="Settings"
-                      component={SettingsScreen}
-                      options={{
-                        headerShown: true,
-                        headerStyle: { backgroundColor: "#363C4B" },
-                        headerTintColor: "white",
-                        headerTitleAlign: "center",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="EditProfile"
-                      component={EditProfileScreen}
-                      options={{
-                        headerShown: true,
-                        headerStyle: { backgroundColor: "#363C4B" },
-                        headerTintColor: "white",
-                        headerTitleAlign: "center",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="Notification"
-                      component={NotificationScreen}
-                      options={{
-                        headerShown: true,
-                        headerStyle: { backgroundColor: "#363C4B" },
-                        headerTintColor: "white",
-                        headerTitleAlign: "center",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="DailyDetail"
-                      component={DailyDetailScreen}
-                      options={{
-                        headerShown: true,
-                        headerStyle: { backgroundColor: "#363C4B" },
-                        headerTintColor: "white",
-                        title: "Calendar",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="RecordCreate"
-                      component={RecordCreateScreen}
-                      options={{
-                        headerShown: true,
-                        headerStyle: { backgroundColor: "#363C4B" },
-                        headerTintColor: "white",
-                        title: "Calendar",
-                      }}
-                    />
-                  </Stack.Navigator>
-                </NavigationContainer>
-              </SafeAreaView>
-            </QueryClientProvider>
-          </PaperProvider>
-        </RootSiblingParent>
-      </SafeAreaProvider>
-    </RecoilRoot>
+                      <Stack.Screen name="AddInfo" component={AddInfoScreen} />
+                      <Stack.Screen
+                        name="AddInfoStep2"
+                        component={AddInfoStep2Screen}
+                      />
+                      <Stack.Screen
+                        name="AddInfoStep3"
+                        component={AddInfoStep3Screen}
+                      />
+                      <Stack.Screen
+                        name="BottomTab"
+                        component={BottomTabNavigator}
+                      />
+                      <Stack.Screen
+                        name="Settings"
+                        component={SettingsScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="EditProfile"
+                        component={EditProfileScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="Notification"
+                        component={NotificationScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="DailyDetail"
+                        component={DailyDetailScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          title: "Calendar",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="RecordCreate"
+                        component={RecordCreateScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          title: "Calendar",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="HomeRoute"
+                        component={HomeRouteScreen}
+                        options={{
+                          headerShown: false,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          title: "HomeRoute",
+                        }}
+                      />
+                    </Stack.Navigator>
+                  </NavigationContainer>
+                </SafeAreaView>
+              </QueryClientProvider>
+            </PaperProvider>
+          </RootSiblingParent>
+        </SafeAreaProvider>
+      </RecoilRoot>
+    </GestureHandlerRootView>
   );
 }
 
