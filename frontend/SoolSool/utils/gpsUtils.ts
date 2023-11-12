@@ -2,6 +2,7 @@ import { Linking, Alert, Platform } from "react-native";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDistance } from "geolib";
+import { updateNowGpsInfo } from "../api/gpsApi";
 
 interface LocationType {
 	latitude: number;
@@ -87,28 +88,23 @@ export async function updateLocation(): Promise<boolean> {
 	let location: LocationType = nowLocation;
 
 	if (getDistanceDiff(destLocation, location) <= 2) {
-		console.log("2km 이상인가요 ? ", location, destLocation);
 		return false;
 	}
 
 	if (Object.keys(nowLocation).length === 0) {
 		location = await getLocation();
 		if (location) {
-			console.log("처음 : ", location);
-			await AsyncStorage.setItem(
-				"nowLocation",
-				JSON.stringify({ ...location, time: now.getTime() })
-			);
+			await AsyncStorage.setItem("nowLocation",	JSON.stringify({ ...location, time: now.getTime() }));
+			await updateNowGpsInfo(JSON.stringify(location));
 		}
 	} else if (now.getTime() - (nowLocation.time || 0) >= 3600000) {
 		location = await getLocation();
-		console.log("1시간 이상인가요 ? ", location, nowLocation?.time);
 		if (location && getDistanceDiff(nowLocation, location) >= 1) {
-			console.log("1km 이상인가요 ? ", location, nowLocation?.time);
 			await AsyncStorage.setItem(
 				"nowLocation",
 				JSON.stringify({ ...location, time: now.getTime() })
 			);
+			await updateNowGpsInfo(JSON.stringify(location));
 		}
 	}
 
