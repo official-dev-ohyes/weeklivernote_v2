@@ -1,5 +1,5 @@
 import "expo-dev-client";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -40,6 +40,7 @@ const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
 import { setNotificationHandler } from "expo-notifications";
+import { getFirstLocationPermission } from "./utils/gpsUtils";
 
 setNotificationHandler({
   handleNotification: async () => ({
@@ -125,6 +126,10 @@ const theme = {
 };
 
 export default function App() {
+  useEffect(() => {
+    getFirstLocationPermission();
+  }, []);
+
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
   });
