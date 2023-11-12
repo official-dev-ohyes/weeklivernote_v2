@@ -7,6 +7,8 @@ import com.ohyes.soolsool.drink.dao.CategoryRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.gps.application.GpsService;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
+import com.ohyes.soolsool.location.dao.LocationRepository;
 import com.ohyes.soolsool.location.domain.Location;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
@@ -53,6 +55,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
     private final JwtProvider jwtProvider;
     private final GpsService gpsService;
 
@@ -158,8 +161,12 @@ public class UserService {
                 .startNonalcoholDate(LocalDate.now())
                 .build();
 
+            Location location = new Location();
+            locationRepository.save(location);
 
+            user.setLocation(location);
             userRepository.save(user);
+
             Map<String, Object> data = new HashMap<>();
             data.put("socialId", kakaoProfileDto.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
@@ -183,11 +190,17 @@ public class UserService {
 
         updateRefreshToken(tokenDto, kakaoProfileDto.getSocialId());
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
+
         Map<String, Object> data = new HashMap<>();
         data.put("userName", user.getNickname());
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
         data.put("drinkInfo", drinkInfo);
+        data.put("gpsInfo", gpsInfo);
 
         return data;
     }
@@ -221,12 +234,6 @@ public class UserService {
         }
         alcoholLimit += ((float) (amount * category.getVolume() * 0.7984 / 100));
 
-        // 주소 입력 했을 경우 위도/경도 데이터 저장
-        if (!userRequestDto.getAddress().equals("주소지 미입력")) {
-            Location location = user.getLocation();
-            gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress());
-        }
-
         user.setSocialId(socialId);
         user.setAddress(userRequestDto.getAddress());
         user.setGender(userRequestDto.getGender());
@@ -240,6 +247,16 @@ public class UserService {
 
         userRepository.save(user);
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(0)
+            .longitude(0)
+            .build();
+        // 주소 입력 했을 경우 위도/경도 데이터 저장
+        if (!userRequestDto.getAddress().equals("주소지 미입력")) {
+            Location location = user.getLocation();
+            gpsInfo = gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress());
+        }
+
         TokenDto tokenDto = jwtProvider.createToken(user);
 
         updateRefreshToken(tokenDto, socialId);
@@ -249,6 +266,7 @@ public class UserService {
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
         data.put("drinkInfo", drinkInfo);
+        data.put("gpsInfo", gpsInfo);
 
         return data;
     }
@@ -271,6 +289,11 @@ public class UserService {
             .drinkAmount(user.getDrinkAmount())
             .build();
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
+
         return UserResponseDto.builder()
             .nickname(nickname)
             .profileImg(profileImg)
@@ -280,16 +303,21 @@ public class UserService {
             .weight(weight)
             .alcoholLimit(alcoholLimit)
             .drinkInfo(drinkInfo)
+            .gpsInfo(gpsInfo)
             .build();
-
     }
 
     // 회원 추가 정보 수정
-    public void userInfoModify(UserModifyDto userModifyDto, UserDetailsImpl userDetails) {
+    public GpsInfo userInfoModify(UserModifyDto userModifyDto, UserDetailsImpl userDetails) {
         User user = UserUtils.getUserFromToken(userDetails);
         DrinkInfo drinkInfo = userModifyDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory())
             .orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다."));
+
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
 
         // 기본 정보 수정
         if (userModifyDto.getNickname() != null) {
@@ -301,7 +329,7 @@ public class UserService {
             // 주소 입력 했을 경우 위도/경도 데이터 저장
             if (!userModifyDto.getAddress().equals("주소지 미입력")) {
                 Location location = user.getLocation();
-                gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress());
+                gpsInfo =  gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress());
             }
         }
         if (userModifyDto.getGender() != null) {
@@ -342,6 +370,7 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return gpsInfo;
     }
 
     // 카카오 로그아웃

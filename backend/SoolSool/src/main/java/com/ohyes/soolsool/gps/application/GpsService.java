@@ -30,7 +30,7 @@ public class GpsService {
     private final LocationRepository locationRepository;
 
     // 주소에서 위도/경도 정보 조회 후 저장
-    public void getDestinationGpsInfo(Location location, String address) {
+    public GpsInfo getDestinationGpsInfo(Location location, String address) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -42,6 +42,10 @@ public class GpsService {
         ResponseEntity<String> response = restTemplate.exchange(API_URL + address, HttpMethod.GET,
             entity, String.class);
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(0)
+            .longitude(0)
+            .build();
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
@@ -60,12 +64,20 @@ public class GpsService {
                 locationRepository.save(location);
                 log.info("[GPS] 사용자 주소지의 위도/경도가 저장되었습니다.");
 
+                gpsInfo = GpsInfo.builder()
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .build();
+
+                return gpsInfo;
+
             } catch (Exception e) {
                 log.error("Error: " + e.getMessage());
             }
         } else {
             log.error("Error: " + response.getStatusCode());
         }
+        return gpsInfo;
     }
 
     // 유저의 현재 위치 정보 저장
