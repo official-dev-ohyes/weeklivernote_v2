@@ -30,9 +30,8 @@ function DrinkingStatus({
         </Text>
       )}
 
-      <View style={styles.imageContainer}>
-        <Image source={imageSource} style={styles.image} />
-      </View>
+      <Image source={imageSource} style={styles.image} />
+      <View style={styles.imageContainer}></View>
     </View>
   );
 }
@@ -64,15 +63,20 @@ const styles = StyleSheet.create({
     color: "white",
   },
   imageContainer: {
-    width: 190,
-    height: 190,
+    position: "absolute",
+    top: 180,
+    width: 150,
+    height: 80,
     backgroundColor: "rgba(255,255,255,0.1)",
-    borderRadius: 500,
+    borderRadius: 50,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    transform: [{ scaleX: 2 }],
   },
   image: {
+    position: "absolute",
+    top: 0,
     width: 250,
     height: 250,
   },

@@ -33,7 +33,6 @@ import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import NotificationScreen from "./screens/NotificationScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
-import MapScreen from "./screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -42,6 +41,7 @@ const queryClient = new QueryClient();
 import { setNotificationHandler } from "expo-notifications";
 import HomeRouteScreen from "./screens/HomeRouteScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import LastChanceScreen from "./screens/LastChanceScreen";
 
 setNotificationHandler({
   handleNotification: async () => ({
@@ -91,13 +91,13 @@ function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Map"
-        component={MapScreen}
+        name="lastChance"
+        component={LastChanceScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-          title: "Map",
+          title: "lastChance",
         }}
       />
       <BottomTab.Screen

@@ -1,16 +1,19 @@
 import iconImage from "./icon.png";
 import kakaoLoginButton from "./kakao_login_button.png";
-import soberImage from "./Home/intoxication/drunken-level-00.png";
-import mildImage from "./Home/intoxication/drunken-level-01.png";
-import moderateImage from "./Home/intoxication/drunken-level-02.png";
-import highImage from "./Home/intoxication/drunken-level-03.png";
-import veryHighImage from "./Home/intoxication/drunken-level-04.png";
-import severeImage from "./Home/intoxication/drunken-level-05.png";
+import soberImage from "./Home/intoxication/drunken-level-00.gif";
+import mildImage from "./Home/intoxication/drunken-level-01.gif";
+import moderateImage from "./Home/intoxication/drunken-level-02.gif";
+import highImage from "./Home/intoxication/drunken-level-03.gif";
+import veryHighImage from "./Home/intoxication/drunken-level-04.gif";
+import severeImage from "./Home/intoxication/drunken-level-05.gif";
 import nonAlcIcon from "./nonAlcIcon.png";
 import logo from "./logo.png";
 import defaultImage from "./defaultImage.png";
 import HomeMarker from "./HomeMarker.png";
 import NowMarker from "./NowMarker.png";
+import LCfirst from "./LCfirst.png";
+import LCsecond from "./LCsecond.png";
+import LCthird from "./LCthird.png";
 
 import drink01 from "./Home/drinks/drink-01.png";
 import drink02 from "./Home/drinks/drink-02.png";
@@ -36,6 +39,9 @@ import mainbackground from "./mainbackground.jpg";
 import subbackground from "./subbackground.jpg";
 
 export {
+  LCfirst,
+  LCsecond,
+  LCthird,
   adaptiveIcon,
   loadingSpinner,
   addInfoImage,
