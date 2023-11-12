@@ -27,6 +27,9 @@
       "config": {
         "cleartext": {
           "usesCleartext": true
+        },
+        "googleMaps": {
+          "apiKey": "AIzaSyAg0W1KkQwJprZ0DVZbDoHpp1tIw5NZHdw"
         }
       },
       "package": "com.official_ohyes.weeklivernote",

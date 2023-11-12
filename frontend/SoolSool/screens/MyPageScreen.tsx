@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { StyleSheet, ScrollView, View } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
