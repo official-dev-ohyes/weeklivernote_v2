@@ -438,7 +438,7 @@ function HomeRouteScreen({ navigation }) {
   const handleTest = () => {
     navigation.navigate("AddInfo");
   };
-
+  //
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>
