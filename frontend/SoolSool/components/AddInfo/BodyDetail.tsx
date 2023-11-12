@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   input: {
     height: 40,

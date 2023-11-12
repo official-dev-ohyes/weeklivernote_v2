@@ -26,7 +26,7 @@ const Indicator = ({ scrollX }) => {
     <View
       style={{
         position: "absolute",
-        top: 30,
+        top: 40,
         flexDirection: "row",
       }}
     >
@@ -46,10 +46,10 @@ const Indicator = ({ scrollX }) => {
           <Animated.View
             key={`indicator-${i}`}
             style={{
-              height: 6,
-              width: 6,
+              height: 8,
+              width: 8,
               borderRadius: 5,
-              backgroundColor: "white",
+              backgroundColor: "#FFDE68",
               opacity,
               margin: 10,
               transform: [{ scale }],

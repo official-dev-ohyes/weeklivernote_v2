@@ -57,11 +57,14 @@ function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: { backgroundColor: "#363C4B" },
         headerTintColor: "white",
         headerTitleAlign: "center",
         tabBarShowLabel: false,
-        tabBarStyle: { backgroundColor: "#ffffff", height: 60 },
+        tabBarInactiveTintColor: "#ffffff",
+        tabBarActiveTintColor: "#FFDE68",
+        tabBarStyle: { backgroundColor: "#000000", height: 60 },
       }}
       sceneContainerStyle={{
         backgroundColor: "#ffffff",
@@ -129,6 +132,9 @@ const theme = {
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
+    LineRegular: require("./assets/fonts/LINESeedKR-Rg.ttf"),
+    LineBold: require("./assets/fonts/LINESeedKR-Bd.ttf"),
+    LineThin: require("./assets/fonts/LINESeedKR-Th.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {

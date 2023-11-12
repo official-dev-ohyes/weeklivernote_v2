@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 40,
     verticalAlign: "bottom",
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   light: {
     height: "80%",

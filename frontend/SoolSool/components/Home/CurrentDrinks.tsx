@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
     margin: 4,
   },
   drinkImageContainer: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderWidth: 1,
     marginHorizontal: 4,
     borderColor: "transparent",

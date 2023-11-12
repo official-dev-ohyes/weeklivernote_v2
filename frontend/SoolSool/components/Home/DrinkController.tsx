@@ -357,8 +357,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   imageContainer: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     resizeMode: "contain",
   },
   stepperContainer: {
@@ -377,10 +377,10 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 36,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   nameText: {
-    fontSize: 15,
+    fontSize: 13,
     marginTop: 5,
     color: "white",
   },

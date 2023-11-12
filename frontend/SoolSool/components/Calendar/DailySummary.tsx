@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     color: "#363C4B",
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   informations: {
     height: "80%",

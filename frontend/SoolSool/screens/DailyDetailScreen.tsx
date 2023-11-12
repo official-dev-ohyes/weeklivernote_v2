@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
     verticalAlign: "bottom",
   },
   light: {

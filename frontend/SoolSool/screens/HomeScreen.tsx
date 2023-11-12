@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DrinkToday } from "../models/DrinkToday";
-import { StyleSheet, View, Text, BackHandler } from "react-native";
+import { StyleSheet, View, Text, BackHandler, Dimensions } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
@@ -98,6 +98,8 @@ function HomeScreen({ navigation }) {
     }, [])
   );
 
+  const screenHeight = Dimensions.get("window").height;
+
   if (!drinkToday) {
     return (
       <View style={styles.loadingContainer}>
@@ -108,7 +110,7 @@ function HomeScreen({ navigation }) {
   }
 
   return (
-    <>
+    <View style={[{ height: screenHeight }, styles.mainContainer]}>
       <HomeCarousel />
       <View style={styles.controllerContainer}>
         <SafeDriveInfo
@@ -118,11 +120,15 @@ function HomeScreen({ navigation }) {
         />
         <DrinkController currentDrinks={currentDrinks} />
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+  },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
@@ -130,10 +136,10 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -320,
+    marginTop: -340,
     display: "flex",
     flexDirection: "column",
-    gap: 20,
+    gap: 5,
   },
   background: {
     height: "100%",

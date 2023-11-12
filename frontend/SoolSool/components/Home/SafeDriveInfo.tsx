@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 16,
-    // fontFamily: "Yeongdeok-Sea",
+    // fontFamily: "LineRegular",
     color: "white",
   },
 });

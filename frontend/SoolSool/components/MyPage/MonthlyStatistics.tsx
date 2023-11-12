@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
 });
 

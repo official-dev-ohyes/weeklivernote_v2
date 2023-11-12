@@ -262,11 +262,11 @@ const styles = StyleSheet.create({
   },
   innerText: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   headerText: {
     fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
   },
   calenderStyle: {
     // backgroundColor: "red",

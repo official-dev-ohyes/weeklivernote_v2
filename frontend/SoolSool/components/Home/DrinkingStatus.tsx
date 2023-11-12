@@ -40,26 +40,27 @@ function DrinkingStatus({
 const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
+    marginTop: "10%",
     marginVertical: 24,
     padding: 4,
     display: "flex",
     alignItems: "center",
-    marginTop: 50,
+    gap: 10,
   },
   titleContainer: {
     fontSize: 40,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
     color: "white",
   },
   subtitleContainer: {
     fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
     color: "white",
     marginBottom: 20,
   },
   periodContainer: {
     fontSize: 24,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
     color: "white",
   },
   imageContainer: {
