@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,11 +23,11 @@ public class GpsController {
 
     private final GpsService gpsService;
 
-    @PostMapping("/v2/gps")
+    @PatchMapping("/v2/gps")
     @Operation(summary = "사용자 현재 위치 정보 저장",
         description = "사용자의 현재 위치의 위도, 경도 정보를 저장합니다.")
     public ResponseEntity<Object> nowGpsInfoAdd(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, GpsInfo gpsInfo) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody GpsInfo gpsInfo) {
         User user = UserUtils.getUserFromToken(userDetails);
         gpsService.addUserNowGpsInfo(user, gpsInfo);
         return new ResponseEntity<>(new MessageResponse("[GPS] 유저의 현재 위치가 저장되었습니다."),
