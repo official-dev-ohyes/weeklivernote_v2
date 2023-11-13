@@ -73,7 +73,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
   // useEffect(() => {
   //   const defaultDrinkLog = currentDrinkList[defaultDrink.id];
   //   console.log("soju", defaultDrinkLog);
-  //   setValue(defaultDrinkLog);
+  // setValue(defaultDrinkLog);
   // }, [defaultDrink.id]);
 
   useEffect(() => {
@@ -339,14 +339,12 @@ const styles = StyleSheet.create({
   rootContainer: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     alignItems: "center",
   },
   iconContainer: {
-    width: "100%",
-    alignItems: "flex-end",
     position: "absolute",
-    top: 10,
+    right: 0,
     zIndex: 1,
   },
   divider: {

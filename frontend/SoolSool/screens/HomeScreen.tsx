@@ -12,7 +12,8 @@ import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-function HomeScreen({ navigation }) {
+
+const HomeScreen = ({ navigation }) => {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   const [currentDrinks, setCurrentDrinks] = useState<Record<number, number>>(
     {}
@@ -79,6 +80,7 @@ function HomeScreen({ navigation }) {
                   drink.category,
                   drink.drinkUnit
                 );
+
                 if (currentDrinksObject.hasOwnProperty(id)) {
                   currentDrinksObject[id] += drink.drinkAmount;
                 } else {
@@ -122,7 +124,7 @@ function HomeScreen({ navigation }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   mainContainer: {
