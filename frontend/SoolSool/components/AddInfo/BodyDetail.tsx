@@ -23,12 +23,12 @@ function BodyDetail({ height, setHeight, weight, setWeight, onNextClick }) {
 
   const hasWeightErrors = () => {
     // console.log("durl", parseInt(weight));
-    return parseInt(weight) < 30;
+    return parseInt(weight) < 30 && parseInt(weight) > 0;
   };
 
   const hasHeightErrors = () => {
     // console.log("durl", parseInt(weight));
-    return parseInt(height) < 110;
+    return parseInt(height) < 110 && parseInt(height) > 0;
   };
 
   // useEffect(() => {

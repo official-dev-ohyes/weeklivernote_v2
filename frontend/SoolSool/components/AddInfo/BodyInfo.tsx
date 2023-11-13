@@ -60,7 +60,7 @@ function BodyInfo({
         </Text>
       </View>
       <View style={styles.columnContainer}>
-        <Text style={styles.text}>성별 </Text>
+        <Text style={styles.text}>성별을 알려주세요</Text>
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={getButtonStyle("남자")}
