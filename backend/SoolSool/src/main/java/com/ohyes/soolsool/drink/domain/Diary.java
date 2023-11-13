@@ -1,6 +1,7 @@
 package com.ohyes.soolsool.drink.domain;
 
 import com.ohyes.soolsool.user.domain.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -18,6 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -61,11 +64,12 @@ public class Diary {
     private LocalDateTime updatedAt;
 
     // 연관 관계
-    @OneToMany(mappedBy = "diary")
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE)
     private List<Drink> drinks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "social_id")
+//    @OnDelete(action= OnDeleteAction.CASCADE)
     private User user;
 
     // 생성자

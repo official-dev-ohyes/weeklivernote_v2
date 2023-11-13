@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -36,6 +38,7 @@ public class Drink {
     // 연관 관계
     @ManyToOne
     @JoinColumn(name = "diary_pk")
+//    @OnDelete(action= OnDeleteAction.CASCADE)
     private Diary diary;
 
     @ManyToOne
