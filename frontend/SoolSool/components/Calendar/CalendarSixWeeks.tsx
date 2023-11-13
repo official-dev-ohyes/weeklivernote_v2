@@ -1,12 +1,25 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import React from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { Calendar } from "react-native-calendars";
-import React, { useState } from "react";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "react-query";
+import { getDrinkImageById, getIdByOnlyCategory } from "../../utils/drinkUtils";
+import { ImageBackground } from "expo-image";
 
-function CalendarSixWeeks({}) {
+function CalendarSixWeeks({ navigation }) {
   // 진짜 오늘 정보 저장
   const today = new Date();
   const nowDate = `${today.getFullYear()}-${
@@ -35,6 +48,20 @@ function CalendarSixWeeks({}) {
     async () => await fetchMonthRecord(tempDay)
   );
 
+  // Bottom Sheet
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const dynamicSnapPoints = useMemo(() => {
+    return alcoholDays[selectDay] ? ["25%", "100%"] : ["25%"];
+  }, [selectDay]);
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    if (index === -1) {
+      setIsSelectDay(false);
+    }
+  }, []);
+
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
@@ -45,26 +72,22 @@ function CalendarSixWeeks({}) {
       if (MonthlyData) {
         const tempDays = {};
 
+        console.log(
+          "먼슬리데이터의 드링크:",
+          JSON.stringify(MonthlyData.drinks, null, 2)
+        );
         for (let i = 0; i < MonthlyData.drinks.length; i++) {
           const tempDate = MonthlyData.drinks[i].date;
-          tempDays[tempDate] = { marked: true };
+
+          tempDays[tempDate] = {
+            marked: true,
+            image: getDrinkImageById(
+              getIdByOnlyCategory(MonthlyData.drinks[i].mainDrink)
+            ),
+          };
         }
         setAlcoholDays(tempDays);
       }
-      // else {
-      //   const fetchData = async () => {
-      //     const data = await fetchMonthRecord(tempDay);
-      //     if (data) {
-      //       const tempDays = {};
-      //       for (let i = 0; i < data.drinks.length; i++) {
-      //         const tempDate = data.drinks[i].date;
-      //         tempDays[tempDate] = { marked: true };
-      //       }
-      //       setAlcoholDays(tempDays);
-      //     }
-      //   };
-      //   fetchData();
-      // }
 
       if (selectDay) {
         const checkFuture = () => {
@@ -103,6 +126,7 @@ function CalendarSixWeeks({}) {
       }
 
       setIsSelectDay(true);
+      handlePresentModalPress();
     }
   };
 
@@ -136,18 +160,148 @@ function CalendarSixWeeks({}) {
   const height2 = (height * 0.9) / 10;
 
   return (
-    <View style={styles.totalContainer}>
-      {isSelectDay ? (
-        <View>
-          <View style={styles.smallCalendar}>
+    <BottomSheetModalProvider>
+      <View style={styles.totalContainer}>
+        {isSelectDay ? (
+          <View>
+            <View style={styles.smallCalendar}>
+              <Calendar
+                current={currentDay}
+                markedDates={{
+                  ...alcoholDays,
+                  [selectDay]: {
+                    selected: true,
+                    marked: alcoholDays[selectDay] ? true : false,
+                  },
+                }}
+                theme={{
+                  "stylesheet.day.basic": {
+                    base: {
+                      height: height1,
+                    },
+                  },
+                }}
+                onDayPress={handleDayPress}
+                onPressArrowLeft={handlePressArrowLeft}
+                onPressArrowRight={handelPressArrowRight}
+                style={styles.calenderStyle}
+                // dayComponent={({ date, state }) => {
+                //   console.log(`데이트 스트링은 이렇게 생김 ${date.dateString}`);
+                //   console.log(`데이트는 이렇게 생김 ${date}`);
+
+                //   const isAlcoholDay = alcoholDays[date.dateString];
+
+                //   if (!isAlcoholDay) {
+                //     // isAlcohol이 false이면 이미지를 띄우지 않음
+                //     return (
+                //       <View style={{ flex: 1 }}>
+                //         <Text
+                //           style={{
+                //             textAlign: "center",
+                //             color: state === "disabled" ? "gray" : "black",
+                //           }}
+                //         >
+                //           {date.day}
+                //         </Text>
+                //       </View>
+                //     );
+                //   }
+
+                //   const backgroundColor = "black"; // 이미지를 표시하는 날의 배경색
+
+                //   return (
+                //     <View style={{ flex: 1, backgroundColor }}>
+                //       <ImageBackground
+                //         source={getDrinkImageById(
+                //           getIdByOnlyCategory(
+                //             MonthlyData?.drinks[date.dateString]?.mainDrink
+                //           )
+                //         )}
+                //         style={styles.imageContainer}
+                //         resizeMode="contain"
+                //       />
+                //       <Text
+                //         style={{
+                //           textAlign: "center",
+                //           color: state === "disabled" ? "gray" : "black",
+                //         }}
+                //       >
+                //         {date.day}
+                //       </Text>
+                //     </View>
+                //   );
+                // }}
+              />
+            </View>
+            <BottomSheetModal
+              ref={bottomSheetModalRef}
+              index={0}
+              snapPoints={dynamicSnapPoints}
+              onChange={handleSheetChanges}
+            >
+              <View style={styles.dailySummaryComponent}>
+                {isSame ? (
+                  <View style={styles.tempBox}>
+                    <View style={styles.headerBox}>
+                      <Text style={styles.headerText}>{selectDay}</Text>
+                    </View>
+                    <View style={styles.dailySummaryTotal}>
+                      <Text style={styles.innerText}>
+                        내일 새벽 5시에 업데이트 됩니다.
+                      </Text>
+                    </View>
+                  </View>
+                ) : isFuture ? (
+                  <View style={styles.tempBox}>
+                    <View style={styles.headerBox}>
+                      <Text style={styles.headerText}>{selectDay}</Text>
+                    </View>
+                    <View style={styles.dailySummaryTotal}>
+                      <Text style={styles.innerText}>
+                        아직은 기록할 수 없어요
+                      </Text>
+                    </View>
+                  </View>
+                ) : alcoholDays[selectDay] ? (
+                  <DailySummary
+                    summaryText={selectDay}
+                    alcoholDays={alcoholDays}
+                  />
+                ) : (
+                  <View style={styles.tempBox}>
+                    <View style={styles.headerBox}>
+                      <Text style={styles.headerText}>{selectDay}</Text>
+                    </View>
+                    <View style={styles.dailySummaryTotal}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate("RecordCreate", {
+                            date: selectDay,
+                            isAlcohol: alcoholDays[selectDay],
+                          });
+                        }}
+                      >
+                        <View style={styles.New}>
+                          <Text style={styles.plus}>+</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </BottomSheetModal>
+          </View>
+        ) : (
+          <View style={styles.largeCalendar}>
             <Calendar
               current={currentDay}
               markedDates={alcoholDays}
-              // style={{ height: "100%" }}
               theme={{
                 "stylesheet.day.basic": {
                   base: {
-                    height: height1,
+                    alignSelf: "stretch",
+                    alignItems: "center",
+                    height: height2,
                   },
                 },
               }}
@@ -155,59 +309,58 @@ function CalendarSixWeeks({}) {
               onPressArrowLeft={handlePressArrowLeft}
               onPressArrowRight={handelPressArrowRight}
               style={styles.calenderStyle}
+              // dayComponent={({ date, state }) => {
+              //   console.log(`데이트 스트링은 이렇게 생김 ${date.dateString}`);
+              //   console.log(`데이트는 이렇게 생김 ${date}`);
+
+              //   const isAlcoholDay = alcoholDays[date.dateString];
+
+              //   if (!isAlcoholDay) {
+              //     // isAlcohol이 false이면 이미지를 띄우지 않음
+              //     return (
+              //       <View style={{ flex: 1 }}>
+              //         <Text
+              //           style={{
+              //             textAlign: "center",
+              //             color: state === "disabled" ? "gray" : "black",
+              //           }}
+              //         >
+              //           {date.day}
+              //         </Text>
+              //       </View>
+              //     );
+              //   }
+
+              //   const backgroundColor = "black"; // 이미지를 표시하는 날의 배경색
+
+              //   return (
+              //     <View style={{ flex: 1, backgroundColor }}>
+              //       <ImageBackground
+              //         source={getDrinkImageById(
+              //           getIdByOnlyCategory(
+              //             MonthlyData?.drinks[date.dateString]?.mainDrink
+              //           )
+              //         )}
+              //         style={styles.imageContainer}
+              //         resizeMode="contain"
+              //       />
+              //       <Text
+              //         style={{
+              //           textAlign: "center",
+              //           color: state === "disabled" ? "gray" : "black",
+              //         }}
+              //       >
+              //         {date.day}
+              //       </Text>
+              //     </View>
+              //   );
+              // }}
+              // ㅇ헤헤
             />
           </View>
-          <View style={styles.dailySummaryComponent}>
-            {isSame ? (
-              <View style={styles.dailySummaryTotal}>
-                <View style={styles.headerBox}>
-                  <Text style={styles.headerText}>{selectDay}</Text>
-                </View>
-                <View style={styles.others}>
-                  <Text style={styles.innerText}>
-                    내일 새벽 5시에 업데이트 됩니다.
-                  </Text>
-                </View>
-              </View>
-            ) : isFuture ? (
-              <View style={styles.dailySummaryTotal}>
-                <View style={styles.headerBox}>
-                  <Text style={styles.headerText}>{selectDay}</Text>
-                </View>
-                <View style={styles.others}>
-                  <Text style={styles.innerText}>아직은 기록할 수 없어요</Text>
-                </View>
-              </View>
-            ) : (
-              <DailySummary summaryText={selectDay} alcoholDays={alcoholDays} />
-            )}
-          </View>
-        </View>
-      ) : (
-        <View style={styles.largeCalendar}>
-          <Calendar
-            // style={{ height: "100%" }}
-            current={currentDay}
-            markedDates={alcoholDays}
-            theme={{
-              "stylesheet.day.basic": {
-                base: {
-                  alignSelf: "stretch",
-                  alignItems: "center",
-                  height: height2,
-                  backgroundColor: "rgba(255, 255, 255, 0.5)",
-                },
-              },
-            }}
-            headerStyle={{}}
-            onDayPress={handleDayPress}
-            onPressArrowLeft={handlePressArrowLeft}
-            onPressArrowRight={handelPressArrowRight}
-            style={styles.calenderStyle}
-          />
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </BottomSheetModalProvider>
   );
 }
 
@@ -223,21 +376,18 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   dailySummaryComponent: {
-    height: "25%",
-    backgroundColor: "balck",
+    // height: "25%",
+    flex: 1,
   },
   dailySummaryTotal: {
-    flex: 1,
-    flexDirection: "column",
+    height: "75%",
+    borderRadius: 5,
     backgroundColor: "#ffffff",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
-    borderRadius: 10,
-    // padding: 5,
+    flexDirection: "column",
     justifyContent: "center",
-    alignContent: "center",
-    margin: 5,
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
     shadowOffset: {
@@ -248,21 +398,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
-  headerBox: {
-    height: "20%",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 5,
+  tempBox: {
+    height: "90%",
   },
-  others: {
-    height: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: "5%",
+  headerBox: {
+    height: "30%",
+    flexDirection: "row",
+    marginLeft: "3%",
+    // backgroundColor: "pink",
   },
   innerText: {
     fontSize: 20,
     fontFamily: "LineRegular",
+    textAlign: "center",
   },
   headerText: {
     fontSize: 18,
@@ -283,6 +431,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
+  },
+  New: {
+    width: 70,
+    height: 70,
+    backgroundColor: "#363C4B",
+    borderRadius: 50,
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  plus: {
+    fontSize: 50,
+    color: "#FFFFFF",
+    textAlign: "center",
+    textAlignVertical: "center", // Android
+    // flex: 1, // iOS
+  },
+  eachDayBox: {
+    height: "100%",
+    backgroundColor: "blue",
+  },
+  imageContainer: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
   },
 });
 

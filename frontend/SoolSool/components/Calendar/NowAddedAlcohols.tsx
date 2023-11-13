@@ -12,17 +12,23 @@ function NowAddedAlcohols({ alcoholRecord }) {
 
   return (
     <View style={styles.total}>
-      <View style={styles.oneline}>
-        {alcoholRecord.map((record, index) => (
-          <View key={index} style={styles.alcoholInfo}>
-            <Text style={styles.innerText}>
-              {record.category}
-              <Text style={styles.innerText}> {record.drinkAmount}</Text>
-              <Text style={styles.innerText}>{record.drinkUnit} </Text>
-            </Text>
-          </View>
-        ))}
-      </View>
+      {alcoholRecord.length ? (
+        <View style={styles.oneline}>
+          {alcoholRecord.map((record, index) => (
+            <View key={index} style={styles.alcoholInfo}>
+              <Text style={styles.innerText}>
+                {record.category}
+                <Text style={styles.innerText}> {record.drinkAmount}</Text>
+                <Text style={styles.innerText}>{record.drinkUnit} </Text>
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <View style={styles.textBox}>
+          <Text style={styles.text}>추가 버튼을 눌러 마신 술을 기록하세요</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -50,6 +56,15 @@ const styles = StyleSheet.create({
   },
   innerText: {
     fontSize: 14,
+  },
+  textBox: {
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  text: {
+    textAlign: "center",
+    justifyContent: "center",
   },
 });
 

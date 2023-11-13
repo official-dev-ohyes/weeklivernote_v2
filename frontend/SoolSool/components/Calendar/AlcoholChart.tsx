@@ -21,7 +21,7 @@ function AlcoholChart({ drinks }) {
   return (
     <View style={styles.total}>
       <View style={styles.header}>
-        <Text>음주 비율</Text>
+        <Text style={styles.smallHeaderText}>음주 비율</Text>
       </View>
       <View style={styles.box}>
         <Text>음주량 비율</Text>
@@ -100,6 +100,10 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 10,
+  },
+  smallHeaderText: {
+    fontSize: 17,
+    marginBottom: "2%",
   },
 });
 

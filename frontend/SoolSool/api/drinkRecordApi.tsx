@@ -94,12 +94,14 @@ export const fetchDailyDetail = async (day) => {
   }
 };
 
-export const postImage = async (day) => {
+export const postImage = async (day, imageUri) => {
   try {
-    const res = await axiosInstance.post(`/v1/drink/photo/${day}`);
+    const res = await axiosInstance.post(`/v1/drink/photo/${day}`, {
+      imageUri: imageUri,
+    });
     console.log("사진 post 요청 성공", res.data);
     return res.data;
   } catch (err) {
-    throw new Error("사진 post 요쳥 실패");
+    throw new Error("사진 post 요청 실패");
   }
 };
