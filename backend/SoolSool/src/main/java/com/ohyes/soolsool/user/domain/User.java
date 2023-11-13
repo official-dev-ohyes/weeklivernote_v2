@@ -3,6 +3,7 @@ package com.ohyes.soolsool.user.domain;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.location.domain.Location;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -95,10 +96,10 @@ public class User {
     @JoinColumn(name = "category_pk")
     private Category category;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Diary> diaries = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "location_pk")
     private Location location;
 

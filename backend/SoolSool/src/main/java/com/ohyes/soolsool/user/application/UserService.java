@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.drink.dao.CategoryRepository;
+import com.ohyes.soolsool.drink.dao.DiaryRepository;
+import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
 import com.ohyes.soolsool.gps.application.GpsService;
@@ -54,6 +56,8 @@ public class UserService {
     private String admin_key;
 
     private final UserRepository userRepository;
+    private final DrinkRepository drinkRepository;
+    private final DiaryRepository diaryRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final JwtProvider jwtProvider;
