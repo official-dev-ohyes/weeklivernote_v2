@@ -19,6 +19,7 @@ const HomeScreen = ({ navigation }) => {
     {}
   );
   const today = getToday();
+  const [initialValue, setInitialValue] = useState(0);
 
   // 회원 정보 없을 시 로그인 화면으로 이동
   useEffect(() => {
@@ -78,6 +79,9 @@ const HomeScreen = ({ navigation }) => {
                 drink.category,
                 drink.drinkUnit
               );
+              if (id === 2) {
+                setInitialValue(drink.drinkAmount);
+              }
 
               if (currentDrinksObject.hasOwnProperty(id)) {
                 currentDrinksObject[id] += drink.drinkAmount;
@@ -118,7 +122,10 @@ const HomeScreen = ({ navigation }) => {
           requiredTimeToDrive={drinkToday.cannotDriveFor}
           additionalTimeForDrive={drinkToday.stillNeedSoberTimeFor}
         />
-        <DrinkController currentDrinks={currentDrinks} />
+        <DrinkController
+          currentDrinks={currentDrinks}
+          initialValue={initialValue}
+        />
       </View>
     </View>
   );

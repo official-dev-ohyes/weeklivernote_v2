@@ -39,9 +39,13 @@ interface Drink {
 
 interface DrinkControllerProps {
   currentDrinks: Record<number, number>;
+  initialValue: number;
 }
 
-const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
+const DrinkController: React.FC<DrinkControllerProps> = ({
+  currentDrinks,
+  initialValue,
+}) => {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
   const [drinkToday, setDrinkToday] =
     useRecoilState<DrinkToday>(drinkTodayAtom);
@@ -62,7 +66,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
     [selectedDrink]
   );
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(initialValue);
   const minValue = 0;
   const maxValue = 99;
   const minIsDisabled = useMemo(() => value <= minValue, [minValue, value]);
@@ -70,11 +74,9 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
 
   const today = getToday();
 
-  // useEffect(() => {
-  //   const defaultDrinkLog = currentDrinkList[defaultDrink.id];
-  //   console.log("soju", defaultDrinkLog);
-  // setValue(defaultDrinkLog);
-  // }, [defaultDrink.id]);
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   useEffect(() => {
     setCurrentDrinkList(currentDrinks);
