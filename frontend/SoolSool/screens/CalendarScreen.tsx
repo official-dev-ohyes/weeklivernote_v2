@@ -6,7 +6,7 @@ import CalendarMain from "../components/Calendar/CalendarMain";
 import CalendarSixWeeks from "../components/Calendar/CalendarSixWeeks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function CalendarScreen() {
+function CalendarScreen({ navigation }) {
   return (
     <View style={styles.mainBackground}>
       <View style={styles.mainTextBox}>
@@ -27,7 +27,7 @@ function CalendarScreen() {
         {/* 주 별 간격 조정 */}
         {/* <CalendarMain /> */}
         {/* 주 별 간격 미조정 */}
-        <CalendarSixWeeks />
+        <CalendarSixWeeks navigation={navigation} />
       </View>
     </View>
   );

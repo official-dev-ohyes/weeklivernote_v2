@@ -1,9 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
 import { useEffect, useState } from "react";
-import { Modal, Portal, Button } from "react-native-paper";
 import React from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "react-query";
 import AlcoholChart from "../../components/Calendar/AlcoholChart";
 
@@ -43,19 +41,6 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     }
   }, [DailyDetailData]);
 
-  // 글 삭제 모달 및 삭제
-  const openDeleteModal = () => {
-    setIsModal(true);
-  };
-  const hideDeleteModal = () => {
-    setIsModal(false);
-  };
-  const confirmDelete = () => {
-    removeDrink(summaryText);
-    hideDeleteModal();
-    // navigation.navigate("Calendar");
-  };
-
   return (
     <ScrollView>
       <View style={styles.total}>
@@ -89,39 +74,6 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
             )}
           </View>
         </View>
-        <Portal>
-          <Modal
-            visible={isModal}
-            onDismiss={hideDeleteModal}
-            contentContainerStyle={{
-              backgroundColor: "white",
-              padding: 20,
-              width: "90%",
-              borderRadius: 5,
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            <View style={styles.mainContainer}>
-              <Text style={styles.alertTitle}>주간일기</Text>
-              <View style={styles.textContainer}>
-                <Text>정말 삭제하시겠습니까?</Text>
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button mode="outlined" onPress={hideDeleteModal}>
-                  취소
-                </Button>
-                <Button
-                  mode="contained"
-                  buttonColor={"#363C4B"}
-                  onPress={confirmDelete}
-                >
-                  삭제
-                </Button>
-              </View>
-            </View>
-          </Modal>
-        </Portal>
       </View>
     </ScrollView>
   );
