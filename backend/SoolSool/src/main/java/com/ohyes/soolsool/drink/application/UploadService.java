@@ -3,6 +3,7 @@ package com.ohyes.soolsool.drink.application;
 import com.amazonaws.SdkClientException;
 import com.ohyes.soolsool.drink.dao.DiaryRepository;
 import com.ohyes.soolsool.drink.domain.Diary;
+import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.util.UserDetailsImpl;
 import com.ohyes.soolsool.util.UserUtils;
@@ -34,6 +35,7 @@ import java.util.UUID;
 public class UploadService {
 
     private final DiaryRepository diaryRepository;
+    private final UserRepository userRepository;
     private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -103,10 +105,10 @@ public class UploadService {
 
             String url = upload(uploadFile, directory);
             existingDiary.setImg(url);
-            diaryRepository.save(existingDiary);
         } else {
             existingDiary.setImg(null);
         }
+        diaryRepository.save(existingDiary);
     }
 
     @Transactional
@@ -119,6 +121,44 @@ public class UploadService {
                 .build();
             s3Client.deleteObject(deleteObjectRequest);
             diary.setImg(null);
+            diaryRepository.save(diary);
+        } catch (SdkClientException e) {
+            throw new IOException("S3 사진 삭제 실패");
+        }
+    }
+
+    @Transactional
+    public void userProfileAdd(MultipartFile multipartFile,
+        UserDetailsImpl userDetails) throws IOException {
+        User user = UserUtils.getUserFromToken(userDetails);
+
+        // 이미 사진이 있는 상태면 먼저 삭제
+        if (user.getCustomProfileImg() != null) {
+            userProfileDelete(user, user.getCustomProfileImg());
+        }
+        if (multipartFile != null) {
+            File uploadFile = convert(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile에서 File로의 전환 실패"));
+
+            String url = upload(uploadFile, directory + "/profile");
+            user.setCustomProfileImg(url);
+        } else {
+            user.setCustomProfileImg(null);
+        }
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void userProfileDelete(User user, String fileName) throws IOException {
+        try {
+            String key = fileName.split("/")[3] + "/" + fileName.split("/")[4] + "/" + fileName.split("/")[5];
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+            s3Client.deleteObject(deleteObjectRequest);
+            user.setCustomProfileImg(null);
+            userRepository.save(user);
         } catch (SdkClientException e) {
             throw new IOException("S3 사진 삭제 실패");
         }

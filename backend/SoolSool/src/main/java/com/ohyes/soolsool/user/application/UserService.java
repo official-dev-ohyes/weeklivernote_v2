@@ -277,6 +277,9 @@ public class UserService {
 
         String nickname = user.getNickname();
         String profileImg = user.getProfileImg();
+        if (user.getCustomProfileImg() != null) {
+            profileImg = user.getCustomProfileImg();
+        }
         String address = user.getAddress();
         String gender = user.getGender();
         int height = user.getHeight();
