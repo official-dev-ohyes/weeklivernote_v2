@@ -34,7 +34,6 @@ public class DrinkGetService {
 
     private final DiaryRepository diaryRepository;
 
-    // 수정중!!!!!!!!!!!!!!!!!!!!
     public TotalDrinkInfoDto totalDrinkInfoGet(LocalDate drinkDate, UserDetailsImpl userDetails) {
         // 유저와 날짜가 일치하는 일기 찾기
         User user = UserUtils.getUserFromToken(userDetails);
