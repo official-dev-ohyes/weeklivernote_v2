@@ -1,6 +1,7 @@
 package com.ohyes.soolsool.drink.domain;
 
 import com.ohyes.soolsool.user.domain.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
