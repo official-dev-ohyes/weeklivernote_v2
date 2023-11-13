@@ -1,21 +1,31 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-import BodyDetail from "./BodyDetail";
+import React, { useState, useEffect } from "react";
 import { Icon, MD3Colors } from "react-native-paper";
+import BodyDetail from "./BodyDetail";
 
-// interface BodyInfoProps {
-// nonAlc:number;
-// }
+function BodyInfo({
+  gender,
+  setGender,
+  height,
+  setHeight,
+  weight,
+  setWeight,
+  onNextClick,
+}) {
+  // useEffect(() => {
+  //   console.log("현재 성별은", gender);
+  // }, [gender]);
 
-function BodyInfo({ navigation, socialId }) {
   const [selectedGender, setSelectedGender] = useState(""); // 초기값은 빈 문자열로 설정
   const handleGenderSelection = (gender) => {
     if (selectedGender === gender) {
       // 이미 선택된 버튼을 다시 누를 경우 선택 해제
       setSelectedGender("");
+      setGender("");
     } else {
       // 다른 버튼을 선택한 경우 선택 상태로 변경
       setSelectedGender(gender);
+      setGender(gender);
     }
   };
 
@@ -50,7 +60,7 @@ function BodyInfo({ navigation, socialId }) {
         </Text>
       </View>
       <View style={styles.columnContainer}>
-        <Text>성별 </Text>
+        <Text style={styles.text}>성별 </Text>
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={getButtonStyle("남자")}
@@ -67,9 +77,11 @@ function BodyInfo({ navigation, socialId }) {
         </View>
       </View>
       <BodyDetail
-        navigation={navigation}
-        gender={selectedGender}
-        socialId={socialId}
+        height={height}
+        setHeight={setHeight}
+        weight={weight}
+        setWeight={setWeight}
+        onNextClick={onNextClick}
       />
     </View>
   );
@@ -79,7 +91,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     // backgroundColor: "#FFFF",
     flexDirection: "column",
-    gap: 20,
+    gap: 40,
     borderRadius: 20,
   },
   titleContainer: {
@@ -100,10 +112,10 @@ const styles = StyleSheet.create({
   },
   columnContainer: {
     flexDirection: "column",
-    gap: 2,
+    gap: 10,
   },
   button: {
-    backgroundColor: "#DBEBF5",
+    backgroundColor: "rgba(255, 222, 104, 0.5)",
     borderRadius: 10,
     width: "48%",
     height: 60,
@@ -113,21 +125,30 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
+    color: "white",
   },
   buttonText: {
-    color: "black",
+    color: "white",
     fontSize: 15,
+    fontFamily: "LineRegular",
   },
   text: {
     fontSize: 20,
+    fontFamily: "LineRegular",
+    color: "white",
   },
   selectedButton: {
-    backgroundColor: "#363C4B",
+    backgroundColor: "#FFDE68",
   },
   selectedButtonText: {
-    color: "#ffffff",
+    color: "#000000",
+    fontFamily: "LineRegular",
   },
-  mainText: {},
+  mainText: {
+    fontSize: 15,
+    color: "white",
+    fontFamily: "LineRegular",
+  },
 });
 
 export default BodyInfo;

@@ -20,8 +20,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
-import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
-import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 import HomeScreen from "./screens/HomeScreen";
 
@@ -174,14 +172,6 @@ export default function App() {
                       />
 
                       <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                      <Stack.Screen
-                        name="AddInfoStep2"
-                        component={AddInfoStep2Screen}
-                      />
-                      <Stack.Screen
-                        name="AddInfoStep3"
-                        component={AddInfoStep3Screen}
-                      />
                       <Stack.Screen
                         name="BottomTab"
                         component={BottomTabNavigator}

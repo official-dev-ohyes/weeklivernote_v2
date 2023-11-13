@@ -2,27 +2,24 @@ import { Text, View, StyleSheet, Alert } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 
-function BodyDetail({ navigation, gender, socialId }) {
-  const [height, setHeight] = React.useState(null);
-  const [weight, setWeight] = React.useState(null);
-
-  const goToNextStep = () => {
-    if (gender && weight && height) {
-      // gender가 null이 아니면 다음 단계로 이동
-      if (weight < 30 || weight > 200 || height < 120 || height > 220) {
-        Alert.alert("알림", "체중 및 신장 데이터가 적합하지 않습니다.");
-      } else {
-        navigation.navigate("AddInfoStep2", {
-          height: parseInt(height),
-          weight: parseInt(weight),
-          gender: gender,
-          socialId: socialId,
-        });
-      }
-    } else {
-      Alert.alert("알림", "모든 항목을 선택해주세요.");
-    }
-  };
+function BodyDetail({ height, setHeight, weight, setWeight, onNextClick }) {
+  // const goToNextStep = () => {
+  //   if (gender && weight && height) {
+  //     // gender가 null이 아니면 다음 단계로 이동
+  //     if (weight < 30 || weight > 200 || height < 120 || height > 220) {
+  //       Alert.alert("알림", "체중 및 신장 데이터가 적합하지 않습니다.");
+  //     } else {
+  //       navigation.navigate("AddInfoStep2", {
+  //         height: parseInt(height),
+  //         weight: parseInt(weight),
+  //         gender: gender,
+  //         socialId: socialId,
+  //       });
+  //     }
+  //   } else {
+  //     Alert.alert("알림", "모든 항목을 선택해주세요.");
+  //   }
+  // };
 
   const hasWeightErrors = () => {
     // console.log("durl", parseInt(weight));
@@ -34,36 +31,16 @@ function BodyDetail({ navigation, gender, socialId }) {
     return parseInt(height) < 110;
   };
 
-  useEffect(() => {
-    console.log("체중", weight);
-    console.log("신장", height);
-  }, [weight, height]);
+  // useEffect(() => {
+  //   console.log("체중", weight);
+  //   console.log("신장", height);
+  // }, [weight, height]);
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
         <View style={styles.contentContainer}>
-          <Text>체중</Text>
-          <View style={styles.rowContainer}>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={weight}
-              onChangeText={(value) => setWeight(value)}
-            />
-            <Text>kg</Text>
-          </View>
-          <HelperText type="error" visible={hasWeightErrors()}>
-            올바른 숫자를 입력해주세요
-          </HelperText>
-          {/* <ProgressBar
-            progress={weightProgress}
-            style={styles.progressBar}
-            color="#007aff"
-          /> */}
-        </View>
-        <View style={styles.contentContainer}>
-          <Text>신장</Text>
+          <Text style={styles.text}>신장</Text>
           <View style={styles.rowContainer}>
             <TextInput
               style={styles.input}
@@ -71,20 +48,43 @@ function BodyDetail({ navigation, gender, socialId }) {
               value={height}
               onChangeText={(value) => setHeight(value)}
             />
-            <Text>cm</Text>
-            {/* <ProgressBar
-            progress={heightProgress}
-            style={styles.progressBar}
-            color="#007aff"
-          /> */}
+            <Text style={styles.text}>cm</Text>
           </View>
-          <HelperText type="error" visible={hasHeightErrors()}>
+          <HelperText
+            type="error"
+            visible={hasHeightErrors()}
+            style={styles.warningtext}
+          >
+            올바른 숫자를 입력해주세요
+          </HelperText>
+        </View>
+        <View style={styles.contentContainer}>
+          <Text style={styles.text}>체중</Text>
+          <View style={styles.rowContainer}>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={weight}
+              onChangeText={(value) => setWeight(value)}
+            />
+            <Text style={styles.text}>kg</Text>
+          </View>
+          <HelperText
+            type="error"
+            visible={hasWeightErrors()}
+            style={styles.warningtext}
+          >
             올바른 숫자를 입력해주세요
           </HelperText>
         </View>
       </View>
-      <Button mode="contained" buttonColor={"#363C4B"} onPress={goToNextStep}>
-        Next
+      <Button
+        mode="contained"
+        onPress={onNextClick}
+        buttonColor={"#FFDE68"}
+        textColor={"#000000"}
+      >
+        다 작성 완료했어요
       </Button>
     </View>
   );
@@ -100,13 +100,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontFamily: "LineRegular",
+    color: "white",
   },
   input: {
     height: 40,
-    backgroundColor: "#DBEBF5",
+    backgroundColor: "rgba(255, 222, 104, 0.5)",
     // borderColor: "gray",
     // borderWidth: 1,
-    width: "70%",
+    width: "80%",
     marginBottom: 10,
   },
   progressBar: {},
@@ -128,6 +129,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  warningtext: {
+    fontSize: 15,
+    fontFamily: "LineRegular",
+    color: "#FFDE68",
   },
 });
 
