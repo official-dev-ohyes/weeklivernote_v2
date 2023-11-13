@@ -27,21 +27,27 @@ const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
     const startTime = new Date(drinkStartTime);
     const todayAt5 = new Date(getTodayAt5());
     const timeDiff = startTime.getTime() - todayAt5.getTime();
-    const remainingTimeAfterNewDrink = parseFloat(
-      (timeDiff / (1000 * 60 * 60)).toFixed(1)
-    );
-
-    canDriveFrom = calculateTimeAfterHours(
-      drinkStartTime,
-      requiredTimeToDrive + remainingTimeAfterNewDrink
-    );
+    const remainingTimeAfterNewDrink =
+      additionalTimeForDrive -
+      parseFloat((timeDiff / (1000 * 60 * 60)).toFixed(1));
+    if (remainingTimeAfterNewDrink > 0) {
+      canDriveFrom = calculateTimeAfterHours(
+        drinkStartTime,
+        requiredTimeToDrive + remainingTimeAfterNewDrink
+      );
+    } else {
+      canDriveFrom = calculateTimeAfterHours(
+        drinkStartTime,
+        requiredTimeToDrive
+      );
+    }
   }
 
   return (
     <View style={styles.rootContainer}>
       <View style={styles.chipsContainer}>
         <Icon source="blood-bag" color={MD3Colors.error50} size={32} />
-        <Text style={styles.chipText}>MAX {bloodAlcoholContent} %</Text>
+        <Text style={styles.chipText}>{bloodAlcoholContent} %</Text>
       </View>
       <View style={styles.chipsContainer}>
         {canDriveFrom === "passed" ? (

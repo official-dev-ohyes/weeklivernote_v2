@@ -110,13 +110,6 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
       ? (currentAlcoholConsumption / userAlcoholLimit) * 100
       : 0;
 
-    console.log(
-      "주량 정보:",
-      currentAlcoholConsumption,
-      userAlcoholLimit,
-      alcoholLimitRatio
-    );
-
     let newStatus = notificationStatus;
 
     if (alcoholLimitRatio < 50 && notificationStatus !== 0) {

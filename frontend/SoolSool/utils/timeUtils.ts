@@ -32,7 +32,7 @@ export function getTodayAt5(): string {
   const month = today.getMonth();
   const day = today.getDate();
 
-  const todayAt5 = new Date(year, month, day, 5, 0, 0, 0).toDateString();
+  const todayAt5 = new Date(year, month, day, 5, 0, 0, 0).toISOString();
   return todayAt5;
 }
 

@@ -78,8 +78,26 @@ export class DrinkToday {
     return parseFloat(roundedBAC);
   }
 
-  get intoxicationLevel(): IntoxicationLevel {
-    const bac = this.bloodAlcoholContent;
+  private get elapsedHours(): number {
+    if (this.drinkStartTime) {
+      const currentTime = new Date().getTime();
+      const startTime = new Date(this.drinkStartTime).getTime();
+      const elapsedMilliseconds = currentTime - startTime;
+      return elapsedMilliseconds / (1000 * 60 * 60);
+    } else {
+      return 0;
+    }
+  }
+
+  get currentBloodAlcoholContent(): number {
+    const initialBAC = this.bloodAlcoholContent;
+    const currentBAC = Math.max(0, initialBAC - this.elapsedHours * 0.015);
+
+    return parseFloat(currentBAC.toFixed(2));
+  }
+
+  private get intoxicationLevel(): IntoxicationLevel {
+    const bac = this.currentBloodAlcoholContent;
 
     if (bac === 0) {
       return IntoxicationLevel.Sober;

@@ -117,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
       <HomeCarousel />
       <View style={styles.controllerContainer}>
         <SafeDriveInfo
-          bloodAlcoholContent={drinkToday.bloodAlcoholContent}
+          bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
           additionalTimeForDrive={drinkToday.stillNeedSoberTimeFor}
