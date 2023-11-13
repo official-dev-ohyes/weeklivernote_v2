@@ -19,10 +19,14 @@ const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
   let canDriveFrom: string;
 
   if (drinkStartTime === null) {
-    canDriveFrom = calculateTimeAfterHours(
-      getTodayAt5(),
-      additionalTimeForDrive
-    );
+    if (additionalTimeForDrive === 0) {
+      canDriveFrom = "passed";
+    } else {
+      canDriveFrom = calculateTimeAfterHours(
+        getTodayAt5(),
+        additionalTimeForDrive
+      );
+    }
   } else {
     const startTime = new Date(drinkStartTime);
     const todayAt5 = new Date(getTodayAt5());

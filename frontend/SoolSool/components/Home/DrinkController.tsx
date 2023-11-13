@@ -199,7 +199,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
             });
           })
           .catch((error) => {
-            Toast.show("다시 시도해주세요.", {
+            Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
               duration: Toast.durations.SHORT,
             });
             throw error;
@@ -210,7 +210,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
             handleLogChange(selectedDrink.id, newValue);
           })
           .catch((error) => {
-            Toast.show("다시 시도해주세요.", {
+            Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
               duration: Toast.durations.SHORT,
             });
             throw error;
@@ -264,7 +264,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
           }
         })
         .catch((error) => {
-          Toast.show("다시 시도해주세요.", {
+          Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
             duration: Toast.durations.SHORT,
           });
           throw error;
@@ -275,7 +275,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
           handleLogChange(selectedDrink.id, newValue);
         })
         .catch((error) => {
-          Toast.show("다시 시도해주세요.", {
+          Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
             duration: Toast.durations.SHORT,
           });
           throw error;
