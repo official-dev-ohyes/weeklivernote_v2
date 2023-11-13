@@ -17,6 +17,8 @@ import { useQuery, useQueryClient } from "react-query";
 import DailyDetail from "./DailyDetail";
 
 function DailySummary(props) {
+  console.log(`지금 선택된 요약 정보 날짜를 확인합시다! ${props.summaryText}`);
+
   const today = new Date();
   const queryClient = useQueryClient();
   const { summaryText, alcoholDays } = props;

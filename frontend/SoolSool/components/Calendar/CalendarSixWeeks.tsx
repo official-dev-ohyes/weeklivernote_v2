@@ -11,7 +11,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import React from "react";
 import { useState, useRef, useMemo, useCallback } from "react";
-import { Calendar } from "react-native-calendars";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
@@ -51,8 +51,9 @@ function CalendarSixWeeks({ navigation }) {
   // Bottom Sheet
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const dynamicSnapPoints = useMemo(() => {
-    return alcoholDays[selectDay] ? ["25%", "100%"] : ["25%"];
-  }, [selectDay]);
+    const isToday = selectDay === nowDate;
+    return isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
+  }, [selectDay, nowDate, alcoholDays]);
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
@@ -61,6 +62,50 @@ function CalendarSixWeeks({ navigation }) {
       setIsSelectDay(false);
     }
   }, []);
+
+  // 캘린더 서식 수정
+  LocaleConfig.locales["ko"] = {
+    monthNames: [
+      "1월",
+      "2월",
+      "3월",
+      "4월",
+      "5월",
+      "6월",
+      "7월",
+      "8월",
+      "9월",
+      "10월",
+      "11월",
+      "12월",
+    ],
+    monthNamesShort: [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+    ],
+    dayNames: [
+      "월요일",
+      "화요일",
+      "수요일",
+      "목요일",
+      "금요일",
+      "토요일",
+      "일요일",
+    ],
+    dayNamesShort: ["월", "화", "수", "목", "금", "토", "일"],
+    today: "오늘",
+  };
+  LocaleConfig.defaultLocale = "ko";
 
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
@@ -186,6 +231,14 @@ function CalendarSixWeeks({ navigation }) {
             //     },
             //   },
             // }}
+            dayTextColor={{
+              default: "black",
+              disabled: "gray",
+            }}
+            dayBackgroundColor={{
+              default: "transparent",
+              disabled: "transparent",
+            }}
             onDayPress={handleDayPress}
             onPressArrowLeft={handlePressArrowLeft}
             onPressArrowRight={handelPressArrowRight}
@@ -193,11 +246,12 @@ function CalendarSixWeeks({ navigation }) {
             dayComponent={({ date, state }) => {
               const dayFormatted = date.day < 10 ? `0${date.day}` : date.day;
               const alcoholKey = `${date.year}-${date.month}-${dayFormatted}`;
+              const isDisabled = state === "disabled";
 
               return (
                 <TouchableOpacity
                   onPress={() => handleDayPress(date)}
-                  style={styles.calendarCell}
+                  style={[styles.calendarCell, isDisabled && { opacity: 0.3 }]}
                 >
                   <View style={styles.calendarCell}>
                     <Text style={styles.calendarDate}>{date.day}</Text>
@@ -281,7 +335,6 @@ const styles = StyleSheet.create({
   totalContainer: {
     height: "100%",
     flexDirection: "column",
-    // backgroundColor: "blue",
   },
   smallCalendar: {
     height: "auto",
@@ -290,7 +343,6 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   dailySummaryComponent: {
-    // height: "25%",
     flex: 1,
   },
   dailySummaryTotal: {
@@ -319,7 +371,6 @@ const styles = StyleSheet.create({
     height: "30%",
     flexDirection: "row",
     marginLeft: "3%",
-    // backgroundColor: "pink",
   },
   innerText: {
     fontSize: 20,
@@ -375,20 +426,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 90, // @@@@@@@@@@@@@@@@@@@@@@@@다시 생각해보자@@@@@@@@@@@@@@@@@@@@@@@@
     width: "100%",
-    // backgroundColor: "blue",
   },
   calendarDate: {
     height: "50%",
     flex: 1,
-    // backgroundColor: "red",
   },
   calendarStemp: {
     height: "83%",
     width: "83%",
-    // backgroundColor: "yellow",
   },
 });
 
 export default CalendarSixWeeks;
-
-// 기록을 추가/삭제 했을 때, 재 렌더링 로직 추가 필요
