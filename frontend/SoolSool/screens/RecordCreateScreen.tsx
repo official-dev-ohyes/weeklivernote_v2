@@ -81,6 +81,34 @@ function RecordCreateScreen({ route, navigation }) {
   };
 
   // 주종별 음주 기록 추가
+  const handleAdd = () => {
+    const newRecord = {
+      category: selectedAlcohol,
+      drinkUnit: selectedUnit,
+      drinkAmount: value,
+    };
+
+    const existingRecordIndex = alcoholRecord.findIndex(
+      (record) =>
+        record.category === selectedAlcohol && record.drinkUnit === selectedUnit
+    );
+
+    if (existingRecordIndex >= 0) {
+      alcoholRecord[existingRecordIndex].drinkAmount += value;
+    } else {
+      if (newRecord.drinkAmount > 0) {
+        setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
+      } else {
+        Alert.alert("알림", "수량을 조절하세요.");
+      }
+    }
+
+    setValue(0);
+    setSelectedAlcohol("소주");
+    setSelectedUnit("잔");
+  };
+
+  // 전체 기록 추가
   const saveRecord = async () => {
     if (selectedHour === "시" || selectedMinute === "분") {
       Alert.alert("알림", "음주 시작 시간을 입력해주세요.");
@@ -235,6 +263,13 @@ function RecordCreateScreen({ route, navigation }) {
     });
   };
 
+  // 주종별 음주 기록 삭제
+  const handleDeleteRecord = (index) => {
+    const updatedRecords = [...alcoholRecord];
+    updatedRecords.splice(index, 1);
+    setAlcoholRecord(updatedRecords);
+  };
+
   return (
     <View style={styles.total}>
       <ScrollView style={styles.scrollBox}>
@@ -258,7 +293,10 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.tagArea}>
             {alcoholRecord.length > 0 ? (
               <View style={styles.tag}>
-                <NowAddedAlcohols alcoholRecord={alcoholRecord} />
+                <NowAddedAlcohols
+                  alcoholRecord={alcoholRecord}
+                  onDeleteRecord={handleDeleteRecord}
+                />
               </View>
             ) : null}
           </View>
@@ -328,38 +366,39 @@ function RecordCreateScreen({ route, navigation }) {
               <Button
                 style={styles.button}
                 mode="contained"
-                onPress={() => {
-                  const newRecord = {
-                    category: selectedAlcohol,
-                    drinkUnit: selectedUnit,
-                    drinkAmount: value,
-                  };
-                  const existingRecordIndex = alcoholRecord.findIndex(
-                    (record) => {
-                      return (
-                        record.category === selectedAlcohol &&
-                        record.drinkUnit === selectedUnit
-                      );
-                    }
-                  );
+                // onPress={() => {
+                //   const newRecord = {
+                //     category: selectedAlcohol,
+                //     drinkUnit: selectedUnit,
+                //     drinkAmount: value,
+                //   };
+                //   const existingRecordIndex = alcoholRecord.findIndex(
+                //     (record) => {
+                //       return (
+                //         record.category === selectedAlcohol &&
+                //         record.drinkUnit === selectedUnit
+                //       );
+                //     }
+                //   );
 
-                  if (existingRecordIndex >= 0) {
-                    alcoholRecord[existingRecordIndex].drinkAmount += value;
-                  } else {
-                    if (newRecord.drinkAmount > 0) {
-                      setAlcoholRecord((prevRecords) => [
-                        ...prevRecords,
-                        newRecord,
-                      ]);
-                    } else {
-                      Alert.alert("알림", "수량을 조절하세요.");
-                    }
-                  }
-                  setValue(0);
-                  setSelectedAlcohol("소주");
-                  setSelectedUnit("잔");
-                  console.log(alcoholRecord);
-                }}
+                //   if (existingRecordIndex >= 0) {
+                //     alcoholRecord[existingRecordIndex].drinkAmount += value;
+                //   } else {
+                //     if (newRecord.drinkAmount > 0) {
+                //       setAlcoholRecord((prevRecords) => [
+                //         ...prevRecords,
+                //         newRecord,
+                //       ]);
+                //     } else {
+                //       Alert.alert("알림", "수량을 조절하세요.");
+                //     }
+                //   }
+                //   setValue(0);
+                //   setSelectedAlcohol("소주");
+                //   setSelectedUnit("잔");
+                //   console.log(alcoholRecord);
+                // }}
+                onPress={handleAdd}
                 buttonColor={"#363C4B"}
               >
                 추가

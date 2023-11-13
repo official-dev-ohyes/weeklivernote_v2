@@ -1,14 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 
-function NowAddedAlcohols({ alcoholRecord }) {
+function NowAddedAlcohols({ alcoholRecord, onDeleteRecord }) {
   const [count, setCount] = useState(0);
+
   useEffect(() => {
     setCount(alcoholRecord.length);
-    for (let i = 0; i < alcoholRecord.length; i++) {}
-  }, [alcoholRecord.length]);
+  }, [alcoholRecord]);
 
   console.log(`지금 넘어온 술 기록 개수는 ${count}개`);
+
+  // 해당 인덱스의 주종 음주 기록 삭제
+  const handleDelete = (index) => {
+    onDeleteRecord(index);
+  };
 
   return (
     <View style={styles.total}>
@@ -21,6 +26,9 @@ function NowAddedAlcohols({ alcoholRecord }) {
                 <Text style={styles.innerText}> {record.drinkAmount}</Text>
                 <Text style={styles.innerText}>{record.drinkUnit} </Text>
               </Text>
+              <TouchableOpacity onPress={() => handleDelete(index)}>
+                <Text style={styles.deleteButton}>X</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
@@ -45,6 +53,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   alcoholInfo: {
+    flexDirection: "row",
     marginRight: 5,
     marginBottom: 5,
     paddingVertical: 5,
@@ -65,6 +74,13 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     justifyContent: "center",
+  },
+  deleteButton: {
+    // position: "absolute",
+    top: 0,
+    right: 0,
+    fontSize: 16,
+    color: "red",
   },
 });
 

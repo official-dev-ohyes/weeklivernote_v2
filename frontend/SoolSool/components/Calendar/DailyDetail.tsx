@@ -41,6 +41,14 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     }
   }, [DailyDetailData]);
 
+  const format12HourTime = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    const parsedHours = parseInt(hours, 10);
+    const period = parsedHours >= 12 ? "PM" : "AM";
+    const formattedHours = parsedHours % 12 || 12; // Convert 0 to 12
+    return `${period} ${formattedHours}:${minutes}`;
+  };
+
   return (
     <ScrollView>
       <View style={styles.total}>
@@ -48,7 +56,7 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
           <View style={styles.time}>
             <View style={styles.house}>
               <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
-              <Text>{info.startTime.substring(11, 16)}</Text>
+              <Text>{format12HourTime(info.startTime.substring(11, 16))}</Text>
             </View>
             <View style={styles.house}>
               <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
