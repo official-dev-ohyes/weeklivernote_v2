@@ -28,7 +28,7 @@ export async function checkLocationPermission() {
 
 export async function locationPermissionAlert() {
 	const lastCheckedDate = await AsyncStorage.getItem("lastCheckedDate");
-	const today = new Date().toISOString().split("T")[0];
+	const today = new Date().toLocaleDateString('ko-KR').split("T")[0];
 
 	if (!lastCheckedDate || lastCheckedDate !== today) {
 		Alert.alert(
@@ -77,12 +77,9 @@ export async function getLocation(): Promise<LocationType | null> {
 export async function updateLocation(): Promise<boolean> {
 	const nowLocation: LocationType = JSON.parse((await AsyncStorage.getItem("nowLocation")) || "{}");
 	const destLocation: LocationType = JSON.parse((await AsyncStorage.getItem("destLocation")));
-	// const lastChanceTime = await AsyncStorage.getItem("lastChanceTime");
-	const lastChanceTime = "23:50";
 	const now = new Date();
 
 	console.log("현재 위치 : ", nowLocation);
-	console.log("길이 확인 : ", Object.keys(nowLocation).length);
 	console.log("도착지 위치 : ", destLocation);
 	
 	let location: LocationType = nowLocation;
@@ -95,18 +92,23 @@ export async function updateLocation(): Promise<boolean> {
 		location = await getLocation();
 		if (location) {
 			await AsyncStorage.setItem("nowLocation",	JSON.stringify({ ...location, time: now.getTime() }));
-			await updateNowGpsInfo(JSON.stringify(location));
+			const data = await updateNowGpsInfo(JSON.stringify(location));
+			await AsyncStorage.setItem("alarmTime", data.alarmTime);
 		}
 	} else if (now.getTime() - (nowLocation.time || 0) >= 3600000) {
+		console.log("1시간 이후");
 		location = await getLocation();
 		if (location && getDistanceDiff(nowLocation, location) >= 1) {
+			console.log("1km 이상");
 			await AsyncStorage.setItem(
 				"nowLocation",
 				JSON.stringify({ ...location, time: now.getTime() })
 			);
-			await updateNowGpsInfo(JSON.stringify(location));
+			const data = await updateNowGpsInfo(JSON.stringify(location));
+			await AsyncStorage.setItem("alarmTime", data.alarmTime);
 		}
 	}
+
 
 	// if (lastChanceTime && new Date(lastChanceTime).getTime() < now.getTime()) {
 	// 	return false;
