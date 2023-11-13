@@ -52,6 +52,7 @@ public class LocationService {
         throws Exception {
         // 출발지부터 도착지까지 ODSAY 대중교통 길찾기 API 호출 후 totalTime이 가장 적게 걸리는 경로 가져오기
         JsonNode shortRoute = findRoute(locationRequestDto);
+        List<Map<String, List<Double>>> subPaths = findStations(shortRoute);
 
         // 시간 계산
         String alarmTime = calculateTime(shortRoute);
@@ -61,6 +62,7 @@ public class LocationService {
         LocationResponseDto locationResponseDto = LocationResponseDto.builder()
             .alarmTime(alarmTime)
             .shortRoute(shortRoute)
+            .subPaths(subPaths)
             .build();
         log.error("뭐지뭐야 " + alarmTime);
         String jsonString = objectMapper.writeValueAsString(locationResponseDto);
@@ -342,5 +344,29 @@ public class LocationService {
         LocalDateTime time1 = LocalDateTime.parse(alarmDateTime, DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime time2 = LocalDateTime.parse(stationDateTime, DateTimeFormatter.ISO_DATE_TIME);
         return time1.isAfter(time2);
+    }
+
+    public List<Map<String, List<Double>>> findStations(JsonNode route) {
+        List<Map<String, List<Double>>> totalStations = new ArrayList<>();
+        JsonNode subPaths = route.get("subPath");
+
+        for (int i = 0; i < subPaths.size(); i++) {
+            int trafficType = subPaths.get(i).get("trafficType").asInt();
+            Map<String, List<Double>> stations = new HashMap<>();
+
+            // 정류장마다 stationInfo에 추가
+            if (trafficType == 1 || trafficType == 2) {
+                JsonNode stationDetail = subPaths.get(i).get("passStopList").get("stations");
+                for (int j = 0; j < stationDetail.size(); j++) {
+                    List<Double> xy = new ArrayList<>();
+                    xy.add(stationDetail.get(j).get("x").asDouble());
+                    xy.add(stationDetail.get(j).get("y").asDouble());
+                    stations.put(String.valueOf(j), xy);
+                }
+            }
+            totalStations.add(stations);
+        }
+
+        return totalStations;
     }
 }
