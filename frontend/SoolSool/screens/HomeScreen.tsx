@@ -58,38 +58,35 @@ const HomeScreen = ({ navigation }) => {
       const fetchData = async () => {
         try {
           const data = await fetchDrink(today);
-          console.log(61, data);
           if (data) {
-            if (data.drinkTotal === 0) {
-              setDrinkToday(new DrinkToday(data));
-            } else {
-              const drinkTodayData = {
-                drinkTotal: data.drinkTotal,
-                alcoholAmount: data.alcoholAmount,
-                drinkStartTime: data.drinkStartTime,
-                height: data.height,
-                weight: data.weight,
-                gender: data.gender,
-              };
+            const drinkTodayData = {
+              drinkTotal: data.drinkTotal,
+              alcoholAmount: data.alcoholAmount,
+              drinkStartTime: data.drinkStartTime,
+              height: data.height,
+              weight: data.weight,
+              gender: data.gender,
+              bacAt5: data.todayBloodAlcohol,
+              alcoholAt5: data.todayLiverAlcohol,
+            };
 
-              setDrinkToday(new DrinkToday(drinkTodayData));
+            setDrinkToday(new DrinkToday(drinkTodayData));
 
-              const currentDrinksObject = {};
-              data.drinks.forEach((drink) => {
-                const id = getIdByCategoryAndUnit(
-                  drink.category,
-                  drink.drinkUnit
-                );
+            const currentDrinksObject = {};
+            data.drinks.forEach((drink) => {
+              const id = getIdByCategoryAndUnit(
+                drink.category,
+                drink.drinkUnit
+              );
 
-                if (currentDrinksObject.hasOwnProperty(id)) {
-                  currentDrinksObject[id] += drink.drinkAmount;
-                } else {
-                  currentDrinksObject[id] = drink.drinkAmount;
-                }
-              });
+              if (currentDrinksObject.hasOwnProperty(id)) {
+                currentDrinksObject[id] += drink.drinkAmount;
+              } else {
+                currentDrinksObject[id] = drink.drinkAmount;
+              }
+            });
 
-              setCurrentDrinks(currentDrinksObject);
-            }
+            setCurrentDrinks(currentDrinksObject);
           }
         } catch (error) {
           console.error("데이터를 가져오는 동안 에러 발생:", error);
@@ -119,6 +116,7 @@ const HomeScreen = ({ navigation }) => {
           bloodAlcoholContent={drinkToday.bloodAlcoholContent}
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
+          additionalTimeForDrive={drinkToday.stillNeedSoberTimeFor}
         />
         <DrinkController currentDrinks={currentDrinks} />
       </View>

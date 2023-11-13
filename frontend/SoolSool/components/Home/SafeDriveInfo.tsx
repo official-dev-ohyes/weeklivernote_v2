@@ -1,23 +1,41 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Icon, MD3Colors } from "react-native-paper";
-import { calculateTimeAfterHours } from "../../utils/timeUtils";
+import { calculateTimeAfterHours, getTodayAt5 } from "../../utils/timeUtils";
 
 interface SafeDriveInfoProps {
   bloodAlcoholContent: number;
   drinkStartTime: string;
   requiredTimeToDrive: number;
+  additionalTimeForDrive: number;
 }
 
 const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
   bloodAlcoholContent,
   drinkStartTime,
   requiredTimeToDrive,
+  additionalTimeForDrive,
 }) => {
-  const canDriveFrom = calculateTimeAfterHours(
-    drinkStartTime,
-    requiredTimeToDrive
-  );
+  let canDriveFrom: string;
+
+  if (drinkStartTime === null) {
+    canDriveFrom = calculateTimeAfterHours(
+      getTodayAt5(),
+      additionalTimeForDrive
+    );
+  } else {
+    const startTime = new Date(drinkStartTime);
+    const todayAt5 = new Date(getTodayAt5());
+    const timeDiff = startTime.getTime() - todayAt5.getTime();
+    const remainingTimeAfterNewDrink = parseFloat(
+      (timeDiff / (1000 * 60 * 60)).toFixed(1)
+    );
+
+    canDriveFrom = calculateTimeAfterHours(
+      drinkStartTime,
+      requiredTimeToDrive + remainingTimeAfterNewDrink
+    );
+  }
 
   return (
     <View style={styles.rootContainer}>

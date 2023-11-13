@@ -33,6 +33,8 @@ interface DrinkTodayData {
   height: number;
   weight: number;
   gender: string;
+  bacAt5: number;
+  alcoholAt5: number;
 }
 
 export class DrinkToday {
@@ -42,6 +44,8 @@ export class DrinkToday {
   height: number;
   weight: number;
   gender: string;
+  bacAt5: number;
+  alcoholAt5: number;
 
   constructor(data: DrinkTodayData) {
     this.drinkTotal = data.drinkTotal;
@@ -50,6 +54,8 @@ export class DrinkToday {
     this.height = data.height;
     this.weight = data.weight;
     this.gender = data.gender;
+    this.bacAt5 = data.bacAt5;
+    this.alcoholAt5 = data.alcoholAt5;
   }
 
   get bloodAlcoholContent(): number {
@@ -68,6 +74,7 @@ export class DrinkToday {
       ((this.alcoholAmount * 0.7) / (this.weight * 1000 * genderConstant)) *
       100;
     const roundedBAC = bac.toFixed(2);
+
     return parseFloat(roundedBAC);
   }
 
@@ -91,17 +98,33 @@ export class DrinkToday {
 
   get intoxicationImage(): ImageProps["source"] {
     const level = this.intoxicationLevel;
+
     return IntoxicationImageMap[level];
   }
 
   get cannotDriveFor(): number {
     const requiredTime = (200 * this.bloodAlcoholContent) / 3;
     const roundedRequiredTime = requiredTime.toFixed(2);
+
     return parseFloat(roundedRequiredTime);
   }
 
   get requiredTimeForDetox(): number {
     const requiredTimeInSeconds = this.alcoholAmount / 0.002;
+    const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
+
+    return Number(requiredTimeInHours);
+  }
+
+  get stillNeedSoberTimeFor(): number {
+    const requiredTime = (200 * this.bacAt5) / 3;
+    const roundedRequiredTime = requiredTime.toFixed(2);
+
+    return parseFloat(roundedRequiredTime);
+  }
+
+  get stillNeedDetoxTimeFor(): number {
+    const requiredTimeInSeconds = this.alcoholAt5 / 0.002;
     const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
 
     return Number(requiredTimeInHours);

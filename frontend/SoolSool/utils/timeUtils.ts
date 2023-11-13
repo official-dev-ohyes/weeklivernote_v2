@@ -25,6 +25,17 @@ export function getToday(): string {
   return formattedDate;
 }
 
+export function getTodayAt5(): string {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const day = today.getDate();
+
+  const todayAt5 = new Date(year, month, day, 5, 0, 0, 0).toDateString();
+  return todayAt5;
+}
+
 export function calculateTimeDifference(targetDate: Date): number {
   const currentTime = new Date();
   const differenceInMilliseconds = currentTime.getTime() - targetDate.getTime();
@@ -37,7 +48,10 @@ export function calculateTimeDifference(targetDate: Date): number {
   return roundedHoursDifference;
 }
 
-export function calculateTimeAfterHours(startTime: string, hoursToAdd: number) {
+export function calculateTimeAfterHours(
+  startTime: string,
+  hoursToAdd: number
+): string {
   const now = new Date();
   const referenceTime = new Date(startTime);
   const millisecondsToAdd = hoursToAdd * 3600000;
