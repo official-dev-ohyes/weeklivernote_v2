@@ -11,6 +11,10 @@ import { LCfirst } from "../../assets";
 function LastChanceFirst({ navigation }) {
   const screenHeight = Dimensions.get("window").height;
 
+  const goToAddInfo = () => {
+    navigation.navigate("AddInfo");
+  };
+
   const goToHome = () => {
     navigation.navigate("HomeRoute");
   };
@@ -22,6 +26,9 @@ function LastChanceFirst({ navigation }) {
       <View>
         <Text style={styles.text}>집까지 가는 막차를 알려드릴게요</Text>
       </View>
+      <Button mode="outlined" onPress={goToAddInfo}>
+        정보 입력 바로가기
+      </Button>
       <Button mode="contained" onPress={goToHome}>
         막차 조회하기
       </Button>

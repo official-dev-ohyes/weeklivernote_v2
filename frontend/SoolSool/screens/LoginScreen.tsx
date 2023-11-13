@@ -24,6 +24,10 @@ function LoginScreen({ navigation }) {
     navigation.navigate("KakaoLoginScreen");
   };
 
+  // const goToMain = () => {
+  //   navigation.navigate("Home");
+  // };
+
   const screenHeight = Dimensions.get("window").height;
 
   return (
@@ -43,6 +47,7 @@ function LoginScreen({ navigation }) {
         <TouchableOpacity onPress={handleLogin}>
           <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
         </TouchableOpacity>
+        {/* <Button onPress={goToMain}>메인으로 바로가기</Button> */}
       </View>
     </ImageBackground>
   );

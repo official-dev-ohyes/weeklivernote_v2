@@ -7,6 +7,8 @@ import UserNonAlc from "../components/MyPage/template/UserNonAlc";
 import SettingsIconButton from "../components/MyPage/SettingsIconButton";
 import Profile from "../components/MyPage/template/Profile";
 import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+
 interface DrinkInfo {
   category: string;
   drinkAmount: number;
@@ -30,13 +32,13 @@ interface AlcoholStatistics {
   drinkYearAmount: number; // 올해음주량
 }
 
-interface UserProfileProps {
-  userProfile: UserProfile;
-  alcoholStatistics: AlcoholStatistics;
-  navigation: any;
-}
+// interface UserProfileProps {
+//   userProfile: UserProfile;
+//   alcoholStatistics: AlcoholStatistics;
+//   navigation: any;
+// }
 
-function MyPageScreen(props: UserProfileProps) {
+function MyPageScreen({ navigation }) {
   const queryClient = useQueryClient();
   const [userProfile, setUserProfile] = useState<UserProfile>({
     nickname: "",
@@ -56,21 +58,21 @@ function MyPageScreen(props: UserProfileProps) {
       drinkYearAmount: 0, // 올해음주량
     }
   );
-  const navigation = props.navigation;
+  // const navigation = props.navigation;
 
   // 내비게이션 헤더에 설정페이지 이동 버튼 추가
-  function handleHeaderButtonPressed() {
+  function handleclickSettingsIcon() {
     navigation.navigate("Settings");
     // navigation을 프롭스로 받아와야하나?
   }
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return <SettingsIconButton onPress={handleHeaderButtonPressed} />;
-      },
-    });
-  }, []);
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => {
+  //       return <SettingsIconButton onPress={handleHeaderButtonPressed} />;
+  //     },
+  //   });
+  // }, []);
 
   const {
     data: userProfileData,
@@ -83,17 +85,6 @@ function MyPageScreen(props: UserProfileProps) {
     isLoading: isNonAlcLoading,
     isError: isNonAlcError,
   } = useQuery("userNonAlcData", async () => await fetchUserNonAlc());
-
-  // console.log("오잉?", userProfileData);
-
-  // useEffect(() => {
-  //   if (!isProfileLoading && userProfileData) {
-  //     setUserProfile(userProfileData);
-  //   }
-  //   if (!isNonAlcLoading && userNonAlcData) {
-  //     setAlcoholStatistics(userNonAlcData);
-  //   }
-  // }, [userProfileData, isProfileLoading, navigator]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -112,6 +103,13 @@ function MyPageScreen(props: UserProfileProps) {
     <ScrollView>
       <View style={styles.mainContainer}>
         <View style={styles.subContainer}>
+          <View style={styles.upperBar}>
+            <Ionicons
+              name="settings"
+              size={20}
+              onPress={handleclickSettingsIcon}
+            />
+          </View>
           <Profile navigation={navigation} userData={userProfile} />
           <UserNonAlc alcoholData={alcoholStatistics} />
           <UserStatistics />
@@ -128,11 +126,20 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flexDirection: "column",
-    gap: 25,
+    gap: 15,
     marginHorizontal: 15,
     width: "90%",
     marginRight: "auto",
     marginLeft: "auto",
+  },
+  upperBar: {
+    width: "100%",
+    height: 30,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    // backgroundColor: "red",
   },
 });
 
