@@ -87,6 +87,8 @@ function AddInfoStep3Screen({ navigation, route }) {
           console.log("제출 성공", res);
           const accessToken = res.tokenInfo.accessToken;
           await AsyncStorage.setItem("accessToken", accessToken);
+          const destLocation = res.gpsInfo;
+					await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
           setNickname(res.userName);
           setAlcoholLimit(res.alcoholLimit);
 
