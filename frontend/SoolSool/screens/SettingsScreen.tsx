@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { Modal, Portal, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logOut, signOut } from "../api/accountApi";
 import { sendEmail } from "../utils/mailUtils";
+import Toast from "react-native-root-toast";
 
 function Section({ title, content }) {
   return (
@@ -32,14 +33,60 @@ function Separator() {
 }
 
 function SettingsScreen({ navigation }) {
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+  const [isDrinkNotificationEnabled, setIsDrinkNotificationEnabled] =
+    useState(true);
+  const [isLastNotificationEnabled, setIsLastNotificationEnabled] =
+    useState(true);
   const [visible, setVisible] = React.useState(false);
+
+  useEffect(() => {
+    const loadNotificationStatus = async () => {
+      try {
+        const drinkNotificationStatus = await AsyncStorage.getItem(
+          "isDrinkNotificationEnabled"
+        );
+
+        if (drinkNotificationStatus !== null) {
+          setIsDrinkNotificationEnabled(JSON.parse(drinkNotificationStatus));
+        }
+
+        const lastNotificationStatus = await AsyncStorage.getItem(
+          "isLastNotificationEnabled"
+        );
+
+        if (lastNotificationStatus !== null) {
+          setIsLastNotificationEnabled(JSON.parse(drinkNotificationStatus));
+        }
+      } catch (error) {
+        console.error("Error loading notification status:", error);
+        Toast.show("알림 설정 오류. 잠시 후 다시 시도해주세요.", {
+          duration: Toast.durations.SHORT,
+        });
+      }
+    };
+
+    loadNotificationStatus();
+  }, []);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  const toggleNotification = () => {
-    setIsNotificationEnabled(!isNotificationEnabled);
+  const toggleDrinkNotification = async () => {
+    const newNotificationStatus = !isDrinkNotificationEnabled;
+    setIsDrinkNotificationEnabled(newNotificationStatus);
+    await AsyncStorage.setItem(
+      "isDrinkNotificationEnabled",
+      JSON.stringify(newNotificationStatus)
+    );
+  };
+
+  const toggleLastNotification = async () => {
+    const newNotificationStatus = !isLastNotificationEnabled;
+    setIsLastNotificationEnabled(newNotificationStatus);
+    await AsyncStorage.setItem(
+      "isLastNotificationEnabled",
+      JSON.stringify(newNotificationStatus)
+    );
   };
 
   const handleGoToNotification = () => {
@@ -81,22 +128,31 @@ function SettingsScreen({ navigation }) {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <Section
+        <Section
           title="알림"
           content={
-            <View style={styles.alarmContainer}>
-              <Text>알림 끄기/알림 켜기</Text>
-              <Switch
-                value={isNotificationEnabled} // 알림 켜기 또는 끄기 값 설정
-                onValueChange={toggleNotification} // 알림 켜기 또는 끄기 이벤트 핸들러
-                disabled={true}
-              />
-            </View>
+            <>
+              <View style={styles.alarmContainer}>
+                <Text>주량 알림</Text>
+                <Switch
+                  value={isDrinkNotificationEnabled}
+                  onValueChange={toggleDrinkNotification}
+                />
+              </View>
+              <Separator />
+              <View style={styles.alarmContainer}>
+                <Text>막차 알림</Text>
+                <Switch
+                  value={isLastNotificationEnabled}
+                  onValueChange={toggleLastNotification}
+                />
+              </View>
+            </>
           }
-        /> */}
+        />
 
         <Section
-          title="주간일기 1.0.0"
+          title="주간일기 2.0.0"
           content={
             <>
               <TouchableOpacity onPress={handleGoToNotification}>

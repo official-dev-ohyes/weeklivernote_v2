@@ -49,6 +49,17 @@ export async function registerForPushNotificationsAsync() {
 }
 
 export async function scheduleAlcoholLimitLocalNotification(status: number) {
+  const drinkNotificationStatus = await AsyncStorage.getItem(
+    "isDrinkNotificationEnabled"
+  );
+
+  if (drinkNotificationStatus !== null) {
+    const isGranted = JSON.parse(drinkNotificationStatus);
+    if (!isGranted) {
+      return;
+    }
+  }
+
   let notificationBody: string;
   switch (status) {
     case 1:
@@ -72,5 +83,4 @@ export async function scheduleAlcoholLimitLocalNotification(status: number) {
     },
     trigger: { seconds: 1 },
   });
-  console.log("Notification: ", notificationBody);
 }
