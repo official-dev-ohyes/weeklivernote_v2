@@ -58,7 +58,7 @@ function DetoxingStatus({
 const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
-    marginTop: "10%",
+    marginTop: "15%",
     marginVertical: 24,
     padding: 4,
     display: "flex",
