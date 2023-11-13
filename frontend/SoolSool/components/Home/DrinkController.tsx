@@ -8,8 +8,9 @@ import {
   Pressable,
 } from "react-native";
 import { IconButton, Modal, Portal } from "react-native-paper";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import { roundedUserAlcoholLimitSelector } from "../../recoil/auth";
 import Toast from "react-native-root-toast";
 import _ from "lodash";
 import { DrinkCarousel } from "./DrinkCarousel";
@@ -27,6 +28,7 @@ import {
   deleteDrink,
   removeDrink,
 } from "../../api/drinkRecordApi";
+import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
 interface Drink {
   id: number;
@@ -47,8 +49,11 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
   initialValue,
 }) => {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState(0);
+  const userAlcoholLimit = useRecoilValue(roundedUserAlcoholLimitSelector);
   const [drinkToday, setDrinkToday] =
     useRecoilState<DrinkToday>(drinkTodayAtom);
+  const currentAlcoholConsumption = drinkToday.alcoholAmount;
   const [currentDrinkList, setCurrentDrinkList] = useState(currentDrinks);
   const numberOfCurrentDrinkList = Object.keys(currentDrinkList).length;
   const defaultDrink = {
@@ -99,6 +104,51 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
   const handleModalClose = () => {
     setIsDrinkModalOpen(false);
   };
+
+  useEffect(() => {
+    const alcoholLimitRatio = userAlcoholLimit
+      ? (currentAlcoholConsumption / userAlcoholLimit) * 100
+      : 0;
+
+    console.log(
+      "주량 정보:",
+      currentAlcoholConsumption,
+      userAlcoholLimit,
+      alcoholLimitRatio
+    );
+
+    let newStatus = notificationStatus;
+
+    if (alcoholLimitRatio < 50 && notificationStatus !== 0) {
+      newStatus = 0;
+    } else if (
+      alcoholLimitRatio >= 50 &&
+      alcoholLimitRatio < 75 &&
+      notificationStatus !== 1
+    ) {
+      newStatus = 1;
+    } else if (
+      alcoholLimitRatio >= 75 &&
+      alcoholLimitRatio < 100 &&
+      notificationStatus !== 2
+    ) {
+      newStatus = 2;
+    } else if (alcoholLimitRatio >= 100 && notificationStatus !== 3) {
+      newStatus = 3;
+    }
+
+    if (newStatus !== notificationStatus) {
+      setNotificationStatus(newStatus);
+    }
+  }, [currentAlcoholConsumption]);
+
+  useEffect(() => {
+    if (notificationStatus === 0) {
+      return;
+    } else {
+      scheduleAlcoholLimitLocalNotification(notificationStatus);
+    }
+  }, [notificationStatus]);
 
   const handleLogChange = (key: number, newValue: number) => {
     setCurrentDrinkList((prev) => ({
