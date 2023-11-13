@@ -1,4 +1,10 @@
-import { Dimensions, Text, Image, StyleSheet } from "react-native";
+import {
+  Dimensions,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -19,6 +25,7 @@ type DrinkCarouselItemProps = {
   item: Drink;
   index: number;
   contentOffset: Animated.SharedValue<number>;
+  onPress?: () => void;
 };
 
 const { width: windowWidth } = Dimensions.get("window");
@@ -29,6 +36,7 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
   item,
   index,
   contentOffset,
+  onPress,
 }) => {
   const imageSource = getDrinkImageById(item.id);
   const rStyle = useAnimatedStyle(() => {
@@ -87,38 +95,40 @@ const DrinkCarouselItem: React.FC<DrinkCarouselItemProps> = ({
   });
 
   return (
-    <Animated.View
-      style={[
-        {
-          width: ListItemWidth,
-          aspectRatio: 1,
-          elevation: 5,
-          shadowOpacity: 0.2,
-          shadowOffset: {
-            width: 0,
-            height: 0,
+    <TouchableOpacity onPress={onPress}>
+      <Animated.View
+        style={[
+          {
+            width: ListItemWidth,
+            aspectRatio: 1,
+            elevation: 5,
+            shadowOpacity: 0.2,
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            shadowRadius: 20,
           },
-          shadowRadius: 20,
-        },
-        rStyle,
-      ]}
-    >
-      <Image
-        source={imageSource}
-        style={{
-          margin: 3,
-          height: ListItemWidth,
-          width: ListItemWidth,
+          rStyle,
+        ]}
+      >
+        <Image
+          source={imageSource}
+          style={{
+            margin: 3,
+            height: ListItemWidth,
+            width: ListItemWidth,
 
-          borderRadius: 200,
-          borderWidth: 2,
-          borderColor: "white",
-        }}
-      />
-      <Text style={styles.text}>
-        {item.name} ({item.unit})
-      </Text>
-    </Animated.View>
+            borderRadius: 200,
+            borderWidth: 2,
+            borderColor: "white",
+          }}
+        />
+        <Text style={styles.text}>
+          {item.name} ({item.unit})
+        </Text>
+      </Animated.View>
+    </TouchableOpacity>
   );
 };
 
