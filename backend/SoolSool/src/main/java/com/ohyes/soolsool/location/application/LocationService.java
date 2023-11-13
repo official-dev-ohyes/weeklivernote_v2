@@ -108,6 +108,11 @@ public class LocationService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode routeResult = objectMapper.readTree(jsonData);
 
+        // 길찾기 에러 처리
+        if (routeResult.has("error")) {
+            throw new Exception("길찾기 API를 정상적으로 호출하지 못하였습니다.");
+        }
+
         // 도시간 이동일 경우 경로 조회 X
         if (routeResult.get("result").get("searchType").asInt() == 1) {
             throw new Exception("대중교통으로 이동할 수 없는 구간입니다.");

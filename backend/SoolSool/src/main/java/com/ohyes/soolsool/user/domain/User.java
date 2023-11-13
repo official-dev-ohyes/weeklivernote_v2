@@ -43,6 +43,9 @@ public class User {
     @Column(name = "profile_img")
     private String profileImg;
 
+    @Column(name = "custom_profile_img")
+    private String customProfileImg;
+
     @Column(name = "address")
     private String address;
 
@@ -105,15 +108,14 @@ public class User {
     // 생성자
     @Builder
     public User(String socialId, Category category, String nickname, String profileImg,
-        String address,
-        String gender, int height, int weight, float alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod, LocalDate startNonalcoholDate, float todayBloodAlcohol,
-        float todayLiverAlcohol) {
-
+        String customProfileImg, String address, String gender, int height, int weight,
+        float alcoholLimit, String refreshToken, int maxNonalcoholPeriod,
+        LocalDate startNonalcoholDate, float todayBloodAlcohol, float todayLiverAlcohol) {
         this.socialId = socialId;
         this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
+        this.customProfileImg = customProfileImg;
         this.address = address;
         this.gender = gender;
         this.height = height;
