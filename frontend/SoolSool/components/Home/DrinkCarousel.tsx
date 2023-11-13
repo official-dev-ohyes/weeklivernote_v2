@@ -64,9 +64,18 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
     setCenteredItem(data[centerItemIndex]);
   };
 
-  const handleClick = () => {
+  const handleSelect = () => {
     sendData(centeredItem);
     onClose();
+  };
+
+  const handleClick = (index) => {
+    setCenteredItem(data[index]);
+    const targetOffset = index * ListItemWidth;
+    flatListRef.current.scrollToOffset({
+      offset: targetOffset,
+      animated: true,
+    });
   };
 
   return (
@@ -99,12 +108,13 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
             contentOffset={contentOffset}
             item={item}
             index={index}
+            onPress={() => handleClick(index)}
           />
         )}
         onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <Button
-        onPress={handleClick}
+        onPress={handleSelect}
         mode="text"
         textColor="white"
         buttonColor={mainBlue}

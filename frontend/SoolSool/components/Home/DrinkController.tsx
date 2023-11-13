@@ -8,8 +8,9 @@ import {
   Pressable,
 } from "react-native";
 import { IconButton, Modal, Portal } from "react-native-paper";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import { roundedUserAlcoholLimitSelector } from "../../recoil/auth";
 import Toast from "react-native-root-toast";
 import _ from "lodash";
 import { DrinkCarousel } from "./DrinkCarousel";
@@ -27,6 +28,7 @@ import {
   deleteDrink,
   removeDrink,
 } from "../../api/drinkRecordApi";
+import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
 import { checkLocationPermission, locationPermissionAlert, updateLocation } from "../../utils/gpsUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -42,12 +44,19 @@ interface Drink {
 
 interface DrinkControllerProps {
   currentDrinks: Record<number, number>;
+  initialValue: number;
 }
 
-const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
+const DrinkController: React.FC<DrinkControllerProps> = ({
+  currentDrinks,
+  initialValue,
+}) => {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
+  const [notificationStatus, setNotificationStatus] = useState(0);
+  const userAlcoholLimit = useRecoilValue(roundedUserAlcoholLimitSelector);
   const [drinkToday, setDrinkToday] =
     useRecoilState<DrinkToday>(drinkTodayAtom);
+  const currentAlcoholConsumption = drinkToday.alcoholAmount;
   const [currentDrinkList, setCurrentDrinkList] = useState(currentDrinks);
   const numberOfCurrentDrinkList = Object.keys(currentDrinkList).length;
   const defaultDrink = {
@@ -65,7 +74,7 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
     [selectedDrink]
   );
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(initialValue);
   const minValue = 0;
   const maxValue = 99;
   const minIsDisabled = useMemo(() => value <= minValue, [minValue, value]);
@@ -73,11 +82,9 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
 
   const today = getToday();
 
-  // useEffect(() => {
-  //   const defaultDrinkLog = currentDrinkList[defaultDrink.id];
-  //   console.log("soju", defaultDrinkLog);
-  // setValue(defaultDrinkLog);
-  // }, [defaultDrink.id]);
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   useEffect(() => {
     setCurrentDrinkList(currentDrinks);
@@ -100,6 +107,44 @@ const DrinkController: React.FC<DrinkControllerProps> = ({ currentDrinks }) => {
   const handleModalClose = () => {
     setIsDrinkModalOpen(false);
   };
+
+  useEffect(() => {
+    const alcoholLimitRatio = userAlcoholLimit
+      ? (currentAlcoholConsumption / userAlcoholLimit) * 100
+      : 0;
+
+    let newStatus = notificationStatus;
+
+    if (alcoholLimitRatio < 50 && notificationStatus !== 0) {
+      newStatus = 0;
+    } else if (
+      alcoholLimitRatio >= 50 &&
+      alcoholLimitRatio < 75 &&
+      notificationStatus !== 1
+    ) {
+      newStatus = 1;
+    } else if (
+      alcoholLimitRatio >= 75 &&
+      alcoholLimitRatio < 100 &&
+      notificationStatus !== 2
+    ) {
+      newStatus = 2;
+    } else if (alcoholLimitRatio >= 100 && notificationStatus !== 3) {
+      newStatus = 3;
+    }
+
+    if (newStatus !== notificationStatus) {
+      setNotificationStatus(newStatus);
+    }
+  }, [currentAlcoholConsumption]);
+
+  useEffect(() => {
+    if (notificationStatus === 0) {
+      return;
+    } else {
+      scheduleAlcoholLimitLocalNotification(notificationStatus);
+    }
+  }, [notificationStatus]);
 
   const handleLogChange = (key: number, newValue: number) => {
     setCurrentDrinkList((prev) => ({

@@ -1,5 +1,5 @@
 import "expo-dev-client";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -13,6 +13,7 @@ import { preventAutoHideAsync, hideAsync } from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -20,8 +21,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
-import AddInfoStep2Screen from "./screens/AddInfoStep2Screen";
-import AddInfoStep3Screen from "./screens/AddInfoStep3Screen";
 
 import HomeScreen from "./screens/HomeScreen";
 
@@ -38,13 +37,23 @@ const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 const queryClient = new QueryClient();
 
-import { setNotificationHandler } from "expo-notifications";
+import { Subscription } from "expo-modules-core";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "./utils/notificationUtils";
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 import HomeRouteScreen from "./screens/HomeRouteScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
 import { getFirstLocationPermission } from "./utils/gpsUtils";
 
-setNotificationHandler({
+Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
@@ -148,9 +157,43 @@ export default function App() {
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  // if (!fontsLoaded && !fontError) {
+  //   return null;
+  // }
+  const notificationListener = useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(async (token) => {
+      if (token) {
+        await AsyncStorage.setItem("expoPushToken", token);
+      } else {
+        return;
+      }
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        // console.log("App.tsx 174: ", notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      if (
+        typeof notificationListener.current !== "undefined" &&
+        typeof responseListener.current !== "undefined"
+      ) {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -179,14 +222,6 @@ export default function App() {
                       />
 
                       <Stack.Screen name="AddInfo" component={AddInfoScreen} />
-                      <Stack.Screen
-                        name="AddInfoStep2"
-                        component={AddInfoStep2Screen}
-                      />
-                      <Stack.Screen
-                        name="AddInfoStep3"
-                        component={AddInfoStep3Screen}
-                      />
                       <Stack.Screen
                         name="BottomTab"
                         component={BottomTabNavigator}

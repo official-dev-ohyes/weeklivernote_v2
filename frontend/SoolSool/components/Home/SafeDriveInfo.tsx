@@ -1,29 +1,53 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Icon, MD3Colors } from "react-native-paper";
-import { calculateTimeAfterHours } from "../../utils/timeUtils";
+import { calculateTimeAfterHours, getTodayAt5 } from "../../utils/timeUtils";
 
 interface SafeDriveInfoProps {
   bloodAlcoholContent: number;
   drinkStartTime: string;
   requiredTimeToDrive: number;
+  additionalTimeForDrive: number;
 }
 
 const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
   bloodAlcoholContent,
   drinkStartTime,
   requiredTimeToDrive,
+  additionalTimeForDrive,
 }) => {
-  const canDriveFrom = calculateTimeAfterHours(
-    drinkStartTime,
-    requiredTimeToDrive
-  );
+  let canDriveFrom: string;
+
+  if (drinkStartTime === null) {
+    canDriveFrom = calculateTimeAfterHours(
+      getTodayAt5(),
+      additionalTimeForDrive
+    );
+  } else {
+    const startTime = new Date(drinkStartTime);
+    const todayAt5 = new Date(getTodayAt5());
+    const timeDiff = startTime.getTime() - todayAt5.getTime();
+    const remainingTimeAfterNewDrink =
+      additionalTimeForDrive -
+      parseFloat((timeDiff / (1000 * 60 * 60)).toFixed(1));
+    if (remainingTimeAfterNewDrink > 0) {
+      canDriveFrom = calculateTimeAfterHours(
+        drinkStartTime,
+        requiredTimeToDrive + remainingTimeAfterNewDrink
+      );
+    } else {
+      canDriveFrom = calculateTimeAfterHours(
+        drinkStartTime,
+        requiredTimeToDrive
+      );
+    }
+  }
 
   return (
     <View style={styles.rootContainer}>
       <View style={styles.chipsContainer}>
         <Icon source="blood-bag" color={MD3Colors.error50} size={32} />
-        <Text style={styles.chipText}>MAX {bloodAlcoholContent} %</Text>
+        <Text style={styles.chipText}>{bloodAlcoholContent} %</Text>
       </View>
       <View style={styles.chipsContainer}>
         {canDriveFrom === "passed" ? (

@@ -14,6 +14,7 @@ function LastChanceSecond({ navigation }) {
   const goToHome = () => {
     navigation.navigate("HomeRoute");
   };
+
   return (
     <ImageBackground
       source={LCsecond}
