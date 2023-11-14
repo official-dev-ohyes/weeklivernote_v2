@@ -83,7 +83,7 @@ export async function getLocation(): Promise<LocationType | null> {
 export async function updateLocation(): Promise<boolean> {
 	const nowLocation: LocationType = JSON.parse((await AsyncStorage.getItem("nowLocation")) || "{}");
 	const destLocation: LocationType = JSON.parse((await AsyncStorage.getItem("destLocation")));
-	const now = new Date(Localization.locale);
+	const now = new Date();
 
 	console.log("현재 위치 : ", nowLocation);
 	console.log("도착지 위치 : ", destLocation);
@@ -91,6 +91,7 @@ export async function updateLocation(): Promise<boolean> {
 	let location: LocationType = nowLocation;
 
 	if (getDistanceDiff(destLocation, location) <= 2) {
+		console.log("도착지 근처 도착");
 		return false;
 	}
 
