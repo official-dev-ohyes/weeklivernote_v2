@@ -5,6 +5,8 @@ import PagerView from "react-native-pager-view";
 import AddInfoFirst from "../components/AddInfo/AddInfoFirst";
 import AddInfoSecond from "../components/AddInfo/AddInfoSecond";
 import AddInfoThird from "../components/AddInfo/AddInfoThird";
+import AddInfoForth from "../components/AddInfo/AddInfoForth";
+import { showErrorAndRetry } from "../utils/showErrorUtils";
 
 function AddInfoScreen({ navigation, route }) {
   const socialId = route?.params?.socialId;
@@ -16,7 +18,7 @@ function AddInfoScreen({ navigation, route }) {
   const [height, setHeight] = useState(0);
   const [weight, setWeight] = useState(0);
   const [drinkCategory, setDrinkCategory] = useState("");
-  const [drinkUnit, setDrinkUnit] = useState("");
+  const [drinkUnit, setDrinkUnit] = useState("병");
   const [drinkAmount, setDrinkAmount] = useState(0);
 
   const drinkInfo = {
@@ -26,15 +28,21 @@ function AddInfoScreen({ navigation, route }) {
   };
 
   const handlePage1ButtonClick = () => {
-    pagerRef.current.setPage(1);
+    if (
+      !gender ||
+      height <= 130 ||
+      height >= 230 ||
+      weight <= 30 ||
+      weight >= 230
+    ) {
+      showErrorAndRetry("알림", "모든 항목을 정확히 입력해주세요");
+    } else {
+      pagerRef.current.setPage(1);
+    }
   };
 
   const handlePage2ButtonClick = () => {
     pagerRef.current.setPage(2);
-  };
-
-  const handlePage3ButtonClick = () => {
-    pagerRef.current.setPage(3);
   };
 
   useEffect(() => {
@@ -68,17 +76,32 @@ function AddInfoScreen({ navigation, route }) {
       </View>
       <View key="3" style={[{ height: screenHeight }, styles.pageView]}>
         <AddInfoThird
+          gender={gender}
+          height={height}
+          weight={weight}
+          address={address}
           drinkCategory={drinkCategory}
           setDrinkCategory={setDrinkCategory}
           drinkUnit={drinkUnit}
           setDrinkUnit={setDrinkUnit}
           drinkAmount={drinkAmount}
           setDrinkAmount={setDrinkAmount}
-          onNextClick={handlePage3ButtonClick}
+          socialId={socialId}
+          navigation={navigation}
         />
       </View>
       <View key="4" style={[{ height: screenHeight }, styles.pageView]}>
-        {/* <AddInfoForth/> */}
+        <AddInfoForth
+          gender={gender}
+          height={height}
+          weight={weight}
+          address={address}
+          drinkCategory={drinkCategory}
+          drinkUnit={drinkUnit}
+          drinkAmount={drinkAmount}
+          socialId={socialId}
+          navigation={navigation}
+        />
       </View>
     </PagerView>
   );

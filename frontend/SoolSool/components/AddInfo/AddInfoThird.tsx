@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
+  Dimensions,
   Text,
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
+  ImageBackground,
   Image,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import Toast from "react-native-root-toast";
-import { adaptiveIcon, drink01, drink04 } from "../../assets";
+import { adaptiveIcon, drink01, drink04, mainbackground } from "../../assets";
+import { Button } from "react-native-paper";
+import { saveUserInfo } from "../../api/addInfoApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showErrorAndRetry } from "../../utils/showErrorUtils";
 
 function AddInfoThird({
+  gender,
+  height,
+  weight,
+  address,
+  socialId,
+  navigation,
   drinkCategory,
   setDrinkCategory,
   drinkUnit,
   setDrinkUnit,
   drinkAmount,
   setDrinkAmount,
-  onNextClick,
 }) {
   const [selectedDrinkKind, setSelectedDrinkKind] = useState(null);
   const handleDrinkKindSelection = (drinkKind) => {
@@ -59,73 +68,127 @@ function AddInfoThird({
     }
   };
 
+  const handleSubmitInfo = () => {
+    if (!drinkCategory || drinkAmount == 0) {
+      showErrorAndRetry("알림", "모든 항목을 정확히 입력해주세요");
+      return;
+    }
+    const drinkInfo = {
+      category: drinkCategory,
+      drinkUnit: drinkUnit,
+      drinkAmount: drinkAmount,
+    };
+
+    saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
+      .then(async (res) => {
+        console.log("제출 성공", res.tokenInfo.accessToken);
+        const accessToken = res.tokenInfo.accessToken;
+        await AsyncStorage.setItem("accessToken", accessToken);
+        // navigation.navigate("BottomTab");
+        navigation.navigate("Welcome");
+      })
+      .catch((error) => {
+        // console.error("추가정보 입력 실패", error);
+        showErrorAndRetry(
+          "다음에 다시 시도하세요",
+          "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
+        );
+      });
+  };
+
+  const screenHeight = Dimensions.get("window").height;
+
   return (
-    <View style={styles.mainContainer}>
-      {/* <Text>선택한 주소: {address}</Text> */}
-      <Text style={styles.title}>회원님의 주량을 알려주세요</Text>
-      <View>
-        <Image source={getImageURL()} style={styles.imageBox} />
-        <View style={styles.drinkSelection}>
-          <TouchableOpacity
-            style={getButtonStyle("소주")}
-            onPress={() => handleDrinkKindSelection("소주")}
-          >
-            <Text style={getButtonTextStyle("소주")}>소주</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={getButtonStyle("맥주")}
-            onPress={() => handleDrinkKindSelection("맥주")}
-          >
-            <Text style={getButtonTextStyle("맥주")}>맥주</Text>
-          </TouchableOpacity>
-        </View>
+    <ImageBackground
+      source={mainbackground}
+      style={[{ height: screenHeight }, styles.mainContainer]}
+    >
+      <View style={styles.subContainer}>
+        <Text style={styles.title}>회원님의 주량을 알려주세요</Text>
+        <View style={styles.lastContainer}>
+          <Image source={getImageURL()} style={styles.imageBox} />
+          <View style={styles.drinkSelection}>
+            <TouchableOpacity
+              style={getButtonStyle("소주")}
+              onPress={() => handleDrinkKindSelection("소주")}
+            >
+              <Text style={getButtonTextStyle("소주")}>소주</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={getButtonStyle("맥주")}
+              onPress={() => handleDrinkKindSelection("맥주")}
+            >
+              <Text style={getButtonTextStyle("맥주")}>맥주</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* 선택한 음료 표시 */}
-        {selectedDrinkKind && (
-          <Text style={styles.selectedDrink}>
-            선택한 주종: {selectedDrinkKind}
-          </Text>
-        )}
-        <View style={styles.rowContainer}>
-          {/* 주량 입력 */}
-          <TextInput
-            style={styles.amountInput}
-            placeholder="주량을 입력하세요"
-            value={drinkAmount}
-            onChangeText={(text) => setDrinkAmount(text)}
-            keyboardType="numeric"
-          />
+          <View style={styles.rowContainer}>
+            {/* 주량 입력 */}
+            <TextInput
+              style={styles.amountInput}
+              placeholder="주량을 입력하세요"
+              value={drinkAmount}
+              onChangeText={(text) => setDrinkAmount(text)}
+              keyboardType="numeric"
+            />
 
-          {/* 주량 단위 선택 */}
-          <Picker
-            selectedValue={drinkUnit}
-            onValueChange={(itemValue) => setDrinkUnit(itemValue)}
-            style={styles.unitPicker}
-            mode="dropdown"
-          >
-            <Picker.Item label="잔" value="잔" />
-            <Picker.Item label="병" value="병" />
-          </Picker>
+            {/* 주량 단위 선택 */}
+            <Picker
+              selectedValue={drinkUnit}
+              onValueChange={(itemValue) => setDrinkUnit(itemValue)}
+              style={styles.unitPicker}
+              mode="dropdown"
+            >
+              <Picker.Item label="병" value="병" />
+              <Picker.Item label="잔" value="잔" />
+            </Picker>
+          </View>
+          {selectedDrinkKind && (
+            <Text style={styles.selectedDrink}>
+              {selectedDrinkKind} {drinkAmount}
+              {drinkUnit}의 주량을 갖고계시는군요!
+            </Text>
+          )}
         </View>
+        <Button
+          mode="contained"
+          onPress={handleSubmitInfo}
+          buttonColor={"#FFDE68"}
+          textColor={"#000000"}
+        >
+          모든 작성을 완료했어요!
+        </Button>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 50,
+    width: "100%",
+  },
+  subContainer: {
     width: "90%",
     marginRight: "auto",
     marginLeft: "auto",
+    display: "flex",
+    // alignItems: "center",
+    gap: 60,
+    marginTop: 130,
+    paddingHorizontal: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     marginRight: "auto",
     marginLeft: "auto",
+    color: "white",
+    fontFamily: "LineRegular",
+  },
+  lastContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
   },
   drinkSelection: {
     flexDirection: "row",
@@ -134,7 +197,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   drinkButton: {
-    backgroundColor: "#DBEBF5",
+    backgroundColor: "rgba(255, 222, 104, 0.5)",
     // padding: 5,
     borderRadius: 8,
     flex: 1,
@@ -143,7 +206,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   selectedButton: {
-    backgroundColor: "#363C4B",
+    backgroundColor: "#FFDE68",
     // padding: 5,
     borderRadius: 8,
     flex: 1,
@@ -153,27 +216,31 @@ const styles = StyleSheet.create({
   },
   selectedButtonText: {
     fontSize: 17,
-    color: "white",
+    color: "black",
+    fontFamily: "LineRegular",
   },
   ButtonText: {
     fontSize: 17,
-    color: "black",
+    color: "white",
   },
   selectedDrink: {
-    fontSize: 16,
-    marginVertical: 8,
+    fontSize: 18,
+    textAlign: "center",
+    color: "white",
+    fontFamily: "LineRegular",
   },
   amountInput: {
     borderWidth: 1,
     borderColor: "gray",
     padding: 8,
-    borderRadius: 8,
-    // marginBottom: 16,
+    // borderRadius: 8,
+    color: "white",
     width: "60%",
   },
   unitPicker: {
     borderRadius: 8,
     width: "40%",
+    backgroundColor: "rgba(255, 222, 104, 0.9)",
   },
   buttonContainer: {
     display: "flex",
@@ -181,10 +248,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   imageBox: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     marginRight: "auto",
     marginLeft: "auto",
+    backgroundColor: "rgba(255, 222, 104, 0.1)",
+    borderRadius: 500,
   },
   rowContainer: {
     display: "flex",

@@ -40,7 +40,7 @@ function BodyDetail({ height, setHeight, weight, setWeight, onNextClick }) {
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>신장</Text>
+          <Text style={styles.text}>신장을 알려주세요</Text>
           <View style={styles.rowContainer}>
             <TextInput
               style={styles.input}
@@ -59,7 +59,7 @@ function BodyDetail({ height, setHeight, weight, setWeight, onNextClick }) {
           </HelperText>
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.text}>체중</Text>
+          <Text style={styles.text}>체중을 알려주세요</Text>
           <View style={styles.rowContainer}>
             <TextInput
               style={styles.input}
@@ -84,7 +84,7 @@ function BodyDetail({ height, setHeight, weight, setWeight, onNextClick }) {
         buttonColor={"#FFDE68"}
         textColor={"#000000"}
       >
-        다 작성 완료했어요
+        다음 단계로 가기
       </Button>
     </View>
   );
@@ -107,28 +107,33 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 222, 104, 0.5)",
     // borderColor: "gray",
     // borderWidth: 1,
-    width: "80%",
+    width: "90%",
     marginBottom: 10,
   },
-  progressBar: {},
   subContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     // borderWidth: 1,
     // borderColor: "green",
-    justifyContent: "space-between",
+    // justifyContent: "center",
+    alignItems: "flex-start",
   },
   contentContainer: {
     display: "flex",
     flexDirection: "column",
     gap: 10,
-    width: "48%",
+    // borderWidth: 1,
+    // borderColor: "blue",
+    width: "100%",
   },
   rowContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 5,
+    width: "100%",
+    // borderWidth: 1,
+    // borderColor: "red",
   },
   warningtext: {
     fontSize: 15,

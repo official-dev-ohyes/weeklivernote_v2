@@ -443,12 +443,12 @@ function HomeRouteScreen({ navigation }) {
     <BottomSheetModalProvider>
       <View style={styles.container}>
         <MapView
-          provider={PROVIDER_GOOGLE}
+          // provider={PROVIDER_GOOGLE}
           style={styles.map}
           region={region}
           onRegionChange={onRegionChange}
         >
-          <Marker
+          {/* <Marker
             coordinate={{
               latitude: region.latitude,
               longitude: region.longitude,
@@ -475,7 +475,7 @@ function HomeRouteScreen({ navigation }) {
               "#7F0000",
             ]}
             strokeWidth={6}
-          />
+          /> */}
         </MapView>
         <Button
           mode="elevated"

@@ -51,6 +51,7 @@ Notifications.setNotificationHandler({
 import HomeRouteScreen from "./screens/HomeRouteScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -279,6 +280,16 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "HomeRoute",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="Welcome"
+                        component={WelcomeScreen}
+                        options={{
+                          headerShown: false,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          title: "Welcome",
                         }}
                       />
                     </Stack.Navigator>

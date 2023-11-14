@@ -1,9 +1,12 @@
 import { Text, Pressable, Image, StyleSheet, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import DetailProfile from "../DetailProfile";
-import { showErrorAndRetry } from "../../../utils/showErrorUtils";
+import { FAB, shadow } from "react-native-paper";
 import { defaultImage } from "../../../assets";
+import * as ImagePicker from "expo-image-picker";
+import { updateProfileImage } from "../../../api/mypageApi";
+import { showErrorAndRetry } from "../../../utils/showErrorUtils";
 
 interface UserProfile {
   address: string;
@@ -25,10 +28,71 @@ interface DrinkInfo {
 interface UserProfileProps {
   userData: UserProfile;
   navigation: any;
+  setUserProfile: any;
 }
 
 function Profile(props: UserProfileProps) {
-  const { userData, navigation } = props;
+  const { userData, navigation, setUserProfile } = props;
+  const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+
+  const handleEditImage = async () => {
+    if (!status?.granted) {
+      const permission = await requestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (result.canceled) {
+      return null;
+    }
+
+    console.log("새로운 프로필 이미지를 선택");
+    console.log(result.assets[0].uri);
+
+    const localUri = result.assets[0].uri;
+    const filename = localUri.split("/").pop();
+    const match = /\.(\w+)$/.exec(filename ?? "");
+    const type = match ? `image/${match[1]}` : `image`;
+    fetch(localUri)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const formData = new FormData();
+        formData.append("image", blob, filename);
+
+        return updateProfileImage(formData);
+      })
+      .then(() => {
+        console.log("이미지 업데이트 성공");
+        setUserProfile((prevProfile) => ({
+          ...prevProfile,
+          profileImg: result.assets[0].uri,
+        }));
+      })
+      .catch(() => {
+        showErrorAndRetry("알림", "잠시 후 다시 시도해주세요");
+      });
+
+    // await updateProfileImage(result.assets[0].uri)
+    //   .then(() => {
+    //     console.log("이미지 업데이트 성공");
+
+    //     setUserProfile((prevProfile) => ({
+    //       ...prevProfile,
+    //       profileImg: result.assets[0].uri,
+    //     }));
+    //   })
+    //   .catch(() => {
+    //     showErrorAndRetry("알림", "잠시 후 다시 시도해주세요");
+    //   });
+  };
 
   useEffect(() => {
     // console.log("이미지url", userData.profileImg);
@@ -43,7 +107,7 @@ function Profile(props: UserProfileProps) {
     //   userData.drinkInfo.drinkAmount,
     //   userData.drinkInfo.drinkUnit
     // );
-  }, []);
+  }, [userData]);
 
   const handleEdit = () => {
     console.log("에딧아이콘 클릭");
@@ -61,7 +125,7 @@ function Profile(props: UserProfileProps) {
           style={styles.profileImage}
         />
 
-        <Pressable style={styles.editIcon} onPress={handleEdit}>
+        <Pressable style={styles.editIcon} onPress={handleEditImage}>
           <Ionicons name="pencil" color={"white"} size={15} />
         </Pressable>
       </View>
@@ -76,6 +140,8 @@ function Profile(props: UserProfileProps) {
       <View style={styles.userDetail}>
         <DetailProfile userData={userData} />
       </View>
+
+      <FAB icon="pencil" style={styles.fab} onPress={handleEdit} />
     </View>
   );
 }
@@ -147,6 +213,12 @@ const styles = StyleSheet.create({
     right: 10,
   },
   profileContainer: {},
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
 
 export default Profile;

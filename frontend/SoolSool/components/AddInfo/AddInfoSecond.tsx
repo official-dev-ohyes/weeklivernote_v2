@@ -30,7 +30,6 @@ function AddInfoSecond({ address, setAddress, onNextClick }) {
       <View style={styles.subContainer}>
         <View style={styles.nextTime}>
           <Text style={styles.text}>추후 주소 정보를 입력 받습니다.</Text>
-          <Text style={styles.text}>현재는</Text>
           <Text style={styles.text}>다음 단계로 이동해주세요.</Text>
         </View>
         <Button
@@ -39,7 +38,7 @@ function AddInfoSecond({ address, setAddress, onNextClick }) {
           textColor={"black"}
           buttonColor={"#FFDE68"}
         >
-          다 작성 완료했어요
+          다음 단계로 가기
         </Button>
         {/* <PlacesInput
       googleApiKey={process.env.GOOGLE_API_KEY}
@@ -109,16 +108,23 @@ function AddInfoSecond({ address, setAddress, onNextClick }) {
 const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   subContainer: {
     width: "90%",
     marginRight: "auto",
     marginLeft: "auto",
     display: "flex",
-    alignItems: "center",
+    flexDirection: "column",
+    // alignItems: "center",
     gap: 50,
-    marginTop: 130,
+    // marginTop: 130,
+    justifyContent: "center",
     paddingHorizontal: 10,
+    // borderWidth: 1,
+    // borderColor: "green",
   },
   text: {
     fontSize: 20,

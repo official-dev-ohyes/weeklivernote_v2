@@ -40,3 +40,18 @@ export const updateUserProfile = async (
     throw new Error("사용자 정보 수정 patch 요청 실패");
   }
 };
+
+export const updateProfileImage = async (newImageURL) => {
+  console.log("뭐가담기지", newImageURL);
+  try {
+    const res = await axiosInstance.post(`/v2/user/profile`, newImageURL, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (err) {
+    console.log("??", err);
+    throw new Error("이미지 변경 요청 실패");
+  }
+};

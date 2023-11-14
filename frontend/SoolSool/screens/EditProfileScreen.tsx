@@ -13,7 +13,6 @@ import { useQuery } from "react-query";
 import { fetchUserProfile, updateUserProfile } from "../api/mypageApi";
 import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
-import ProfileImagePicker from "../components/EditProfile/ProfileImagePicker";
 
 function EditProfileScreen({ navigation }) {
   const [oldnickname, setOldNickname] = useState("");
@@ -122,11 +121,11 @@ function EditProfileScreen({ navigation }) {
         <View style={styles.mainContainer}>
           <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.contentContainer}>
-            <ProfileImagePicker
+            {/* <ProfileImagePicker
               imageURL={oldimageURL}
               newImageURL={imageURL}
               setNewImageURL={setImageURL}
-            />
+            /> */}
             <Text>닉네임</Text>
             <TextInput
               placeholder={oldnickname.toString()}
