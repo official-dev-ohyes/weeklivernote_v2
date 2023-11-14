@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 
 function AlcoholChart({ drinks }) {
-  console.log(drinks);
-  console.log(drinks.length);
-  console.log(typeof drinks);
+  // console.log(drinks);
+  // console.log(drinks.length);
+  // console.log(typeof drinks);
 
   // 주종별 색상
   const categoryColors = {

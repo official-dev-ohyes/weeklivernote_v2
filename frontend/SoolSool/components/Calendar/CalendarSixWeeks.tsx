@@ -15,8 +15,7 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery } from "react-query";
-import { getDrinkImageById, getIdByOnlyCategory } from "../../utils/drinkUtils";
+import { useQuery, useQueryClient } from "react-query";
 import { ImageBackground } from "expo-image";
 
 function CalendarSixWeeks({ navigation }) {
@@ -36,6 +35,8 @@ function CalendarSixWeeks({ navigation }) {
   const [alcoholDays, setAlcoholDays] = useState({});
   const [isSame, setIsSame] = useState<boolean>(false);
 
+  const queryClient = useQueryClient();
+
   const tempDay = currentDay ? currentDay : nowDate;
 
   const {
@@ -44,20 +45,35 @@ function CalendarSixWeeks({ navigation }) {
     isError: monthlyError,
   } = useQuery(
     // ["MonthlyQuery", currentDay, selectDay, navigator],
-    ["MonthlyQuery", currentDay],
+    ["MonthlyQuery", currentDay, isSelectDay],
     async () => await fetchMonthRecord(tempDay)
   );
 
   // Bottom Sheet
+  // const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // const dynamicSnapPoints = useMemo(() => {
+  //   const isToday = selectDay === nowDate;
+  //   return isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
+  //   // }, [selectDay, nowDate, alcoholDays]);
+  // }, [selectDay, isSelectDay]);
+
+  // 지피티 임시
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const dynamicSnapPoints = useMemo(() => {
     const isToday = selectDay === nowDate;
-    return isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
-  }, [selectDay, nowDate, alcoholDays]);
+    const snapPoints =
+      isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
+    console.log("Snap Points:", snapPoints); // 새로 추가한 부분
+    return snapPoints;
+  }, [selectDay, isSelectDay, alcoholDays]);
+
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+  // 여기까지 임시
+
   const handleSheetChanges = useCallback((index: number) => {
+    console.log("Sheet Index:", index);
     if (index === -1) {
       setIsSelectDay(false);
     }
@@ -110,7 +126,7 @@ function CalendarSixWeeks({ navigation }) {
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
-      console.log(`현재 날짜는? ${nowDate}`);
+      // console.log(`현재 날짜는? ${nowDate}`);
       if (tempDay) {
         setCurrentDay(tempDay);
       }
@@ -122,9 +138,6 @@ function CalendarSixWeeks({ navigation }) {
 
           tempDays[tempDate] = {
             marked: true,
-            image: getDrinkImageById(
-              getIdByOnlyCategory(MonthlyData.drinks[i].mainDrink)
-            ),
           };
         }
         setAlcoholDays(tempDays);
@@ -142,6 +155,7 @@ function CalendarSixWeeks({ navigation }) {
         };
         checkFuture();
       }
+      queryClient.invalidateQueries("MonthlyQuery");
       // }, [nowDate, selectDay, navigator, MonthlyData])
     }, [MonthlyData])
   );

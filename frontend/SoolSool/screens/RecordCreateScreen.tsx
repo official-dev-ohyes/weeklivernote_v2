@@ -17,7 +17,7 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 
 function RecordCreateScreen({ route, navigation }) {
   const day = route.params.date;
-  console.log(`지금 고칠 날짜를 확인합시다!!  고치려는 날짜 : ${day}`);
+  // console.log(`지금 고칠 날짜를 확인합시다!!  고치려는 날짜 : ${day}`);
   const isAlcohol = route.params.isAlcohol; // create, update 구분
   const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
   const [alcoholRecord, setAlcoholRecord] = useState([]);
@@ -213,7 +213,7 @@ function RecordCreateScreen({ route, navigation }) {
           const category = DailyDrinkData.drinks[i].drink;
           const drinkCount = DailyDrinkData.drinks[i].count;
           const result = getAmountByDrinkCount(category, drinkCount);
-          console.log(result);
+          // console.log(result);
 
           const newBottleRecord = {
             category: category,

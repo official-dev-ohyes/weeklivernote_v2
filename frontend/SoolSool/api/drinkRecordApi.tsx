@@ -52,10 +52,14 @@ export const deleteDrink = async (drinkData) => {
 export const removeDrink = async (drinkDate) => {
   try {
     const res = await axiosInstance.delete(`/v1/drink/daily/${drinkDate}`);
-    // console.log("성공했다면", res.data);
+    console.log("성공했다면", res.data);
     return res.data;
   } catch (err) {
     // console.log("axios 호출 실패");
+    if (err.response) {
+      console.error("응답 데이터:", err.response.data);
+      console.error("응답 상태 코드:", err.response.status);
+    }
     throw new Error("drink record 기록 delete 요청 실패");
   }
 };
