@@ -18,7 +18,6 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 function RecordCreateScreen({ route, navigation }) {
   const queryClient = useQueryClient();
   const day = route.params.date;
-  // console.log(`지금 고칠 날짜를 확인합시다!!  고치려는 날짜 : ${day}`);
   const isAlcohol = route.params.isAlcohol; // create, update 구분
   const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
   const [alcoholRecord, setAlcoholRecord] = useState([]);
@@ -103,7 +102,9 @@ function RecordCreateScreen({ route, navigation }) {
     );
 
     if (existingRecordIndex >= 0) {
-      alcoholRecord[existingRecordIndex].drinkAmount += value;
+      const updatedRecords = [...alcoholRecord];
+      updatedRecords[existingRecordIndex].drinkAmount += value;
+      setAlcoholRecord(updatedRecords);
     } else {
       if (newRecord.drinkAmount > 0) {
         setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
@@ -136,6 +137,7 @@ function RecordCreateScreen({ route, navigation }) {
     }
     if (alcoholRecord.length === 0) {
       Alert.alert("알림", "마신 술 정보를 추가하세요.");
+      return;
     }
 
     let date = day;
@@ -311,14 +313,12 @@ function RecordCreateScreen({ route, navigation }) {
         </View>
         <View style={styles.contents}>
           <View style={styles.tagArea}>
-            {alcoholRecord.length > 0 ? (
-              <View style={styles.tag}>
-                <NowAddedAlcohols
-                  alcoholRecord={alcoholRecord}
-                  onDeleteRecord={handleDeleteRecord}
-                />
-              </View>
-            ) : null}
+            <View style={styles.tag}>
+              <NowAddedAlcohols
+                alcoholRecord={alcoholRecord}
+                onDeleteRecord={handleDeleteRecord}
+              />
+            </View>
           </View>
           <View style={styles.alcoholArea}>
             <View style={styles.alcoholInput}>
@@ -386,38 +386,6 @@ function RecordCreateScreen({ route, navigation }) {
               <Button
                 style={styles.button}
                 mode="contained"
-                // onPress={() => {
-                //   const newRecord = {
-                //     category: selectedAlcohol,
-                //     drinkUnit: selectedUnit,
-                //     drinkAmount: value,
-                //   };
-                //   const existingRecordIndex = alcoholRecord.findIndex(
-                //     (record) => {
-                //       return (
-                //         record.category === selectedAlcohol &&
-                //         record.drinkUnit === selectedUnit
-                //       );
-                //     }
-                //   );
-
-                //   if (existingRecordIndex >= 0) {
-                //     alcoholRecord[existingRecordIndex].drinkAmount += value;
-                //   } else {
-                //     if (newRecord.drinkAmount > 0) {
-                //       setAlcoholRecord((prevRecords) => [
-                //         ...prevRecords,
-                //         newRecord,
-                //       ]);
-                //     } else {
-                //       Alert.alert("알림", "수량을 조절하세요.");
-                //     }
-                //   }
-                //   setValue(0);
-                //   setSelectedAlcohol("소주");
-                //   setSelectedUnit("잔");
-                //   console.log(alcoholRecord);
-                // }}
                 onPress={handleAdd}
                 buttonColor={"#363C4B"}
               >
@@ -524,7 +492,6 @@ const styles = StyleSheet.create({
     padding: "5%",
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "red",
   },
   headerText: {
     fontSize: 40,
@@ -541,7 +508,6 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 700,
     flexDirection: "column",
-    // alignContent: "space-between",
     justifyContent: "space-between",
     paddingHorizontal: 20,
     margin: "3%",
@@ -576,7 +542,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "red",
   },
   word: {
     flex: 0.5,
@@ -588,7 +553,6 @@ const styles = StyleSheet.create({
     height: "90%",
     // margin: "1%",
     justifyContent: "center",
-    // backgroundColor: "blue",
   },
   alcoholAmount: {
     flex: 1,

@@ -10,7 +10,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import React from "react";
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Calendar } from "react-native-calendars";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
@@ -18,6 +18,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "react-query";
 import { ImageBackground } from "expo-image";
 import "./LocaleConfig"; // 달력 서식
+import { FAB } from "react-native-paper";
 
 function CalendarSixWeeks({ navigation }) {
   // 진짜 오늘 정보 저장
@@ -94,29 +95,55 @@ function CalendarSixWeeks({ navigation }) {
     }
   }, []);
 
+  useEffect(() => {
+    // console.log(`현재 날짜는? ${nowDate}`);
+    if (tempDay) {
+      setCurrentDay(tempDay);
+    }
+
+    if (selectDay) {
+      const checkFuture = () => {
+        const selectedTimeStamp = new Date(selectDay).getTime();
+        const nowTimestamp = new Date(nowDate).getTime();
+        if (nowTimestamp < selectedTimeStamp) {
+          setIsFuture(true);
+        } else {
+          setIsFuture(false);
+        }
+      };
+      checkFuture();
+    }
+  }, [MonthlyData]);
+
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
-      // console.log(`현재 날짜는? ${nowDate}`);
-      if (tempDay) {
-        setCurrentDay(tempDay);
-      }
-
-      if (selectDay) {
-        const checkFuture = () => {
-          const selectedTimeStamp = new Date(selectDay).getTime();
-          const nowTimestamp = new Date(nowDate).getTime();
-          if (nowTimestamp < selectedTimeStamp) {
-            setIsFuture(true);
-          } else {
-            setIsFuture(false);
-          }
-        };
-        checkFuture();
-      }
+      setRenderFlag(true);
       queryClient.invalidateQueries("MonthlyQuery");
-    }, [MonthlyData])
+    }, [])
   );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // console.log(`현재 날짜는? ${nowDate}`);
+  //     if (tempDay) {
+  //       setCurrentDay(tempDay);
+  //     }
+
+  //     if (selectDay) {
+  //       const checkFuture = () => {
+  //         const selectedTimeStamp = new Date(selectDay).getTime();
+  //         const nowTimestamp = new Date(nowDate).getTime();
+  //         if (nowTimestamp < selectedTimeStamp) {
+  //           setIsFuture(true);
+  //         } else {
+  //           setIsFuture(false);
+  //         }
+  //       };
+  //       checkFuture();
+  //     }
+  //     queryClient.invalidateQueries("MonthlyQuery");
+  //   }, [MonthlyData])
+  // );
 
   // 특정일 클릭
   const handleDayPress = async (clickDay) => {
@@ -274,6 +301,9 @@ function CalendarSixWeeks({ navigation }) {
                 <DailySummary
                   summaryText={selectDay}
                   alcoholDays={alcoholDays}
+                  onRemove={() => {
+                    setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
+                  }}
                 />
               ) : (
                 <View style={styles.tempBox}>
@@ -281,18 +311,16 @@ function CalendarSixWeeks({ navigation }) {
                     <Text style={styles.headerText}>{selectDay}</Text>
                   </View>
                   <View style={styles.dailySummaryTotal}>
-                    <TouchableOpacity
+                    <FAB
+                      icon="plus"
+                      style={styles.fab}
                       onPress={() => {
                         navigation.navigate("RecordCreate", {
                           date: selectDay,
                           isAlcohol: alcoholDays[selectDay],
                         });
                       }}
-                    >
-                      <View style={styles.New}>
-                        <Text style={styles.plus}>+</Text>
-                      </View>
-                    </TouchableOpacity>
+                    />
                   </View>
                 </View>
               )}
@@ -407,6 +435,12 @@ const styles = StyleSheet.create({
   calendarStemp: {
     height: "83%",
     width: "83%",
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
 
