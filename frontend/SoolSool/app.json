@@ -32,7 +32,6 @@
           "apiKey": "AIzaSyAg0W1KkQwJprZ0DVZbDoHpp1tIw5NZHdw"
         }
       },
-      "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
       "package": "com.official_ohyes.weeklivernote",
       "versionCode": 1

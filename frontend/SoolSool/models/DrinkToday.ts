@@ -7,6 +7,7 @@ import {
   veryHighImage,
   severeImage,
 } from "../assets/index";
+import { getTodayAt5 } from "../utils/timeUtils";
 
 enum IntoxicationLevel {
   Sober,
@@ -58,7 +59,7 @@ export class DrinkToday {
     this.alcoholAt5 = data.alcoholAt5;
   }
 
-  get bloodAlcoholContent(): number {
+  private get bloodAlcoholContent(): number {
     if (this.drinkTotal === 0) {
       return 0;
     }
@@ -89,11 +90,26 @@ export class DrinkToday {
     }
   }
 
-  get currentBloodAlcoholContent(): number {
-    const initialBAC = this.bloodAlcoholContent;
-    const currentBAC = Math.max(0, initialBAC - this.elapsedHours * 0.015);
+  private get elapsedHoursFrom5(): number {
+    const currentTime = new Date().getTime();
+    const startTime = new Date(getTodayAt5()).getTime();
+    const elapsedMilliseconds = currentTime - startTime;
+    return elapsedMilliseconds / (1000 * 60 * 60);
+  }
 
-    return parseFloat(currentBAC.toFixed(2));
+  get currentBloodAlcoholContent(): number {
+    const BACFromToday = Math.max(
+      0,
+      this.bloodAlcoholContent - this.elapsedHours * 0.015
+    );
+    const BACFromYesterday = Math.max(
+      0,
+      this.bacAt5 - this.elapsedHoursFrom5 * 0.015
+    );
+
+    const totalCurrentBAC = BACFromToday + BACFromYesterday;
+
+    return parseFloat(totalCurrentBAC.toFixed(2));
   }
 
   private get intoxicationLevel(): IntoxicationLevel {
@@ -121,29 +137,29 @@ export class DrinkToday {
   }
 
   get cannotDriveFor(): number {
-    const requiredTime = (200 * this.bloodAlcoholContent) / 3;
+    const requiredTime = (200 * this.currentBloodAlcoholContent) / 3;
     const roundedRequiredTime = requiredTime.toFixed(2);
 
     return parseFloat(roundedRequiredTime);
+  }
+
+  get currentAlcoholAmount(): number {
+    const AlcoholFromToday = Math.max(
+      0,
+      this.alcoholAmount - this.elapsedHours * 7.2
+    );
+    const AlcoholFromYesterday = Math.max(
+      0,
+      this.alcoholAt5 - this.elapsedHoursFrom5 * 7.2
+    );
+
+    const totalCurrentAlcohol = AlcoholFromToday + AlcoholFromYesterday;
+
+    return parseFloat(totalCurrentAlcohol.toFixed(1));
   }
 
   get requiredTimeForDetox(): number {
-    const requiredTimeInSeconds = this.alcoholAmount / 0.002;
-    const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
-
-    return Number(requiredTimeInHours);
-  }
-
-  get stillNeedSoberTimeFor(): number {
-    const requiredTime = (200 * this.bacAt5) / 3;
-    const roundedRequiredTime = requiredTime.toFixed(2);
-
-    return parseFloat(roundedRequiredTime);
-  }
-
-  get stillNeedDetoxTimeFor(): number {
-    const requiredTimeInSeconds = this.alcoholAt5 / 0.002;
-    const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
+    const requiredTimeInHours = (this.currentAlcoholAmount / 7.2).toFixed(1);
 
     return Number(requiredTimeInHours);
   }
