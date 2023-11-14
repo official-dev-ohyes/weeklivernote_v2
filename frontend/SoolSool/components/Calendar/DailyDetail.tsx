@@ -1,13 +1,11 @@
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
-import { useEffect, useState } from "react";
-import React from "react";
 import { useQuery } from "react-query";
 import AlcoholChart from "../../components/Calendar/AlcoholChart";
 
 function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
   const [isImg, setIsImg] = useState<boolean>(false);
-  const [isModal, setIsModal] = useState<boolean>(false);
 
   const [info, setInfo] = useState({
     startTime: "",
@@ -23,7 +21,7 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     isLoading: dailyDetailLoading,
     isError: dailyDetailError,
   } = useQuery(
-    "DailyDetailQuery",
+    ["DailyDetailQuery", summaryText],
     async () => await fetchDailyDetail(summaryText)
   );
 
@@ -39,7 +37,17 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     if (DailyDetailData) {
       setInfo(DailyDetailData);
     }
-  }, [DailyDetailData]);
+
+    return () =>
+      setInfo({
+        startTime: "",
+        detoxTime: "",
+        memo: "",
+        img: "",
+        hangover: "",
+        drinks: {},
+      });
+  }, [DailyDetailData, summaryText]);
 
   const format12HourTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
@@ -52,36 +60,40 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
   return (
     <ScrollView>
       <View style={styles.total}>
-        <View style={styles.contents}>
-          <View style={styles.time}>
-            <View style={styles.house}>
-              <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
-              <Text>{format12HourTime(info.startTime.substring(11, 16))}</Text>
+        {info.startTime && (
+          <View style={styles.contents}>
+            <View style={styles.time}>
+              <View style={styles.house}>
+                <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
+                <Text>
+                  {format12HourTime(info.startTime.substring(11, 16))}
+                </Text>
+              </View>
+              <View style={styles.house}>
+                <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
+                <Text>{formatDetoxTime(info.detoxTime)}</Text>
+              </View>
             </View>
             <View style={styles.house}>
-              <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
-              <Text>{formatDetoxTime(info.detoxTime)}</Text>
+              <View style={styles.chart}>
+                <AlcoholChart drinks={info.drinks} />
+              </View>
             </View>
-          </View>
-          <View style={styles.house}>
-            <View style={styles.chart}>
-              <AlcoholChart drinks={info.drinks} />
-            </View>
-          </View>
-          {isImg ? (
+            {isImg ? (
+              <View style={styles.house}>
+                <Text>사진</Text>
+              </View>
+            ) : null}
             <View style={styles.house}>
-              <Text>사진</Text>
+              <Text style={styles.smallHeaderText}>메모</Text>
+              {info.memo ? (
+                <Text style={styles.innerText}>{info.memo}</Text>
+              ) : (
+                <Text style={styles.innerText}>작성된 메모가 없어요</Text>
+              )}
             </View>
-          ) : null}
-          <View style={styles.house}>
-            <Text style={styles.smallHeaderText}>메모</Text>
-            {info.memo ? (
-              <Text style={styles.innerText}>{info.memo}</Text>
-            ) : (
-              <Text style={styles.innerText}>작성된 메모가 없어요</Text>
-            )}
           </View>
-        </View>
+        )}
       </View>
     </ScrollView>
   );
