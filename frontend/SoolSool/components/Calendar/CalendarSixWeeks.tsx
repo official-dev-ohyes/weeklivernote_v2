@@ -276,18 +276,16 @@ function CalendarSixWeeks({ navigation }) {
                   <View style={styles.headerBox}>
                     <Text style={styles.headerText}>{selectDay}</Text>
                   </View>
-                  <View style={styles.dailySummaryTotal}>
-                    <FAB
-                      icon="plus"
-                      style={styles.fab}
-                      onPress={() => {
-                        navigation.navigate("RecordCreate", {
-                          date: selectDay,
-                          isAlcohol: alcoholDays[selectDay],
-                        });
-                      }}
-                    />
-                  </View>
+                  <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    onPress={() => {
+                      navigation.navigate("RecordCreate", {
+                        date: selectDay,
+                        isAlcohol: alcoholDays[selectDay],
+                      });
+                    }}
+                  />
                 </View>
               )}
             </View>
@@ -337,7 +335,8 @@ const styles = StyleSheet.create({
   headerBox: {
     height: "30%",
     flexDirection: "row",
-    marginLeft: "3%",
+    marginLeft: "5%",
+    alignItems: "center",
   },
   innerText: {
     fontSize: 20,
@@ -346,6 +345,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
+    color: "#363C4B",
     fontFamily: "LineRegular",
   },
   calenderStyle: {
@@ -363,21 +363,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
-  },
-  New: {
-    width: 70,
-    height: 70,
-    backgroundColor: "#363C4B",
-    borderRadius: 50,
-    marginRight: "auto",
-    marginLeft: "auto",
-  },
-  plus: {
-    fontSize: 50,
-    color: "#FFFFFF",
-    textAlign: "center",
-    textAlignVertical: "center", // Android
-    // flex: 1, // iOS
   },
   eachDayBox: {
     height: "100%",
@@ -403,10 +388,9 @@ const styles = StyleSheet.create({
     width: "83%",
   },
   fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
+    alignSelf: "center",
+    justifyContent: "center",
+    margin: "1%",
   },
 });
 

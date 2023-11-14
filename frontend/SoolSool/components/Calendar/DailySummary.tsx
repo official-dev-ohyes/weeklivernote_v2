@@ -95,6 +95,7 @@ function DailySummary(props) {
                     isAlcohol: true,
                   });
                 }}
+                contentStyle={styles.buttonContents}
                 style={styles.botton}
               >
                 수정
@@ -103,6 +104,7 @@ function DailySummary(props) {
                 mode="contained"
                 onPress={openDeleteModal}
                 buttonColor={"#363C4B"}
+                contentStyle={styles.buttonContents}
                 style={styles.botton}
               >
                 삭제
@@ -220,6 +222,12 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "row",
     alignItems: "center",
+    // backgroundColor: "red",
+  },
+  headerText: {
+    fontSize: 18,
+    color: "#363C4B",
+    fontFamily: "LineRegular",
   },
   total: {
     height: "75%",
@@ -252,11 +260,7 @@ const styles = StyleSheet.create({
     margin: "1%",
     // flex: 1,
   },
-  headerText: {
-    fontSize: 18,
-    color: "#363C4B",
-    fontFamily: "LineRegular",
-  },
+
   informations: {
     height: "100%",
     flexDirection: "row",
@@ -354,6 +358,11 @@ const styles = StyleSheet.create({
   },
   alertTitle: {
     fontSize: 20,
+  },
+  buttonContents: {
+    height: 50,
+    justifyContent: "center",
+    marginTop: "-11%",
   },
 });
 
