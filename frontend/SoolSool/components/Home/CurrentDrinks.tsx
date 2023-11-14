@@ -9,15 +9,6 @@ import {
 import { Badge } from "react-native-paper";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
-  alcoholAmount: number;
-}
-
 interface CurrentDrinksProps {
   currentDrinkData: Record<number, number>;
   allDrinkData: Drink[];

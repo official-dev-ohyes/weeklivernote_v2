@@ -30,15 +30,6 @@ import {
 } from "../../api/drinkRecordApi";
 import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
-  alcoholAmount: number;
-}
-
 interface DrinkControllerProps {
   currentDrinks: Record<number, number>;
   initialValue: number;

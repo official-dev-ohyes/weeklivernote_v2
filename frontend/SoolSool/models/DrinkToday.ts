@@ -27,17 +27,6 @@ const IntoxicationImageMap: Record<IntoxicationLevel, ImageProps["source"]> = {
   [IntoxicationLevel.Severe]: severeImage,
 };
 
-interface DrinkTodayData {
-  drinkTotal: number;
-  alcoholAmount: number;
-  drinkStartTime: string | null;
-  height: number;
-  weight: number;
-  gender: string;
-  bacAt5: number;
-  alcoholAt5: number;
-}
-
 export class DrinkToday {
   drinkTotal: number;
   alcoholAmount: number;
