@@ -30,7 +30,10 @@ import RecordCreateScreen from "./screens/RecordCreateScreen";
 
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
-import NotificationScreen from "./screens/NotificationScreen";
+import NotificationScreen from "./screens/SettingsScreen/NotificationScreen";
+import ServiceTermsScreen from "./screens/SettingsScreen/ServiceTermsScreen";
+import LocationTermsScreen from "./screens/SettingsScreen/LocationTermsScreen";
+import PrivacyPolicyScreen from "./screens/SettingsScreen/PrivacyPolicyScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 
 const Stack = createNativeStackNavigator();
@@ -39,18 +42,24 @@ const queryClient = new QueryClient();
 
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "./utils/notificationUtils";
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+import {
+  registerForPushNotificationsAsync,
+  scheduleLastChanceNotification,
+} from "./utils/notificationUtils";
+import {
+  registerResetTask,
+  registerAlarmTimeResetTask,
+} from "./utils/backgroundTaskUtils";
 
 import HomeRouteScreen from "./screens/HomeRouteScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
+
+import {
+  getFirstLocationPermission,
+  resetAsyncStorage,
+} from "./utils/gpsUtils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -60,6 +69,23 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// 막차 알림이 활성화 되어있을 경우에만 TASK 수행
+async function checkNotificationStatusAndExecuteTasks() {
+  const drinkNotificationStatus = await AsyncStorage.getItem(
+    "isLastNotificationEnabled"
+  );
+
+  if (drinkNotificationStatus !== null) {
+    const isGranted = JSON.parse(drinkNotificationStatus);
+    if (isGranted) {
+      registerResetTask();
+      registerAlarmTimeResetTask();
+      resetAsyncStorage();
+    }
+  }
+}
+
+checkNotificationStatusAndExecuteTasks();
 preventAutoHideAsync();
 
 function BottomTabNavigator() {
@@ -86,7 +112,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-home-sharp" color={color} size={size} />
           ),
-          title: "Home",
         }}
       />
       <BottomTab.Screen
@@ -96,7 +121,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-calendar-sharp" color={color} size={size} />
           ),
-          title: "Calender",
         }}
       />
       <BottomTab.Screen
@@ -106,7 +130,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-          title: "lastChance",
         }}
       />
       <BottomTab.Screen
@@ -116,7 +139,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "My Page",
         }}
       />
     </BottomTab.Navigator>
@@ -139,6 +161,11 @@ const theme = {
 };
 
 export default function App() {
+  useEffect(() => {
+    getFirstLocationPermission();
+    scheduleLastChanceNotification();
+  }, []);
+
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
     LineRegular: require("./assets/fonts/LINESeedKR-Rg.ttf"),
@@ -155,40 +182,42 @@ export default function App() {
   // if (!fontsLoaded && !fontError) {
   //   return null;
   // }
-  const notificationListener = useRef<Subscription>();
-  const responseListener = useRef<Subscription>();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(async (token) => {
-      if (token) {
-        await AsyncStorage.setItem("expoPushToken", token);
-      } else {
-        return;
-      }
-    });
+  // 알림 관련..?
+  // const notificationListener = useRef<Subscription>();
+  // const responseListener = useRef<Subscription>();
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        // console.log("App.tsx 174: ", notification);
-      });
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then(async (token) => {
+  //     if (token) {
+  //       await AsyncStorage.setItem("expoPushToken", token);
+  //     } else {
+  //       return;
+  //     }
+  //   });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       // console.log("App.tsx 174: ", notification);
+  //     });
 
-    return () => {
-      if (
-        typeof notificationListener.current !== "undefined" &&
-        typeof responseListener.current !== "undefined"
-      ) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
-    };
-  }, []);
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
+
+  //   return () => {
+  //     if (
+  //       typeof notificationListener.current !== "undefined" &&
+  //       typeof responseListener.current !== "undefined"
+  //     ) {
+  //       Notifications.removeNotificationSubscription(
+  //         notificationListener.current
+  //       );
+  //       Notifications.removeNotificationSubscription(responseListener.current);
+  //     }
+  //   };
+  // }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -229,6 +258,7 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           headerTitleAlign: "center",
+                          title: "설정",
                         }}
                       />
                       <Stack.Screen
@@ -249,13 +279,47 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           headerTitleAlign: "center",
+                          title: "공지사항",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="ServiceTerms"
+                        component={ServiceTermsScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "서비스 이용약관",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="LocationTerms"
+                        component={LocationTermsScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "위치정보 이용약관",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="PrivacyPolicy"
+                        component={PrivacyPolicyScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "개인정보 처리방침",
                         }}
                       />
                       <Stack.Screen
                         name="DailyDetail"
                         component={DailyDetailScreen}
                         options={{
-                          headerShown: true,
+                          headerShown: false,
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "Calendar",
@@ -265,7 +329,7 @@ export default function App() {
                         name="RecordCreate"
                         component={RecordCreateScreen}
                         options={{
-                          headerShown: true,
+                          headerShown: false,
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "Calendar",
@@ -279,6 +343,16 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "HomeRoute",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="Welcome"
+                        component={WelcomeScreen}
+                        options={{
+                          headerShown: false,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          title: "Welcome",
                         }}
                       />
                     </Stack.Navigator>

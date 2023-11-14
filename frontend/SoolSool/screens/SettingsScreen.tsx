@@ -59,7 +59,7 @@ function SettingsScreen({ navigation }) {
         }
       } catch (error) {
         console.error("Error loading notification status:", error);
-        Toast.show("알림 설정 오류. 잠시 후 다시 시도해주세요.", {
+        Toast.show("알림 설정에 실패했습니다. 잠시 후 다시 시도해주세요.", {
           duration: Toast.durations.SHORT,
         });
       }
@@ -132,14 +132,13 @@ function SettingsScreen({ navigation }) {
           title="알림"
           content={
             <>
-              <View style={styles.alarmContainer}>
+              <View style={[styles.alarmContainer, styles.borderBottom]}>
                 <Text>주량 알림</Text>
                 <Switch
                   value={isDrinkNotificationEnabled}
                   onValueChange={toggleDrinkNotification}
                 />
               </View>
-              <Separator />
               <View style={styles.alarmContainer}>
                 <Text>막차 알림</Text>
                 <Switch
@@ -170,19 +169,27 @@ function SettingsScreen({ navigation }) {
           title="이용약관"
           content={
             <>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  // navigation.navigate("ServiceTermsScreen")
+                  showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+                }
+              >
                 <Text>서비스 이용약관</Text>
               </TouchableOpacity>
               <Separator />
               <TouchableOpacity
                 onPress={() =>
+                  // navigation.navigate("LocationTerms")
                   showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
                 }
               >
                 <Text>위치정보 이용약관</Text>
               </TouchableOpacity>
               <Separator />
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("PrivacyPolicy")}
+              >
                 <Text>개인정보 처리방침</Text>
               </TouchableOpacity>
             </>
@@ -224,7 +231,12 @@ function SettingsScreen({ navigation }) {
                 <Text>모든 정보가 삭제됩니다.</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <Button mode="contained" onPress={confirmSignOut}>
+                <Button
+                  mode="contained"
+                  buttonColor={"#000000"}
+                  textColor={"#FFFFFF"}
+                  onPress={confirmSignOut}
+                >
                   확인
                 </Button>
                 <Button mode="outlined" onPress={hideModal}>
@@ -246,7 +258,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     display: "flex",
     flexDirection: "column",
-    gap: 15,
+    gap: 20,
   },
   section: {
     marginBottom: 20,
@@ -268,7 +280,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "red",
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+    paddingBottom: 2,
+    marginBottom: 4,
   },
   separator: {
     alignItems: "center",
@@ -277,13 +294,13 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgray",
     borderBottomWidth: 1,
     width: "100%",
-    marginBottom: 25,
+    marginBottom: 16,
   },
   buttonContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 5,
+    gap: 10,
   },
   alertTitle: {
     fontSize: 20,

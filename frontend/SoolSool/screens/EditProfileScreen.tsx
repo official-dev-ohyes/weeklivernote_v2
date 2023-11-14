@@ -13,7 +13,7 @@ import { useQuery } from "react-query";
 import { fetchUserProfile, updateUserProfile } from "../api/mypageApi";
 import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
-import ProfileImagePicker from "../components/EditProfile/ProfileImagePicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function EditProfileScreen({ navigation }) {
   const [oldnickname, setOldNickname] = useState("");
@@ -91,7 +91,13 @@ function EditProfileScreen({ navigation }) {
       address || oldaddress,
       drinkInfo
     )
-      .then((res) => {
+      .then(async (res) => {
+        // 도착지 저장
+        const destLocation = res;
+        await AsyncStorage.setItem(
+          "destLocation",
+          JSON.stringify(destLocation)
+        );
         // console.log("업데이트 성공");
         Toast.show("프로필 수정 성공", {
           duration: Toast.durations.SHORT,
@@ -122,11 +128,11 @@ function EditProfileScreen({ navigation }) {
         <View style={styles.mainContainer}>
           <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.contentContainer}>
-            <ProfileImagePicker
+            {/* <ProfileImagePicker
               imageURL={oldimageURL}
               newImageURL={imageURL}
               setNewImageURL={setImageURL}
-            />
+            /> */}
             <Text>닉네임</Text>
             <TextInput
               placeholder={oldnickname.toString()}
@@ -161,6 +167,7 @@ function EditProfileScreen({ navigation }) {
               placeholder={oldheight.toString()}
               value={height}
               style={styles.textInput}
+              keyboardType="numeric"
               onChangeText={(text) => setHeight(text)}
             />
           </View>
@@ -170,6 +177,7 @@ function EditProfileScreen({ navigation }) {
               placeholder={oldweight.toString()}
               value={weight}
               style={styles.textInput}
+              keyboardType="numeric"
               onChangeText={(text) => setWeight(text)}
             />
           </View>

@@ -13,7 +13,7 @@ function HomeRouteDetail({ pathType, info, subPath }) {
       </View>
       <View style={styles.routeDetailContainer}>
         <ScrollView>
-          {subPath.map((pathInfo, index) => {
+          {subPath?.map((pathInfo, index) => {
             if (pathInfo.trafficType == 1) {
               console.log("지하철 경로가 렌더링");
               return <SubwayRoute key={index} pathInfo={pathInfo} />;

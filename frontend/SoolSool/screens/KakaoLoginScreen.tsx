@@ -44,6 +44,8 @@ function KakaoLoginScreen({ navigation }) {
         console.log("이미 가입된 회원이니까 메인 화면으로");
         const accessToken = response.data.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
+        const destLocation = response.data.gpsInfo;
+        await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
         // console.log("???!", response.data);
         // console.log("???", response.data.nickname);
         setNickname(response.data.userName);

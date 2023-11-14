@@ -11,22 +11,10 @@ import { Button } from "react-native-paper";
 import { characterSet, kakaoLoginButton, mainbackground } from "../assets";
 
 function LoginScreen({ navigation }) {
-  //테스트용 버튼에 필요한 함수들
-  const navigateToAddInfo = () => {
-    navigation.navigate("AddInfo");
-  };
-  const navigateToBottomTab = () => {
-    navigation.navigate("BottomTab");
-  };
-
   const handleLogin = () => {
     console.log("카카오버튼을 클릭했습니다");
     navigation.navigate("KakaoLoginScreen");
   };
-
-  // const goToMain = () => {
-  //   navigation.navigate("Home");
-  // };
 
   const screenHeight = Dimensions.get("window").height;
 
@@ -47,7 +35,6 @@ function LoginScreen({ navigation }) {
         <TouchableOpacity onPress={handleLogin}>
           <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
         </TouchableOpacity>
-        {/* <Button onPress={goToMain}>메인으로 바로가기</Button> */}
       </View>
     </ImageBackground>
   );

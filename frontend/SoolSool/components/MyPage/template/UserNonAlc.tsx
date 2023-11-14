@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // borderRadius: 500,
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
-    shadowColor: "#000",
+    shadowColor: "#ffffff",
     shadowOffset: {
-      width: 0,
+      width: 2,
       height: 2,
     },
     shadowOpacity: 0.2,

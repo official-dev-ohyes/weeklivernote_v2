@@ -1,8 +1,8 @@
 import axiosInstance from "./axiosConfig";
 
-export const fetchHomeRoute = async (locationData) => {
+export const fetchHomeRoute = async () => {
   try {
-    const res = await axiosInstance.post(`/v2/location`, locationData);
+    const res = await axiosInstance.get(`/v2/location`);
     // console.log("성공했다면", res.data);
     return res.data;
   } catch (err) {

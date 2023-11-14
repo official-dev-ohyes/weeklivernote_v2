@@ -16,7 +16,7 @@ function CalendarScreen({ navigation }) {
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
             size={30}
-            color="black"
+            color="white"
             onPress={() => {
               Alert.alert("알림", "05시를 기준으로 하루를 초기화합니다.");
             }}
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   mainBackground: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#F7F9FF",
+    backgroundColor: "#121B33",
     // backgroundColor: "blue",
   },
   mainTextBox: {
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: "LineRegular",
     verticalAlign: "bottom",
+    color: "white",
   },
   titleBox: {
     display: "flex",

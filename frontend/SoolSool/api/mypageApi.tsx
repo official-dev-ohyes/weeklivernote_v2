@@ -40,3 +40,51 @@ export const updateUserProfile = async (
     throw new Error("사용자 정보 수정 patch 요청 실패");
   }
 };
+
+export const updateProfileImage = async (newImage) => {
+  console.log("보낼값", newImage);
+  console.log("타입은", typeof newImage);
+  try {
+    const res = await axiosInstance.post(`/v2/user/profile`, newImage, {
+      headers: {
+        "Content-Type":
+          "multipart/form-data; boundary=someArbitraryUniqueString",
+      },
+      transformRequest: (data, headers) => {
+        return data;
+      },
+    });
+    return res.data;
+  } catch (err) {
+    console.log("??", err);
+    throw new Error("이미지 변경 요청 실패");
+  }
+};
+
+// export const updateProfileImage = async (newImage) => {
+//   console.log("보낼값", newImage);
+
+//   try {
+//     const res = await fetch(
+//       process.env.REACT_APP_BACK_URL + `/v2/user/profile`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type":
+//             "multipart/form-data; boundary=someArbitraryUniqueString", // fetch는 자동으로 설정해주므로 주석 처리
+//         },
+//         body: newImage,
+//       }
+//     );
+
+//     if (!res.ok) {
+//       throw new Error("이미지 변경 요청 실패");
+//     }
+
+//     const data = await res.json();
+//     return data;
+//   } catch (err) {
+//     console.log("?왜 이미지 변경 요청이 안될까?", err);
+//     throw new Error("이미지 변경 요청 실패");
+//   }
+// };

@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: "LineRegular",
     verticalAlign: "bottom",
+    textAlign: "center",
   },
   light: {
     height: "80%",

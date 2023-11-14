@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
@@ -58,21 +58,10 @@ function MyPageScreen({ navigation }) {
       drinkYearAmount: 0, // 올해음주량
     }
   );
-  // const navigation = props.navigation;
 
-  // 내비게이션 헤더에 설정페이지 이동 버튼 추가
   function handleclickSettingsIcon() {
     navigation.navigate("Settings");
-    // navigation을 프롭스로 받아와야하나?
   }
-
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => {
-  //       return <SettingsIconButton onPress={handleHeaderButtonPressed} />;
-  //     },
-  //   });
-  // }, []);
 
   const {
     data: userProfileData,
@@ -88,7 +77,6 @@ function MyPageScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("여기로 안빠지나?", userProfileData);
       queryClient.invalidateQueries("userProfileData");
       if (!isProfileLoading && userProfileData) {
         setUserProfile(userProfileData);
@@ -96,7 +84,7 @@ function MyPageScreen({ navigation }) {
       if (!isNonAlcLoading && userNonAlcData) {
         setAlcoholStatistics(userNonAlcData);
       }
-    }, [userProfileData, isProfileLoading])
+    }, [userProfileData, isProfileLoading, userProfile])
   );
 
   return (
@@ -104,13 +92,21 @@ function MyPageScreen({ navigation }) {
       <View style={styles.mainContainer}>
         <View style={styles.subContainer}>
           <View style={styles.upperBar}>
+            <Text style={{ color: "white", textAlign: "center" }}>
+              나의 페이지
+            </Text>
             <Ionicons
               name="settings"
               size={20}
+              color={"white"}
               onPress={handleclickSettingsIcon}
             />
           </View>
-          <Profile navigation={navigation} userData={userProfile} />
+          <Profile
+            navigation={navigation}
+            userData={userProfile}
+            setUserProfile={setUserProfile}
+          />
           <UserNonAlc alcoholData={alcoholStatistics} />
           <UserStatistics />
         </View>
@@ -122,7 +118,7 @@ function MyPageScreen({ navigation }) {
 const styles = StyleSheet.create({
   mainContainer: {
     height: "100%",
-    backgroundColor: "#F7F9FF",
+    backgroundColor: "#121B33",
   },
   subContainer: {
     flexDirection: "column",
@@ -137,9 +133,9 @@ const styles = StyleSheet.create({
     height: 30,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "red",
+    marginTop: 20,
   },
 });
 
