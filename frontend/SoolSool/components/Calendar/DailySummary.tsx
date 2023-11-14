@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
-import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import {
@@ -18,15 +16,12 @@ import DailyDetail from "./DailyDetail";
 import Toast from "react-native-root-toast";
 
 function DailySummary(props) {
-  // console.log(`지금 선택된 요약 정보 날짜를 확인합시다! ${props.summaryText}`);
-
+  const { summaryText, alcoholDays, onRemove, navigation } = props;
   const today = new Date();
   const queryClient = useQueryClient();
-  const { summaryText, alcoholDays } = props;
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [isModal, setIsModal] = useState<boolean>(false);
 
   const {
@@ -71,6 +66,7 @@ function DailySummary(props) {
     try {
       await removeDrink(summaryText);
       hideDeleteModal();
+      onRemove();
       navigation.navigate("Calendar");
     } catch (error) {
       Toast.show("잠시후다시 시도해주세요.", {

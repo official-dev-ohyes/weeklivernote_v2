@@ -122,28 +122,6 @@ function CalendarSixWeeks({ navigation }) {
       queryClient.invalidateQueries("MonthlyQuery");
     }, [])
   );
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     // console.log(`현재 날짜는? ${nowDate}`);
-  //     if (tempDay) {
-  //       setCurrentDay(tempDay);
-  //     }
-
-  //     if (selectDay) {
-  //       const checkFuture = () => {
-  //         const selectedTimeStamp = new Date(selectDay).getTime();
-  //         const nowTimestamp = new Date(nowDate).getTime();
-  //         if (nowTimestamp < selectedTimeStamp) {
-  //           setIsFuture(true);
-  //         } else {
-  //           setIsFuture(false);
-  //         }
-  //       };
-  //       checkFuture();
-  //     }
-  //     queryClient.invalidateQueries("MonthlyQuery");
-  //   }, [MonthlyData])
-  // );
 
   // 특정일 클릭
   const handleDayPress = async (clickDay) => {
@@ -203,10 +181,6 @@ function CalendarSixWeeks({ navigation }) {
     fetchMonthRecord(shiftDay);
   };
 
-  // 캘린더 칸별 높이 -> 주 수 조절 시 상세 조정 필요
-  const height1 = (height * 0.9) / 13.5;
-  const height2 = (height * 0.9) / 10;
-
   return (
     <BottomSheetModalProvider>
       <View style={styles.totalContainer}>
@@ -222,15 +196,6 @@ function CalendarSixWeeks({ navigation }) {
                 marked: alcoholDays[selectDay] ? true : false,
               },
             }}
-            // theme={{
-            //   calendarBackground: "rgba(255, 255, 255, 0)",
-            //   "stylesheet.day.basic": {
-            //     base: {
-            //       // height: height1,
-            //       height: 10,
-            //     },
-            //   },
-            // }}
             dayTextColor={{
               default: "black",
               disabled: "gray",
@@ -299,6 +264,7 @@ function CalendarSixWeeks({ navigation }) {
                 </View>
               ) : alcoholDays[selectDay] ? (
                 <DailySummary
+                  navigation={navigation}
                   summaryText={selectDay}
                   alcoholDays={alcoholDays}
                   onRemove={() => {
