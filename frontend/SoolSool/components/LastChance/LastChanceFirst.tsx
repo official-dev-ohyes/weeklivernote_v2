@@ -20,12 +20,20 @@ function LastChanceFirst({ navigation }) {
       source={LCfirst}
       style={[{ height: screenHeight }, styles.mainContainer]}
     >
-      <View>
+      <View style={styles.lastChanceContainer}>
         <Text style={styles.text}>집까지 가는 막차를 알려드릴게요</Text>
+        <Button
+          mode="contained"
+          buttonColor="black"
+          textColor="white"
+          labelStyle={styles.button}
+          rippleColor={"white"}
+          loading={true}
+          onPress={goToHome}
+        >
+          막차 조회하기
+        </Button>
       </View>
-      <Button mode="contained" onPress={goToHome}>
-        막차 조회하기
-      </Button>
     </ImageBackground>
   );
 }
@@ -39,10 +47,22 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     paddingBottom: 100,
   },
+  lastChanceContainer: {
+    width: "80%",
+    display: "flex",
+    flexDirection: "column",
+    // alignItems: "center",
+    gap: 10,
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
   text: {
     color: "white",
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 24,
+  },
+  button: {
+    fontSize: 15,
   },
 });
 

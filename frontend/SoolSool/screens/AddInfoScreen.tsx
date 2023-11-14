@@ -42,7 +42,11 @@ function AddInfoScreen({ navigation, route }) {
   };
 
   const handlePage2ButtonClick = () => {
-    pagerRef.current.setPage(2);
+    if (address) {
+      pagerRef.current.setPage(2);
+    } else {
+      showErrorAndRetry("알림", "주소를 선택해주세요");
+    }
   };
 
   useEffect(() => {
