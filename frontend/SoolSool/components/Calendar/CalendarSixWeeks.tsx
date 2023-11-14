@@ -230,6 +230,18 @@ function CalendarSixWeeks({ navigation }) {
                 </TouchableOpacity>
               );
             }}
+            renderHeader={(date) => {
+              const header = date.toString("MMMM yyyy");
+              const [month, year] = header.split(" ");
+
+              return (
+                <View style={styles.calendarHeaderBox}>
+                  <Text style={styles.calendarHeader}>
+                    {year}년 {month}
+                  </Text>
+                </View>
+              );
+            }}
           />
         </View>
         {isSelectDay ? (
@@ -349,7 +361,7 @@ const styles = StyleSheet.create({
     fontFamily: "LineRegular",
   },
   calenderStyle: {
-    backgroundColor: "rgba(100, 100, 100, 0.9)",
+    backgroundColor: "black",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
@@ -391,6 +403,21 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     margin: "1%",
+  },
+  calendarHeader: {
+    fontSize: 18,
+    fontFamily: "LineRegular",
+    // fontWeight: "bold",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#ffffff",
+    paddingRight: 5,
+  },
+  calendarHeaderBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // marginTop: 3,
+    // marginBottom: 3,
   },
 });
 

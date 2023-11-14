@@ -338,11 +338,7 @@ function RecordCreateScreen({ route, navigation }) {
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
   const gotoDetailPage = () => {
-    navigation.navigate("DailyDetail", {
-      summaryText: day,
-      alcoholDays: [],
-      isAlcohol: isAlcohol,
-    });
+    navigation.navigate("Calendar");
   };
 
   // 주종별 음주 기록 삭제
