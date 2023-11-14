@@ -39,7 +39,15 @@ const queryClient = new QueryClient();
 
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "./utils/notificationUtils";
+import {
+	registerForPushNotificationsAsync,
+	scheduleLastChanceNotification,
+} from "./utils/notificationUtils";
+import {
+	registerResetTask,
+	registerAlarmTimeResetTask,
+} from "./utils/backgroundTaskUtils";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -60,6 +68,10 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
+// 막차 알림이 활성화 되어있을 경우에만
+registerResetTask();
+registerAlarmTimeResetTask();
 
 preventAutoHideAsync();
 
@@ -140,9 +152,10 @@ const theme = {
 };
 
 export default function App() {
-  useEffect(() => {
-    getFirstLocationPermission();
-  }, []);
+	useEffect(() => {
+		getFirstLocationPermission();
+    scheduleLastChanceNotification();
+	}, []);
 
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
