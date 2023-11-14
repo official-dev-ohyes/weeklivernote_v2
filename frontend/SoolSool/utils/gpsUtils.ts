@@ -29,7 +29,6 @@ export async function checkLocationPermission() {
 
 export async function locationPermissionAlert() {
 	const lastCheckedDate = await AsyncStorage.getItem("lastCheckedDate");
-	// const today = new Date().toLocaleDateString('ko-KR').split("T")[0];
 	const today = new Date()
 		.toLocaleDateString(Localization.locale)
 		.split("T")[0];
@@ -117,6 +116,21 @@ export async function updateLocation(): Promise<boolean> {
 	}
 	return true;
 }
+
+export async function resetAsyncStorage() {
+	const now = new Date();
+	const currentHour = now.getHours();
+
+	const today = now.toLocaleDateString(Localization.locale).split("T")[0];
+
+	const lastCheckedDate = await AsyncStorage.getItem("lastCheckedDate");
+
+	// 현재 시간이 새벽 5시 이후이고 lastCheckedDate가 오늘이 아니라면
+	if (lastCheckedDate !== today && currentHour >= 5) {
+		await AsyncStorage.setItem("keepUpdateLocation", "true");
+		await AsyncStorage.setItem("alarmTime", "null");
+	}
+} 
 
 function getDistanceDiff(targetLocation, location) {
 	const distance = getDistance(targetLocation, location);
