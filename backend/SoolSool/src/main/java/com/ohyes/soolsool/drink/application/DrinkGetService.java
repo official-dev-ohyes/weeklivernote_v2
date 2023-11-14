@@ -48,7 +48,7 @@ public class DrinkGetService {
                 .weight(user.getWeight())
                 .gender(user.getGender())
                 .todayBloodAlcohol(user.getTodayBloodAlcohol())
-                .todayBloodAlcohol(user.getTodayLiverAlcohol())
+                .todayLiverAlcohol(user.getTodayLiverAlcohol())
                 .build();
         }
 
@@ -97,7 +97,7 @@ public class DrinkGetService {
             .weight(user.getWeight())
             .gender(user.getGender())
             .todayBloodAlcohol(user.getTodayBloodAlcohol())
-            .todayBloodAlcohol(user.getTodayLiverAlcohol())
+            .todayLiverAlcohol(user.getTodayLiverAlcohol())
             .build();
     }
 
