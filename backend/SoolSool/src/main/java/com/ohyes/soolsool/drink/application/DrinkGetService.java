@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,14 +183,17 @@ public class DrinkGetService {
             drinkTotal.addAndGet(amount);
         }
 
+        // 양 내림차순 정렬
+        List<String> listKeySet = new ArrayList<>(categoryTotalMap.keySet());
+        Collections.sort(listKeySet, (value1, value2) -> (categoryTotalMap.get(value2).compareTo(categoryTotalMap.get(value1))));
+
         List<DrinkCount> drinkCounts = new ArrayList<>(); // 주종별로 묶어서 채워야함
-        for (Map.Entry<String, Integer> entry : categoryTotalMap.entrySet()) {
-            String categoryName = entry.getKey();
-            int drinkAmount = entry.getValue();
+        for (String key : listKeySet) {
+            int drinkAmount = categoryTotalMap.get(key);
 
             // DrinkCount 객체 생성
             DrinkCount drinkCount = DrinkCount.builder()
-                .drink(categoryName)
+                .drink(key)
                 .count(drinkAmount)
                 .build();
 
