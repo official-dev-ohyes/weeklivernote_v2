@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDistance } from "geolib";
 import { updateNowGpsInfo } from "../api/gpsApi";
+import * as Localization from "expo-localization";
 
 interface LocationType {
 	latitude: number;
@@ -28,7 +29,11 @@ export async function checkLocationPermission() {
 
 export async function locationPermissionAlert() {
 	const lastCheckedDate = await AsyncStorage.getItem("lastCheckedDate");
-	const today = new Date().toLocaleDateString('ko-KR').split("T")[0];
+	// const today = new Date().toLocaleDateString('ko-KR').split("T")[0];
+	const today = new Date()
+		.toLocaleDateString(Localization.locale)
+		.split("T")[0];
+	console.log("현지 시간인지 확인 : ", today);
 
 	if (!lastCheckedDate || lastCheckedDate !== today) {
 		Alert.alert(
@@ -52,9 +57,10 @@ export async function locationPermissionAlert() {
 			]
 			);
 		AsyncStorage.setItem("lastCheckedDate", today);
-		return;
+		const isPermissionDenied = await checkLocationPermission();
+		return !isPermissionDenied;
 	}
-	return;
+	return null;
 }
 
 export async function getLocation(): Promise<LocationType | null> {
@@ -77,7 +83,7 @@ export async function getLocation(): Promise<LocationType | null> {
 export async function updateLocation(): Promise<boolean> {
 	const nowLocation: LocationType = JSON.parse((await AsyncStorage.getItem("nowLocation")) || "{}");
 	const destLocation: LocationType = JSON.parse((await AsyncStorage.getItem("destLocation")));
-	const now = new Date();
+	const now = new Date(Localization.locale);
 
 	console.log("현재 위치 : ", nowLocation);
 	console.log("도착지 위치 : ", destLocation);
@@ -108,12 +114,6 @@ export async function updateLocation(): Promise<boolean> {
 			await AsyncStorage.setItem("alarmTime", data.alarmTime);
 		}
 	}
-
-
-	// if (lastChanceTime && new Date(lastChanceTime).getTime() < now.getTime()) {
-	// 	return false;
-	// }
-
 	return true;
 }
 
