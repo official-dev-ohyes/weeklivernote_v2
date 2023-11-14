@@ -1,4 +1,11 @@
-import { Text, Pressable, Image, StyleSheet, View } from "react-native";
+import {
+  Text,
+  Pressable,
+  Image,
+  StyleSheet,
+  View,
+  Platform,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import DetailProfile from "../DetailProfile";
@@ -46,10 +53,9 @@ function Profile(props: UserProfileProps) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
-
     if (result.canceled) {
       return null;
     }
@@ -58,19 +64,30 @@ function Profile(props: UserProfileProps) {
     console.log(result.assets[0].uri);
 
     const localUri = result.assets[0].uri;
-    const filename = localUri.split("/").pop();
-    const match = /\.(\w+)$/.exec(filename ?? "");
-    const type = match ? `image/${match[1]}` : `image`;
-    fetch(localUri)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const formData = new FormData();
-        formData.append("image", blob, filename);
+    const uriParts = localUri.split("/");
+    const fileName = uriParts[uriParts.length - 1];
+    const uri =
+      Platform.OS === "android" ? localUri : localUri.replace("file://", "");
+    const type = `${result.assets[0].type}/${localUri.split(".").pop()}`;
+    const body: any = new FormData();
+    // console.log("여기서부터 다시 시작", result);
+    // console.log("uri", uri);
+    // console.log("type", type);
+    // console.log("name", fileName);
+    const file = {
+      type: type,
+      name: fileName,
+      uri: uri,
+    };
+    // body.append("image", file);
+    body.append("type", type);
+    body.append("name", fileName);
+    body.append("uri", uri);
 
-        return updateProfileImage(formData);
-      })
+    await updateProfileImage(body)
       .then(() => {
         console.log("이미지 업데이트 성공");
+
         setUserProfile((prevProfile) => ({
           ...prevProfile,
           profileImg: result.assets[0].uri,
@@ -79,19 +96,6 @@ function Profile(props: UserProfileProps) {
       .catch(() => {
         showErrorAndRetry("알림", "잠시 후 다시 시도해주세요");
       });
-
-    // await updateProfileImage(result.assets[0].uri)
-    //   .then(() => {
-    //     console.log("이미지 업데이트 성공");
-
-    //     setUserProfile((prevProfile) => ({
-    //       ...prevProfile,
-    //       profileImg: result.assets[0].uri,
-    //     }));
-    //   })
-    //   .catch(() => {
-    //     showErrorAndRetry("알림", "잠시 후 다시 시도해주세요");
-    //   });
   };
 
   useEffect(() => {
@@ -110,8 +114,6 @@ function Profile(props: UserProfileProps) {
   }, [userData]);
 
   const handleEdit = () => {
-    console.log("에딧아이콘 클릭");
-    // showErrorAndRetry("준비 중", "추후 업데이트 예정입니다");
     navigation.navigate("EditProfile");
   };
 

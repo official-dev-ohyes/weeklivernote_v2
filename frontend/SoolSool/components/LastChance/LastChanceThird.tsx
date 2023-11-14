@@ -19,7 +19,20 @@ function LastChanceThird({ navigation }) {
       source={LCthird}
       style={[{ height: screenHeight }, styles.mainContainer]}
     >
-      <View>{/* <Text>막차 첫번째 페이지 입니다</Text> */}</View>
+      <View style={styles.lastChanceContainer}>
+        <Text style={styles.text}>집까지 가는 막차를 알려드릴게요</Text>
+        <Button
+          mode="contained"
+          buttonColor="black"
+          textColor="white"
+          labelStyle={styles.button}
+          rippleColor={"white"}
+          loading={true}
+          onPress={goToHome}
+        >
+          막차 조회하기
+        </Button>
+      </View>
     </ImageBackground>
   );
 }
@@ -27,6 +40,28 @@ function LastChanceThird({ navigation }) {
 const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingTop: 100,
+    paddingBottom: 100,
+  },
+  lastChanceContainer: {
+    width: "80%",
+    display: "flex",
+    flexDirection: "column",
+    // alignItems: "center",
+    gap: 10,
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  text: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 24,
+  },
+  button: {
+    fontSize: 15,
   },
 });
 
