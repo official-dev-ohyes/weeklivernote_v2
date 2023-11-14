@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { useQuery } from "react-query";
-import { fetchNotice } from "../api/noticeApi";
-
-// const noticeData = [
-//   { id: 1, title: "😋", content: "이것은 첫 번째 공지사항입니다." },
-//   { id: 2, title: "😐", content: "두 번째 공지사항 내용입니다." },
-//   { id: 3, title: "😯", content: "세 번째 공지사항 내용입니다." },
-// ];
+import { fetchNotice } from "../../api/noticeApi";
 
 function NotificationCard({ title, content, date }) {
   return (
@@ -57,6 +51,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     paddingHorizontal: 20,
     paddingTop: 20,
+    marginBottom: 20,
   },
   card: {
     backgroundColor: "#F6F6F6",

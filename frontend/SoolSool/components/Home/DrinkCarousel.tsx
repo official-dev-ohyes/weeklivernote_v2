@@ -6,15 +6,6 @@ import { useSharedValue } from "react-native-reanimated";
 import { useAppTheme } from "../../hooks/useAppTheme";
 import SwipeMotion from "./SwipeMotion";
 
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
-  alcoholAmount: number;
-}
-
 type DrinkCarouselProps = {
   data: Drink[];
   sendData: (drink: Drink) => void;

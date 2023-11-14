@@ -48,22 +48,13 @@ export function calculateTimeDifference(targetDate: Date): number {
   return roundedHoursDifference;
 }
 
-export function calculateTimeAfterHours(
-  startTime: string,
-  hoursToAdd: number
-): string {
+export function calculateTimeAfterHours(hoursToAdd: number): string {
   const now = new Date();
-  const referenceTime = new Date(startTime);
-  const millisecondsToAdd = hoursToAdd * 3600000;
-  const newTime = new Date(referenceTime.getTime() + millisecondsToAdd);
+  const newTime = new Date(now.getTime() + hoursToAdd * 3600000);
 
-  if (newTime <= now) {
-    return "passed";
-  }
-
-  const currentYear = referenceTime.getFullYear();
-  const currentMonth = referenceTime.getMonth();
-  const currentDay = referenceTime.getDate();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDay = now.getDate();
 
   const newYear = newTime.getFullYear();
   const newMonth = newTime.getMonth();

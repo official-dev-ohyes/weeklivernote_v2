@@ -20,6 +20,7 @@
     "@shopify/react-native-skia": "0.1.196",
     "@types/d3": "^7.4.3",
     "@types/lodash": "^4.14.201",
+    "@types/react-query": "^1.2.9",
     "axios": "^1.5.1",
     "d3": "^7.8.5",
     "eas-cli": "^5.6.0",

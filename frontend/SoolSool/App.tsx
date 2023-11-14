@@ -30,7 +30,10 @@ import RecordCreateScreen from "./screens/RecordCreateScreen";
 
 import MyPageScreen from "./screens/MyPageScreen";
 import SettingsScreen from "./screens/SettingsScreen";
-import NotificationScreen from "./screens/NotificationScreen";
+import NotificationScreen from "./screens/SettingsScreen/NotificationScreen";
+import ServiceTermsScreen from "./screens/SettingsScreen/ServiceTermsScreen";
+import LocationTermsScreen from "./screens/SettingsScreen/LocationTermsScreen";
+import PrivacyPolicyScreen from "./screens/SettingsScreen/PrivacyPolicyScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 
 const Stack = createNativeStackNavigator();
@@ -87,7 +90,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-home-sharp" color={color} size={size} />
           ),
-          title: "Home",
         }}
       />
       <BottomTab.Screen
@@ -97,7 +99,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-calendar-sharp" color={color} size={size} />
           ),
-          title: "Calender",
         }}
       />
       <BottomTab.Screen
@@ -107,7 +108,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color={color} size={size} />
           ),
-          title: "lastChance",
         }}
       />
       <BottomTab.Screen
@@ -117,7 +117,6 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
-          title: "My Page",
         }}
       />
     </BottomTab.Navigator>
@@ -230,6 +229,7 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           headerTitleAlign: "center",
+                          title: "설정",
                         }}
                       />
                       <Stack.Screen
@@ -250,6 +250,40 @@ export default function App() {
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           headerTitleAlign: "center",
+                          title: "공지사항",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="ServiceTerms"
+                        component={ServiceTermsScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "서비스 이용약관",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="LocationTerms"
+                        component={LocationTermsScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "위치정보 이용약관",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="PrivacyPolicy"
+                        component={PrivacyPolicyScreen}
+                        options={{
+                          headerShown: true,
+                          headerStyle: { backgroundColor: "#363C4B" },
+                          headerTintColor: "white",
+                          headerTitleAlign: "center",
+                          title: "개인정보 처리방침",
                         }}
                       />
                       <Stack.Screen

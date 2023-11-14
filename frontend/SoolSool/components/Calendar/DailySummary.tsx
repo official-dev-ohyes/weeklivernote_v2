@@ -15,8 +15,11 @@ import { Button, Icon, MD3Colors, Modal, Portal } from "react-native-paper";
 import { useQuery, useQueryClient } from "react-query";
 
 import DailyDetail from "./DailyDetail";
+import Toast from "react-native-root-toast";
 
 function DailySummary(props) {
+  // console.log(`지금 선택된 요약 정보 날짜를 확인합시다! ${props.summaryText}`);
+
   const today = new Date();
   const queryClient = useQueryClient();
   const { summaryText, alcoholDays } = props;
@@ -64,10 +67,18 @@ function DailySummary(props) {
   const hideDeleteModal = () => {
     setIsModal(false);
   };
-  const confirmDelete = () => {
-    removeDrink(summaryText);
-    hideDeleteModal();
-    navigation.navigate("Calendar");
+  const confirmDelete = async () => {
+    try {
+      await removeDrink(summaryText);
+      hideDeleteModal();
+      navigation.navigate("Calendar");
+    } catch (error) {
+      Toast.show("잠시후 다시 시도해주세요.", {
+        // @@@@@@@@@@@@@@@@@@@@@되는지 확인 필요@@@@@@@@@@@@@@@@@@@@@
+        duration: Toast.durations.SHORT,
+      });
+      console.error("삭제 에러:", error);
+    }
   };
 
   return (
@@ -213,11 +224,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  // headerText: {
-  //   fontSize: 20,
-  //   color: "#363C4B",
-  //   fontFamily: "Yeongdeok-Sea",
-  // },
   total: {
     height: "75%",
     borderRadius: 5,

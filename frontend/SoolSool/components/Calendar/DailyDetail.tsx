@@ -1,9 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
 import { useEffect, useState } from "react";
-import { Modal, Portal, Button } from "react-native-paper";
 import React from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useQuery } from "react-query";
 import AlcoholChart from "../../components/Calendar/AlcoholChart";
 
@@ -43,17 +41,12 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     }
   }, [DailyDetailData]);
 
-  // 글 삭제 모달 및 삭제
-  const openDeleteModal = () => {
-    setIsModal(true);
-  };
-  const hideDeleteModal = () => {
-    setIsModal(false);
-  };
-  const confirmDelete = () => {
-    removeDrink(summaryText);
-    hideDeleteModal();
-    // navigation.navigate("Calendar");
+  const format12HourTime = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    const parsedHours = parseInt(hours, 10);
+    const period = parsedHours >= 12 ? "PM" : "AM";
+    const formattedHours = parsedHours % 12 || 12; // Convert 0 to 12
+    return `${period} ${formattedHours}:${minutes}`;
   };
 
   return (
@@ -63,7 +56,7 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
           <View style={styles.time}>
             <View style={styles.house}>
               <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
-              <Text>{info.startTime.substring(11, 16)}</Text>
+              <Text>{format12HourTime(info.startTime.substring(11, 16))}</Text>
             </View>
             <View style={styles.house}>
               <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
@@ -89,39 +82,6 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
             )}
           </View>
         </View>
-        <Portal>
-          <Modal
-            visible={isModal}
-            onDismiss={hideDeleteModal}
-            contentContainerStyle={{
-              backgroundColor: "white",
-              padding: 20,
-              width: "90%",
-              borderRadius: 5,
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            <View style={styles.mainContainer}>
-              <Text style={styles.alertTitle}>주간일기</Text>
-              <View style={styles.textContainer}>
-                <Text>정말 삭제하시겠습니까?</Text>
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button mode="outlined" onPress={hideDeleteModal}>
-                  취소
-                </Button>
-                <Button
-                  mode="contained"
-                  buttonColor={"#363C4B"}
-                  onPress={confirmDelete}
-                >
-                  삭제
-                </Button>
-              </View>
-            </View>
-          </Modal>
-        </Portal>
       </View>
     </ScrollView>
   );
