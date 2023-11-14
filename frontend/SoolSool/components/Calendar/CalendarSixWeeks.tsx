@@ -11,57 +11,13 @@ import {
 } from "@gorhom/bottom-sheet";
 import React from "react";
 import { useState, useRef, useMemo, useCallback } from "react";
-import { Calendar, LocaleConfig } from "react-native-calendars";
+import { Calendar } from "react-native-calendars";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "react-query";
 import { ImageBackground } from "expo-image";
-
-// 달력 서식
-LocaleConfig.locales["ko"] = {
-  monthNames: [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
-  ],
-  monthNamesShort: [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-  ],
-  dayNames: [
-    "월요일",
-    "화요일",
-    "수요일",
-    "목요일",
-    "금요일",
-    "토요일",
-    "일요일",
-  ],
-  dayNamesShort: ["월", "화", "수", "목", "금", "토", "일"],
-  today: "오늘",
-};
-
-LocaleConfig.defaultLocale = "ko";
+import "./LocaleConfig"; // 달력 서식
 
 function CalendarSixWeeks({ navigation }) {
   // 진짜 오늘 정보 저장
