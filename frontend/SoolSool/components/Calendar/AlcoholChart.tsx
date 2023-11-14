@@ -8,14 +8,15 @@ function AlcoholChart({ drinks }) {
 
   // 주종별 색상
   const categoryColors = {
-    소주: "green",
-    맥주: "yellow",
-    와인: "red",
-    소맥: "orange",
-    "칵테일(약)": "pink",
-    "칵테일(강)": "blue",
-    막걸리: "white",
-    위스키: "black",
+    소주: "#9FBA00",
+    맥주: "#CA6529",
+    와인: "#E7464B",
+    소맥: "#FFC808",
+    "칵테일(약)": "#FA6E68",
+    "칵테일(강)": "#D5E794",
+    막걸리: "#FDF2D9",
+    위스키: "#FDA515",
+    하이볼: "#53A5D7",
   };
 
   return (
