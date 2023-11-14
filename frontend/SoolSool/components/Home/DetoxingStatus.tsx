@@ -41,7 +41,7 @@ const DetoxingStatus = ({
         </Text>
       )}
 
-      <Wave size={200} progress={detoxingInProgress} />
+      <Wave size={220} progress={detoxingInProgress} />
     </View>
   );
 };
