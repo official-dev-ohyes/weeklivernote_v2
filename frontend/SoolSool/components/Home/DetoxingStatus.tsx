@@ -40,8 +40,9 @@ const DetoxingStatus = ({
           시간
         </Text>
       )}
-
-      <Wave size={220} progress={detoxingInProgress} />
+      <View style={styles.detoxingInProgressContainer}>
+        <Wave size={220} progress={detoxingInProgress} />
+      </View>
     </View>
   );
 };
@@ -65,12 +66,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "LineRegular",
     color: "white",
-    marginBottom: 20,
+    // marginTop: 20,
   },
   periodContainer: {
     fontSize: 24,
     fontFamily: "LineRegular",
     color: "white",
+  },
+  detoxingInProgressContainer: {
+    marginTop: 50,
   },
 });
 

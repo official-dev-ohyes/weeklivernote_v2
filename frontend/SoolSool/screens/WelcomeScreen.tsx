@@ -25,7 +25,7 @@ function WelcomeScreen({ navigation }) {
 
     const timeoutId = setTimeout(() => {
       navigation.navigate("Home");
-    }, 5000);
+    }, 4000);
 
     return () => {
       clearInterval(intervalId);

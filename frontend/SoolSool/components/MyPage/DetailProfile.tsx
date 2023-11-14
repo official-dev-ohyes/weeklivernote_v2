@@ -27,27 +27,35 @@ function DetailProfile(props: DetailProfileProps) {
   // console.log("d", userData.drinkInfo?.drinkAmount);
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.infoContainer}>
-        <View style={styles.rowContainer}>
-          <Text style={styles.boldText}>성별</Text>
-          <Text style={styles.text}>{userData.gender}</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.boldText}>신장</Text>
-          <Text style={styles.text}>{userData.height} cm</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.boldText}>체중</Text>
-          <Text style={styles.text}>{userData.weight} kg</Text>
-        </View>
+      <View style={{ paddingLeft: 15 }}>
+        <Text style={{ fontSize: 15, fontFamily: "LineBold" }}>
+          {userData.nickname}님
+        </Text>
       </View>
 
-      <View style={styles.alcLimitContainer}>
-        <Text style={styles.boldText}>주량</Text>
-        <Text style={styles.text}>{userData?.drinkInfo?.category}</Text>
-        <Text style={styles.text}>
-          {userData?.drinkInfo?.drinkAmount} {userData?.drinkInfo?.drinkUnit}
-        </Text>
+      <View style={styles.subContainer}>
+        <View style={styles.infoContainer}>
+          <View style={styles.rowContainer}>
+            <Text style={styles.boldText}>성별</Text>
+            <Text style={styles.text}>{userData.gender}</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <Text style={styles.boldText}>신장</Text>
+            <Text style={styles.text}>{userData.height} cm</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <Text style={styles.boldText}>체중</Text>
+            <Text style={styles.text}>{userData.weight} kg</Text>
+          </View>
+        </View>
+
+        <View style={styles.alcLimitContainer}>
+          <Text style={styles.boldText}>주량</Text>
+          <Text style={styles.text}>{userData?.drinkInfo?.category}</Text>
+          <Text style={styles.text}>
+            {userData?.drinkInfo?.drinkAmount} {userData?.drinkInfo?.drinkUnit}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -56,9 +64,13 @@ function DetailProfile(props: DetailProfileProps) {
 const styles = StyleSheet.create({
   mainContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
-    gap: 10,
+    gap: 0,
+  },
+  subContainer: {
+    display: "flex",
+    flexDirection: "row",
   },
   infoContainer: {
     flex: 2,
@@ -82,15 +94,18 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
     color: "black",
+    fontFamily: "LineRegular",
   },
   rowContainer: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "flex-end",
     gap: 5,
   },
   boldText: {
     fontWeight: "bold",
     fontSize: 15,
+    fontFamily: "LineRegular",
   },
 });
 

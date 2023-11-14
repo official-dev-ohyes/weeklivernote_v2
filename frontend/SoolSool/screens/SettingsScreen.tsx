@@ -231,7 +231,12 @@ function SettingsScreen({ navigation }) {
                 <Text>모든 정보가 삭제됩니다.</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <Button mode="contained" onPress={confirmSignOut}>
+                <Button
+                  mode="contained"
+                  buttonColor={"#000000"}
+                  textColor={"#FFFFFF"}
+                  onPress={confirmSignOut}
+                >
                   확인
                 </Button>
                 <Button mode="outlined" onPress={hideModal}>
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 5,
+    gap: 10,
   },
   alertTitle: {
     fontSize: 20,

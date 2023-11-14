@@ -94,7 +94,10 @@ function EditProfileScreen({ navigation }) {
       .then(async (res) => {
         // 도착지 저장
         const destLocation = res;
-				await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
+        await AsyncStorage.setItem(
+          "destLocation",
+          JSON.stringify(destLocation)
+        );
         // console.log("업데이트 성공");
         Toast.show("프로필 수정 성공", {
           duration: Toast.durations.SHORT,
@@ -164,6 +167,7 @@ function EditProfileScreen({ navigation }) {
               placeholder={oldheight.toString()}
               value={height}
               style={styles.textInput}
+              keyboardType="numeric"
               onChangeText={(text) => setHeight(text)}
             />
           </View>
@@ -173,6 +177,7 @@ function EditProfileScreen({ navigation }) {
               placeholder={oldweight.toString()}
               value={weight}
               style={styles.textInput}
+              keyboardType="numeric"
               onChangeText={(text) => setWeight(text)}
             />
           </View>

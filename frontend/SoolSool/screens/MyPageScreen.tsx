@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
 import { fetchUserNonAlc, fetchUserProfile } from "../api/mypageApi";
 import UserNonAlc from "../components/MyPage/template/UserNonAlc";
@@ -92,9 +92,13 @@ function MyPageScreen({ navigation }) {
       <View style={styles.mainContainer}>
         <View style={styles.subContainer}>
           <View style={styles.upperBar}>
+            <Text style={{ color: "white", textAlign: "center" }}>
+              나의 페이지
+            </Text>
             <Ionicons
               name="settings"
               size={20}
+              color={"white"}
               onPress={handleclickSettingsIcon}
             />
           </View>
@@ -129,9 +133,9 @@ const styles = StyleSheet.create({
     height: 30,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "red",
+    marginTop: 20,
   },
 });
 

@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     fontFamily: "LineRegular",
   },
   calenderStyle: {
-    backgroundColor: "rgba(100, 100, 100, 0.2)",
+    backgroundColor: "rgba(100, 100, 100, 0.9)",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",

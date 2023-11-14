@@ -119,31 +119,31 @@ function Profile(props: UserProfileProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.profileContainer}>
-        <Image
-          source={
-            userData.profileImg ? { uri: userData.profileImg } : defaultImage
-          }
-          style={styles.profileImage}
-        />
+      <View style={styles.TopContainer}>
+        <View style={styles.profileContainer}>
+          <Image
+            source={
+              userData.profileImg ? { uri: userData.profileImg } : defaultImage
+            }
+            style={styles.profileImage}
+          />
 
-        <Pressable style={styles.editIcon} onPress={handleEditImage}>
-          <Ionicons name="pencil" color={"white"} size={15} />
-        </Pressable>
+          <Pressable style={styles.editIcon} onPress={handleEditImage}>
+            <Ionicons name="pencil" color={"white"} size={15} />
+          </Pressable>
+        </View>
+
+        <View style={styles.userDetail}>
+          <DetailProfile userData={userData} />
+        </View>
       </View>
-
-      <Text style={styles.userInfoText}>{userData.nickname}</Text>
-
-      <View style={styles.userAddress}>
-        <Ionicons name="location" color={"white"} size={20} />
-        <Text style={styles.addressText}>{userData.address}</Text>
+      <View style={styles.BottomContainer}>
+        <View style={styles.userAddress}>
+          <Ionicons name="location" color={"white"} size={20} />
+          <Text style={styles.addressText}>{userData.address}</Text>
+        </View>
+        <FAB icon="pencil" style={styles.fab} onPress={handleEdit} />
       </View>
-
-      <View style={styles.userDetail}>
-        <DetailProfile userData={userData} />
-      </View>
-
-      <FAB icon="pencil" style={styles.fab} onPress={handleEdit} />
     </View>
   );
 }
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 30,
     paddingHorizontal: 15,
-    marginTop: 30,
+    // marginTop: 10,
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
     shadowOffset: {
@@ -167,6 +167,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
+  },
+  TopContainer: {
+    display: "flex",
+    flexDirection: "row",
   },
   userInfoLabel: {
     fontSize: 16,
@@ -202,7 +206,7 @@ const styles = StyleSheet.create({
   },
   userDetail: {
     // flex: 1,
-    width: "100%",
+    width: "60%",
   },
   editIcon: {
     width: "auto",
@@ -212,15 +216,18 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     position: "absolute",
     top: 98,
-    right: 10,
+    right: 25,
   },
-  profileContainer: {},
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
+  profileContainer: {
+    width: "40%",
   },
+  BottomContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
+  },
+  fab: {},
 });
 
 export default Profile;

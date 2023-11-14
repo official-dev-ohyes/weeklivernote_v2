@@ -43,12 +43,12 @@ const queryClient = new QueryClient();
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
 import {
-	registerForPushNotificationsAsync,
-	scheduleLastChanceNotification,
+  registerForPushNotificationsAsync,
+  scheduleLastChanceNotification,
 } from "./utils/notificationUtils";
 import {
-	registerResetTask,
-	registerAlarmTimeResetTask,
+  registerResetTask,
+  registerAlarmTimeResetTask,
 } from "./utils/backgroundTaskUtils";
 
 import HomeRouteScreen from "./screens/HomeRouteScreen";
@@ -56,30 +56,33 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 
-import { getFirstLocationPermission, resetAsyncStorage } from "./utils/gpsUtils";
+import {
+  getFirstLocationPermission,
+  resetAsyncStorage,
+} from "./utils/gpsUtils";
 
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: false,
-		shouldSetBadge: false,
-	}),
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
 });
 
 // 막차 알림이 활성화 되어있을 경우에만 TASK 수행
 async function checkNotificationStatusAndExecuteTasks() {
-	const drinkNotificationStatus = await AsyncStorage.getItem(
-		"isLastNotificationEnabled"
-	);
+  const drinkNotificationStatus = await AsyncStorage.getItem(
+    "isLastNotificationEnabled"
+  );
 
-	if (drinkNotificationStatus !== null) {
-		const isGranted = JSON.parse(drinkNotificationStatus);
-		if (isGranted) {
-			registerResetTask();
-			registerAlarmTimeResetTask();
-			resetAsyncStorage();
-		}
-	}
+  if (drinkNotificationStatus !== null) {
+    const isGranted = JSON.parse(drinkNotificationStatus);
+    if (isGranted) {
+      registerResetTask();
+      registerAlarmTimeResetTask();
+      resetAsyncStorage();
+    }
+  }
 }
 
 checkNotificationStatusAndExecuteTasks();
@@ -158,10 +161,10 @@ const theme = {
 };
 
 export default function App() {
-	useEffect(() => {
-		getFirstLocationPermission();
+  useEffect(() => {
+    getFirstLocationPermission();
     scheduleLastChanceNotification();
-	}, []);
+  }, []);
 
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
@@ -316,7 +319,7 @@ export default function App() {
                         name="DailyDetail"
                         component={DailyDetailScreen}
                         options={{
-                          headerShown: true,
+                          headerShown: false,
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "Calendar",
@@ -326,7 +329,7 @@ export default function App() {
                         name="RecordCreate"
                         component={RecordCreateScreen}
                         options={{
-                          headerShown: true,
+                          headerShown: false,
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           title: "Calendar",
