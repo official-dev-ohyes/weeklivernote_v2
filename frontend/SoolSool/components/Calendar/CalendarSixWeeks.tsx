@@ -18,6 +18,51 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "react-query";
 import { ImageBackground } from "expo-image";
 
+// 달력 서식
+LocaleConfig.locales["ko"] = {
+  monthNames: [
+    "1월",
+    "2월",
+    "3월",
+    "4월",
+    "5월",
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월",
+    "12월",
+  ],
+  monthNamesShort: [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+  ],
+  dayNames: [
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+    "일요일",
+  ],
+  dayNamesShort: ["월", "화", "수", "목", "금", "토", "일"],
+  today: "오늘",
+};
+
+LocaleConfig.defaultLocale = "ko";
+
 function CalendarSixWeeks({ navigation }) {
   // 진짜 오늘 정보 저장
   const today = new Date();
@@ -34,6 +79,7 @@ function CalendarSixWeeks({ navigation }) {
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState({});
   const [isSame, setIsSame] = useState<boolean>(false);
+  const [renderFlag, setRenderFlag] = useState<boolean>(true);
 
   const queryClient = useQueryClient();
 
@@ -45,32 +91,45 @@ function CalendarSixWeeks({ navigation }) {
     isError: monthlyError,
   } = useQuery(
     // ["MonthlyQuery", currentDay, selectDay, navigator],
-    ["MonthlyQuery", currentDay, isSelectDay],
-    async () => await fetchMonthRecord(tempDay)
+    ["MonthlyQuery", renderFlag],
+    async () => {
+      if (renderFlag) {
+        const data = await fetchMonthRecord(tempDay);
+        setRenderFlag(false);
+        return data;
+      }
+    },
+    {
+      onSuccess: (data) => {
+        if (data) {
+          const tempDays = {};
+
+          for (let i = 0; i < data.drinks.length; i++) {
+            const tempDate = data.drinks[i].date;
+
+            tempDays[tempDate] = {
+              marked: true,
+            };
+          }
+          setAlcoholDays(tempDays);
+        }
+      },
+    }
   );
 
   // Bottom Sheet
-  // const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  // const dynamicSnapPoints = useMemo(() => {
-  //   const isToday = selectDay === nowDate;
-  //   return isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
-  //   // }, [selectDay, nowDate, alcoholDays]);
-  // }, [selectDay, isSelectDay]);
-
-  // 지피티 임시
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
   const dynamicSnapPoints = useMemo(() => {
     const isToday = selectDay === nowDate;
     const snapPoints =
       isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
-    console.log("Snap Points:", snapPoints); // 새로 추가한 부분
     return snapPoints;
-  }, [selectDay, isSelectDay, alcoholDays]);
+  }, [selectDay, alcoholDays]);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
-  // 여기까지 임시
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("Sheet Index:", index);
@@ -79,68 +138,12 @@ function CalendarSixWeeks({ navigation }) {
     }
   }, []);
 
-  // 캘린더 서식 수정
-  LocaleConfig.locales["ko"] = {
-    monthNames: [
-      "1월",
-      "2월",
-      "3월",
-      "4월",
-      "5월",
-      "6월",
-      "7월",
-      "8월",
-      "9월",
-      "10월",
-      "11월",
-      "12월",
-    ],
-    monthNamesShort: [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-    ],
-    dayNames: [
-      "월요일",
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-      "일요일",
-    ],
-    dayNamesShort: ["월", "화", "수", "목", "금", "토", "일"],
-    today: "오늘",
-  };
-  LocaleConfig.defaultLocale = "ko";
-
   // 네비게이션 이동 시, 재렌더링
   useFocusEffect(
     React.useCallback(() => {
       // console.log(`현재 날짜는? ${nowDate}`);
       if (tempDay) {
         setCurrentDay(tempDay);
-      }
-      if (MonthlyData) {
-        const tempDays = {};
-
-        for (let i = 0; i < MonthlyData.drinks.length; i++) {
-          const tempDate = MonthlyData.drinks[i].date;
-
-          tempDays[tempDate] = {
-            marked: true,
-          };
-        }
-        setAlcoholDays(tempDays);
       }
 
       if (selectDay) {
@@ -156,7 +159,6 @@ function CalendarSixWeeks({ navigation }) {
         checkFuture();
       }
       queryClient.invalidateQueries("MonthlyQuery");
-      // }, [nowDate, selectDay, navigator, MonthlyData])
     }, [MonthlyData])
   );
 
@@ -213,6 +215,7 @@ function CalendarSixWeeks({ navigation }) {
         current.getMonth() < 10 ? "0" : ""
       }${current.getMonth()}-${"01"}`;
     }
+    setRenderFlag(true);
     setCurrentDay(shiftDay);
     fetchMonthRecord(shiftDay);
   };

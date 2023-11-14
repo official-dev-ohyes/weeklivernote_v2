@@ -12,7 +12,7 @@ import {
 } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
 import { Button, Icon, MD3Colors, Modal, Portal } from "react-native-paper";
-import { useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import DailyDetail from "./DailyDetail";
 import Toast from "react-native-root-toast";
@@ -60,6 +60,17 @@ function DailySummary(props) {
     }, [DailyDrinkData, navigation])
   );
 
+  const deleteMutation = useMutation<void, unknown, string, unknown>(
+    async (summaryText) => {
+      await removeDrink(summaryText);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("DailyDrinkQuery");
+      },
+    }
+  );
+
   // 글 삭제 모달 및 삭제
   const openDeleteModal = () => {
     setIsModal(true);
@@ -69,12 +80,11 @@ function DailySummary(props) {
   };
   const confirmDelete = async () => {
     try {
-      await removeDrink(summaryText);
+      deleteMutation.mutate(summaryText);
       hideDeleteModal();
       navigation.navigate("Calendar");
     } catch (error) {
       Toast.show("잠시후 다시 시도해주세요.", {
-        // @@@@@@@@@@@@@@@@@@@@@되는지 확인 필요@@@@@@@@@@@@@@@@@@@@@
         duration: Toast.durations.SHORT,
       });
       console.error("삭제 에러:", error);

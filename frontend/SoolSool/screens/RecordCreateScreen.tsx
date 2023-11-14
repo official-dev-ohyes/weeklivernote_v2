@@ -3,7 +3,7 @@ import { Button, TextInput, IconButton } from "react-native-paper";
 import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
@@ -16,6 +16,7 @@ import {
 import { getAmountByDrinkCount } from "../utils/drinkUtils";
 
 function RecordCreateScreen({ route, navigation }) {
+  const queryClient = useQueryClient();
   const day = route.params.date;
   // console.log(`지금 고칠 날짜를 확인합시다!!  고치려는 날짜 : ${day}`);
   const isAlcohol = route.params.isAlcohol; // create, update 구분
@@ -68,6 +69,14 @@ function RecordCreateScreen({ route, navigation }) {
     "55",
   ];
 
+  interface DrinkData {
+    drinks: Array<Record<string, unknown>>;
+    drinkDate: string;
+    startTime: string;
+    memo: string;
+    hangover: string;
+  }
+
   // 음주량 수정
   const handleDecrement = () => {
     if (value > 0) {
@@ -108,6 +117,17 @@ function RecordCreateScreen({ route, navigation }) {
     setSelectedUnit("잔");
   };
 
+  const saveMutation = useMutation<void, unknown, DrinkData, unknown>(
+    async (data) => {
+      await createDrink(data);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("DailyDrinkQuery");
+      },
+    }
+  );
+
   // 전체 기록 추가
   const saveRecord = async () => {
     if (selectedHour === "시" || selectedMinute === "분") {
@@ -144,15 +164,15 @@ function RecordCreateScreen({ route, navigation }) {
     if (isAlcohol) {
       removeDrink(day);
     }
-    createDrink({
+    saveMutation.mutate({
       drinks: [...alcoholRecord],
       drinkDate: date,
       startTime: time,
       memo: memo,
       hangover: "",
-    }).then((res) => {
-      navigation.navigate("Calendar");
     });
+
+    navigation.navigate("Calendar");
   };
 
   // [업데이트] 기존 요약/상세 정보 불러오기
