@@ -78,15 +78,15 @@ const styles = StyleSheet.create({
   },
   drinkBadgeContainer: {
     position: "absolute",
-    bottom: 40,
+    bottom: 30,
     right: -10,
     margin: 4,
   },
   drinkImageContainer: {
     width: 40,
     height: 40,
-    borderWidth: 1,
     marginHorizontal: 4,
+    resizeMode: "contain",
     borderColor: "transparent",
   },
 });

@@ -12,12 +12,14 @@ import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-function HomeScreen({ navigation }) {
+
+const HomeScreen = ({ navigation }) => {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
   const [currentDrinks, setCurrentDrinks] = useState<Record<number, number>>(
     {}
   );
   const today = getToday();
+  const [initialValue, setInitialValue] = useState(0);
 
   // 회원 정보 없을 시 로그인 화면으로 이동
   useEffect(() => {
@@ -57,37 +59,38 @@ function HomeScreen({ navigation }) {
       const fetchData = async () => {
         try {
           const data = await fetchDrink(today);
-          console.log(61, data);
           if (data) {
-            if (data.drinkTotal === 0) {
-              setDrinkToday(new DrinkToday(data));
-            } else {
-              const drinkTodayData = {
-                drinkTotal: data.drinkTotal,
-                alcoholAmount: data.alcoholAmount,
-                drinkStartTime: data.drinkStartTime,
-                height: data.height,
-                weight: data.weight,
-                gender: data.gender,
-              };
+            const drinkTodayData = {
+              drinkTotal: data.drinkTotal,
+              alcoholAmount: data.alcoholAmount,
+              drinkStartTime: data.drinkStartTime,
+              height: data.height,
+              weight: data.weight,
+              gender: data.gender,
+              bacAt5: data.todayBloodAlcohol,
+              alcoholAt5: data.todayLiverAlcohol,
+            };
 
-              setDrinkToday(new DrinkToday(drinkTodayData));
+            setDrinkToday(new DrinkToday(drinkTodayData));
 
-              const currentDrinksObject = {};
-              data.drinks.forEach((drink) => {
-                const id = getIdByCategoryAndUnit(
-                  drink.category,
-                  drink.drinkUnit
-                );
-                if (currentDrinksObject.hasOwnProperty(id)) {
-                  currentDrinksObject[id] += drink.drinkAmount;
-                } else {
-                  currentDrinksObject[id] = drink.drinkAmount;
-                }
-              });
+            const currentDrinksObject = {};
+            data.drinks.forEach((drink) => {
+              const id = getIdByCategoryAndUnit(
+                drink.category,
+                drink.drinkUnit
+              );
+              if (id === 2) {
+                setInitialValue(drink.drinkAmount);
+              }
 
-              setCurrentDrinks(currentDrinksObject);
-            }
+              if (currentDrinksObject.hasOwnProperty(id)) {
+                currentDrinksObject[id] += drink.drinkAmount;
+              } else {
+                currentDrinksObject[id] = drink.drinkAmount;
+              }
+            });
+
+            setCurrentDrinks(currentDrinksObject);
           }
         } catch (error) {
           console.error("데이터를 가져오는 동안 에러 발생:", error);
@@ -114,15 +117,19 @@ function HomeScreen({ navigation }) {
       <HomeCarousel />
       <View style={styles.controllerContainer}>
         <SafeDriveInfo
-          bloodAlcoholContent={drinkToday.bloodAlcoholContent}
+          bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
           drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
+          additionalTimeForDrive={drinkToday.stillNeedSoberTimeFor}
         />
-        <DrinkController currentDrinks={currentDrinks} />
+        <DrinkController
+          currentDrinks={currentDrinks}
+          initialValue={initialValue}
+        />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   mainContainer: {

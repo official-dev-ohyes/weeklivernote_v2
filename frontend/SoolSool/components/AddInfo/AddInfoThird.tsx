@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,35 +9,28 @@ import {
   Image,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Button } from "react-native-paper";
-import DotIndicator from "../components/AddInfo/DotIndicator ";
-import { saveUserInfo } from "../api/addInfoApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showErrorAndRetry } from "../utils/showErrorUtils";
-import { useSetRecoilState } from "recoil";
-import { userAlcoholLimitAtom, userNicknameAtom } from "../recoil/auth";
 import Toast from "react-native-root-toast";
-import { adaptiveIcon, drink01, drink04 } from "../assets";
-// import { red100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+import { adaptiveIcon, drink01, drink04 } from "../../assets";
 
-function AddInfoStep3Screen({ navigation, route }) {
-  const { height, weight, gender, address, socialId } = route.params;
-  const setNickname = useSetRecoilState(userNicknameAtom);
-  const setAlcoholLimit = useSetRecoilState(userAlcoholLimitAtom);
-
+function AddInfoThird({
+  drinkCategory,
+  setDrinkCategory,
+  drinkUnit,
+  setDrinkUnit,
+  drinkAmount,
+  setDrinkAmount,
+  onNextClick,
+}) {
   const [selectedDrinkKind, setSelectedDrinkKind] = useState(null);
-  const [amount, setAmount] = useState("");
-  const [unit, setUnit] = useState("잔");
-
-  useEffect(() => {}, [selectedDrinkKind]);
-
   const handleDrinkKindSelection = (drinkKind) => {
     if (selectedDrinkKind === drinkKind) {
       // 이미 선택된 버튼을 다시 누를 경우 선택 해제
       setSelectedDrinkKind("");
+      setDrinkCategory("");
     } else {
       // 다른 버튼을 선택한 경우 선택 상태로 변경
       setSelectedDrinkKind(drinkKind);
+      setDrinkCategory(drinkKind);
     }
   };
 
@@ -47,6 +40,13 @@ function AddInfoStep3Screen({ navigation, route }) {
       return styles.selectedButton;
     }
     return styles.drinkButton;
+  };
+
+  const getButtonTextStyle = (drinkKind) => {
+    if (selectedDrinkKind === drinkKind) {
+      return styles.selectedButtonText;
+    }
+    return styles.ButtonText;
   };
 
   const getImageURL = () => {
@@ -59,63 +59,9 @@ function AddInfoStep3Screen({ navigation, route }) {
     }
   };
 
-  const getButtonTextStyle = (drinkKind) => {
-    if (selectedDrinkKind === drinkKind) {
-      return styles.selectedButtonText;
-    }
-    return styles.ButtonText;
-  };
-
-  const goToPreviousStep = () => {
-    navigation.navigate("AddInfoStep2", {
-      height: height,
-      weight: weight,
-      gender: gender,
-    });
-  };
-
-  const handleSubmitInfo = () => {
-    if (selectedDrinkKind && unit && amount) {
-      const drinkInfo = {
-        category: selectedDrinkKind,
-        drinkUnit: unit,
-        drinkAmount: amount,
-      };
-
-      saveUserInfo(socialId, weight, height, gender, address, drinkInfo)
-        .then(async (res) => {
-          console.log("제출 성공", res);
-          const accessToken = res.tokenInfo.accessToken;
-          await AsyncStorage.setItem("accessToken", accessToken);
-          setNickname(res.userName);
-          setAlcoholLimit(res.alcoholLimit);
-
-          Toast.show("로그인에 성공했습니다", {
-            duration: Toast.durations.SHORT,
-            position: 0,
-            shadow: true,
-            animation: true,
-            opacity: 0.8,
-          });
-
-          navigation.navigate("BottomTab");
-        })
-        .catch((error) => {
-          console.error("추가정보 입력 실패", error);
-          showErrorAndRetry(
-            "다음에 다시 시도하세요",
-            "알 수 없는 오류가 발생했습니다. 나중에 다시 시도하세요."
-          );
-        });
-    } else {
-      Alert.alert("알림", "모든 항목을 선택해주세요.");
-    }
-  };
-
   return (
     <View style={styles.mainContainer}>
       {/* <Text>선택한 주소: {address}</Text> */}
-      <DotIndicator activeIndex={3} />
       <Text style={styles.title}>회원님의 주량을 알려주세요</Text>
       <View>
         <Image source={getImageURL()} style={styles.imageBox} />
@@ -145,15 +91,15 @@ function AddInfoStep3Screen({ navigation, route }) {
           <TextInput
             style={styles.amountInput}
             placeholder="주량을 입력하세요"
-            value={amount}
-            onChangeText={(text) => setAmount(text)}
+            value={drinkAmount}
+            onChangeText={(text) => setDrinkAmount(text)}
             keyboardType="numeric"
           />
 
           {/* 주량 단위 선택 */}
           <Picker
-            selectedValue={unit}
-            onValueChange={(itemValue) => setUnit(itemValue)}
+            selectedValue={drinkUnit}
+            onValueChange={(itemValue) => setDrinkUnit(itemValue)}
             style={styles.unitPicker}
             mode="dropdown"
           >
@@ -161,18 +107,6 @@ function AddInfoStep3Screen({ navigation, route }) {
             <Picker.Item label="병" value="병" />
           </Picker>
         </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button mode="outlined" onPress={goToPreviousStep}>
-          Previous
-        </Button>
-        <Button
-          mode="contained"
-          buttonColor={"#363C4B"}
-          onPress={handleSubmitInfo}
-        >
-          Submit
-        </Button>
       </View>
     </View>
   );
@@ -259,4 +193,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddInfoStep3Screen;
+export default AddInfoThird;

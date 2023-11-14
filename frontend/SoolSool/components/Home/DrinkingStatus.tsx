@@ -30,8 +30,10 @@ function DrinkingStatus({
         </Text>
       )}
 
-      <Image source={imageSource} style={styles.image} />
-      <View style={styles.imageContainer}></View>
+      <View style={styles.imageContainer}>
+        <View style={styles.shadowContainer} />
+        <Image source={imageSource} style={styles.image} />
+      </View>
     </View>
   );
 }
@@ -39,7 +41,7 @@ function DrinkingStatus({
 const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
-    marginTop: "10%",
+    marginTop: "15%",
     marginVertical: 24,
     padding: 4,
     display: "flex",
@@ -63,15 +65,17 @@ const styles = StyleSheet.create({
     color: "white",
   },
   imageContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  shadowContainer: {
     position: "absolute",
     top: 180,
     width: 150,
     height: 80,
     backgroundColor: "rgba(255,255,255,0.1)",
     borderRadius: 50,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
     transform: [{ scaleX: 2 }],
   },
   image: {

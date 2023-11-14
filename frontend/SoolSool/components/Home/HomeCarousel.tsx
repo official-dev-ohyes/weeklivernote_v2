@@ -85,7 +85,7 @@ export default function HomeCarousel() {
               <View
                 style={{
                   flex: 0.7,
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
                   padding: 20,
                 }}
               >
