@@ -56,7 +56,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 
-import { getFirstLocationPermission } from "./utils/gpsUtils";
+import { getFirstLocationPermission, resetAsyncStorage } from "./utils/gpsUtils";
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -66,10 +66,23 @@ Notifications.setNotificationHandler({
 	}),
 });
 
-// 막차 알림이 활성화 되어있을 경우에만
-registerResetTask();
-registerAlarmTimeResetTask();
+// 막차 알림이 활성화 되어있을 경우에만 TASK 수행
+async function checkNotificationStatusAndExecuteTasks() {
+	const drinkNotificationStatus = await AsyncStorage.getItem(
+		"isLastNotificationEnabled"
+	);
 
+	if (drinkNotificationStatus !== null) {
+		const isGranted = JSON.parse(drinkNotificationStatus);
+		if (isGranted) {
+			registerResetTask();
+			registerAlarmTimeResetTask();
+			resetAsyncStorage();
+		}
+	}
+}
+
+checkNotificationStatusAndExecuteTasks();
 preventAutoHideAsync();
 
 function BottomTabNavigator() {
@@ -166,40 +179,42 @@ export default function App() {
   // if (!fontsLoaded && !fontError) {
   //   return null;
   // }
-  const notificationListener = useRef<Subscription>();
-  const responseListener = useRef<Subscription>();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(async (token) => {
-      if (token) {
-        await AsyncStorage.setItem("expoPushToken", token);
-      } else {
-        return;
-      }
-    });
+  // 알림 관련..?
+  // const notificationListener = useRef<Subscription>();
+  // const responseListener = useRef<Subscription>();
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        // console.log("App.tsx 174: ", notification);
-      });
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then(async (token) => {
+  //     if (token) {
+  //       await AsyncStorage.setItem("expoPushToken", token);
+  //     } else {
+  //       return;
+  //     }
+  //   });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       // console.log("App.tsx 174: ", notification);
+  //     });
 
-    return () => {
-      if (
-        typeof notificationListener.current !== "undefined" &&
-        typeof responseListener.current !== "undefined"
-      ) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
-    };
-  }, []);
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
+
+  //   return () => {
+  //     if (
+  //       typeof notificationListener.current !== "undefined" &&
+  //       typeof responseListener.current !== "undefined"
+  //     ) {
+  //       Notifications.removeNotificationSubscription(
+  //         notificationListener.current
+  //       );
+  //       Notifications.removeNotificationSubscription(responseListener.current);
+  //     }
+  //   };
+  // }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

@@ -87,6 +87,17 @@ export async function scheduleAlcoholLimitLocalNotification(status: number) {
 }
 
 export async function scheduleLastChanceNotification() {
+  const drinkNotificationStatus = await AsyncStorage.getItem(
+		"isLastNotificationEnabled"
+	);
+
+	if (drinkNotificationStatus !== null) {
+		const isGranted = JSON.parse(drinkNotificationStatus);
+		if (!isGranted) {
+			return;
+		}
+	}
+
 	let alarmTime: string | null = null;
 
 	try {
@@ -99,7 +110,7 @@ export async function scheduleLastChanceNotification() {
 	if (alarmTime) {
 		const [alarmHour, alarmMinute] = alarmTime.split(":").map(Number);
 
-		const now = new Date(Localization.locale);
+    const now = new Date();
 		const alarmDateTime = new Date(
 			now.getFullYear(),
 			now.getMonth(),
@@ -122,11 +133,6 @@ export async function scheduleLastChanceNotification() {
 			trigger: { seconds: secondsUntilAlarm },
 		});
 
-		console.log(
-			"막차 알림: ",
-			alarmDateTime.toLocaleString(),
-			"(현재 시간으로부터 초): ",
-			secondsUntilAlarm
-		);
+		console.log("막차 알림 시간: ", alarmDateTime.toLocaleString());
 	}
 }
