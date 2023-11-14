@@ -66,14 +66,23 @@ Notifications.setNotificationHandler({
 	}),
 });
 
-// 막차 알림이 활성화 되어있을 경우에만
-registerResetTask();
-registerAlarmTimeResetTask();
-resetAsyncStorage();
+// 막차 알림이 활성화 되어있을 경우에만 TASK 수행
+async function checkNotificationStatusAndExecuteTasks() {
+	const drinkNotificationStatus = await AsyncStorage.getItem(
+		"isLastNotificationEnabled"
+	);
 
-console.log("오우", AsyncStorage.getItem("lastCheckedDate"));
-console.log("예");
+	if (drinkNotificationStatus !== null) {
+		const isGranted = JSON.parse(drinkNotificationStatus);
+		if (isGranted) {
+			registerResetTask();
+			registerAlarmTimeResetTask();
+			resetAsyncStorage();
+		}
+	}
+}
 
+checkNotificationStatusAndExecuteTasks();
 preventAutoHideAsync();
 
 function BottomTabNavigator() {

@@ -87,6 +87,17 @@ export async function scheduleAlcoholLimitLocalNotification(status: number) {
 }
 
 export async function scheduleLastChanceNotification() {
+  const drinkNotificationStatus = await AsyncStorage.getItem(
+		"isLastNotificationEnabled"
+	);
+
+	if (drinkNotificationStatus !== null) {
+		const isGranted = JSON.parse(drinkNotificationStatus);
+		if (!isGranted) {
+			return;
+		}
+	}
+
 	let alarmTime: string | null = null;
 
 	try {
