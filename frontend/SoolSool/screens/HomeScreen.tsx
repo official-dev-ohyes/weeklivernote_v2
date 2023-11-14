@@ -118,9 +118,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.controllerContainer}>
         <SafeDriveInfo
           bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
-          drinkStartTime={drinkToday.drinkStartTime}
           requiredTimeToDrive={drinkToday.cannotDriveFor}
-          additionalTimeForDrive={drinkToday.stillNeedSoberTimeFor}
         />
         <DrinkController
           currentDrinks={currentDrinks}
