@@ -42,27 +42,33 @@ const queryClient = new QueryClient();
 
 import { Subscription } from "expo-modules-core";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "./utils/notificationUtils";
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+import {
+	registerForPushNotificationsAsync,
+	scheduleLastChanceNotification,
+} from "./utils/notificationUtils";
+import {
+	registerResetTask,
+	registerAlarmTimeResetTask,
+} from "./utils/backgroundTaskUtils";
 
 import HomeRouteScreen from "./screens/HomeRouteScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LastChanceScreen from "./screens/LastChanceScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 
+import { getFirstLocationPermission } from "./utils/gpsUtils";
+
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
 });
+
+// 막차 알림이 활성화 되어있을 경우에만
+registerResetTask();
+registerAlarmTimeResetTask();
 
 preventAutoHideAsync();
 
@@ -139,6 +145,11 @@ const theme = {
 };
 
 export default function App() {
+	useEffect(() => {
+		getFirstLocationPermission();
+    scheduleLastChanceNotification();
+	}, []);
+
   const [fontsLoaded, fontError] = useFonts({
     "Yeongdeok-Sea": require("./assets/fonts/Yeongdeok-Sea.ttf"),
     LineRegular: require("./assets/fonts/LINESeedKR-Rg.ttf"),

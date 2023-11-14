@@ -3,8 +3,9 @@ import { isDevice } from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Localization from "expo-localization";
 
-const expoPushToken = AsyncStorage.getItem("expoPushToken");
+// const expoPushToken = AsyncStorage.getItem("expoPushToken");
 
 export async function registerForPushNotificationsAsync() {
   let token;
@@ -83,4 +84,49 @@ export async function scheduleAlcoholLimitLocalNotification(status: number) {
     },
     trigger: { seconds: 1 },
   });
+}
+
+export async function scheduleLastChanceNotification() {
+	let alarmTime: string | null = null;
+
+	try {
+		alarmTime = await AsyncStorage.getItem("alarmTime");
+	} catch (err) {
+		console.error("alarmTime 값 조회에 실패했습니다 : ", err);
+		return;
+	}
+
+	if (alarmTime) {
+		const [alarmHour, alarmMinute] = alarmTime.split(":").map(Number);
+
+		const now = new Date(Localization.locale);
+		const alarmDateTime = new Date(
+			now.getFullYear(),
+			now.getMonth(),
+			now.getDate(),
+			alarmHour,
+			alarmMinute
+		);
+
+		const secondsUntilAlarm = Math.max(
+			Math.ceil((alarmDateTime.getTime() - now.getTime()) / 1000),
+			0
+		);
+
+		await Notifications.scheduleNotificationAsync({
+			content: {
+				title: "막차 알림",
+				body: "지금 출발하실 시간이예요",
+				data: { data: "" },
+			},
+			trigger: { seconds: secondsUntilAlarm },
+		});
+
+		console.log(
+			"막차 알림: ",
+			alarmDateTime.toLocaleString(),
+			"(현재 시간으로부터 초): ",
+			secondsUntilAlarm
+		);
+	}
 }
