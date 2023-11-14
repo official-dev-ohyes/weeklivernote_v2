@@ -1,10 +1,20 @@
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import { Button, TextInput, IconButton } from "react-native-paper";
 import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
   createDrink,
@@ -24,10 +34,12 @@ function RecordCreateScreen({ route, navigation }) {
   const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
   const [value, setValue] = useState(0); // 음주량
   const [selectedUnit, setSelectedUnit] = useState("잔");
-  const [selectedAmPm, setSelectedAmPm] = useState("PM");
-  const [selectedHour, setSelectedHour] = useState("시");
-  const [selectedMinute, setSelectedMinute] = useState("분");
+  // const [selectedAmPm, setSelectedAmPm] = useState("PM");
+  // const [selectedHour, setSelectedHour] = useState("시");
+  // const [selectedMinute, setSelectedMinute] = useState("분");
   const [memo, setMemo] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
   const alcoholCategory = [
     "소주",
     "맥주",
@@ -116,6 +128,56 @@ function RecordCreateScreen({ route, navigation }) {
     setValue(0);
     setSelectedAlcohol("소주");
     setSelectedUnit("잔");
+  };
+
+  // 시간 관련
+  const currentDate = new Date();
+  let currentHour = currentDate.getHours();
+  let currentMinute = currentDate.getMinutes();
+
+  const [selectedAmPm, setSelectedAmPm] = useState("PM");
+  const [selectedHour, setSelectedHour] = useState(
+    currentHour < 10 ? `0${currentHour}` : `${currentHour}`
+  );
+  const [selectedMinute, setSelectedMinute] = useState(
+    currentMinute < 10 ? `0${currentMinute}` : `${currentMinute}`
+  );
+
+  useEffect(() => {
+    // 초기 시간 설정
+    if (currentHour >= 12) {
+      setSelectedAmPm("PM");
+      currentHour -= 12;
+    } else {
+      setSelectedAmPm("AM");
+    }
+    setSelectedHour(currentHour < 10 ? `0${currentHour}` : `${currentHour}`);
+    setSelectedMinute(
+      currentMinute < 10 ? `0${currentMinute}` : `${currentMinute}`
+    );
+  }, []);
+  // 시간 선택 라이브러리
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+
+    let hours = currentDate.getHours();
+    let minutes = currentDate.getMinutes();
+
+    if (hours >= 12) {
+      setSelectedAmPm("PM");
+      if (hours > 12) hours -= 12;
+    } else {
+      setSelectedAmPm("AM");
+    }
+
+    setSelectedHour(hours < 10 ? `0${hours}` : `${hours}`);
+    setSelectedMinute(minutes < 10 ? `0${minutes}` : `${minutes}`);
+  };
+
+  const showMode = () => {
+    setShow(true);
   };
 
   const saveMutation = useMutation<void, unknown, DrinkData, unknown>(
@@ -235,7 +297,6 @@ function RecordCreateScreen({ route, navigation }) {
           const category = DailyDrinkData.drinks[i].drink;
           const drinkCount = DailyDrinkData.drinks[i].count;
           const result = getAmountByDrinkCount(category, drinkCount);
-          // console.log(result);
 
           const newBottleRecord = {
             category: category,
@@ -277,7 +338,6 @@ function RecordCreateScreen({ route, navigation }) {
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
   const gotoDetailPage = () => {
-    console.log("뒤로가기버튼 클릭");
     navigation.navigate("DailyDetail", {
       summaryText: day,
       alcoholDays: [],
@@ -374,7 +434,7 @@ function RecordCreateScreen({ route, navigation }) {
             <View style={styles.buttons}>
               <Button
                 style={styles.button}
-                // buttonColor={"#363C4B"}
+                textColor={"#363C4B"}
                 mode="outlined"
                 onPress={() => {
                   setAlcoholRecord([]);
@@ -394,52 +454,29 @@ function RecordCreateScreen({ route, navigation }) {
             </View>
           </View>
           <View style={styles.time}>
-            <Text style={styles.texts}>술자리 시작 시간</Text>
-            <View style={styles.timer}>
-              <Picker
-                mode="dropdown"
-                selectedValue={selectedAmPm}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSelectedAmPm(itemValue)
-                }
-                style={{ width: "31%" }}
-              >
-                <Picker.Item label="AM" value="AM" />
-                <Picker.Item label="PM" value="PM" />
-              </Picker>
-              <Picker
-                mode="dropdown"
-                selectedValue={selectedHour}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSelectedHour(itemValue)
-                }
-                style={{ width: "29%" }}
-              >
-                <Picker.Item label={selectedHour} value="" />
-                {hour.map((category, index) => (
-                  <Picker.Item key={index} label={category} value={category} />
-                ))}
-              </Picker>
-              <Picker
-                mode="dropdown"
-                selectedValue={selectedMinute}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSelectedMinute(itemValue)
-                }
-                style={{ width: "29%" }}
-              >
-                <Picker.Item label={selectedMinute} value="" />
-                {minute.map((category, index) => (
-                  <Picker.Item key={index} label={category} value={category} />
-                ))}
-              </Picker>
-            </View>
+            <Text style={styles.timeText}>술자리 시작 시간</Text>
+            <TouchableOpacity onPress={showMode} style={styles.timeInput}>
+              <Text style={styles.timeInnerText}>
+                {selectedHour} : {selectedMinute} {selectedAmPm}
+              </Text>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={"time"}
+                  is24Hour={false}
+                  display="spinner"
+                  onChange={onChange}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.photo}>
+            <Text style={styles.texts}>술자리 사진</Text>
+            <CalendarImagePicker day={day} />
           </View>
           <View style={styles.memo}>
-            {/* <View>
-            <Text>사진 입력 자리</Text>
-          </View> */}
-            <Text style={styles.texts}>오늘의 기록</Text>
+            <Text style={styles.texts}>술자리 기록</Text>
             <TextInput
               label="술자리 기록을 남겨보세요"
               keyboardType="default"
@@ -455,6 +492,7 @@ function RecordCreateScreen({ route, navigation }) {
             <Button
               style={styles.button}
               mode="outlined"
+              textColor={"#363C4B"}
               onPress={gotoDetailPage}
             >
               돌아가기
@@ -531,7 +569,7 @@ const styles = StyleSheet.create({
     height: 70,
   },
   alcoholArea: {
-    height: "30%",
+    height: "20%",
     borderRadius: 5,
     justifyContent: "space-around",
     backgroundColor: "white",
@@ -573,31 +611,38 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 2,
-    // margin: "1%",
-    marginBottom: 10,
+    margin: "1%",
   },
   time: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-around",
-    height: "10%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: "5%",
     marginTop: "1%",
   },
-  timer: {
-    height: "60%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 5,
+  timeText: {
+    alignSelf: "center",
+    fontSize: 17,
+    fontWeight: "bold",
   },
   timeInput: {
     flexDirection: "row",
+    backgroundColor: "#f6f6f6",
+    width: "50%",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  timeInnerText: {
+    flex: 1,
+    textAlign: "center",
+  },
+  photo: {
+    marginTop: "1%",
+    marginBottom: "2%",
   },
   memo: {
     marginTop: "1%",
     marginBottom: "1%",
-    // backgroundColor: "red",
   },
   texts: {
     fontSize: 17,

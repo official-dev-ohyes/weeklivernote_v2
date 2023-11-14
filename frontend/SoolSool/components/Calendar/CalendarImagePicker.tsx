@@ -10,6 +10,12 @@ const CalendarImagePicker = (day) => {
 
   const pickImage = async () => {
     try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
@@ -17,10 +23,11 @@ const CalendarImagePicker = (day) => {
         quality: 1,
       });
 
+      console.log(`이미지 uri 정보를 확인합시다 ${result.assets[0].uri}`);
       if (!result.canceled) {
         setImage(result.assets[0].uri);
         try {
-          await postImage(day, result.assets[0].uri);
+          await postImage(day.day, result.assets[0].uri);
         } catch (error) {
           console.error("이미지 업로드 실패했어요ㅠ", error);
         }

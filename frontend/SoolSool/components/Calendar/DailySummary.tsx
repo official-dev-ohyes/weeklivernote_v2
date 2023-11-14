@@ -51,7 +51,6 @@ function DailySummary(props) {
           setAlcoholList(alcohols);
         }
       }
-      // }, [summaryText, navigation, DailyDrinkData])
     }, [DailyDrinkData, navigation])
   );
 
@@ -62,6 +61,9 @@ function DailySummary(props) {
   const hideDeleteModal = () => {
     setIsModal(false);
   };
+
+  // @@@@@@@@@@@@@@@@@@@@@@현재 문제 있음@@@@@@@@@@@@@@@@@@@@@@
+  // 삭제 실패의 경우, 일부 데이터만 삭제 됨
   const confirmDelete = async () => {
     try {
       await removeDrink(summaryText);

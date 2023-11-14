@@ -1,4 +1,6 @@
 import axiosInstance from "./axiosConfig";
+import * as FileSystem from "expo-file-system";
+import { Buffer } from "buffer";
 
 // 일간 음주 총계 조회
 export const fetchDrink = async (drinkDate: string) => {
@@ -98,14 +100,31 @@ export const fetchDailyDetail = async (day) => {
   }
 };
 
+function base64ToArrayBuffer(base64) {
+  const buffer = Buffer.from(base64, "base64");
+  return buffer.buffer;
+}
+
+// 사진 기록
 export const postImage = async (day, imageUri) => {
   try {
-    const res = await axiosInstance.post(`/v1/drink/photo/${day}`, {
-      imageUri: imageUri,
+    const base64 = await FileSystem.readAsStringAsync(imageUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const arrayBuffer = base64ToArrayBuffer(base64);
+    let blob = new Blob([new Uint8Array(arrayBuffer)], { type: "image/jpeg" });
+    let formData = new FormData();
+    formData.append("image", blob, "image.jpg");
+
+    const res = await axiosInstance.post(`/v1/drink/photo/${day}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log("사진 post 요청 성공", res.data);
     return res.data;
   } catch (err) {
+    console.error("Failed to upload the image:", err);
     throw new Error("사진 post 요청 실패");
   }
 };
