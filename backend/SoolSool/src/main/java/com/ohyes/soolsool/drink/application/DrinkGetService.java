@@ -46,6 +46,8 @@ public class DrinkGetService {
                 .height(user.getHeight())
                 .weight(user.getWeight())
                 .gender(user.getGender())
+                .todayBloodAlcohol(user.getTodayBloodAlcohol())
+                .todayBloodAlcohol(user.getTodayLiverAlcohol())
                 .build();
         }
 
