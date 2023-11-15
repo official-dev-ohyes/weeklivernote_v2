@@ -134,5 +134,8 @@ export async function scheduleLastChanceNotification() {
 		});
 
 		console.log("막차 알림 시간: ", alarmDateTime.toLocaleString());
-	}
+	} else {
+    console.log("설정된 막차 알림 시간이 없습니다.");
+    return
+  }
 }

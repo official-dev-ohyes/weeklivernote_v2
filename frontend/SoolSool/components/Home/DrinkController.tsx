@@ -241,28 +241,25 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
     };
 
     // 권한 확인
-    const isPermissionDenied = await checkLocationPermission();
+		let isPermissionDenied = await checkLocationPermission();
 
-    // 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
-    if (isPermissionDenied && newValue === 1) {
-      const isPermissionAccept = await locationPermissionAlert();
-      if (isPermissionDenied) {
+		// 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
+		if (isPermissionDenied && newValue === 1) {
+      if (isPermissionDenied != null) {
+				isPermissionDenied = await locationPermissionAlert();
       }
-    }
+		}
 
-    const keepUpdateLocation = JSON.parse(
-      (await AsyncStorage.getItem("keepUpdateLocation")) || "true"
-    );
+    const keepUpdateLocation = JSON.parse((await AsyncStorage.getItem("keepUpdateLocation")) || "true");
 
-    if (!isPermissionDenied && keepUpdateLocation) {
-      // 권한 허용 및 위치 조회 필요한 경우
-      // 위치 정보 조회 로직
-      const keepUpdate = await updateLocation();
-      await AsyncStorage.setItem(
-        "keepUpdateLocation",
-        JSON.stringify(keepUpdate)
-      );
-    }
+    if (!isPermissionDenied && keepUpdateLocation) {	// 권한 허용 및 위치 조회 필요한 경우
+			// 위치 정보 조회 로직
+			const keepUpdate = await updateLocation();
+      await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(keepUpdate));
+
+      const now = new Date();
+			await AsyncStorage.setItem("todayPostDate", JSON.stringify(now));
+		}
 
     if (newValue === 1) {
       await createDrink(drinkData)

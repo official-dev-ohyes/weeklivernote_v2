@@ -69,6 +69,18 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// 막차 알림 임의 조정
+// AsyncStorage.setItem("alarmTime", "12:00");
+// async function getStorageValue() {
+// 	console.log("----------------");
+// 	console.log("위치 조회 계속",	await AsyncStorage.getItem("keepUpdateLocation"));
+// 	console.log("알람 시간", await AsyncStorage.getItem("alarmTime"));
+// 	console.log("마지막post 시간", await AsyncStorage.getItem("todayPostDate"));
+// 	console.log("----------------");
+// }
+
+// getStorageValue();
+
 // 막차 알림이 활성화 되어있을 경우에만 TASK 수행
 async function checkNotificationStatusAndExecuteTasks() {
   const drinkNotificationStatus = await AsyncStorage.getItem(
@@ -80,7 +92,12 @@ async function checkNotificationStatusAndExecuteTasks() {
     if (isGranted) {
       registerResetTask();
       registerAlarmTimeResetTask();
-      resetAsyncStorage();
+
+      const currentAlarmTime = await AsyncStorage.getItem("alarmTime");
+      const currnetTodayPostDate = await AsyncStorage.getItem("todayPostDate");
+      if (currentAlarmTime != null || currnetTodayPostDate != null) {
+        resetAsyncStorage();
+      }
     }
   }
 }
