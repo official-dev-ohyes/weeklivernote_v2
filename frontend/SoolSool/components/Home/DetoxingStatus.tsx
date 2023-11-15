@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   titleContainer: {
-    fontSize: 40,
+    fontSize: 30,
     fontFamily: "LineRegular",
     color: "white",
   },
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     // marginTop: 20,
   },
   periodContainer: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: "LineRegular",
     color: "white",
   },

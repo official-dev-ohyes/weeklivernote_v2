@@ -30,7 +30,11 @@ import {
 } from "../../api/drinkRecordApi";
 import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
-import { checkLocationPermission, locationPermissionAlert, updateLocation } from "../../utils/gpsUtils";
+import {
+  checkLocationPermission,
+  locationPermissionAlert,
+  updateLocation,
+} from "../../utils/gpsUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface DrinkControllerProps {
@@ -225,36 +229,40 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
     const newValue = value + 1;
     setValue(newValue);
 
-		const drinkData = {
-			drinks: [
-				{
-					category: selectedDrink.name,
-					drinkUnit: selectedDrink.unit,
-					drinkAmount: newValue,
-				},
-			],
-			drinkDate: today,
-		};
+    const drinkData = {
+      drinks: [
+        {
+          category: selectedDrink.name,
+          drinkUnit: selectedDrink.unit,
+          drinkAmount: newValue,
+        },
+      ],
+      drinkDate: today,
+    };
 
-		// 권한 확인
-		const isPermissionDenied = await checkLocationPermission();
+    // 권한 확인
+    const isPermissionDenied = await checkLocationPermission();
 
-		// 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
-		if (isPermissionDenied && newValue === 1) {
-			const isPermissionAccept = await locationPermissionAlert();
+    // 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
+    if (isPermissionDenied && newValue === 1) {
+      const isPermissionAccept = await locationPermissionAlert();
       if (isPermissionDenied) {
-        
       }
+    }
 
-		}
+    const keepUpdateLocation = JSON.parse(
+      (await AsyncStorage.getItem("keepUpdateLocation")) || "true"
+    );
 
-    const keepUpdateLocation = JSON.parse((await AsyncStorage.getItem("keepUpdateLocation")) || "true");
-
-    if (!isPermissionDenied && keepUpdateLocation) {	// 권한 허용 및 위치 조회 필요한 경우
-			// 위치 정보 조회 로직
-			const keepUpdate = await updateLocation();
-      await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(keepUpdate));
-		}
+    if (!isPermissionDenied && keepUpdateLocation) {
+      // 권한 허용 및 위치 조회 필요한 경우
+      // 위치 정보 조회 로직
+      const keepUpdate = await updateLocation();
+      await AsyncStorage.setItem(
+        "keepUpdateLocation",
+        JSON.stringify(keepUpdate)
+      );
+    }
 
     if (newValue === 1) {
       await createDrink(drinkData)
@@ -408,13 +416,12 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: "#C6C6C6",
-    padding: 4,
-    marginBottom: 12,
+    marginBottom: 6,
     width: "100%",
   },
   imageContainer: {
-    width: 55,
-    height: 55,
+    width: 50,
+    height: 50,
     resizeMode: "contain",
   },
   stepperContainer: {
@@ -432,11 +439,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   valueText: {
-    fontSize: 36,
+    fontSize: 30,
     fontFamily: "LineRegular",
   },
   nameText: {
-    fontSize: 13,
+    fontSize: 12,
     marginTop: 5,
     color: "white",
   },

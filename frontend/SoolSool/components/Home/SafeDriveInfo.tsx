@@ -44,7 +44,7 @@ const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
 
 const styles = StyleSheet.create({
   rootContainer: {
-    paddingBottom: 8,
+    paddingBottom: 2,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -55,12 +55,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     width: "48%",
-    padding: 12,
+    padding: 8,
     borderRadius: 5,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   chipText: {
-    fontSize: 16,
+    fontSize: 15,
     color: "white",
   },
 });
