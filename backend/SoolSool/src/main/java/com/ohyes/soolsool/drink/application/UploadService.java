@@ -132,8 +132,6 @@ public class UploadService {
         UserDetailsImpl userDetails) throws IOException {
         User user = UserUtils.getUserFromToken(userDetails);
 
-        log.error("받아온 사진: " + multipartFile);
-
         // 이미 사진이 있는 상태면 먼저 삭제
         if (user.getCustomProfileImg() != null) {
             userProfileDelete(user, user.getCustomProfileImg());
