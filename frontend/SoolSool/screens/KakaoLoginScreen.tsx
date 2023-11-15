@@ -39,13 +39,16 @@ function KakaoLoginScreen({ navigation }) {
       if (response.data.message) {
         const socialId = response.data.socialId;
         console.log("첫 회원이시군요!", response.data.socialId);
-        navigation.navigate("AddInfo", { socialId: socialId });
+        navigation.navigate("Terms", { socialId: socialId });
       } else {
         console.log("이미 가입된 회원이니까 메인 화면으로");
         const accessToken = response.data.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
         const destLocation = response.data.gpsInfo;
-        await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
+        await AsyncStorage.setItem(
+          "destLocation",
+          JSON.stringify(destLocation)
+        );
         // console.log("???!", response.data);
         // console.log("???", response.data.nickname);
         setNickname(response.data.userName);

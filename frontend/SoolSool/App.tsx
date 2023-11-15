@@ -20,6 +20,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
+import TermsScreen from "./screens/TermsScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
 
 import HomeScreen from "./screens/HomeScreen";
@@ -262,6 +263,7 @@ export default function App() {
                         component={KakaoLoginScreen}
                       />
 
+                      <Stack.Screen name="Terms" component={TermsScreen} />
                       <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                       <Stack.Screen
                         name="BottomTab"
