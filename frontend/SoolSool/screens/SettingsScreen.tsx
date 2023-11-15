@@ -48,6 +48,11 @@ function SettingsScreen({ navigation }) {
 
         if (drinkNotificationStatus !== null) {
           setIsDrinkNotificationEnabled(JSON.parse(drinkNotificationStatus));
+        } else {
+          await AsyncStorage.setItem(
+            "isDrinkNotificationEnabled",
+            JSON.stringify(true)
+          );
         }
 
         const lastNotificationStatus = await AsyncStorage.getItem(
@@ -56,6 +61,11 @@ function SettingsScreen({ navigation }) {
 
         if (lastNotificationStatus !== null) {
           setIsLastNotificationEnabled(JSON.parse(drinkNotificationStatus));
+        } else {
+          await AsyncStorage.setItem(
+            "isLastNotificationEnabled",
+            JSON.stringify(true)
+          );
         }
       } catch (error) {
         console.error("Error loading notification status:", error);
