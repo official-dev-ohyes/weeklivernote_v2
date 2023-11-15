@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { DrinkToday } from "../models/DrinkToday";
-import { StyleSheet, View, Text, BackHandler, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  BackHandler,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
 import HomeCarousel from "../components/Home/HomeCarousel";
@@ -12,6 +19,7 @@ import { fetchDrink } from "../api/drinkRecordApi";
 import { getToday } from "../utils/timeUtils";
 import { getIdByCategoryAndUnit } from "../utils/drinkUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { mainbackground } from "../assets";
 
 const HomeScreen = ({ navigation }) => {
   const [drinkToday, setDrinkToday] = useRecoilState(drinkTodayAtom);
@@ -113,8 +121,13 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={[{ height: screenHeight }, styles.mainContainer]}>
-      <HomeCarousel />
+    <ImageBackground
+      source={mainbackground}
+      style={[{ height: screenHeight }, styles.mainContainer]}
+    >
+      <View>
+        <HomeCarousel />
+      </View>
       <View style={styles.controllerContainer}>
         <SafeDriveInfo
           bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
@@ -125,14 +138,17 @@ const HomeScreen = ({ navigation }) => {
           initialValue={initialValue}
         />
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   mainContainer: {
+    height: "100%",
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    // justifyContent: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -141,7 +157,7 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    marginTop: -340,
+    // marginTop: -340,
     display: "flex",
     flexDirection: "column",
     gap: 5,

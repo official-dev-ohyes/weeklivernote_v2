@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   titleContainer: {
-    fontSize: 40,
+    fontSize: 30,
     fontFamily: "LineRegular",
     color: "white",
   },
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   periodContainer: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: "LineRegular",
     color: "white",
   },
@@ -71,18 +71,18 @@ const styles = StyleSheet.create({
   },
   shadowContainer: {
     position: "absolute",
-    top: 180,
-    width: 150,
+    top: 150,
+    width: 120,
     height: 80,
     backgroundColor: "rgba(255,255,255,0.1)",
-    borderRadius: 50,
+    borderRadius: 80,
     transform: [{ scaleX: 2 }],
   },
   image: {
     position: "absolute",
     top: 0,
-    width: 250,
-    height: 250,
+    width: 230,
+    height: 230,
   },
 });
 
