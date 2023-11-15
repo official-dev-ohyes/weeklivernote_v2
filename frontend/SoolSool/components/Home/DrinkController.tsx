@@ -342,11 +342,13 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
               iconColor="#FFFFFF"
               style={styles.iconContainer}
             />
-            <CurrentDrinks
-              currentDrinkData={currentDrinkList}
-              allDrinkData={drinksData}
-              onClickItem={getSelectedDrink}
-            />
+            <View style={{ height: 68 }}>
+              <CurrentDrinks
+                currentDrinkData={currentDrinkList}
+                allDrinkData={drinksData}
+                onClickItem={getSelectedDrink}
+              />
+            </View>
             <View style={styles.divider} />
           </>
         ) : (
