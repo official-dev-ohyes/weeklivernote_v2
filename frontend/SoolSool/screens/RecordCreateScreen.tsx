@@ -18,6 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
   createDrink,
+  updateDrink,
   fetchDailyDrink,
   fetchDailyDetail,
   removeDrink,
@@ -34,9 +35,6 @@ function RecordCreateScreen({ route, navigation }) {
   const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
   const [value, setValue] = useState(0); // 음주량
   const [selectedUnit, setSelectedUnit] = useState("잔");
-  // const [selectedAmPm, setSelectedAmPm] = useState("PM");
-  // const [selectedHour, setSelectedHour] = useState("시");
-  // const [selectedMinute, setSelectedMinute] = useState("분");
   const [memo, setMemo] = useState("");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -50,34 +48,6 @@ function RecordCreateScreen({ route, navigation }) {
     "칵테일(약)",
     "칵테일(강)",
     "위스키",
-  ];
-  const hour = [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12",
-  ];
-  const minute = [
-    "00",
-    "05",
-    "10",
-    "15",
-    "20",
-    "25",
-    "30",
-    "35",
-    "40",
-    "45",
-    "50",
-    "55",
   ];
 
   interface DrinkData {
@@ -225,16 +195,25 @@ function RecordCreateScreen({ route, navigation }) {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
 
+    console.log(`저장 전 담긴 메모는 이렇습니다. ${memo}`);
+
     if (isAlcohol) {
-      removeDrink(day);
+      updateDrink({
+        drinks: [...alcoholRecord],
+        drinkDate: date,
+        startTime: time,
+        memo: memo,
+        hangover: "",
+      });
+    } else {
+      createDrink({
+        drinks: [...alcoholRecord],
+        drinkDate: date,
+        startTime: time,
+        memo: memo,
+        hangover: "",
+      });
     }
-    saveMutation.mutate({
-      drinks: [...alcoholRecord],
-      drinkDate: date,
-      startTime: time,
-      memo: memo,
-      hangover: "",
-    });
 
     navigation.navigate("Calendar");
   };
@@ -281,10 +260,9 @@ function RecordCreateScreen({ route, navigation }) {
           );
         }
         setSelectedMinute(
-          `${parseInt(
-            DailyDetailData.startTime.substring(14, 16),
-            10
-          ).toString()}`
+          `${parseInt(DailyDetailData.startTime.substring(14, 16), 10)
+            .toString()
+            .padStart(2, "0")}`
         );
         if (DailyDetailData.memo) {
           setMemo(DailyDetailData.memo);
@@ -467,10 +445,10 @@ function RecordCreateScreen({ route, navigation }) {
               )}
             </TouchableOpacity>
           </View>
-          <View style={styles.photo}>
+          {/* <View style={styles.photo}>
             <Text style={styles.texts}>술자리 사진</Text>
             <CalendarImagePicker day={day} />
-          </View>
+          </View> */}
           <View style={styles.memo}>
             <Text style={styles.texts}>술자리 기록</Text>
             <TextInput

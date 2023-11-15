@@ -31,15 +31,12 @@ function CalendarSixWeeks({ navigation }) {
 
   const [currentDay, setCurrentDay] = useState("");
   const [isFuture, setIsFuture] = useState<boolean>(false);
-  const { height } = Dimensions.get("window");
   const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
   const [alcoholDays, setAlcoholDays] = useState({});
   const [isSame, setIsSame] = useState<boolean>(false);
   const [renderFlag, setRenderFlag] = useState<boolean>(true);
-
   const queryClient = useQueryClient();
-
   const tempDay = currentDay ? currentDay : nowDate;
 
   const {
@@ -47,7 +44,6 @@ function CalendarSixWeeks({ navigation }) {
     isLoading: monthlyLoading,
     isError: monthlyError,
   } = useQuery(
-    // ["MonthlyQuery", currentDay, selectDay, navigator],
     ["MonthlyQuery", renderFlag],
     async () => {
       if (renderFlag) {
@@ -60,10 +56,8 @@ function CalendarSixWeeks({ navigation }) {
       onSuccess: (data) => {
         if (data) {
           const tempDays = {};
-
           for (let i = 0; i < data.drinks.length; i++) {
             const tempDate = data.drinks[i].date;
-
             tempDays[tempDate] = {
               marked: true,
             };
@@ -96,7 +90,6 @@ function CalendarSixWeeks({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // console.log(`현재 날짜는? ${nowDate}`);
     if (tempDay) {
       setCurrentDay(tempDay);
     }
@@ -115,7 +108,7 @@ function CalendarSixWeeks({ navigation }) {
     }
   }, [MonthlyData]);
 
-  // 네비게이션 이동 시, 재렌더링
+  // 네비게이션 이동 시 재렌더링
   useFocusEffect(
     React.useCallback(() => {
       setRenderFlag(true);
@@ -129,6 +122,15 @@ function CalendarSixWeeks({ navigation }) {
       clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
     const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
     const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
+
+    // 현재 날짜(nowDate)와 클릭한 날짜(newDate) 비교
+    const selectedTimeStamp = new Date(newDate).getTime();
+    const nowTimestamp = new Date(nowDate).getTime();
+    if (nowTimestamp < selectedTimeStamp) {
+      setIsFuture(true);
+    } else {
+      setIsFuture(false);
+    }
     if (newDate === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
@@ -259,7 +261,7 @@ function CalendarSixWeeks({ navigation }) {
                   </View>
                   <View style={styles.dailySummaryTotal}>
                     <Text style={styles.innerText}>
-                      내일 새벽 5시에 업데이트 됩니다.
+                      내일 새벽 5시에 업데이트 됩니다
                     </Text>
                   </View>
                 </View>
@@ -388,15 +390,17 @@ const styles = StyleSheet.create({
   calendarCell: {
     flexDirection: "column",
     alignItems: "center",
-    height: 90, // @@@@@@@@@@@@@@@@@@@@@@@@다시 생각해보자@@@@@@@@@@@@@@@@@@@@@@@@
+    height: 90, // @@@@@@@@@@@@@@@@@@@@@@@@다시 생각해보자@@@@@@@@@@@@@@@@@@@@@@@@ 이럴거면 스크롤뷰 달아야 함
     width: "100%",
+    backgroundColor: "#000000", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 칸 색상@@@@@@@@@@@@@@@@@@@@@@@@
   },
   calendarDate: {
     height: "50%",
     flex: 1,
+    color: "white", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 글씨 색상@@@@@@@@@@@@@@@@@@@@@@@@
   },
   calendarStemp: {
-    height: "83%",
+    height: "83%", // @@@@@@@@@@@@@@@@@@@@@@@@술마신 날 도장@@@@@@@@@@@@@@@@@@@@@@@@
     width: "83%",
   },
   fab: {
@@ -405,6 +409,7 @@ const styles = StyleSheet.create({
     margin: "1%",
   },
   calendarHeader: {
+    // @@@@@@@@@@@@@@@@@@@@@@@@달력 헤더 맨 위 문구@@@@@@@@@@@@@@@@@@@@@@@@
     fontSize: 18,
     fontFamily: "LineRegular",
     // fontWeight: "bold",
@@ -414,6 +419,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   calendarHeaderBox: {
+    // @@@@@@@@@@@@@@@@@@@@@@@@달력 헤더 맨 위 영역@@@@@@@@@@@@@@@@@@@@@@@@
     flexDirection: "row",
     justifyContent: "space-between",
     // marginTop: 3,
