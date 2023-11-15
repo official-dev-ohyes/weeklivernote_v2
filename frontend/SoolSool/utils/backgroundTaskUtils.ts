@@ -5,15 +5,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const RESET_TASK_NAME = "RESET_UPDATE_LOCATION_TASK";
 const ALARM_TIME_TASK_NAME = "RESET_ALARM_TIME_TASK";
 
-// 현재 시간이 새벽 5시인지 확인 후 keepUpdateLocation 초기화
+// 현재 시간이 새벽 5시인지 확인 후 storage 초기화
 TaskManager.defineTask(RESET_TASK_NAME, async () => {
 	const now: Date = new Date();
+	const year = now.getFullYear();
+	const month = ("0" + (now.getMonth() + 1)).slice(-2);
+	const date = ("0" + now.getDate()).slice(-2);
+	const nowDate = `${year}-${month}-${date}`;
+	let todayPostDate = JSON.parse((await AsyncStorage.getItem("todayPostDate")) || "null");
 
-	if (now.getHours() >= 5) {
+	if (todayPostDate !== null) {
+		todayPostDate = todayPostDate.split("T")[0];
+	}
+
+	if (now.getHours() >= 5 && todayPostDate != nowDate) {
 		try {
 			await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(true));
+			await AsyncStorage.removeItem("alarmTime");
+			await AsyncStorage.removeItem("todayPostDate");
 		} catch (err) {
-			console.error("keepUpdateLocation 값 초기화에 실패했습니다 : ", err);
+			console.error("storage 초기화에 실패했습니다 : ", err);
 		}
 	}
 });
@@ -44,7 +55,8 @@ TaskManager.defineTask(ALARM_TIME_TASK_NAME, async () => {
 
 		if (now.getTime() >= alarmDateTime.getTime()) {
 			await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(true));
-			await AsyncStorage.setItem("alarmTime", JSON.stringify(null));
+			await AsyncStorage.removeItem("alarmTime");
+			await AsyncStorage.removeItem("todayPostDate");
 		}
 	}
 });
@@ -55,7 +67,7 @@ export const registerResetTask = async () => {
 	const currentHour = now.getHours();
 
 	// 새벽 4시부터 6시 사이인 경우에만 태스크 등록
-	if (currentHour >= 4 && currentHour < 6) {
+	if (currentHour >= 4 && currentHour < 7) {
 		try {
 			await BackgroundFetch.registerTaskAsync(RESET_TASK_NAME, {
 				minimumInterval: 3600,

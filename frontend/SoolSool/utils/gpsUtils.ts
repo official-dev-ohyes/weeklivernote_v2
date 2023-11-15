@@ -57,7 +57,7 @@ export async function locationPermissionAlert() {
 			);
 		AsyncStorage.setItem("lastCheckedDate", today);
 		const isPermissionDenied = await checkLocationPermission();
-		return !isPermissionDenied;
+		return isPermissionDenied;
 	}
 	return null;
 }
@@ -120,15 +120,25 @@ export async function updateLocation(): Promise<boolean> {
 export async function resetAsyncStorage() {
 	const now = new Date();
 	const currentHour = now.getHours();
+	const year = now.getFullYear();
+	const month = ("0" + (now.getMonth() + 1)).slice(-2);
+	const date = ("0" + now.getDate()).slice(-2);
+	const nowDate = `${year}-${month}-${date}`;
 
-	const today = now.toLocaleDateString(Localization.locale).split("T")[0];
+	let todayPostDate = JSON.parse(
+		(await AsyncStorage.getItem("todayPostDate")) || "null"
+	);
 
-	const lastCheckedDate = await AsyncStorage.getItem("lastCheckedDate");
+	if (todayPostDate !== null) {
+		todayPostDate = todayPostDate.split("T")[0];
+	}
 
-	// 현재 시간이 새벽 5시 이후이고 lastCheckedDate가 오늘이 아니라면
-	if (lastCheckedDate !== today && currentHour >= 5) {
-		await AsyncStorage.setItem("keepUpdateLocation", "true");
-		await AsyncStorage.setItem("alarmTime", "null");
+	// 현재 시간이 새벽 5시 이후이고 todayPostDate 오늘이 아니라면
+	if (todayPostDate !== nowDate && currentHour >= 5) {
+		console.log("들어오지맛");
+		await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(true));
+		await AsyncStorage.removeItem("alarmTime");
+		await AsyncStorage.removeItem("todayPostDate");
 	}
 } 
 
