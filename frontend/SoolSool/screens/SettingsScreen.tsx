@@ -179,9 +179,9 @@ function SettingsScreen({ navigation }) {
               </TouchableOpacity>
               <Separator />
               <TouchableOpacity
-                onPress={() =>
-                  // navigation.navigate("LocationTerms")
-                  showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
+                onPress={
+                  () => navigation.navigate("LocationTerms")
+                  // showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
                 }
               >
                 <Text>위치정보 이용약관</Text>
