@@ -1,16 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import React from "react";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { Calendar } from "react-native-calendars";
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
@@ -18,6 +12,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "react-query";
 import { ImageBackground } from "expo-image";
 import "./LocaleConfig"; // 달력 서식
+import { adaptiveIcon } from "../../assets";
 import { FAB } from "react-native-paper";
 
 function CalendarSixWeeks({ navigation }) {
@@ -31,8 +26,8 @@ function CalendarSixWeeks({ navigation }) {
 
   const [currentDay, setCurrentDay] = useState("");
   const [isFuture, setIsFuture] = useState<boolean>(false);
-  const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
+  const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [alcoholDays, setAlcoholDays] = useState({});
   const [isSame, setIsSame] = useState<boolean>(false);
   const [renderFlag, setRenderFlag] = useState<boolean>(true);
@@ -85,28 +80,10 @@ function CalendarSixWeeks({ navigation }) {
   const handleSheetChanges = useCallback((index: number) => {
     console.log("Sheet Index:", index);
     if (index === -1) {
+      setSelectDay("");
       setIsSelectDay(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (tempDay) {
-      setCurrentDay(tempDay);
-    }
-
-    if (selectDay) {
-      const checkFuture = () => {
-        const selectedTimeStamp = new Date(selectDay).getTime();
-        const nowTimestamp = new Date(nowDate).getTime();
-        if (nowTimestamp < selectedTimeStamp) {
-          setIsFuture(true);
-        } else {
-          setIsFuture(false);
-        }
-      };
-      checkFuture();
-    }
-  }, [MonthlyData]);
 
   // 네비게이션 이동 시 재렌더링
   useFocusEffect(
@@ -117,36 +94,35 @@ function CalendarSixWeeks({ navigation }) {
   );
 
   // 특정일 클릭
-  const handleDayPress = async (clickDay) => {
-    const newMonth =
-      clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
-    const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
-    const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
+  const handleDayPress = async (date) => {
+    const clickDay = date.dateString;
 
-    // 현재 날짜(nowDate)와 클릭한 날짜(newDate) 비교
-    const selectedTimeStamp = new Date(newDate).getTime();
+    // 현재 날짜(nowDate)와 클릭한 날짜(clickDay) 비교
+    const selectedTimeStamp = date.timestamp;
     const nowTimestamp = new Date(nowDate).getTime();
+
     if (nowTimestamp < selectedTimeStamp) {
       setIsFuture(true);
     } else {
       setIsFuture(false);
     }
-    if (newDate === selectDay) {
+
+    if (clickDay === selectDay) {
       setSelectDay("");
       setIsSelectDay(false);
       setIsFuture(false);
     } else {
-      setSelectDay(newDate);
-      setCurrentDay(newDate);
+      setSelectDay(clickDay);
+      setCurrentDay(clickDay);
       const existingData = MonthlyData?.drinks.find(
-        (drink) => drink.date === newDate
+        (drink) => drink.date === clickDay
       );
 
       if (!existingData) {
-        await fetchMonthRecord(newDate);
+        await fetchMonthRecord(clickDay);
       }
 
-      if (nowDate === newDate) {
+      if (nowDate === clickDay) {
         setIsSame(true);
       } else {
         setIsSame(false);
@@ -162,10 +138,12 @@ function CalendarSixWeeks({ navigation }) {
     newMonth();
     shiftMonth("previous");
   };
+
   const handelPressArrowRight = async (newMonth) => {
     newMonth();
     shiftMonth("next");
   };
+
   const shiftMonth = (to) => {
     const current = new Date(currentDay);
     let shiftDay;
@@ -183,69 +161,56 @@ function CalendarSixWeeks({ navigation }) {
     fetchMonthRecord(shiftDay);
   };
 
+  const handleCreateRecordPressed = () => {
+    navigation.navigate("RecordCreate", {
+      date: selectDay,
+      isAlcohol: alcoholDays[selectDay],
+    });
+  };
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.totalContainer}>
-        <View style={styles.smallCalendar}>
-          <Calendar
-            current={currentDay}
-            markedDates={{
-              ...alcoholDays,
-              [selectDay]: {
-                selected: true,
-                selectedColor: "yellow",
-                selectedTextColor: "black",
-                marked: alcoholDays[selectDay] ? true : false,
-              },
-            }}
-            dayTextColor={{
-              default: "black",
-              disabled: "gray",
-            }}
-            dayBackgroundColor={{
-              default: "transparent",
-              disabled: "transparent",
-            }}
-            onDayPress={handleDayPress}
-            onPressArrowLeft={handlePressArrowLeft}
-            onPressArrowRight={handelPressArrowRight}
-            style={styles.calenderStyle}
-            dayComponent={({ date, state }) => {
-              const dayFormatted = date.day < 10 ? `0${date.day}` : date.day;
-              const alcoholKey = `${date.year}-${date.month}-${dayFormatted}`;
-              const isDisabled = state === "disabled";
+        <Calendar
+          current={currentDay}
+          onPressArrowLeft={handlePressArrowLeft}
+          onPressArrowRight={handelPressArrowRight}
+          style={styles.calenderStyle}
+          renderHeader={(date) => {
+            const header = date.toString("MMMM yyyy");
+            const [month, year] = header.split(" ");
 
-              return (
-                <TouchableOpacity
-                  onPress={() => handleDayPress(date)}
-                  style={[styles.calendarCell, isDisabled && { opacity: 0.3 }]}
-                >
-                  <View style={styles.calendarCell}>
-                    <Text style={styles.calendarDate}>{date.day}</Text>
-                    {alcoholDays[alcoholKey] ? (
-                      <ImageBackground
-                        source={require("../../assets/adaptive-icon.png")}
-                        style={styles.calendarStemp}
-                      />
-                    ) : null}
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-            renderHeader={(date) => {
-              const header = date.toString("MMMM yyyy");
-              const [month, year] = header.split(" ");
+            return (
+              <Text style={styles.calendarHeader}>
+                {year}년 {month}
+              </Text>
+            );
+          }}
+          dayComponent={({ date, state }) => {
+            const alcoholKey = date.dateString;
+            const isDisabled = state === "disabled";
 
-              return (
-                <View style={styles.calendarHeaderBox}>
-                  <Text style={styles.calendarHeader}>
-                    {year}년 {month}
-                  </Text>
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  handleDayPress(date);
+                }}
+                style={[styles.calendarCell, isDisabled && { opacity: 0.65 }]}
+              >
+                <View style={styles.calendarCell}>
+                  <Text style={styles.calendarDate}>{date.day}</Text>
+                  {alcoholDays[alcoholKey] ? (
+                    <ImageBackground
+                      source={adaptiveIcon}
+                      style={styles.calendarStamp}
+                    />
+                  ) : null}
                 </View>
-              );
-            }}
-          />
-        </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
+
         {isSelectDay ? (
           <BottomSheetModal
             ref={bottomSheetModalRef}
@@ -254,29 +219,7 @@ function CalendarSixWeeks({ navigation }) {
             onChange={handleSheetChanges}
           >
             <View style={styles.dailySummaryComponent}>
-              {isSame ? (
-                <View style={styles.tempBox}>
-                  <View style={styles.headerBox}>
-                    <Text style={styles.headerText}>{selectDay}</Text>
-                  </View>
-                  <View style={styles.dailySummaryTotal}>
-                    <Text style={styles.innerText}>
-                      내일 새벽 5시에 업데이트 됩니다
-                    </Text>
-                  </View>
-                </View>
-              ) : isFuture ? (
-                <View style={styles.tempBox}>
-                  <View style={styles.headerBox}>
-                    <Text style={styles.headerText}>{selectDay}</Text>
-                  </View>
-                  <View style={styles.dailySummaryTotal}>
-                    <Text style={styles.innerText}>
-                      아직은 기록할 수 없어요
-                    </Text>
-                  </View>
-                </View>
-              ) : alcoholDays[selectDay] ? (
+              {alcoholDays[selectDay] ? (
                 <DailySummary
                   navigation={navigation}
                   summaryText={selectDay}
@@ -290,16 +233,26 @@ function CalendarSixWeeks({ navigation }) {
                   <View style={styles.headerBox}>
                     <Text style={styles.headerText}>{selectDay}</Text>
                   </View>
-                  <FAB
-                    icon="plus"
-                    style={styles.fab}
-                    onPress={() => {
-                      navigation.navigate("RecordCreate", {
-                        date: selectDay,
-                        isAlcohol: alcoholDays[selectDay],
-                      });
-                    }}
-                  />
+                  {isSame ? (
+                    <View style={styles.dailySummaryTotal}>
+                      <Text style={styles.innerText}>
+                        내일 새벽 5시에 업데이트 됩니다
+                      </Text>
+                    </View>
+                  ) : isFuture ? (
+                    <View style={styles.dailySummaryTotal}>
+                      <Text style={styles.innerText}>
+                        아직은 기록할 수 없어요
+                      </Text>
+                    </View>
+                  ) : (
+                    <FAB
+                      icon="plus"
+                      style={styles.fab}
+                      color="white"
+                      onPress={handleCreateRecordPressed}
+                    />
+                  )}
                 </View>
               )}
             </View>
@@ -315,38 +268,18 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
   },
-  smallCalendar: {
-    height: "auto",
-  },
-  largeCalendar: {
-    height: "100%",
-  },
   dailySummaryComponent: {
     flex: 1,
   },
   dailySummaryTotal: {
     height: "75%",
-    borderRadius: 5,
-    backgroundColor: "#ffffff",
-    width: "95%",
-    marginRight: "auto",
-    marginLeft: "auto",
-    flexDirection: "column",
     justifyContent: "center",
-    // 그림자 추가 (Android 및 iOS 모두에서 동작)
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   tempBox: {
     height: "90%",
   },
   headerBox: {
+    // summary
     height: "30%",
     flexDirection: "row",
     marginLeft: "5%",
@@ -378,28 +311,28 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
-  eachDayBox: {
-    height: "100%",
-    backgroundColor: "blue",
-  },
-  imageContainer: {
-    width: 60,
-    height: 60,
-    resizeMode: "contain",
+  calendarHeader: {
+    // @@@@@@@@@@@@@@@@@@@@@@@@달력 헤더 맨 위 문구@@@@@@@@@@@@@@@@@@@@@@@@
+    fontSize: 18,
+    fontFamily: "LineRegular",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#fff",
+    paddingRight: 5,
   },
   calendarCell: {
     flexDirection: "column",
     alignItems: "center",
     height: 90, // @@@@@@@@@@@@@@@@@@@@@@@@다시 생각해보자@@@@@@@@@@@@@@@@@@@@@@@@ 이럴거면 스크롤뷰 달아야 함
     width: "100%",
-    backgroundColor: "#000000", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 칸 색상@@@@@@@@@@@@@@@@@@@@@@@@
+    backgroundColor: "#000", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 칸 색상@@@@@@@@@@@@@@@@@@@@@@@@
+    marginVertical: -7,
+    paddingTop: 2,
   },
   calendarDate: {
-    height: "50%",
-    flex: 1,
     color: "white", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 글씨 색상@@@@@@@@@@@@@@@@@@@@@@@@
   },
-  calendarStemp: {
+  calendarStamp: {
     height: "83%", // @@@@@@@@@@@@@@@@@@@@@@@@술마신 날 도장@@@@@@@@@@@@@@@@@@@@@@@@
     width: "83%",
   },
@@ -407,23 +340,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     margin: "1%",
-  },
-  calendarHeader: {
-    // @@@@@@@@@@@@@@@@@@@@@@@@달력 헤더 맨 위 문구@@@@@@@@@@@@@@@@@@@@@@@@
-    fontSize: 18,
-    fontFamily: "LineRegular",
-    // fontWeight: "bold",
-    paddingTop: 10,
-    paddingBottom: 10,
-    color: "#ffffff",
-    paddingRight: 5,
-  },
-  calendarHeaderBox: {
-    // @@@@@@@@@@@@@@@@@@@@@@@@달력 헤더 맨 위 영역@@@@@@@@@@@@@@@@@@@@@@@@
-    flexDirection: "row",
-    justifyContent: "space-between",
-    // marginTop: 3,
-    // marginBottom: 3,
+    backgroundColor: "#121B33",
   },
 });
 
