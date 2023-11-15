@@ -230,9 +230,6 @@ public class DrinkService {
             .orElseThrow(() -> new NullPointerException("해당 날짜의 일기가 존재하지 않습니다."));
         List<Drink> drinks = existingDiary.getDrinks();
 
-        // 음주 기록 전체 삭제
-        drinkRepository.deleteAll(drinks);
-
         // 일기 및 사진 삭제
         if (existingDiary.getImg() != null) {
             uploadService.drinkPhotoDelete(existingDiary, existingDiary.getImg());
