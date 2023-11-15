@@ -4,7 +4,7 @@ const ServiceTermsScreen = () => {
   return (
     <WebView
       source={{
-        uri: "https://",
+        uri: "https://sites.google.com/view/v1-weekliver-service-terms/",
       }}
       style={{ flex: 1 }}
     />
