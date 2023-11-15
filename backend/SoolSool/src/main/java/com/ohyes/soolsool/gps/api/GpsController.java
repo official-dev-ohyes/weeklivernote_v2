@@ -4,6 +4,7 @@ import com.ohyes.soolsool.gps.application.GpsService;
 import com.ohyes.soolsool.gps.dto.GpsInfo;
 import com.ohyes.soolsool.location.dto.AlarmTime;
 import com.ohyes.soolsool.user.domain.User;
+import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
 import com.ohyes.soolsool.util.UserUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +28,14 @@ public class GpsController {
     @Operation(summary = "사용자 현재 위치 정보 저장",
         description = "사용자의 현재 위치의 위도, 경도 정보를 저장합니다.")
     public ResponseEntity<Object> nowGpsInfoAdd(
-        @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody GpsInfo gpsInfo)
-        throws Exception {
-        User user = UserUtils.getUserFromToken(userDetails);
-        AlarmTime alarmTime = gpsService.addUserNowGpsInfo(user, gpsInfo);
-        return new ResponseEntity<>(alarmTime, HttpStatus.CREATED);
+        @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody GpsInfo gpsInfo) {
+        try {
+            User user = UserUtils.getUserFromToken(userDetails);
+            AlarmTime alarmTime = gpsService.addUserNowGpsInfo(user, gpsInfo);
+            return new ResponseEntity<>(alarmTime, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
+        }
     }
 }
