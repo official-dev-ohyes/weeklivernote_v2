@@ -65,7 +65,7 @@ export default function HomeCarousel() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
-    <ImageBackground source={mainbackground} style={styles.background}>
+    <View style={styles.background}>
       <StatusBar hidden />
       <Animated.FlatList
         data={DATA}
@@ -96,13 +96,13 @@ export default function HomeCarousel() {
         }}
       />
       <Indicator scrollX={scrollX} />
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
-    height: "100%",
+    height: 420,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

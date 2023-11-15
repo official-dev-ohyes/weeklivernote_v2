@@ -61,28 +61,31 @@ function Profile(props: UserProfileProps) {
     }
 
     console.log("새로운 프로필 이미지를 선택");
-    console.log(result.assets[0].uri);
+    console.log(result.assets[0]);
 
-    const localUri = result.assets[0].uri;
-    const uriParts = localUri.split("/");
+    const uriParts = result.assets[0].uri.split("/");
     const fileName = uriParts[uriParts.length - 1];
     const uri =
-      Platform.OS === "android" ? localUri : localUri.replace("file://", "");
-    const type = `${result.assets[0].type}/${localUri.split(".").pop()}`;
+      Platform.OS === "android"
+        ? result.assets[0].uri
+        : result.assets[0].uri.replace("file://", "");
+    const type = `${result.assets[0].type}/${result.assets[0].uri
+      .split(".")
+      .pop()}`;
     const body: any = new FormData();
-    // console.log("여기서부터 다시 시작", result);
-    // console.log("uri", uri);
-    // console.log("type", type);
-    // console.log("name", fileName);
+
+    console.log("uri", uri);
+    console.log("type", type);
+    console.log("name", fileName);
     const file = {
       type: type,
       name: fileName,
       uri: uri,
     };
-    // body.append("image", file);
-    body.append("type", type);
-    body.append("name", fileName);
-    body.append("uri", uri);
+    body.append("file", file);
+    // body.append("type", type);
+    // body.append("name", fileName);
+    // body.append("uri", uri);
 
     await updateProfileImage(body)
       .then(() => {
