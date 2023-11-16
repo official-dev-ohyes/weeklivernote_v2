@@ -253,6 +253,9 @@ export default function App() {
   //     }
   //   };
   // }, []);
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
