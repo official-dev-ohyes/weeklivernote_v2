@@ -52,9 +52,8 @@ function HomeRouteScreen({ navigation }) {
       const fetchLocation = async () => {
         try {
           const tempLocation = await AsyncStorage.getItem("nowLocation");
-          console.log("위치확인", tempLocation);
-          console.log("위치확인", JSON.parse(tempLocation).latitude);
-          console.log("위치확인", JSON.parse(tempLocation).longitude);
+          // console.log("위치확인", JSON.parse(tempLocation).latitude);
+          // console.log("위치확인", JSON.parse(tempLocation).longitude);
 
           setRegion((prev) => ({
             ...prev,
@@ -122,7 +121,7 @@ function HomeRouteScreen({ navigation }) {
           />
           <Polyline
             coordinates={flattenedCoordinates}
-            strokeColor="lightblue"
+            strokeColor="#023758"
             strokeColors={[
               "#7F0000",
               "#00000000",

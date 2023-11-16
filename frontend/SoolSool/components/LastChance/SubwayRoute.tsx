@@ -23,38 +23,55 @@ function SubwayRoute({ pathInfo }) {
   const concatenatedNames = stationNames.join("-");
   // console.log("확인할거야", concatenatedNames);
   return (
-    <View style={[styles.mainContainer, { height: sectionTime * 15 }]}>
-      <View style={styles.leftContainer}>
+    <View style={styles.mainContainer}>
+      <View
+        style={[
+          styles.leftContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
+      >
         <View style={styles.leftmarginContainer}>
           <Text>{sectionTime}분</Text>
         </View>
       </View>
       <View
-        style={[styles.routhGraphContainer, { height: sectionTime * 15 }]}
+        style={[
+          styles.routhGraphContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
       ></View>
-      <View style={styles.rightContainer}>
+      <View
+        style={[
+          styles.rightContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
+      >
         <View style={styles.rightmarginContainer}>
           <View>
             <Text style={styles.startName}>{startName}역</Text>
-            <Text style={styles.startExitNo}>{startExitNo}번 출구</Text>
+            {startExitNo && (
+              <Text style={styles.startExitNo}>{startExitNo}번 출구</Text>
+            )}
           </View>
 
           <View style={styles.infoContainer}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.wayCode}>{wayCode}호선</Text>
             <Text style={styles.way}>{way}역 방면</Text>
-            <Text style={styles.distance}>총 {distance}m 이동</Text>
             <View>
               <Text style={styles.stationCount}>
                 {stationCount}개 정류장 경유
               </Text>
               <Text style={styles.concatenatedNames}>{concatenatedNames}</Text>
             </View>
+            <Text style={styles.distance}>총 {distance}m 이동</Text>
           </View>
 
           <View>
             <Text style={styles.endName}>{endName}역</Text>
-            <Text style={styles.endExitNo}>{endExitNo}번 출구</Text>
+            {endExitNo && (
+              <Text style={styles.endExitNo}>{endExitNo}번 출구</Text>
+            )}
           </View>
         </View>
       </View>
@@ -98,10 +115,10 @@ const styles = StyleSheet.create({
     height: "100%",
     marginRight: "auto",
     marginLeft: "auto",
-    // backgroundColor: "black",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    // backgroundColor: "black",
   },
   marginHorizonalContainer: {},
   name: {

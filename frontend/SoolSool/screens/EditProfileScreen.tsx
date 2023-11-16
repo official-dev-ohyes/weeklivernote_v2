@@ -56,10 +56,10 @@ function EditProfileScreen({ navigation }) {
   const [address, setAddress] = useState("");
   const [selectedDrinkKind, setSelectedDrinkKind] = useState("소주");
   const [amount, setAmount] = useState("");
-  const [unit, setUnit] = useState("잔");
+  const [unit, setUnit] = useState("병");
   const [imageURL, setImageURL] = useState("");
 
-  const volumeUnits = ["잔", "병"];
+  const volumeUnits = ["병", "잔"];
 
   const handleCancelEdit = () => {
     navigation.navigate("MyPage");
@@ -221,6 +221,7 @@ function EditProfileScreen({ navigation }) {
                 placeholder={oldamount.toString()}
                 value={amount}
                 style={styles.kindTextInput}
+                keyboardType="numeric"
                 onChangeText={(text) => setAmount(text)}
               />
               <View style={styles.Unit}>

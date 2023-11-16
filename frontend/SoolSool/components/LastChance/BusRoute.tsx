@@ -22,16 +22,29 @@ function BusRoute({ pathInfo }) {
   console.log("버스경유지", concatenatedNames);
 
   return (
-    <View style={[styles.mainContainer, { height: sectionTime * 15 }]}>
-      <View style={styles.leftContainer}>
+    <View style={styles.mainContainer}>
+      <View
+        style={[
+          styles.leftContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
+      >
         <View style={styles.leftmarginContainer}>
           <Text>{sectionTime}분</Text>
         </View>
       </View>
       <View
-        style={[styles.routhGraphContainer, { height: sectionTime * 15 }]}
+        style={[
+          styles.routhGraphContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
       ></View>
-      <View style={styles.rightContainer}>
+      <View
+        style={[
+          styles.rightContainer,
+          { height: sectionTime * 70, maxHeight: 350 },
+        ]}
+      >
         <View style={styles.rightmarginContainer}>
           <View>
             <Text style={styles.startName}>{startName}</Text>
