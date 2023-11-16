@@ -121,7 +121,7 @@ function SettingsScreen({ navigation }) {
     await signOut()
       .then(async (res) => {
         console.log("회원탈퇴 성공");
-        await AsyncStorage.removeItem("accessToken");
+        await AsyncStorage.clear();
         navigation.navigate("Login");
       })
       .catch((err) => {
