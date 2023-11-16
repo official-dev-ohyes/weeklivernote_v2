@@ -16,8 +16,8 @@ function WeeklyStatistics({ lineData, barData }) {
               barWidth={29}
               height={180}
               barBorderRadius={5}
-              stepValue={500}
-              maxValue={2500}
+              stepValue={400}
+              maxValue={1600}
               initialSpacing={0}
               yAxisLabelWidth={7}
               hideAxesAndRules
