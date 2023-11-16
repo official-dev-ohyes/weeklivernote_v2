@@ -3,17 +3,12 @@ import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-root-toast";
-import { useSetRecoilState } from "recoil";
-import { userAlcoholLimitAtom, userNicknameAtom } from "../recoil/auth";
 
 const RESTAPI_KEY = process.env.RESTAPI_KEY;
 const REDIRECT_URI = "https://soolsool.site/kakao/callback";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 function KakaoLoginScreen({ navigation }) {
-  const setNickname = useSetRecoilState(userNicknameAtom);
-  const setAlcoholLimit = useSetRecoilState(userAlcoholLimitAtom);
-
   const fetchAccessToken = async (code: string) => {
     console.log("fetchAccessToken 요청 성공");
     try {
@@ -51,8 +46,10 @@ function KakaoLoginScreen({ navigation }) {
         );
         // console.log("???!", response.data);
         // console.log("???", response.data.nickname);
-        setNickname(response.data.userName);
-        setAlcoholLimit(response.data.alcoholLimit);
+        const alcoholLimit: number = response.data.alcoholLimit;
+        const roundedAlcoholLimit = alcoholLimit.toFixed(1);
+        await AsyncStorage.setItem("alcoholLimit", roundedAlcoholLimit);
+
         navigation.navigate("BottomTab");
       }
     } catch (e) {
