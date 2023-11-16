@@ -67,10 +67,15 @@ import {
 // AsyncStorage.setItem("nowLocation", "{}");
 // async function getStorageValue() {
 // 	console.log("----------------");
+// 	console.log("토큰", await AsyncStorage.getItem("accessToken"));
+// 	console.log("사용자 주량", await AsyncStorage.getItem("alcoholLimit"));
+// 	console.log("현재 위치", await AsyncStorage.getItem("nowLocation"));
+// 	console.log("도착지 위치", await AsyncStorage.getItem("destLocation"));
 // 	console.log("위치 조회 계속",	await AsyncStorage.getItem("keepUpdateLocation"));
 // 	console.log("알람 시간", await AsyncStorage.getItem("alarmTime"));
 // 	console.log("마지막post 시간", await AsyncStorage.getItem("todayPostDate"));
-// 	console.log("----------------");
+// 	console.log("마지막 alert 시간", await AsyncStorage.getItem("lastCheckedDate"));
+// 	console.log("---------------1-");
 // }
 
 // getStorageValue();
@@ -210,52 +215,53 @@ export default function App() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
+		if (fontsLoaded || fontError) {
+			await hideAsync();
+		}
+	}, [fontsLoaded, fontError]);
 
-  // if (!fontsLoaded && !fontError) {
-  //   return null;
-  // }
+	// if (!fontsLoaded && !fontError) {
+	//   return null;
+	// }
 
-  // 알림 관련..?
-  // const notificationListener = useRef<Subscription>();
-  // const responseListener = useRef<Subscription>();
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then(async (token) => {
-  //     if (token) {
-  //       await AsyncStorage.setItem("expoPushToken", token);
-  //     } else {
-  //       return;
-  //     }
-  //   });
+	// 알림 관련..?
+	// const notificationListener = useRef<Subscription>();
+	// const responseListener = useRef<Subscription>();
+	// useEffect(() => {
+	//   registerForPushNotificationsAsync().then(async (token) => {
+	//     if (token) {
+	//       await AsyncStorage.setItem("expoPushToken", token);
+	//     } else {
+	//       return;
+	//     }
+	//   });
 
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       // console.log("App.tsx 174: ", notification);
-  //     });
+	//   notificationListener.current =
+	//     Notifications.addNotificationReceivedListener((notification) => {
+	//       // console.log("App.tsx 174: ", notification);
+	//     });
 
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
+	//   responseListener.current =
+	//     Notifications.addNotificationResponseReceivedListener((response) => {
+	//       console.log(response);
+	//     });
 
-  //   return () => {
-  //     if (
-  //       typeof notificationListener.current !== "undefined" &&
-  //       typeof responseListener.current !== "undefined"
-  //     ) {
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current
-  //       );
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //     }
-  //   };
-  // }, []);
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
+	//   return () => {
+	//     if (
+	//       typeof notificationListener.current !== "undefined" &&
+	//       typeof responseListener.current !== "undefined"
+	//     ) {
+	//       Notifications.removeNotificationSubscription(
+	//         notificationListener.current
+	//       );
+	//       Notifications.removeNotificationSubscription(responseListener.current);
+	//     }
+	//   };
+	// }, []);
+  
+	useEffect(() => {
+		registerForPushNotificationsAsync();
+	}, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

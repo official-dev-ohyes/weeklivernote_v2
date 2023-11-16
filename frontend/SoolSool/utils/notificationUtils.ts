@@ -17,6 +17,15 @@ Notifications.setNotificationHandler({
 export async function registerForPushNotificationsAsync() {
   // let token;
 
+  if (Platform.OS === "android") {
+		await Notifications.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: "#FF231F7C",
+		});
+	}
+
   if (isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
@@ -35,24 +44,15 @@ export async function registerForPushNotificationsAsync() {
       return;
     }
 
-    // token = (
-    //   await Notifications.getExpoPushTokenAsync({
-    //     projectId: Constants.expoConfig.extra.eas.projectId,
-    //   })
+    // // token = (
+    // //   await Notifications.getExpoPushTokenAsync({
+    // //     projectId: Constants.expoConfig.extra.eas.projectId,
+    // //   })
     // ).data;
 
     // console.log(token);
   } else {
     alert("알림을 받기 위해서는 실제 기기를 이용해주세요.");
-  }
-
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
   }
 
   // return token;
