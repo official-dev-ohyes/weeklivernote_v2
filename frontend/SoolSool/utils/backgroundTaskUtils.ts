@@ -23,6 +23,7 @@ TaskManager.defineTask(RESET_TASK_NAME, async () => {
 			await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(true));
 			await AsyncStorage.removeItem("alarmTime");
 			await AsyncStorage.removeItem("todayPostDate");
+			await AsyncStorage.setItem("nowLocation", "{}");
 		} catch (err) {
 			console.error("storage 초기화에 실패했습니다 : ", err);
 		}

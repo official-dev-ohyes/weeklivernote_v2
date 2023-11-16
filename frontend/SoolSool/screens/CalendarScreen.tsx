@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#121B33",
-    // backgroundColor: "blue",
   },
   mainTextBox: {
     height: "13%",

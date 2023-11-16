@@ -3,9 +3,15 @@ import { isDevice } from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Localization from "expo-localization";
 
 // const expoPushToken = AsyncStorage.getItem("expoPushToken");
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+});
 
 export async function registerForPushNotificationsAsync() {
   let token;
@@ -127,8 +133,9 @@ export async function scheduleLastChanceNotification() {
 		await Notifications.scheduleNotificationAsync({
 			content: {
 				title: "막차 알림",
-				body: "지금 출발하실 시간이예요",
-				data: { data: "" },
+				body: "지금 출발하실 시간이에요! 경로를 확인해 볼까요?😉",
+				data: { screen: "HomeRoute" },
+				priority: Notifications.AndroidNotificationPriority.MAX,
 			},
 			trigger: { seconds: secondsUntilAlarm },
 		});

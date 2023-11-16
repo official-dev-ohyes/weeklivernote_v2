@@ -1,3 +1,4 @@
+// 새벽 5시를 기준으로 날짜를 판단
 export function getAdjustedDate(date) {
   const now = new Date(date);
 
@@ -14,6 +15,7 @@ export function getAdjustedDate(date) {
   return now;
 }
 
+// 관념적 날짜 문자열 반환
 export function getToday(): string {
   const today = new Date();
   const adjustedToday = getAdjustedDate(today);
@@ -25,6 +27,18 @@ export function getToday(): string {
   return formattedDate;
 }
 
+// 진짜 오늘 날짜 문자열 반환
+export function getRealToday(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  const day = today.getDate().toString().padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+}
+
+// 오늘 새벽 5시 타임스탬프 반환
 export function getTodayAt5(): string {
   const today = new Date();
 
@@ -36,6 +50,7 @@ export function getTodayAt5(): string {
   return todayAt5;
 }
 
+// 목표 시간과의 차이 계산
 export function calculateTimeDifference(targetDate: Date): number {
   const currentTime = new Date();
   const differenceInMilliseconds = currentTime.getTime() - targetDate.getTime();
@@ -48,6 +63,7 @@ export function calculateTimeDifference(targetDate: Date): number {
   return roundedHoursDifference;
 }
 
+// n시간 후의 시간 계산
 export function calculateTimeAfterHours(hoursToAdd: number): string {
   const now = new Date();
   const newTime = new Date(now.getTime() + hoursToAdd * 3600000);

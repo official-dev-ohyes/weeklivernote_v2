@@ -14,12 +14,13 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, CommonActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./screens/LoginScreen";
 import KakaoLoginScreen from "./screens/KakaoLoginScreen";
+import TermsScreen from "./screens/TermsScreen";
 import AddInfoScreen from "./screens/AddInfoScreen";
 
 import HomeScreen from "./screens/HomeScreen";
@@ -61,26 +62,16 @@ import {
   resetAsyncStorage,
 } from "./utils/gpsUtils";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
 // 막차 알림 임의 조정
-// AsyncStorage.setItem("alarmTime", "12:00");
-async function getStorageValue() {
-  console.log("----------------");
-  console.log(
-    "위치 조회 계속",
-    await AsyncStorage.getItem("keepUpdateLocation")
-  );
-  console.log("알람 시간", await AsyncStorage.getItem("alarmTime"));
-  console.log("마지막post 시간", await AsyncStorage.getItem("todayPostDate"));
-  console.log("----------------");
-}
+
+// AsyncStorage.setItem("nowLocation", "{}");
+// async function getStorageValue() {
+// 	console.log("----------------");
+// 	console.log("위치 조회 계속",	await AsyncStorage.getItem("keepUpdateLocation"));
+// 	console.log("알람 시간", await AsyncStorage.getItem("alarmTime"));
+// 	console.log("마지막post 시간", await AsyncStorage.getItem("todayPostDate"));
+// 	console.log("----------------");
+// }
 
 // getStorageValue();
 
@@ -181,9 +172,34 @@ const theme = {
 };
 
 export default function App() {
+  const navigationRef = useRef(null);
+  const notificationListener = useRef<Notifications.Subscription | undefined>();
+  const responseListener = useRef<Notifications.Subscription | undefined>();
+  const [notification, setNotification] =
+    useState<Notifications.Notification | null>(null);
+
   useEffect(() => {
+    // AsyncStorage.setItem("alarmTime", "09:20");
+
     getFirstLocationPermission();
     scheduleLastChanceNotification();
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const screen = response.notification.request.content.data.screen;
+        if (screen) {
+          navigationRef.current.dispatch(CommonActions.navigate(screen));
+        }
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   const [fontsLoaded, fontError] = useFonts({
@@ -206,7 +222,6 @@ export default function App() {
   // 알림 관련..?
   // const notificationListener = useRef<Subscription>();
   // const responseListener = useRef<Subscription>();
-
   // useEffect(() => {
   //   registerForPushNotificationsAsync().then(async (token) => {
   //     if (token) {
@@ -251,7 +266,7 @@ export default function App() {
                   onLayout={onLayoutRootView}
                 >
                   <StatusBar style="auto" />
-                  <NavigationContainer>
+                  <NavigationContainer ref={navigationRef}>
                     <Stack.Navigator
                       screenOptions={{
                         headerShown: false,
@@ -265,6 +280,7 @@ export default function App() {
                         component={KakaoLoginScreen}
                       />
 
+                      <Stack.Screen name="Terms" component={TermsScreen} />
                       <Stack.Screen name="AddInfo" component={AddInfoScreen} />
                       <Stack.Screen
                         name="BottomTab"
