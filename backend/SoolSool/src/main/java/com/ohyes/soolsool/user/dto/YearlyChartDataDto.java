@@ -14,7 +14,7 @@ public class YearlyChartDataDto {
 
     public YearlyChartDataDto(int month, double totalDrinkAmount) {
         this.value = totalDrinkAmount;
-        this.label = month + "월";
+        this.label = String.format("%02d", month);
         this.month = month;
     }
 }
