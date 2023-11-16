@@ -3,10 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 function AlcoholChart({ drinks }) {
   // 주종별 색상
   const categoryColors = {
-    소주: "#9FBA00",
-    맥주: "#CA6529",
-    와인: "#E7464B",
-    소맥: "#FFC808",
+    소주: "#009FFF",
+    맥주: "#93FCF8",
+    와인: "#BDB2FA",
+    소맥: "#FFA5BA",
     "칵테일(약)": "#FA6E68",
     "칵테일(강)": "#D5E794",
     막걸리: "#FDF2D9",
@@ -14,6 +14,7 @@ function AlcoholChart({ drinks }) {
     하이볼: "#53A5D7",
   };
 
+  console.log("@@", drinks);
   return (
     <View style={styles.total}>
       <View style={styles.header}>

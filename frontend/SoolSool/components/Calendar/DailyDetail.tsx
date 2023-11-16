@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
 import { useQuery } from "react-query";
-import AlcoholChart from "../../components/Calendar/AlcoholChart";
+// import AlcoholChart from "../../components/Calendar/AlcoholChart";
+import AlcoholPieChart from "./AlcoholPieChart";
+import { NativeViewGestureHandler } from "react-native-gesture-handler";
 
 function DailyDetail({ queryDate }) {
   const [isImg, setIsImg] = useState<boolean>(false);
@@ -58,57 +60,61 @@ function DailyDetail({ queryDate }) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.total}>
-        {info.startTime && (
-          <View style={styles.contents}>
-            <View style={styles.time}>
-              <View style={styles.house}>
-                <Text style={styles.smallHeaderText}>시작 시간</Text>
-                <Text style={styles.valueText}>
-                  {format12HourTime(info.startTime.substring(11, 16))}
-                </Text>
-              </View>
-              <View style={styles.house}>
-                <Text style={styles.smallHeaderText}>해독 시간</Text>
-                <Text style={styles.valueText}>
-                  {formatDetoxTime(info.detoxTime)}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.house}>
+    <NativeViewGestureHandler disallowInterruption={true}>
+      <ScrollView>
+        <View style={styles.total}>
+          {info.startTime && (
+            <View style={styles.contents}>
+              <AlcoholPieChart data={info.drinks} />
+              {/* <View style={styles.house}>
               <View style={styles.chart}>
                 <AlcoholChart drinks={info.drinks} />
               </View>
-            </View>
-            {isImg ? (
-              <View style={styles.house}>
-                <Text>사진</Text>
+            </View> */}
+              <View style={styles.time}>
+                <View style={styles.timeContainer}>
+                  <Text style={styles.smallHeaderText}>시작 시간</Text>
+                  <Text style={styles.valueText}>
+                    {format12HourTime(info.startTime.substring(11, 16))}
+                  </Text>
+                </View>
+                <View style={styles.timeContainer}>
+                  <Text style={styles.smallHeaderText}>해독 시간</Text>
+                  <Text style={styles.valueText}>
+                    {formatDetoxTime(info.detoxTime)}
+                  </Text>
+                </View>
               </View>
-            ) : null}
-            <View style={styles.house}>
-              <Text style={styles.smallHeaderText}>메모</Text>
-              {info.memo ? (
-                <Text style={styles.innerText}>{info.memo}</Text>
-              ) : (
-                <Text style={styles.innerText}>작성된 메모가 없어요</Text>
-              )}
+
+              {isImg ? (
+                <View style={styles.house}>
+                  <Text>사진</Text>
+                </View>
+              ) : null}
+
+              <View style={styles.house}>
+                <Text style={styles.smallHeaderText}>메모</Text>
+                {info.memo ? (
+                  <Text style={styles.innerText}>{info.memo}</Text>
+                ) : (
+                  <Text style={styles.innerText}>작성된 메모가 없어요</Text>
+                )}
+              </View>
             </View>
-          </View>
-        )}
-      </View>
-    </ScrollView>
+          )}
+        </View>
+      </ScrollView>
+    </NativeViewGestureHandler>
   );
 }
 
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    marginTop: "3%",
+    marginTop: "5%",
   },
   light: {
     height: "80%",
-    // backgroundColor: "blue",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: "2%",
@@ -121,10 +127,16 @@ const styles = StyleSheet.create({
   contents: {
     height: "64%",
     margin: "1%",
-    // backgroundColor: "black",
   },
   time: {
     flexDirection: "row",
+    marginHorizontal: "5%",
+    justifyContent: "space-around",
+  },
+  timeContainer: {
+    alignItems: "center",
+    width: "100%",
+    margin: "2%",
   },
   chart: {
     height: "100%",
@@ -148,11 +160,16 @@ const styles = StyleSheet.create({
   },
   smallHeaderText: {
     fontSize: 15,
-    marginBottom: "2%",
+    marginBottom: "5%",
   },
   valueText: {
     fontSize: 20,
     textAlign: "center",
+    borderWidth: 1,
+    borderColor: "#d2d2d2",
+    borderRadius: 10,
+    padding: "2%",
+    paddingHorizontal: "7%",
   },
   innerText: {
     fontSize: 20,
