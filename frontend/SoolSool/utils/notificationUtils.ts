@@ -135,7 +135,7 @@ export async function scheduleLastChanceNotification() {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "막차 알림",
+        title: "라스트 찬스!!",
         body: "지금 출발하실 시간이에요! 경로를 확인해 볼까요?😉",
         data: { screen: "HomeRoute" },
         priority: Notifications.AndroidNotificationPriority.MAX,
