@@ -2,6 +2,8 @@ package com.ohyes.soolsool.user.api;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ohyes.soolsool.drink.application.UploadService;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
 import com.ohyes.soolsool.user.application.UserService;
 import com.ohyes.soolsool.user.application.UserStatService;
 import com.ohyes.soolsool.user.domain.User;
@@ -14,7 +16,6 @@ import com.ohyes.soolsool.user.dto.UserStatResponseDto;
 import com.ohyes.soolsool.util.MessageResponse;
 import com.ohyes.soolsool.util.UserDetailsImpl;
 import com.ohyes.soolsool.util.UserUtils;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
@@ -23,13 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -39,6 +41,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserStatService userStatService;
+    private final UploadService uploadService;
 
     // 회원가입 or 로그인
     @GetMapping("v1/user/login")
@@ -84,8 +87,8 @@ public class UserController {
     public ResponseEntity<Object> userInfoModify(@RequestBody UserModifyDto userModifyDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userService.userInfoModify(userModifyDto, userDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
+        GpsInfo gpsInfo = userService.userInfoModify(userModifyDto, userDetails);
+        return new ResponseEntity<>(gpsInfo, HttpStatus.OK);
     }
 
     @PostMapping("v1/user/logout")
@@ -112,7 +115,8 @@ public class UserController {
     @GetMapping("v1/user/stat")
     @Operation(summary = "유저 요약 통계 조회",
         description = "유저의 최장/현내 논 알코올 기간과 올해 마신 술 총량을 조회합니다.")
-    public ResponseEntity<Object> userStatGet(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> userStatGet(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             UserStatResponseDto userStatResponseDto = userStatService.getUserStat(userDetails);
             return new ResponseEntity<>(userStatResponseDto, HttpStatus.OK);
@@ -124,13 +128,30 @@ public class UserController {
     @GetMapping("/v1/user/stat-chart")
     @Operation(summary = "유저 음주 통계 차트 조회",
         description = "유저의 주간/연간 음주 통계 그래프를 조회합니다.")
-    public ResponseEntity<Object> userStatChartGet(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> userStatChartGet(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             UserStatChartResponseDto userStatChartResponseDto = userStatService.getUserStatChart(
                 userDetails);
             return new ResponseEntity<>(userStatChartResponseDto, HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping(value = "/v2/user/profile", produces = "application/json", consumes = "multipart/form-data")
+    @Operation(summary = "해당 유저의 프로필 이미지 저장",
+        description = "프로필 이미지를 저장합니다.(빈 값을 보내면 사진 파일을 삭제합니다.)")
+    public ResponseEntity<Object> userProfileAdd(
+        @RequestPart(value = "file", required = false) MultipartFile multipartFile,
+        @AuthenticationPrincipal UserDetailsImpl userDetails)
+        throws Exception {
+        try {
+            uploadService.userProfileAdd(multipartFile, userDetails);
+            return new ResponseEntity<>(new MessageResponse("유저 프로필 변경사항 저장 성공"), HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()),
+                HttpStatus.BAD_REQUEST);
         }
     }
 

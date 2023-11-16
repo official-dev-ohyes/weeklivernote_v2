@@ -4,8 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohyes.soolsool.drink.dao.CategoryRepository;
+import com.ohyes.soolsool.drink.dao.DiaryRepository;
+import com.ohyes.soolsool.drink.dao.DrinkRepository;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.dto.DrinkInfo;
+import com.ohyes.soolsool.gps.application.GpsService;
+import com.ohyes.soolsool.gps.dto.GpsInfo;
+import com.ohyes.soolsool.location.dao.LocationRepository;
+import com.ohyes.soolsool.location.domain.Location;
 import com.ohyes.soolsool.user.dao.UserRepository;
 import com.ohyes.soolsool.user.domain.User;
 import com.ohyes.soolsool.user.dto.KakaoProfileDto;
@@ -50,8 +56,12 @@ public class UserService {
     private String admin_key;
 
     private final UserRepository userRepository;
+    private final DrinkRepository drinkRepository;
+    private final DiaryRepository diaryRepository;
     private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
     private final JwtProvider jwtProvider;
+    private final GpsService gpsService;
 
     // 카카오 로그인
     public KakaoProfileDto kakaoLogin(String code) throws JsonProcessingException {
@@ -120,6 +130,10 @@ public class UserService {
             .get("profile_image_url").asText();
         String profileImg = "https://" + tempImg.substring(7);
 
+        if (profileImg.equals("https://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg")) {
+            profileImg = null;
+        }
+
         return new KakaoProfileDto(socialId, nickname, profileImg);
 
     }
@@ -155,8 +169,12 @@ public class UserService {
                 .startNonalcoholDate(LocalDate.now())
                 .build();
 
+            Location location = new Location();
+            locationRepository.save(location);
 
+            user.setLocation(location);
             userRepository.save(user);
+
             Map<String, Object> data = new HashMap<>();
             data.put("socialId", kakaoProfileDto.getSocialId());
             data.put("message", "추가 정보 등록이 필요한 회원입니다.");
@@ -180,11 +198,17 @@ public class UserService {
 
         updateRefreshToken(tokenDto, kakaoProfileDto.getSocialId());
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
+
         Map<String, Object> data = new HashMap<>();
         data.put("userName", user.getNickname());
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
         data.put("drinkInfo", drinkInfo);
+        data.put("gpsInfo", gpsInfo);
 
         return data;
     }
@@ -231,6 +255,16 @@ public class UserService {
 
         userRepository.save(user);
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(0)
+            .longitude(0)
+            .build();
+        // 주소 입력 했을 경우 위도/경도 데이터 저장
+        if (!userRequestDto.getAddress().equals("주소지 미입력")) {
+            Location location = user.getLocation();
+            gpsInfo = gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress(), user);
+        }
+
         TokenDto tokenDto = jwtProvider.createToken(user);
 
         updateRefreshToken(tokenDto, socialId);
@@ -240,6 +274,7 @@ public class UserService {
         data.put("tokenInfo", tokenDto);
         data.put("alcoholLimit", user.getAlcoholLimit());
         data.put("drinkInfo", drinkInfo);
+        data.put("gpsInfo", gpsInfo);
 
         return data;
     }
@@ -250,6 +285,9 @@ public class UserService {
 
         String nickname = user.getNickname();
         String profileImg = user.getProfileImg();
+        if (user.getCustomProfileImg() != null) {
+            profileImg = user.getCustomProfileImg();
+        }
         String address = user.getAddress();
         String gender = user.getGender();
         int height = user.getHeight();
@@ -262,6 +300,11 @@ public class UserService {
             .drinkAmount(user.getDrinkAmount())
             .build();
 
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
+
         return UserResponseDto.builder()
             .nickname(nickname)
             .profileImg(profileImg)
@@ -271,16 +314,21 @@ public class UserService {
             .weight(weight)
             .alcoholLimit(alcoholLimit)
             .drinkInfo(drinkInfo)
+            .gpsInfo(gpsInfo)
             .build();
-
     }
 
     // 회원 추가 정보 수정
-    public void userInfoModify(UserModifyDto userModifyDto, UserDetailsImpl userDetails) {
+    public GpsInfo userInfoModify(UserModifyDto userModifyDto, UserDetailsImpl userDetails) {
         User user = UserUtils.getUserFromToken(userDetails);
         DrinkInfo drinkInfo = userModifyDto.getDrinkInfo();
         Category category = categoryRepository.findByCategoryName(drinkInfo.getCategory())
             .orElseThrow(() -> new NullPointerException("주종이 바르지 않습니다."));
+
+        GpsInfo gpsInfo = GpsInfo.builder()
+            .latitude(user.getLocation().getHomeLat())
+            .longitude(user.getLocation().getHomeLong())
+            .build();
 
         // 기본 정보 수정
         if (userModifyDto.getNickname() != null) {
@@ -288,6 +336,15 @@ public class UserService {
         }
         if (userModifyDto.getAddress() != null) {
             user.setAddress(userModifyDto.getAddress());
+
+            // 주소 입력 했을 경우 위도/경도 데이터 저장
+            if (!userModifyDto.getAddress().equals("주소지 미입력")) {
+                Location location = user.getLocation();
+                gpsInfo =  gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress(),
+                    user);
+
+                // 주소지 변경  위도/경도 저장 후 다치 막차 조회 로직 추가
+            }
         }
         if (userModifyDto.getGender() != null) {
             user.setGender(userModifyDto.getGender());
@@ -327,6 +384,7 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return gpsInfo;
     }
 
     // 카카오 로그아웃

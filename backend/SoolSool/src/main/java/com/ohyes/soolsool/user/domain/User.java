@@ -3,6 +3,7 @@ package com.ohyes.soolsool.user.domain;
 import com.ohyes.soolsool.drink.domain.Category;
 import com.ohyes.soolsool.drink.domain.Diary;
 import com.ohyes.soolsool.location.domain.Location;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -43,6 +44,9 @@ public class User {
     @Column(name = "profile_img")
     private String profileImg;
 
+    @Column(name = "custom_profile_img")
+    private String customProfileImg;
+
     @Column(name = "address")
     private String address;
 
@@ -76,6 +80,12 @@ public class User {
     @Column(name = "start_nonalcohol_date")
     private LocalDate startNonalcoholDate;
 
+    @Column(name = "today_blood_alcohol", columnDefinition = "float default 0.0")
+    private float todayBloodAlcohol;
+
+    @Column(name = "today_liver_alcohol", columnDefinition = "float default 0.0")
+    private float todayLiverAlcohol;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -89,23 +99,24 @@ public class User {
     @JoinColumn(name = "category_pk")
     private Category category;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Diary> diaries = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "location_pk")
     private Location location;
 
     // 생성자
     @Builder
-    public User(String socialId, Category category, String nickname, String profileImg, String address,
-        String gender, int height, int weight, float alcoholLimit, String refreshToken,
-        int maxNonalcoholPeriod, LocalDate startNonalcoholDate) {
-
+    public User(String socialId, Category category, String nickname, String profileImg,
+        String customProfileImg, String address, String gender, int height, int weight,
+        float alcoholLimit, String refreshToken, int maxNonalcoholPeriod,
+        LocalDate startNonalcoholDate, float todayBloodAlcohol, float todayLiverAlcohol) {
         this.socialId = socialId;
         this.category = category;
         this.nickname = nickname;
         this.profileImg = profileImg;
+        this.customProfileImg = customProfileImg;
         this.address = address;
         this.gender = gender;
         this.height = height;
@@ -114,6 +125,8 @@ public class User {
         this.refreshToken = refreshToken;
         this.maxNonalcoholPeriod = maxNonalcoholPeriod;
         this.startNonalcoholDate = startNonalcoholDate;
+        this.todayBloodAlcohol = todayBloodAlcohol;
+        this.todayLiverAlcohol = todayLiverAlcohol;
     }
 
     public void updateRefreshToken(String updateRefreshToken) {

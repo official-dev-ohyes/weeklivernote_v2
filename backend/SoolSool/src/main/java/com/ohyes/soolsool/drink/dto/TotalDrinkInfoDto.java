@@ -20,10 +20,13 @@ public class TotalDrinkInfoDto {
     private int height;
     private int weight;
     private String gender;
+    private float todayBloodAlcohol;
+    private float todayLiverAlcohol;
 
     @Builder
     private TotalDrinkInfoDto(int drinkTotal, float alcoholAmount, LocalDateTime drinkStartTime,
-        List<DrinkInfo> drinks, int height, int weight, String gender) {
+        List<DrinkInfo> drinks, int height, int weight, String gender, float todayBloodAlcohol,
+        float todayLiverAlcohol) {
         this.drinkTotal = drinkTotal;
         this.alcoholAmount = alcoholAmount;
         this.drinkStartTime = drinkStartTime;
@@ -31,5 +34,7 @@ public class TotalDrinkInfoDto {
         this.height = height;
         this.weight = weight;
         this.gender = gender;
+        this.todayBloodAlcohol = todayBloodAlcohol;
+        this.todayLiverAlcohol = todayLiverAlcohol;
     }
 }
