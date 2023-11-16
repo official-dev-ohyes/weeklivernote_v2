@@ -60,7 +60,7 @@ function SettingsScreen({ navigation }) {
         );
 
         if (lastNotificationStatus !== null) {
-          setIsLastNotificationEnabled(JSON.parse(drinkNotificationStatus));
+          setIsLastNotificationEnabled(JSON.parse(lastNotificationStatus));
         } else {
           await AsyncStorage.setItem(
             "isLastNotificationEnabled",
