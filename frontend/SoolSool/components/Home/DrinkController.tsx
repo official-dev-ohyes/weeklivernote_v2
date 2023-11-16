@@ -119,21 +119,21 @@ const DrinkController: React.FC<DrinkControllerProps> = ({
 
     let newStatus = notificationStatus;
 
-    if (alcoholLimitRatio < 50 && notificationStatus !== 0) {
+    if (alcoholLimitRatio < 42 && notificationStatus !== 0) {
       newStatus = 0;
     } else if (
-      alcoholLimitRatio >= 50 &&
-      alcoholLimitRatio < 75 &&
+      alcoholLimitRatio >= 42 &&
+      alcoholLimitRatio < 72 &&
       notificationStatus !== 1
     ) {
       newStatus = 1;
     } else if (
-      alcoholLimitRatio >= 75 &&
-      alcoholLimitRatio < 100 &&
+      alcoholLimitRatio >= 72 &&
+      alcoholLimitRatio < 97 &&
       notificationStatus !== 2
     ) {
       newStatus = 2;
-    } else if (alcoholLimitRatio >= 100 && notificationStatus !== 3) {
+    } else if (alcoholLimitRatio >= 97 && notificationStatus !== 3) {
       newStatus = 3;
     }
 

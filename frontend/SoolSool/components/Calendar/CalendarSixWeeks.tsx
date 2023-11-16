@@ -63,7 +63,7 @@ function CalendarSixWeeks({ navigation }) {
   const dynamicSnapPoints = useMemo(() => {
     const isToday = selectDay === nowDate;
     const snapPoints =
-      isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
+      isToday || !alcoholDays.includes(selectDay) ? ["25%"] : ["25%", "100%"];
     return snapPoints;
   }, [selectDay, alcoholDays]);
 
@@ -152,7 +152,7 @@ function CalendarSixWeeks({ navigation }) {
   const handleCreateRecordPressed = () => {
     navigation.navigate("RecordCreate", {
       date: selectDay,
-      isAlcohol: alcoholDays[selectDay],
+      isAlcohol: alcoholDays.includes(selectDay),
     });
   };
 
@@ -178,6 +178,8 @@ function CalendarSixWeeks({ navigation }) {
           dayComponent={({ date, state }) => {
             const alcoholKey = date.dateString;
             const isDisabled = state === "disabled";
+            const isActive = alcoholKey === selectDay;
+            const isToday = alcoholKey === nowDate;
 
             return (
               <TouchableOpacity
@@ -186,11 +188,22 @@ function CalendarSixWeeks({ navigation }) {
                 }}
                 style={[
                   styles.calendarCell,
-                  isDisabled && { opacity: 0.65, paddingLeft: 0 },
+                  isDisabled && {
+                    opacity: 0.65,
+                    paddingLeft: 0,
+                  },
                 ]}
               >
                 <View style={styles.calendarCell}>
-                  <Text style={styles.calendarDate}>{date.day}</Text>
+                  <Text
+                    style={[
+                      styles.calendarDate,
+                      isToday && styles.todayDate,
+                      isActive && styles.selectDate,
+                    ]}
+                  >
+                    {date.day}
+                  </Text>
                   {alcoholDays.includes(alcoholKey) ? (
                     <ImageBackground
                       source={adaptiveIcon}
@@ -211,36 +224,32 @@ function CalendarSixWeeks({ navigation }) {
             onChange={handleSheetChanges}
           >
             <View style={styles.dailySummaryComponent}>
-              {alcoholDays[selectDay] ? (
-                <DailySummary
-                  navigation={navigation}
-                  summaryText={selectDay}
-                  alcoholDays={alcoholDays}
-                  onRemove={() => {
-                    setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
-                  }}
-                />
-              ) : (
-                <View style={styles.tempBox}>
-                  <Text style={styles.headerText}>{selectDay}</Text>
-                  {nowDate === selectDay ? (
-                    <Text style={styles.innerText}>
-                      내일 새벽 5시에 업데이트 됩니다.
-                    </Text>
-                  ) : isFuture ? (
-                    <Text style={styles.innerText}>
-                      아직은 기록할 수 없어요.
-                    </Text>
-                  ) : (
-                    <FAB
-                      icon="plus"
-                      style={styles.fab}
-                      color="white"
-                      onPress={handleCreateRecordPressed}
-                    />
-                  )}
-                </View>
-              )}
+              <View style={styles.tempBox}>
+                <Text style={styles.headerText}>{selectDay}</Text>
+                {alcoholDays.includes(selectDay) ? (
+                  <DailySummary
+                    navigation={navigation}
+                    summaryText={selectDay}
+                    alcoholDays={alcoholDays}
+                    onRemove={() => {
+                      setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
+                    }}
+                  />
+                ) : nowDate === selectDay ? (
+                  <Text style={styles.innerText}>
+                    내일 새벽 5시에 업데이트 됩니다.
+                  </Text>
+                ) : isFuture ? (
+                  <Text style={styles.innerText}>아직은 기록할 수 없어요.</Text>
+                ) : (
+                  <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    color="white"
+                    onPress={handleCreateRecordPressed}
+                  />
+                )}
+              </View>
             </View>
           </BottomSheetModal>
         ) : null}
@@ -289,12 +298,19 @@ const styles = StyleSheet.create({
   calendarDate: {
     color: "white", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 글씨 색상@@@@@@@@@@@@@@@@@@@@@@@@
   },
+  todayDate: {
+    color: "#CA77FF",
+  },
+  selectDate: {
+    color: "#FFDE68",
+  },
   calendarStamp: {
     height: "83%", // @@@@@@@@@@@@@@@@@@@@@@@@술마신 날 도장@@@@@@@@@@@@@@@@@@@@@@@@
     width: "83%",
   },
   dailySummaryComponent: {
     flex: 1,
+    height: "100%",
   },
   tempBox: {
     height: "90%",
@@ -318,6 +334,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: "1%",
     backgroundColor: "#121B33",
+    top: "20%",
   },
 });
 

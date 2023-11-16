@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -10,15 +10,13 @@ import {
 } from "../../utils/drinkUtils";
 import { ImageBackground } from "expo-image";
 import { Button, Icon, MD3Colors, Modal, Portal } from "react-native-paper";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 
 import DailyDetail from "./DailyDetail";
 import Toast from "react-native-root-toast";
 
 function DailySummary(props) {
   const { summaryText, alcoholDays, onRemove, navigation } = props;
-  const today = new Date();
-  const queryClient = useQueryClient();
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
@@ -40,7 +38,7 @@ function DailySummary(props) {
     React.useCallback(() => {
       setIsAlcohol(false);
 
-      if (alcoholDays[summaryText]) {
+      if (alcoholDays.includes(summaryText)) {
         setIsAlcohol(true);
         if (DailyDrinkData) {
           setDailyInfo(DailyDrinkData);
@@ -81,83 +79,61 @@ function DailySummary(props) {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.box}>
-        <View style={styles.header}>
-          <View style={styles.headerBox}>
-            <Text style={styles.headerText}>{summaryText}</Text>
-          </View>
-          {isAlcohol ? (
-            <View style={styles.buttons}>
-              <Button
-                mode="outlined"
-                onPress={() => {
-                  navigation.navigate("RecordCreate", {
-                    date: summaryText,
-                    isAlcohol: true,
-                  });
-                }}
-                contentStyle={styles.buttonContents}
-                style={styles.botton}
-              >
-                수정
-              </Button>
-              <Button
-                mode="contained"
-                onPress={openDeleteModal}
-                buttonColor={"#363C4B"}
-                contentStyle={styles.buttonContents}
-                style={styles.botton}
-              >
-                삭제
-              </Button>
-            </View>
-          ) : null}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("RecordCreate", {
+                date: summaryText,
+                isAlcohol: true,
+              });
+            }}
+          >
+            <Text style={styles.buttonText}>수정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#363C4B" }]}
+            onPress={openDeleteModal}
+          >
+            <Text style={[styles.buttonText, { color: "white" }]}>삭제</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.total}>
-          <View>
-            <View style={styles.informations}>
-              {/* 마신 술을 세 종류 까지 종류/잔 보여주기 -> 백엔드에 정렬 로직 추가 요청 상태 */}
-              <View style={styles.category}>
-                {alcoholList.slice(0, 3).map((alcohol, index) => (
-                  <View style={styles.eachAlcohol} key={index}>
-                    <View style={styles.eachAlcoholIcon}>
-                      <ImageBackground
-                        source={getDrinkImageById(
-                          getIdByOnlyCategory(alcohol.drink)
-                        )}
-                        style={styles.imageContainer}
-                        resizeMode="contain"
-                      />
-                      <Text style={styles.drinkStyle}>
-                        {getShotAmountByDrinkCOunt(
-                          alcohol.drink,
-                          alcohol.count
-                        )}
-                        잔
-                      </Text>
-                    </View>
+          <View style={styles.informations}>
+            <View style={styles.category}>
+              {alcoholList.slice(0, 3).map((alcohol, index) => (
+                <View style={styles.eachAlcohol} key={index}>
+                  <View style={styles.eachAlcoholIcon}>
+                    <ImageBackground
+                      source={getDrinkImageById(
+                        getIdByOnlyCategory(alcohol.drink)
+                      )}
+                      style={styles.imageContainer}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.drinkStyle}>
+                      {getShotAmountByDrinkCOunt(alcohol.drink, alcohol.count)}
+                      잔
+                    </Text>
                   </View>
-                ))}
+                </View>
+              ))}
+            </View>
+            <View style={styles.textInformations}>
+              <View style={styles.iconAndTextBox}>
+                <Icon source="cup-water" size={24} color="#0477BF" />
+                <Text style={styles.totalText}>
+                  {` ${dailyInfo.totalDrink.toLocaleString()}`}
+                  <Text style={styles.unit}> ml</Text>
+                </Text>
               </View>
-              <View style={styles.textInformations}>
-                <View style={styles.iconAndTextBox}>
-                  <Icon source="cup-water" size={24} color="#0477BF" />
-                  <Text style={styles.totalText}>
-                    {dailyInfo.totalDrink}
-                    <Text style={styles.unit}> ml</Text>
-                  </Text>
-                </View>
-                <View style={styles.iconAndTextBox}>
-                  <Icon
-                    source="blood-bag"
-                    size={24}
-                    color={MD3Colors.error50}
-                  />
-                  <Text style={styles.totalText}>
-                    {dailyInfo.topConc.toFixed(3)}
-                    <Text style={styles.unit}> %</Text>
-                  </Text>
-                </View>
+              <View style={styles.iconAndTextBox}>
+                <Icon source="blood-bag" size={24} color={MD3Colors.error50} />
+                <Text style={styles.totalText}>
+                  {` ${dailyInfo.topConc.toFixed(3)}`}
+                  <Text style={styles.unit}> %</Text>
+                </Text>
               </View>
             </View>
           </View>
@@ -171,6 +147,7 @@ function DailySummary(props) {
           navigation={navigation}
         />
       </View>
+
       <Portal>
         <Modal
           visible={isModal}
@@ -179,6 +156,7 @@ function DailySummary(props) {
             backgroundColor: "white",
             padding: 20,
             width: "90%",
+            height: "20%",
             borderRadius: 5,
             marginLeft: "auto",
             marginRight: "auto",
@@ -186,17 +164,20 @@ function DailySummary(props) {
         >
           <View style={styles.mainContainer}>
             <Text style={styles.alertTitle}>주간일기</Text>
-            <View style={styles.textContainer}>
-              <Text>정말 삭제하시겠습니까?</Text>
-            </View>
+            <Text>정말 삭제하시겠습니까?</Text>
             <View style={styles.buttonContainer}>
-              <Button mode="outlined" onPress={hideDeleteModal}>
+              <Button
+                mode="outlined"
+                onPress={hideDeleteModal}
+                style={{ marginHorizontal: "1%" }}
+              >
                 취소
               </Button>
               <Button
                 mode="contained"
                 buttonColor={"#363C4B"}
                 onPress={confirmDelete}
+                style={{ marginHorizontal: "1%" }}
               >
                 삭제
               </Button>
@@ -212,30 +193,38 @@ const styles = StyleSheet.create({
   box: {
     height: "20%",
   },
-  header: {
+  buttonContainer: {
     flexDirection: "row",
-    height: "30%",
-    marginLeft: "5%",
-    marginRight: "5%",
-  },
-  headerBox: {
-    height: "100%",
-    flexDirection: "row",
+    justifyContent: "flex-end",
     alignItems: "center",
-    // backgroundColor: "red",
+    height: "40%",
+    top: "-5%",
+    marginRight: "3%",
   },
-  headerText: {
-    fontSize: 18,
-    color: "#363C4B",
-    fontFamily: "LineRegular",
+  button: {
+    width: "15%",
+    height: "auto",
+    top: "-1.5%",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "1%",
+    paddingHorizontal: "1%",
+    paddingVertical: "0.5%",
+    borderWidth: 1,
+    borderRadius: 15,
+  },
+  buttonText: {
+    fontSize: 15,
   },
   total: {
-    height: "75%",
+    height: "80%",
     borderRadius: 5,
     backgroundColor: "#ffffff",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
+    marginTop: "-5%",
+
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
     shadowOffset: {
@@ -246,21 +235,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
-  buttons: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  deleteButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    margin: "15%",
-  },
-  botton: {
-    margin: "1%",
-    // flex: 1,
-  },
-
   informations: {
     height: "100%",
     flexDirection: "row",
@@ -342,27 +316,11 @@ const styles = StyleSheet.create({
     // backgroundColor: "yellow",
   },
   mainContainer: {
-    display: "flex",
-    flexDirection: "column",
     gap: 15,
-  },
-  textContainer: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  buttonContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 5,
+    paddingHorizontal: "5%",
   },
   alertTitle: {
     fontSize: 20,
-  },
-  buttonContents: {
-    height: 50,
-    justifyContent: "center",
-    marginTop: "-11%",
   },
 });
 
