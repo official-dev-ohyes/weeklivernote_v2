@@ -7,6 +7,8 @@ import {
   BackHandler,
   Dimensions,
   ImageBackground,
+  ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native-paper";
@@ -121,26 +123,25 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <ImageBackground
-      source={mainbackground}
-      style={[{ height: screenHeight }, styles.mainContainer]}
-    >
-      <View style={styles.subContainer}>
-        <View>
-          <HomeCarousel />
+    <ScrollView style={styles.mainContainer}>
+      <ImageBackground source={mainbackground} style={{ height: screenHeight }}>
+        <View style={styles.subContainer}>
+          <View>
+            <HomeCarousel />
+          </View>
+          <View style={styles.controllerContainer}>
+            <SafeDriveInfo
+              bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
+              requiredTimeToDrive={drinkToday.cannotDriveFor}
+            />
+            <DrinkController
+              currentDrinks={currentDrinks}
+              initialValue={initialValue}
+            />
+          </View>
         </View>
-        <View style={styles.controllerContainer}>
-          <SafeDriveInfo
-            bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
-            requiredTimeToDrive={drinkToday.cannotDriveFor}
-          />
-          <DrinkController
-            currentDrinks={currentDrinks}
-            initialValue={initialValue}
-          />
-        </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </ScrollView>
   );
 };
 
@@ -153,10 +154,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
-    // backgroundColor: "green",
-    // marginTop: "10%",
-    // justifyContent: "center",
+    // justifyContent: "space-between",
   },
   loadingContainer: {
     flex: 1,
@@ -165,7 +163,6 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     margin: 24,
-    // marginTop: -340,
     display: "flex",
     flexDirection: "column",
     gap: 5,
