@@ -18,6 +18,6 @@ export const signOut = async () => {
     return res.data;
   } catch (err) {
     // console.log("axios 호출 실패");
-    throw new Error("로그아웃 요청 실패");
+    throw new Error("회원탈퇴 요청 실패");
   }
 };

@@ -1,276 +1,288 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import React from "react";
+import { useState, useRef, useMemo, useCallback } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { FAB } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
+import { useQuery, useQueryClient } from "react-query";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { ImageBackground } from "expo-image";
 import { Calendar } from "react-native-calendars";
-import React, { useState, useEffect } from "react";
+import "./LocaleConfig"; // 달력 서식
+
 import DailySummary from "./DailySummary";
 import { fetchMonthRecord } from "../../api/drinkRecordApi";
-import axios from "axios";
+import { adaptiveIcon } from "../../assets";
+import { getRealToday } from "../../utils/timeUtils";
 
-function CalendarSixWeeks({}) {
+function CalendarSixWeeks({ navigation }) {
   // 진짜 오늘 정보 저장
-  const today = new Date();
-  const nowDate = `${today.getFullYear()}-${
-    today.getMonth() + 1 < 10 ? "0" : ""
-  }${today.getMonth() + 1}-${
-    today.getDate() < 10 ? "0" : ""
-  }${today.getDate()}`;
+  const nowDate = getRealToday();
 
   const [currentDay, setCurrentDay] = useState("");
   const [isFuture, setIsFuture] = useState<boolean>(false);
-  const { height } = Dimensions.get("window");
-  const [isSelectDay, setIsSelectDay] = useState<boolean>(false);
   const [selectDay, setSelectDay] = useState("");
-  const [alcoholDays, setAlcoholDays] = useState({});
-  const [alcoholInfo, setAlcoholInfo] = useState([]);
-  const [isSame, setIsSame] = useState<boolean>(false);
+  const [alcoholDays, setAlcoholDays] = useState([]);
+  const queryClient = useQueryClient();
+  const [queryDate, setQueryDate] = useState(nowDate);
 
-  useEffect(() => {
-    console.log(`현재 날짜는? ${nowDate}`);
-    const setAndFetch = async () => {
-      const tempDay = currentDay ? currentDay : nowDate;
-      await setCurrentDay(tempDay);
-      fetchMonthRecord(tempDay) // currentDay로 실행시 적용 안됨
-        .then((res) => {
-          // console.log("성공", res.drinks);
-          setAlcoholInfo(res.deinks);
+  const {
+    data: MonthlyData,
+    isLoading: isMonthlyDataLoading,
+    isError: isMonthlyDataError,
+  } = useQuery(
+    ["monthlyDrinkLogs", queryDate],
+    async () => await fetchMonthRecord(queryDate),
+    {
+      enabled: !!queryDate,
+    }
+  );
 
-          const drinkData = res.drinks;
-          setAlcoholInfo(drinkData);
-
-          const tempDays = {};
-          for (let i = 0; i < drinkData.length; i++) {
-            const tempDate = drinkData[i].date;
-            tempDays[tempDate] = { marked: true };
-            // days.push(`${drinkData[i].date}: { selected: true }`);
-          }
-          setAlcoholDays(tempDays);
-          // setAlcoholDays(days);
-          // console.log(`알코올 마신 날들은? ${days}`);
-        })
-        .catch((err) => {
-          console.error("실패", err);
-        });
-    };
-    setAndFetch();
-
-    if (selectDay) {
-      const checkFuture = () => {
-        const selectedTimeStamp = new Date(selectDay).getTime();
-        const nowTimestamp = new Date(nowDate).getTime();
-        if (nowTimestamp < selectedTimeStamp) {
-          setIsFuture(true);
-        } else {
-          setIsFuture(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      queryClient.invalidateQueries("monthlyDrinkLogs");
+      if (!isMonthlyDataLoading && MonthlyData) {
+        const tempDays = [];
+        for (let i = 0; i < MonthlyData.drinks.length; i++) {
+          const tempDate = MonthlyData.drinks[i].date;
+          tempDays.push(tempDate);
         }
-      };
-      checkFuture();
-    }
-  }, [nowDate, selectDay]);
-
-  const handleDayPress = async (clickDay) => {
-    const newMonth =
-      clickDay.month < 10 ? `0${clickDay.month}` : clickDay.month;
-    const newDay = clickDay.day < 10 ? `0${clickDay.day}` : clickDay.day;
-    const newDate = `${clickDay.year}-${newMonth}-${newDay}`;
-    // console.log(`변경된 날짜는? ${newDate}`);
-    if (newDate === selectDay) {
-      setSelectDay("");
-      setIsSelectDay(false);
-      setIsFuture(false);
-    } else {
-      setSelectDay(newDate);
-      setCurrentDay(newDate);
-      await fetchMonthRecord(newDate);
-      if (nowDate === newDate) {
-        setIsSame(true);
-      } else {
-        setIsSame(false);
+        setAlcoholDays(tempDays);
       }
-      setIsSelectDay(true);
-    }
-  };
+    }, [isMonthlyDataLoading, MonthlyData])
+  );
 
-  const handlePressArrowLeft = async (newMonth) => {
-    newMonth();
-    shiftMonth("previous");
-  };
+  // 특정일 클릭
+  const handleDayPress = async (date) => {
+    const clickDay = date.dateString;
 
-  const handelPressArrowRight = async (newMonth) => {
-    newMonth();
-    shiftMonth("next");
-  };
-
-  const shiftMonth = (to) => {
-    const current = new Date(currentDay);
-    let shiftDay;
-    if (to === "next") {
-      shiftDay = `${current.getFullYear()}-${
-        current.getMonth() + 2 < 10 ? "0" : ""
-      }${current.getMonth() + 2}-${"01"}`;
+    if (clickDay === selectDay) {
+      setSelectDay("");
+      return;
     } else {
-      shiftDay = `${current.getFullYear()}-${
-        current.getMonth() < 10 ? "0" : ""
-      }${current.getMonth()}-${"01"}`;
+      setSelectDay(clickDay);
+      setCurrentDay(clickDay);
+
+      handlePresentModalPress();
     }
-    // console.log(`이동한 날짜는 ${shiftDay}`);
-    setCurrentDay(shiftDay);
-    fetchMonthRecord(shiftDay);
+
+    // 현재 날짜(nowDate)와 클릭한 날짜(clickDay) 비교
+    const selectedTimeStamp = date.timestamp;
+    const nowTimestamp = new Date(nowDate).getTime();
+
+    if (nowTimestamp < selectedTimeStamp) {
+      setIsFuture(true);
+    } else {
+      setIsFuture(false);
+    }
   };
 
-  const height1 = (height * 0.9) / 13.5;
-  const height2 = (height * 0.9) / 10;
+  const handleCreateRecordPressed = () => {
+    navigation.navigate("RecordCreate", {
+      date: selectDay,
+      isAlcohol: alcoholDays.includes(selectDay),
+    });
+  };
 
-  // const selectedDayStyle = {
-  //   selected: {
-  //     // backgroundColor: 'blue',
-  //     borderRadius: 16,
-  //   },
-  //   today: {
-  //     color: 'blue'
-  //   },
-  // };
+  // Bottom Sheet
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  // console.log(
-  //   // `alcoholDays는 이렇게 생겼다!! ${JSON.stringify(alcoholDays, null, 2)}`
-  // );
+  const dynamicSnapPoints = useMemo(() => {
+    const isToday = selectDay === nowDate;
+    const snapPoints =
+      isToday || !alcoholDays.includes(selectDay) ? ["25%"] : ["25%", "100%"];
+    return snapPoints;
+  }, [selectDay, alcoholDays]);
 
-  // console.log(`선택한 날짜는 ${selectDay}, 미래인가요? ${isFuture}`);
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("Sheet Index:", index);
+    if (index === -1) {
+      setSelectDay("");
+    }
+  }, []);
 
   return (
-    <View style={styles.totalContainer}>
-      {isSelectDay ? (
-        <View>
-          <View style={styles.smallCalendar}>
-            <Calendar
-              current={currentDay}
-              markedDates={alcoholDays}
-              // style={{ height: "100%" }}
-              theme={{
-                "stylesheet.day.basic": {
-                  base: {
-                    height: height1,
+    <BottomSheetModalProvider>
+      <View style={styles.totalContainer}>
+        <Calendar
+          current={currentDay}
+          style={styles.calenderStyle}
+          onMonthChange={(date) => {
+            setQueryDate(date.dateString);
+          }}
+          renderHeader={(date) => {
+            return (
+              <Text style={styles.calendarHeader}>
+                {date.toString("yyyy년 MMMM")}
+              </Text>
+            );
+          }}
+          dayComponent={({ date, state }) => {
+            const alcoholKey = date.dateString;
+            const isDisabled = state === "disabled";
+            const isActive = alcoholKey === selectDay;
+            const isToday = alcoholKey === nowDate;
+
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  handleDayPress(date);
+                }}
+                style={[
+                  styles.calendarCell,
+                  isDisabled && {
+                    opacity: 0.65,
+                    paddingLeft: 0,
                   },
-                },
-              }}
-              onDayPress={handleDayPress}
-              onPressArrowLeft={handlePressArrowLeft}
-              onPressArrowRight={handelPressArrowRight}
-            />
-          </View>
-          <View style={styles.dailySummaryComponent}>
-            {isSame ? (
-              <View style={styles.dailySummaryTotal}>
-                <View style={styles.headerBox}>
-                  <Text>{selectDay}</Text>
+                ]}
+              >
+                <View style={styles.calendarCell}>
+                  <Text
+                    style={[
+                      styles.calendarDate,
+                      isToday && styles.todayDate,
+                      isActive && styles.selectDate,
+                    ]}
+                  >
+                    {date.day}
+                  </Text>
+                  {alcoholDays.includes(alcoholKey) ? (
+                    <ImageBackground
+                      source={adaptiveIcon}
+                      style={styles.calendarStamp}
+                    />
+                  ) : null}
                 </View>
-                <View style={styles.others}>
-                  <Text>내일 새벽 5시에 업데이트 됩니다</Text>
-                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
+
+        {selectDay !== "" ? (
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={dynamicSnapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View style={styles.dailySummaryComponent}>
+              <View style={styles.tempBox}>
+                <Text style={styles.headerText}>{selectDay}</Text>
+                {alcoholDays.includes(selectDay) && nowDate !== selectDay ? (
+                  <DailySummary
+                    navigation={navigation}
+                    summaryText={selectDay}
+                    alcoholDays={alcoholDays}
+                    // onRemove={() => {
+                    //   setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
+                    // }}
+                  />
+                ) : nowDate === selectDay ? (
+                  <Text style={styles.innerText}>
+                    내일 새벽 5시에 업데이트 됩니다.
+                  </Text>
+                ) : isFuture ? (
+                  <Text style={styles.innerText}>아직은 기록할 수 없어요.</Text>
+                ) : (
+                  <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    color="white"
+                    onPress={handleCreateRecordPressed}
+                  />
+                )}
               </View>
-            ) : isFuture ? (
-              <View style={styles.dailySummaryTotal}>
-                <View style={styles.headerBox}>
-                  <Text>{selectDay}</Text>
-                </View>
-                <View style={styles.others}>
-                  <Text>미래 날짜는 입력이 불가능합니다</Text>
-                </View>
-              </View>
-            ) : (
-              <DailySummary
-                summaryText={selectDay}
-                alcoholDays={alcoholDays}
-                // navigation={navigation}
-              />
-            )}
-          </View>
-        </View>
-      ) : (
-        <View style={styles.largeCalendar}>
-          <Calendar
-            // style={{ height: "100%" }}
-            current={currentDay}
-            markedDates={alcoholDays}
-            theme={{
-              "stylesheet.day.basic": {
-                base: {
-                  alignSelf: "stretch",
-                  alignItems: "center",
-                  height: height2,
-                  backgroundColor: "rgba(255, 255, 255, 0.5)",
-                },
-              },
-              "stylesheet.calendar.header": {
-                monthText: {
-                  fontFamily: "Yeongdeok-Sea",
-                  fontSize: 20,
-                },
-                dayHeader: {
-                  fontFamily: "Yeongdeok-Sea",
-                  fontSize: 14,
-                },
-              },
-            }}
-            headerStyle={{}}
-            onDayPress={handleDayPress}
-            onPressArrowLeft={handlePressArrowLeft}
-            onPressArrowRight={handelPressArrowRight}
-          />
-        </View>
-      )}
-    </View>
+            </View>
+          </BottomSheetModal>
+        ) : null}
+      </View>
+    </BottomSheetModalProvider>
   );
 }
 
 const styles = StyleSheet.create({
   totalContainer: {
     height: "100%",
-    backgroundColor: "balck",
     flexDirection: "column",
-    // borderWidth: 2,
-    // borderColor: "red",
-    // justifyContent: "space-between",
   },
-  smallCalendar: {
-    height: "80%",
-    // borderWidth: 2,
-    // borderColor: "orange",
+  calenderStyle: {
+    backgroundColor: "black",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    borderRadius: 5,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
-  largeCalendar: {
-    height: "100%",
-    // borderWidth: 2,
-    // borderColor: "orange",
+  calendarHeader: {
+    fontSize: 18,
+    fontFamily: "LineRegular",
+    color: "#fff",
+    textAlign: "center",
+  },
+  calendarCell: {
+    alignItems: "center",
+    height: 90, // 하드코딩 시 스크롤뷰 달아야 함. 다시 생각해보기
+    width: "100%",
+    backgroundColor: "#000",
+    marginVertical: -7,
+    paddingTop: 7,
+    paddingLeft: 1,
+  },
+  calendarDate: {
+    color: "white",
+  },
+  todayDate: {
+    color: "#CA77FF",
+  },
+  selectDate: {
+    color: "#FFDE68",
+  },
+  calendarStamp: {
+    height: "83%",
+    width: "83%",
   },
   dailySummaryComponent: {
-    height: "20%",
-    backgroundColor: "balck",
-  },
-  dailySummaryTotal: {
     flex: 1,
-    flexDirection: "column",
-    // backgroundColor: "yellow",
-    borderRadius: 10,
-    padding: 5,
-    justifyContent: "center",
-    alignContent: "center",
-    borderWidth: 2,
-    borderColor: "black",
-    margin: 5,
+    height: "100%",
   },
-  headerBox: {
-    height: "20%",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 5,
-    // backgroundColor: "black",
+  tempBox: {
+    height: "90%",
   },
-  others: {
+  headerText: {
+    marginHorizontal: "5%",
+    fontSize: 18,
+    color: "#363C4B",
+    fontFamily: "LineRegular",
+    textAlign: "left",
+  },
+  innerText: {
     height: "80%",
+    fontSize: 20,
+    fontFamily: "LineRegular",
+    textAlign: "center",
+    top: "40%",
+  },
+  fab: {
+    alignSelf: "center",
     justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: "5%",
+    margin: "1%",
+    backgroundColor: "#121B33",
+    top: "20%",
   },
 });
 
 export default CalendarSixWeeks;
-
-// 페이지 벗어날 때, 선택된 날 없도록 초기화 하기 -> 에뮬레이터 문제인지 확인하기

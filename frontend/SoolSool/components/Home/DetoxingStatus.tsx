@@ -4,61 +4,81 @@ import Wave from "./Wave";
 interface DetoxingStatusProps {
   alcoholInGrams: number;
   requiredTimeForDetox: number;
-  detoxingFor: number | undefined;
+  alcoholAt5: number;
+  currentAlcohol: number;
 }
 
-function DetoxingStatus({
+const DetoxingStatus = ({
   alcoholInGrams,
+  alcoholAt5,
+  currentAlcohol,
   requiredTimeForDetox,
-  detoxingFor,
-}: DetoxingStatusProps) {
-  const detoxingInProgress =
-    requiredTimeForDetox !== 0
-      ? (1 - detoxingFor / requiredTimeForDetox) * 100
-      : 0;
+}: DetoxingStatusProps) => {
+  let detoxingInProgress: number;
 
-  const remainingTime = requiredTimeForDetox - detoxingFor;
-  const adjustedRemainingTime =
-    remainingTime > 0 ? remainingTime.toFixed(1) : "Drink Mindfully!";
+  if (alcoholInGrams + alcoholAt5 !== 0) {
+    detoxingInProgress = (currentAlcohol / (alcoholInGrams + alcoholAt5)) * 100;
+  } else {
+    detoxingInProgress = 0;
+  }
 
   return (
     <View style={styles.statusContainer}>
-      <Text style={styles.titleContainer}>{alcoholInGrams}g</Text>
-      {detoxingFor === undefined ? (
-        <Text style={styles.periodContainer}>Drink Mindfully!</Text>
-      ) : (
-        <Text style={styles.subtitleContainer}>
-          해독까지{"  "}
-          <Text style={styles.periodContainer}>{adjustedRemainingTime}</Text>
-          시간
+      <View>
+        <Text style={styles.titleContainer}>
+          {currentAlcohol.toLocaleString()}g
         </Text>
-      )}
-
-      <Wave size={200} progress={detoxingInProgress} />
+        {currentAlcohol <= 0 ? (
+          <Text style={styles.subtitleContainer}>
+            <Text style={styles.periodContainer}>간 상태가 아주 깨끗해요!</Text>
+          </Text>
+        ) : (
+          <Text style={styles.subtitleContainer}>
+            해독까지{"  "}
+            <Text style={styles.periodContainer}>
+              {requiredTimeForDetox.toFixed(1)}
+            </Text>
+            시간
+          </Text>
+        )}
+      </View>
+      <View style={styles.detoxingInProgressContainer}>
+        <Wave size={220} progress={detoxingInProgress} />
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
+    marginTop: "20%",
     marginVertical: 24,
     padding: 4,
     display: "flex",
     alignItems: "center",
+    gap: 20,
   },
   titleContainer: {
-    fontSize: 40,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 30,
+    fontFamily: "LineRegular",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 5,
   },
   subtitleContainer: {
     fontSize: 20,
-    paddingBottom: 16,
-    fontFamily: "Yeongdeok-Sea",
+    fontFamily: "LineRegular",
+    color: "white",
+    // marginTop: 20,
   },
   periodContainer: {
-    fontSize: 24,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 20,
+    fontFamily: "LineRegular",
+    color: "white",
+  },
+  detoxingInProgressContainer: {
+    marginTop: 50,
   },
 });
 

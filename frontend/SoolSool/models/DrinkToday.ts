@@ -7,6 +7,7 @@ import {
   veryHighImage,
   severeImage,
 } from "../assets/index";
+import { getTodayAt5 } from "../utils/timeUtils";
 
 enum IntoxicationLevel {
   Sober,
@@ -26,15 +27,6 @@ const IntoxicationImageMap: Record<IntoxicationLevel, ImageProps["source"]> = {
   [IntoxicationLevel.Severe]: severeImage,
 };
 
-interface DrinkTodayData {
-  drinkTotal: number;
-  alcoholAmount: number;
-  drinkStartTime: string | null;
-  height: number;
-  weight: number;
-  gender: string;
-}
-
 export class DrinkToday {
   drinkTotal: number;
   alcoholAmount: number;
@@ -42,8 +34,21 @@ export class DrinkToday {
   height: number;
   weight: number;
   gender: string;
+  bacAt5: number;
+  alcoholAt5: number;
 
-  get bloodAlcoholContent(): number {
+  constructor(data: DrinkTodayData) {
+    this.drinkTotal = data.drinkTotal;
+    this.alcoholAmount = data.alcoholAmount;
+    this.drinkStartTime = data.drinkStartTime;
+    this.height = data.height;
+    this.weight = data.weight;
+    this.gender = data.gender;
+    this.bacAt5 = data.bacAt5;
+    this.alcoholAt5 = data.alcoholAt5;
+  }
+
+  private get bloodAlcoholContent(): number {
     if (this.drinkTotal === 0) {
       return 0;
     }
@@ -59,11 +64,45 @@ export class DrinkToday {
       ((this.alcoholAmount * 0.7) / (this.weight * 1000 * genderConstant)) *
       100;
     const roundedBAC = bac.toFixed(2);
+
     return parseFloat(roundedBAC);
   }
 
-  get intoxicationLevel(): IntoxicationLevel {
-    const bac = this.bloodAlcoholContent;
+  private get elapsedHours(): number {
+    if (this.drinkStartTime) {
+      const currentTime = new Date().getTime();
+      const startTime = new Date(this.drinkStartTime).getTime();
+      const elapsedMilliseconds = currentTime - startTime;
+      return elapsedMilliseconds / (1000 * 60 * 60);
+    } else {
+      return 0;
+    }
+  }
+
+  private get elapsedHoursFrom5(): number {
+    const currentTime = new Date().getTime();
+    const startTime = new Date(getTodayAt5()).getTime();
+    const elapsedMilliseconds = currentTime - startTime;
+    return elapsedMilliseconds / (1000 * 60 * 60);
+  }
+
+  get currentBloodAlcoholContent(): number {
+    const BACFromToday = Math.max(
+      0,
+      this.bloodAlcoholContent - this.elapsedHours * 0.015
+    );
+    const BACFromYesterday = Math.max(
+      0,
+      this.bacAt5 - this.elapsedHoursFrom5 * 0.015
+    );
+
+    const totalCurrentBAC = BACFromToday + BACFromYesterday;
+
+    return parseFloat(totalCurrentBAC.toFixed(2));
+  }
+
+  private get intoxicationLevel(): IntoxicationLevel {
+    const bac = this.currentBloodAlcoholContent;
 
     if (bac === 0) {
       return IntoxicationLevel.Sober;
@@ -82,28 +121,42 @@ export class DrinkToday {
 
   get intoxicationImage(): ImageProps["source"] {
     const level = this.intoxicationLevel;
+
     return IntoxicationImageMap[level];
   }
 
   get cannotDriveFor(): number {
-    const requiredTime = (200 * this.bloodAlcoholContent) / 3;
+    const requiredTime = (200 * this.currentBloodAlcoholContent) / 3;
     const roundedRequiredTime = requiredTime.toFixed(2);
+
     return parseFloat(roundedRequiredTime);
   }
 
+  get currentAlcoholAmount(): number {
+    const AlcoholFromToday = Math.max(
+      0,
+      this.alcoholAmount - this.elapsedHours * 7.2
+    );
+    const AlcoholFromYesterday = Math.max(
+      0,
+      this.alcoholAt5 - this.elapsedHoursFrom5 * 7.2
+    );
+
+    const totalCurrentAlcohol = AlcoholFromToday + AlcoholFromYesterday;
+
+    return parseFloat(totalCurrentAlcohol.toFixed(1));
+  }
+
   get requiredTimeForDetox(): number {
-    const requiredTimeInSeconds = this.alcoholAmount / 0.002;
-    const requiredTimeInHours = (requiredTimeInSeconds / 3600).toFixed(1);
+    const requiredTimeInHours = (this.currentAlcoholAmount / 7.2).toFixed(1);
 
     return Number(requiredTimeInHours);
   }
 
-  constructor(data: DrinkTodayData) {
-    this.drinkTotal = data.drinkTotal;
-    this.alcoholAmount = data.alcoholAmount;
-    this.drinkStartTime = data.drinkStartTime;
-    this.height = data.height;
-    this.weight = data.weight;
-    this.gender = data.gender;
+  update(updateData: Partial<DrinkTodayData>): DrinkToday {
+    return new DrinkToday({
+      ...this,
+      ...updateData,
+    });
   }
 }

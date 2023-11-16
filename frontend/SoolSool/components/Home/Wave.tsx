@@ -39,10 +39,12 @@ const Wave = ({ size = 256, progress = 50 }) => {
   }, [progress, size, innerCircleSize]);
 
   const createAnimatedPath = (phase = 20) => {
-    const d3Points = Array.from({ length: size }).map((_, i) => {
-      const angle = (i / size) * (Math.PI * frequency) + phase;
-      return [i, (Math.sin(angle) * amplitude) / 2 + verticalOffset.current];
-    });
+    const d3Points: [number, number][] = Array.from({ length: size }).map(
+      (_, i) => {
+        const angle = (i / size) * (Math.PI * frequency) + phase;
+        return [i, (Math.sin(angle) * amplitude) / 2 + verticalOffset.current];
+      }
+    );
     const lineGenerator = line().curve(curveBasis);
     const wavePath = lineGenerator(d3Points);
     return `${wavePath} L ${size}, ${size} ${0}, ${size} Z`;

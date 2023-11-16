@@ -1,10 +1,19 @@
-import React from "react";
-import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  Switch,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useState } from "react";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 import { Modal, Portal, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logOut, signOut } from "../api/accountApi";
+import { sendEmail } from "../utils/mailUtils";
+import Toast from "react-native-root-toast";
 
 function Section({ title, content }) {
   return (
@@ -24,14 +33,70 @@ function Separator() {
 }
 
 function SettingsScreen({ navigation }) {
-  const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+  const [isDrinkNotificationEnabled, setIsDrinkNotificationEnabled] =
+    useState(true);
+  const [isLastNotificationEnabled, setIsLastNotificationEnabled] =
+    useState(true);
   const [visible, setVisible] = React.useState(false);
+
+  useEffect(() => {
+    const loadNotificationStatus = async () => {
+      try {
+        const drinkNotificationStatus = await AsyncStorage.getItem(
+          "isDrinkNotificationEnabled"
+        );
+
+        if (drinkNotificationStatus !== null) {
+          setIsDrinkNotificationEnabled(JSON.parse(drinkNotificationStatus));
+        } else {
+          await AsyncStorage.setItem(
+            "isDrinkNotificationEnabled",
+            JSON.stringify(true)
+          );
+        }
+
+        const lastNotificationStatus = await AsyncStorage.getItem(
+          "isLastNotificationEnabled"
+        );
+
+        if (lastNotificationStatus !== null) {
+          setIsLastNotificationEnabled(JSON.parse(lastNotificationStatus));
+        } else {
+          await AsyncStorage.setItem(
+            "isLastNotificationEnabled",
+            JSON.stringify(true)
+          );
+        }
+      } catch (error) {
+        console.error("Error loading notification status:", error);
+        Toast.show("알림 설정에 실패했습니다. 잠시 후 다시 시도해주세요.", {
+          duration: Toast.durations.SHORT,
+        });
+      }
+    };
+
+    loadNotificationStatus();
+  }, []);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  const toggleNotification = () => {
-    setIsNotificationEnabled(!isNotificationEnabled);
+  const toggleDrinkNotification = async () => {
+    const newNotificationStatus = !isDrinkNotificationEnabled;
+    setIsDrinkNotificationEnabled(newNotificationStatus);
+    await AsyncStorage.setItem(
+      "isDrinkNotificationEnabled",
+      JSON.stringify(newNotificationStatus)
+    );
+  };
+
+  const toggleLastNotification = async () => {
+    const newNotificationStatus = !isLastNotificationEnabled;
+    setIsLastNotificationEnabled(newNotificationStatus);
+    await AsyncStorage.setItem(
+      "isLastNotificationEnabled",
+      JSON.stringify(newNotificationStatus)
+    );
   };
 
   const handleGoToNotification = () => {
@@ -56,7 +121,7 @@ function SettingsScreen({ navigation }) {
     await signOut()
       .then(async (res) => {
         console.log("회원탈퇴 성공");
-        await AsyncStorage.removeItem("accessToken");
+        await AsyncStorage.clear();
         navigation.navigate("Login");
       })
       .catch((err) => {
@@ -71,108 +136,122 @@ function SettingsScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Section
-        title="알림"
-        content={
-          <View style={styles.alarmContainer}>
-            <Text>알림 켜기</Text>
-            <Switch
-              value={isNotificationEnabled} // 알림 켜기 또는 끄기 값 설정
-              onValueChange={toggleNotification} // 알림 켜기 또는 끄기 이벤트 핸들러
-            />
-          </View>
-        }
-      />
+    <ScrollView>
+      <View style={styles.container}>
+        <Section
+          title="알림"
+          content={
+            <>
+              <View style={[styles.alarmContainer, styles.borderBottom]}>
+                <Text>주량 알림</Text>
+                <Switch
+                  value={isDrinkNotificationEnabled}
+                  onValueChange={toggleDrinkNotification}
+                />
+              </View>
+              <View style={styles.alarmContainer}>
+                <Text>막차 알림</Text>
+                <Switch
+                  value={isLastNotificationEnabled}
+                  onValueChange={toggleLastNotification}
+                />
+              </View>
+            </>
+          }
+        />
 
-      <Section
-        title="주간일기 1.0.0"
-        content={
-          <>
-            <TouchableOpacity onPress={handleGoToNotification}>
-              <Text>공지사항</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity
-              onPress={() =>
-                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
-              }
-            >
-              <Text>문의하기</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
+        <Section
+          title="주간일기 2.0.0"
+          content={
+            <>
+              <TouchableOpacity onPress={handleGoToNotification}>
+                <Text>공지사항</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity onPress={sendEmail}>
+                <Text>문의하기</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
 
-      <Section
-        title="이용약관"
-        content={
-          <>
-            <TouchableOpacity>
-              <Text>서비스 이용약관</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity
-              onPress={() =>
-                showErrorAndRetry("준비 중😅", "업데이트 될 예정입니다.")
-              }
-            >
-              <Text>위치정보 이용약관</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity>
-              <Text>개인정보 처리방침</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
+        <Section
+          title="이용약관"
+          content={
+            <>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ServiceTerms")}
+              >
+                <Text>서비스 이용약관</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                onPress={() => navigation.navigate("LocationTerms")}
+              >
+                <Text>위치정보 이용약관</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity
+                onPress={() => navigation.navigate("PrivacyPolicy")}
+              >
+                <Text>개인정보 처리방침</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
 
-      <Section
-        title="계정관리"
-        content={
-          <>
-            <TouchableOpacity onPress={handleLogOut}>
-              <Text>로그아웃</Text>
-            </TouchableOpacity>
-            <Separator />
-            <TouchableOpacity onPress={showModal}>
-              <Text>회원탈퇴</Text>
-            </TouchableOpacity>
-          </>
-        }
-      />
+        <Section
+          title="계정관리"
+          content={
+            <>
+              <TouchableOpacity onPress={handleLogOut}>
+                <Text>로그아웃</Text>
+              </TouchableOpacity>
+              <Separator />
+              <TouchableOpacity onPress={showModal}>
+                <Text>회원탈퇴</Text>
+              </TouchableOpacity>
+            </>
+          }
+        />
 
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={{
-            backgroundColor: "white",
-            padding: 20,
-            width: "90%",
-            borderRadius: 5,
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          <View style={styles.mainContainer}>
-            <Text style={styles.alertTitle}>주간일기</Text>
-            <View style={styles.textContainer}>
-              <Text>정말 탈퇴하시겠습니까?</Text>
-              <Text>모든 정보가 삭제됩니다.</Text>
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+              width: "90%",
+              borderRadius: 5,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <View style={styles.mainContainer}>
+              <Text style={styles.alertTitle}>주간일기</Text>
+              <View style={styles.textContainer}>
+                <Text>정말 탈퇴하시겠습니까?</Text>
+                <Text>모든 정보가 삭제됩니다.</Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  mode="contained"
+                  buttonColor={"#000000"}
+                  textColor={"#FFFFFF"}
+                  onPress={confirmSignOut}
+                >
+                  확인
+                </Button>
+                <Button mode="outlined" onPress={hideModal}>
+                  취소
+                </Button>
+              </View>
             </View>
-            <View style={styles.buttonContainer}>
-              <Button mode="contained" onPress={confirmSignOut}>
-                확인
-              </Button>
-              <Button mode="outlined" onPress={hideModal}>
-                취소
-              </Button>
-            </View>
-          </View>
-        </Modal>
-      </Portal>
-    </View>
+          </Modal>
+        </Portal>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -183,7 +262,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     display: "flex",
     flexDirection: "column",
-    gap: 15,
+    gap: 20,
   },
   section: {
     marginBottom: 20,
@@ -205,7 +284,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "red",
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+    paddingBottom: 2,
+    marginBottom: 4,
   },
   separator: {
     alignItems: "center",
@@ -214,13 +298,13 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgray",
     borderBottomWidth: 1,
     width: "100%",
-    marginBottom: 25,
+    marginBottom: 16,
   },
   buttonContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 5,
+    gap: 10,
   },
   alertTitle: {
     fontSize: 20,

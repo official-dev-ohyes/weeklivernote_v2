@@ -9,14 +9,6 @@ import {
 import { Badge } from "react-native-paper";
 import { getDrinkImageById } from "../../utils/drinkUtils";
 
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
-}
-
 interface CurrentDrinksProps {
   currentDrinkData: Record<number, number>;
   allDrinkData: Drink[];
@@ -77,15 +69,16 @@ const styles = StyleSheet.create({
   },
   drinkBadgeContainer: {
     position: "absolute",
-    bottom: 40,
+    bottom: 30,
     right: -10,
     margin: 4,
   },
   drinkImageContainer: {
-    width: 50,
-    height: 50,
-    borderWidth: 1,
+    width: 40,
+    height: 40,
     marginHorizontal: 4,
+    resizeMode: "contain",
+    borderColor: "transparent",
   },
 });
 

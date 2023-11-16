@@ -33,7 +33,8 @@ const UserStatus: React.FC<UserStatusProps> = ({ identifier }) => {
         <DetoxingStatus
           alcoholInGrams={drinkToday.alcoholAmount}
           requiredTimeForDetox={drinkToday.requiredTimeForDetox}
-          detoxingFor={timeSinceDrink}
+          alcoholAt5={drinkToday.alcoholAt5}
+          currentAlcohol={drinkToday.currentAlcoholAmount}
         />
       )}
     </>

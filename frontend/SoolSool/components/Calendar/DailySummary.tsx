@@ -1,127 +1,244 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { fetchDailyDrink } from "../../api/drinkRecordApi";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
+import { useFocusEffect } from "@react-navigation/native";
+
+import {
+  getDrinkImageById,
+  getIdByOnlyCategory,
+  getShotAmountByDrinkCOunt,
+} from "../../utils/drinkUtils";
+import { ImageBackground } from "expo-image";
+import { Button, Icon, MD3Colors, Modal, Portal } from "react-native-paper";
+import { useQuery } from "react-query";
+
+import DailyDetail from "./DailyDetail";
+import Toast from "react-native-root-toast";
 
 function DailySummary(props) {
-  const { summaryText, alcoholDays } = props;
+  const { summaryText, alcoholDays, onRemove, navigation } = props;
   const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
   const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
   const [alcoholList, setAlcoholList] = useState([]);
-  // console.log(`알코올 데이즈 ${alcoholDays}`);
-  // 술 종류가 몇 개인지 알아오는 로직 추가하기
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const [isModal, setIsModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsAlcohol(false);
+  const {
+    data: DailyDrinkData,
+    isLoading: DailyDrinkLoading,
+    isError: DailyDrinkError,
+  } = useQuery(
+    ["DailyDrinkQuery", summaryText], // 두번째에 의존성 추가 가능
+    async () => await fetchDailyDrink(summaryText),
+    {
+      enabled: isAlcohol, // 조건부 활성화
+    }
+  );
 
-    if (alcoholDays[summaryText]) {
-      setIsAlcohol(true);
-      fetchDailyDrink(summaryText)
-        .then((res) => {
-          console.log(res);
-          setDailyInfo(res);
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsAlcohol(false);
+
+      if (alcoholDays.includes(summaryText)) {
+        setIsAlcohol(true);
+        if (DailyDrinkData) {
+          setDailyInfo(DailyDrinkData);
           let alcohols = [];
-          for (let i = 0; i < res.drinks.length; i++) {
-            alcohols.push(res.drinks[i]);
+          for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+            alcohols.push(DailyDrinkData.drinks[i]);
           }
           setAlcoholList(alcohols);
-        })
-        .catch((error) => {
-          console.error("실패", error);
-        });
-    }
-  }, [summaryText]);
+        }
+      }
+    }, [DailyDrinkData, navigation])
+  );
 
-  // console.log(`이 날짜의 이즈알코올은?! ${isAlcohol}`);
+  // 글 삭제 모달 및 삭제
+  const openDeleteModal = () => {
+    setIsModal(true);
+  };
+  const hideDeleteModal = () => {
+    setIsModal(false);
+  };
+
+  // @@@@@@@@@@@@@@@@@@@@@@현재 문제 있음@@@@@@@@@@@@@@@@@@@@@@
+  // 삭제 실패의 경우, 일부 데이터만 삭제 됨
+  const confirmDelete = async () => {
+    try {
+      await removeDrink(summaryText);
+      hideDeleteModal();
+      onRemove();
+      navigation.navigate("Calendar");
+    } catch (error) {
+      Toast.show("잠시후다시 시도해주세요.", {
+        duration: Toast.durations.SHORT,
+      });
+      console.error("삭제 에러:", error);
+    }
+  };
 
   return (
-    <View style={styles.total}>
-      {isAlcohol ? (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("DailyDetail", {
-              summaryText,
-              alcoholDays,
-              isAlcohol: true,
-            });
-          }}
-        >
-          <View style={styles.headerBox}>
-            <Text style={styles.headerText}>{summaryText}</Text>
-          </View>
+    <View style={{ flex: 1 }}>
+      <View style={styles.box}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("RecordCreate", {
+                date: summaryText,
+                isAlcohol: true,
+              });
+            }}
+          >
+            <Text style={styles.buttonText}>수정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#363C4B" }]}
+            onPress={openDeleteModal}
+          >
+            <Text style={[styles.buttonText, { color: "white" }]}>삭제</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.total}>
           <View style={styles.informations}>
             <View style={styles.category}>
               {alcoholList.slice(0, 3).map((alcohol, index) => (
                 <View style={styles.eachAlcohol} key={index}>
                   <View style={styles.eachAlcoholIcon}>
-                    <Text>아이콘1</Text>
+                    <ImageBackground
+                      source={getDrinkImageById(
+                        getIdByOnlyCategory(alcohol.drink)
+                      )}
+                      style={styles.imageContainer}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.drinkStyle}>
+                      {getShotAmountByDrinkCOunt(alcohol.drink, alcohol.count)}
+                      잔
+                    </Text>
                   </View>
-                  <Text>{alcohol.amount} ml</Text>
                 </View>
               ))}
             </View>
             <View style={styles.textInformations}>
-              <Text>
-                {dailyInfo.totalDrink}
-                <Text> ml</Text>
-              </Text>
-              <Text>
-                {dailyInfo.topConc.toFixed(3)}
-                <Text> %</Text>
-              </Text>
+              <View style={styles.iconAndTextBox}>
+                <Icon source="cup-water" size={24} color="#0477BF" />
+                <Text style={styles.totalText}>
+                  {` ${dailyInfo.totalDrink.toLocaleString()}`}
+                  <Text style={styles.unit}> ml</Text>
+                </Text>
+              </View>
+              <View style={styles.iconAndTextBox}>
+                <Icon source="blood-bag" size={24} color={MD3Colors.error50} />
+                <Text style={styles.totalText}>
+                  {` ${dailyInfo.topConc.toFixed(3)}`}
+                  <Text style={styles.unit}> %</Text>
+                </Text>
+              </View>
             </View>
           </View>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("RecordCreate", {
-              date: summaryText,
-              isAlcohol: true,
-            });
+        </View>
+      </View>
+      <View style={styles.detail}>
+        <DailyDetail
+          summaryText={summaryText}
+          alcoholDays={alcoholDays}
+          isAlcohol={isAlcohol}
+          navigation={navigation}
+        />
+      </View>
+
+      <Portal>
+        <Modal
+          visible={isModal}
+          onDismiss={hideDeleteModal}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            padding: 20,
+            width: "90%",
+            height: "20%",
+            borderRadius: 5,
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
-          <View style={styles.headerBox}>
-            <Text style={styles.headerText}>{summaryText}</Text>
+          <View style={styles.mainContainer}>
+            <Text style={styles.alertTitle}>주간일기</Text>
+            <Text>정말 삭제하시겠습니까?</Text>
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="outlined"
+                onPress={hideDeleteModal}
+                style={{ marginHorizontal: "1%" }}
+              >
+                취소
+              </Button>
+              <Button
+                mode="contained"
+                buttonColor={"#363C4B"}
+                onPress={confirmDelete}
+                style={{ marginHorizontal: "1%" }}
+              >
+                삭제
+              </Button>
+            </View>
           </View>
-          <View style={styles.New}>
-            <Text style={styles.plus}>+</Text>
-          </View>
-        </TouchableOpacity>
-      )}
+        </Modal>
+      </Portal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  total: {
-    flex: 1,
-    flexDirection: "column",
-    // backgroundColor: "yellow",
-    borderRadius: 10,
-    padding: 5,
-    justifyContent: "center",
-    alignContent: "center",
-    borderWidth: 2,
-    borderColor: "black",
-    margin: 5,
-  },
-  headerBox: {
+  box: {
     height: "20%",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 5,
-    // backgroundColor: "black",
   },
-  headerText: {
-    // 높이의 몇 퍼센트로 하고 싶은걸
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    height: "40%",
+    top: "-5%",
+    marginRight: "3%",
+  },
+  button: {
+    width: "15%",
+    height: "auto",
+    top: "-1.5%",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "1%",
+    paddingHorizontal: "1%",
+    paddingVertical: "0.5%",
+    borderWidth: 1,
+    borderRadius: 15,
+  },
+  buttonText: {
+    fontSize: 15,
+  },
+  total: {
+    height: "80%",
+    borderRadius: 5,
+    backgroundColor: "#ffffff",
+    width: "95%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginTop: "-5%",
+
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   informations: {
-    height: "80%",
+    height: "100%",
     flexDirection: "row",
-    paddingBottom: 20,
+    alignItems: "center",
   },
   category: {
     width: "50%",
@@ -129,39 +246,43 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     padding: 10,
-    // backgroundColor: "yellow",
   },
   eachAlcohol: {
     height: "80%",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
-    // paddingLeft: 5,
-    // paddingRight: 5,
   },
   eachAlcoholIcon: {
     height: "80%",
     justifyContent: "center",
-    backgroundColor: "blue",
   },
   textInformations: {
     width: "50%",
+    height: "90%",
     padding: 5,
     flexDirection: "column",
     justifyContent: "space-around",
+    marginBottom: "3%",
+    marginLeft: "5%",
+  },
+  iconAndTextBox: {
+    flexDirection: "row",
   },
   New: {
-    height: "80%",
-    justifyContent: "center",
-    alignContent: "center",
-    paddingBottom: "10%",
+    width: 70,
+    height: 70,
+    backgroundColor: "#363C4B",
+    borderRadius: 50,
+    marginRight: "auto",
+    marginLeft: "auto",
   },
   plus: {
     fontSize: 50,
-    color: "black",
+    color: "#FFFFFF",
     textAlign: "center",
-    textAlignVertical: "center", // 수직 가운데 정렬 (Android에서 사용)
-    // flex: 1, // 수직 가운데 정렬 (iOS에서 사용)
+    textAlignVertical: "center", // Android
+    // flex: 1, // iOS
   },
   modalView: {
     flex: 1,
@@ -174,6 +295,32 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+  },
+  imageContainer: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
+  },
+  drinkStyle: {
+    textAlign: "center",
+    fontSize: 15,
+  },
+  totalText: {
+    fontSize: 20,
+  },
+  unit: {
+    fontSize: 16,
+  },
+  detail: {
+    height: "80%",
+    // backgroundColor: "yellow",
+  },
+  mainContainer: {
+    gap: 15,
+    paddingHorizontal: "5%",
+  },
+  alertTitle: {
+    fontSize: 20,
   },
 });
 

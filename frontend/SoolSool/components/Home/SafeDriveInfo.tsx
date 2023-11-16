@@ -1,23 +1,23 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Icon, MD3Colors } from "react-native-paper";
-import { calculateTimeAfterHours } from "../../utils/timeUtils";
+import { calculateTimeAfterHours, getTodayAt5 } from "../../utils/timeUtils";
 
 interface SafeDriveInfoProps {
   bloodAlcoholContent: number;
-  drinkStartTime: string;
   requiredTimeToDrive: number;
 }
 
 const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
   bloodAlcoholContent,
-  drinkStartTime,
   requiredTimeToDrive,
 }) => {
-  const canDriveFrom = calculateTimeAfterHours(
-    drinkStartTime,
-    requiredTimeToDrive
-  );
+  let canDriveFrom: string;
+  if (requiredTimeToDrive > 0) {
+    canDriveFrom = calculateTimeAfterHours(requiredTimeToDrive);
+  } else {
+    canDriveFrom = "passed";
+  }
 
   return (
     <View style={styles.rootContainer}>
@@ -44,7 +44,7 @@ const SafeDriveInfo: React.FC<SafeDriveInfoProps> = ({
 
 const styles = StyleSheet.create({
   rootContainer: {
-    paddingBottom: 8,
+    paddingBottom: 2,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    width: "45%",
-    padding: 12,
-    borderRadius: 15,
-    backgroundColor: "#F6F6F6",
+    width: "48%",
+    padding: 8,
+    borderRadius: 5,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   chipText: {
-    fontSize: 18,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 15,
+    color: "white",
   },
 });
 

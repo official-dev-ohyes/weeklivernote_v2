@@ -1,10 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import React from "react";
 import { BarChart, LineChart } from "react-native-gifted-charts";
-import {
-  // fetchStatistics,
-  fetchWeeklyStatistics,
-} from "../../api/statisticsApi";
+import { fetchWeeklyStatistics } from "../../api/statisticsApi";
 import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 
@@ -34,7 +31,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>주간 통계</Text>
+      <Text style={styles.text}>지난 7일간 이만큼 마셨어요!</Text>
       <View style={styles.graphBox}>
         <View style={styles.chartContainer}>
           <View style={styles.barchart}>
@@ -49,6 +46,8 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               yAxisLabelWidth={7}
               hideAxesAndRules
               frontColor="#FFCC4A"
+              isAnimated
+              roundedTop
             />
           </View>
           <View style={styles.linechart}>
@@ -58,11 +57,11 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               // height={150}
               yAxisThickness={0}
               xAxisThickness={0}
-              stepValue={500}
-              maxValue={300}
+              stepValue={50}
+              maxValue={2500}
               yAxisLabelWidth={0}
               hideAxesAndRules
-              color="#0477BF"
+              color="#363C4B"
             />
           </View>
         </View>
@@ -73,7 +72,7 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#FFFF",
+    // backgroundColor: "#FFFF",
     flexDirection: "column",
     gap: 10,
     borderRadius: 20,
@@ -81,9 +80,18 @@ const styles = StyleSheet.create({
   graphBox: {
     width: "100%",
     height: 240,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "rgba(255,255,255,0.9)",
     marginHorizontal: "auto",
     borderRadius: 20,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   chartContainer: {
     width: "100%",
@@ -104,6 +112,11 @@ const styles = StyleSheet.create({
     right: 10,
     width: "100%",
     height: "100%",
+  },
+  text: {
+    fontSize: 15,
+    fontFamily: "LineRegular",
+    color: "white",
   },
 });
 

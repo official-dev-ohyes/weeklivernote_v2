@@ -25,3 +25,55 @@ export const getIdByCategoryAndUnit = (
   );
   return matchingDrink ? matchingDrink.id : null;
 };
+
+export const getIdByOnlyCategory = (category: string): number | null => {
+  const matchingDrink = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  return matchingDrink ? matchingDrink.id : null;
+};
+
+// 마신 술 양을 잔 수로만 반환
+export const getShotAmountByDrinkCOunt = (category: string, num: number) => {
+  let amount = num;
+  const shot = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  return amount / shot.volume;
+};
+
+// 마신 술 양이 몇 병 몇 잔인지 반환
+export const getAmountByDrinkCount = (category: string, num: number) => {
+  let amount = num;
+  const bottle = drinkData.find(
+    (item) => item.name === category && item.unit === "병"
+  );
+
+  let bottleAmount = 0;
+  if (bottle) {
+    bottleAmount = Math.floor(amount / bottle.volume);
+    amount -= bottleAmount * bottle.volume;
+  }
+  const shot = drinkData.find(
+    (item) => item.name === category && item.unit === "잔"
+  );
+  let shotAmount = amount / shot.volume;
+  return [bottleAmount, shotAmount];
+};
+
+export const getDrinkAndAlcoholAmountById = (
+  targetId: number
+): {
+  drinkAmount: number;
+  alcoholAmount: number;
+} | null => {
+  const matchingDrink = drinkData.find((item) => item.id === targetId);
+  const drinkAmount = matchingDrink ? matchingDrink.volume : null;
+  const alcoholAmount = matchingDrink ? matchingDrink.alcoholAmount : null;
+
+  if (drinkAmount != null && alcoholAmount != null) {
+    return { drinkAmount, alcoholAmount };
+  } else {
+    return null;
+  }
+};

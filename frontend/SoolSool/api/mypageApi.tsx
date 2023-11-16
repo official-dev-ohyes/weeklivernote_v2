@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "./axiosConfig";
+import { useState } from "react";
 
 export const fetchUserProfile = async () => {
   try {
@@ -18,7 +20,7 @@ export const fetchUserNonAlc = async () => {
   }
 };
 
-export const editUser = async (
+export const updateUserProfile = async (
   nickname,
   weight,
   height,
@@ -38,5 +40,54 @@ export const editUser = async (
     return res.data;
   } catch (err) {
     throw new Error("사용자 정보 수정 patch 요청 실패");
+  }
+};
+
+// export const updateProfileImage = async (newImage) => {
+//   console.log("보낼값", newImage);
+//   console.log("타입은", typeof newImage);
+//   try {
+//     const res = await axiosInstance.post(`/v2/user/profile`, newImage, {
+//       headers: {
+//         "Content-Type":
+//           "multipart/form-data; boundary=someArbitraryUniqueString",
+//       },
+//       transformRequest: (data, headers) => {
+//         return data;
+//       },
+//     });
+//     return res.data;
+//   } catch (err) {
+//     console.log("??", err);
+//     throw new Error("이미지 변경 요청 실패");
+//   }
+// };
+//
+export const updateProfileImage = async (body, token) => {
+  console.log("보내기 직전에 formData확인", body);
+  console.log("토큰 확인", token);
+  try {
+    const res = await fetch(
+      process.env.REACT_APP_BACK_URL + `/v2/user/profile`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "multipart/form-data; boundary=someArbitraryUniqueString",
+          Authorization: `Bearer ${token}`,
+        },
+        body: body,
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("이미지 변경 요청 실패");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log("?왜 이미지 변경 요청이 안될까?", err);
+    throw new Error("이미지 변경 요청 실패");
   }
 };

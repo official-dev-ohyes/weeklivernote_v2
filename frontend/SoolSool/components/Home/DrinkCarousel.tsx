@@ -1,35 +1,44 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { DrinkCarouselItem, ListItemWidth } from "./DrinkCarouselItem";
 import { useSharedValue } from "react-native-reanimated";
-// import { useAppTheme } from "../../App";
 import { useAppTheme } from "../../hooks/useAppTheme";
-
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
-}
+import SwipeMotion from "./SwipeMotion";
 
 type DrinkCarouselProps = {
   data: Drink[];
   sendData: (drink: Drink) => void;
+  onClose: () => void;
 };
 
-const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
+const DrinkCarousel: React.FC<DrinkCarouselProps> = ({
+  data,
+  sendData,
+  onClose,
+}) => {
   const {
     colors: { mainBlue },
   } = useAppTheme();
   const [centeredItem, setCenteredItem] = useState({
-    id: 2,
+    id: 1,
     name: "소주",
     volume: 360,
-    unit: "잔",
+    unit: "병",
     alcoholPercentage: 19,
+    alcoholAmount: 54.6,
   });
+  const [showInstruction, SetShowInstruction] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      SetShowInstruction(false);
+    }, 1500);
+
+    return () => {
+      SetShowInstruction(true);
+    };
+  }, []);
 
   const contentOffset = useSharedValue(0);
   const flatListRef = useRef(null);
@@ -46,12 +55,23 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
     setCenteredItem(data[centerItemIndex]);
   };
 
-  const handleClick = () => {
+  const handleSelect = () => {
     sendData(centeredItem);
+    onClose();
+  };
+
+  const handleClick = (index) => {
+    setCenteredItem(data[index]);
+    const targetOffset = index * ListItemWidth;
+    flatListRef.current.scrollToOffset({
+      offset: targetOffset,
+      animated: true,
+    });
   };
 
   return (
     <View style={styles.rootcontainer}>
+      {showInstruction && <SwipeMotion />}
       <FlatList
         data={data}
         ref={flatListRef}
@@ -79,12 +99,13 @@ const DrinkCarousel: React.FC<DrinkCarouselProps> = ({ data, sendData }) => {
             contentOffset={contentOffset}
             item={item}
             index={index}
+            onPress={() => handleClick(index)}
           />
         )}
         onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <Button
-        onPress={handleClick}
+        onPress={handleSelect}
         mode="text"
         textColor="white"
         buttonColor={mainBlue}
@@ -105,12 +126,10 @@ const styles = StyleSheet.create({
     paddingTop: 200,
   },
   selectButton: {
-    padding: 4,
-    paddingBottom: 0,
+    padding: 5,
   },
   buttonText: {
-    fontSize: 20,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 16,
   },
 });
 

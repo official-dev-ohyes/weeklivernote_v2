@@ -30,7 +30,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
   return (
     <View style={styles.mainContainer}>
-      <Text>연간 통계</Text>
+      <Text style={styles.text}>지난 12개월간 이만큼 마셨어요!</Text>
       <View style={styles.graphBox}>
         <View style={styles.chartContainer}>
           <View style={styles.barchart}>
@@ -45,6 +45,8 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
               yAxisLabelWidth={7}
               hideAxesAndRules
               frontColor="#FFCC4A"
+              isAnimated
+              roundedTop
             />
           </View>
         </View>
@@ -55,7 +57,7 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "#FFFF",
+    // backgroundColor: "#FFFF",
     flexDirection: "column",
     gap: 10,
     borderRadius: 20,
@@ -63,9 +65,18 @@ const styles = StyleSheet.create({
   graphBox: {
     width: "100%",
     height: 240,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "rgba(255,255,255,0.9)",
     marginHorizontal: "auto",
     borderRadius: 20,
+    // 그림자 추가 (Android 및 iOS 모두에서 동작)
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   chartContainer: {
     width: "100%",
@@ -86,6 +97,11 @@ const styles = StyleSheet.create({
     right: 10,
     width: "100%",
     height: "100%",
+  },
+  text: {
+    fontSize: 15,
+    fontFamily: "LineRegular",
+    color: "white",
   },
 });
 

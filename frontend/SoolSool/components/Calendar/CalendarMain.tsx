@@ -104,7 +104,7 @@ function CalendarMain({}) {
   } else {
     return (
       <View>
-        <Text>아직 주 계산이 안됐어요</Text>
+        <Text>아직 주 계산이 안됐어요.</Text>
       </View>
     );
   }

@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-// import { useQuery } from "react-query";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,48 +7,68 @@ import {
   ImageBackground,
   Pressable,
 } from "react-native";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import { IconButton, Modal, Portal } from "react-native-paper";
+import { useRecoilState } from "recoil";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import Toast from "react-native-root-toast";
+import _ from "lodash";
 import { DrinkCarousel } from "./DrinkCarousel";
 import CurrentDrinks from "./CurrentDrinks";
 import drinksData from "../../data/drinks.json";
-import { getDrinkImageById } from "../../utils/drinkUtils";
-import { currentDrinksAtom } from "../../recoil/currentDrinksAtom";
-import { drinkTodayAtom } from "../../recoil/drinkTodayAtom";
+import { DrinkToday } from "../../models/DrinkToday";
+import {
+  getDrinkImageById,
+  getDrinkAndAlcoholAmountById,
+} from "../../utils/drinkUtils";
+import { getToday } from "../../utils/timeUtils";
 import {
   createDrink,
   updateDrink,
   deleteDrink,
   removeDrink,
 } from "../../api/drinkRecordApi";
-import { getToday } from "../../utils/timeUtils";
+import { scheduleAlcoholLimitLocalNotification } from "../../utils/notificationUtils";
 
-interface Drink {
-  id: number;
-  name: string;
-  volume: number;
-  unit: string;
-  alcoholPercentage: number;
+import {
+  checkLocationPermission,
+  locationPermissionAlert,
+  updateLocation,
+} from "../../utils/gpsUtils";
+
+interface DrinkControllerProps {
+  currentDrinks: Record<number, number>;
+  initialValue: number;
 }
 
-const { width, height } = Dimensions.get("screen");
-
-function DrinkController() {
+const DrinkController: React.FC<DrinkControllerProps> = ({
+  currentDrinks,
+  initialValue,
+}) => {
   const [isDrinkModalOpen, setIsDrinkModalOpen] = useState(false);
-  const [currentDrinks, setCurrentDrinks] = useRecoilState(currentDrinksAtom);
-  const numberOfCurrentDrinks = Object.keys(currentDrinks).length;
-  const setDrinkToday = useSetRecoilState(drinkTodayAtom);
+  const [notificationStatus, setNotificationStatus] = useState(0);
+  const [userAlcoholLimit, setUserAlcoholLimit] = useState(0);
+  const [drinkToday, setDrinkToday] =
+    useRecoilState<DrinkToday>(drinkTodayAtom);
+  const currentAlcoholConsumption = drinkToday.alcoholAmount;
+  const [currentDrinkList, setCurrentDrinkList] = useState(currentDrinks);
+  const numberOfCurrentDrinkList = Object.keys(currentDrinkList).length;
   const defaultDrink = {
     id: 2,
     name: "소주",
-    volume: 50,
+    volume: 60,
     unit: "잔",
     alcoholPercentage: 19,
+    alcoholAmount: 9.1,
   };
   const [selectedDrink, setSelectedDrink] = useState(defaultDrink);
   const imageSource = getDrinkImageById(selectedDrink.id);
+  const selectedDrinkAlcoholInfo = useMemo(
+    () => getDrinkAndAlcoholAmountById(selectedDrink.id),
+    [selectedDrink]
+  );
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(initialValue);
   const minValue = 0;
   const maxValue = 99;
   const minIsDisabled = useMemo(() => value <= minValue, [minValue, value]);
@@ -58,7 +77,25 @@ function DrinkController() {
   const today = getToday();
 
   useEffect(() => {
-    const selectedDrinkLog = currentDrinks[selectedDrink.id];
+    const fetchUserAlcoholLimit = async () => {
+      const alcoholLimit = await AsyncStorage.getItem("alcoholLimit");
+      const alcoholLimitToNumber = Number(alcoholLimit);
+      setUserAlcoholLimit(alcoholLimitToNumber);
+    };
+
+    fetchUserAlcoholLimit();
+  }, []);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    setCurrentDrinkList(currentDrinks);
+  }, [currentDrinks]);
+
+  useEffect(() => {
+    const selectedDrinkLog = currentDrinkList[selectedDrink.id];
 
     if (selectedDrinkLog) {
       setValue(selectedDrinkLog);
@@ -75,30 +112,78 @@ function DrinkController() {
     setIsDrinkModalOpen(false);
   };
 
+  useEffect(() => {
+    const alcoholLimitRatio = userAlcoholLimit
+      ? (currentAlcoholConsumption / userAlcoholLimit) * 100
+      : 0;
+
+    let newStatus = notificationStatus;
+
+    if (alcoholLimitRatio < 42 && notificationStatus !== 0) {
+      newStatus = 0;
+    } else if (
+      alcoholLimitRatio >= 42 &&
+      alcoholLimitRatio < 72 &&
+      notificationStatus !== 1
+    ) {
+      newStatus = 1;
+    } else if (
+      alcoholLimitRatio >= 72 &&
+      alcoholLimitRatio < 97 &&
+      notificationStatus !== 2
+    ) {
+      newStatus = 2;
+    } else if (alcoholLimitRatio >= 97 && notificationStatus !== 3) {
+      newStatus = 3;
+    }
+
+    if (newStatus !== notificationStatus) {
+      setNotificationStatus(newStatus);
+    }
+  }, [currentAlcoholConsumption]);
+
+  useEffect(() => {
+    if (notificationStatus === 0) {
+      return;
+    } else {
+      scheduleAlcoholLimitLocalNotification(notificationStatus);
+    }
+  }, [notificationStatus]);
+
   const handleLogChange = (key: number, newValue: number) => {
-    setCurrentDrinks((prev) => ({
+    setCurrentDrinkList((prev) => ({
       ...prev,
       [key]: newValue,
     }));
   };
 
-  const handleLogReset = async () => {
+  // 음주 기록 초기화
+  const handleLogReset = _.debounce(async () => {
     try {
       await removeDrink(today);
+
+      setCurrentDrinkList({});
+      setSelectedDrink(defaultDrink);
+
+      const dataForUpdate = {
+        drinkTotal: 0,
+        alcoholAmount: 0,
+        drinkStartTime: null,
+      };
+      const updatedDrinkToday = drinkToday.update(dataForUpdate);
+      setDrinkToday(updatedDrinkToday);
     } catch (error) {
-      console.error("Error while removing drink:", error);
-      return;
+      Toast.show("음주 기록 초기화에 실패했습니다. 다시 시도해주세요.", {
+        duration: Toast.durations.SHORT,
+      });
+      throw error;
     }
+  }, 200);
 
-    setCurrentDrinks({});
-    setSelectedDrink(defaultDrink);
-  };
-
-  const handleDecrement = () => {
+  const handleDecrement = _.debounce(async () => {
     if (value > 0) {
       const newValue = value - 1;
       setValue(newValue);
-      handleLogChange(selectedDrink.id, newValue);
 
       const drinkData = {
         drinks: [
@@ -112,35 +197,48 @@ function DrinkController() {
       };
 
       if (newValue === 0) {
-        deleteDrink(drinkData)
-          .then((res) => {
-            console.log("Successfully delete the drink log.", res);
+        await deleteDrink(drinkData)
+          .then(() => {
+            setCurrentDrinkList((prev) => {
+              const updatedCurrentDrinkList = { ...prev };
+              delete updatedCurrentDrinkList[selectedDrink.id];
+              return updatedCurrentDrinkList;
+            });
           })
-          .catch((err) => {
-            console.log("Fail to delete the drink log.", err);
+          .catch((error) => {
+            setValue(newValue + 1);
+            Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
+              duration: Toast.durations.SHORT,
+            });
+            throw error;
           });
-
-        setCurrentDrinks((prev) => {
-          const updatedCurrentDrinks = { ...prev };
-          delete updatedCurrentDrinks[selectedDrink.id];
-          return updatedCurrentDrinks;
-        });
       } else {
-        updateDrink(drinkData)
-          .then((res) => {
-            console.log("Successfully update the drink log.", res);
+        await updateDrink(drinkData)
+          .then(() => {
+            handleLogChange(selectedDrink.id, newValue);
           })
-          .catch((err) => {
-            console.log("Fail to update the drink log.", err);
+          .catch((error) => {
+            setValue(newValue + 1);
+            Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
+              duration: Toast.durations.SHORT,
+            });
+            throw error;
           });
       }
+      const dataForUpdate = {
+        drinkTotal:
+          drinkToday.drinkTotal - selectedDrinkAlcoholInfo.drinkAmount,
+        alcoholAmount:
+          drinkToday.alcoholAmount - selectedDrinkAlcoholInfo.alcoholAmount,
+      };
+      const updatedDrinkToday = drinkToday.update(dataForUpdate);
+      setDrinkToday(updatedDrinkToday);
     }
-  };
+  }, 200);
 
-  const handleIncrement = () => {
+  const handleIncrement = _.debounce(async () => {
     const newValue = value + 1;
     setValue(newValue);
-    handleLogChange(selectedDrink.id, newValue);
 
     const drinkData = {
       drinks: [
@@ -153,24 +251,82 @@ function DrinkController() {
       drinkDate: today,
     };
 
+    // 권한 확인
+    let isPermissionDenied = await checkLocationPermission();
+
+    // 권한 허용 안함/첫 요청일 경우 권한 허용 Alert
+    if (isPermissionDenied && newValue === 1) {
+      if (isPermissionDenied != null) {
+        isPermissionDenied = await locationPermissionAlert();
+      }
+    }
+
+    const keepUpdateLocation = JSON.parse(
+      (await AsyncStorage.getItem("keepUpdateLocation")) || "true"
+    );
+
+    if (!isPermissionDenied && keepUpdateLocation) {
+      // 권한 허용 및 위치 조회 필요한 경우
+      // 위치 정보 조회 로직
+      const keepUpdate = await updateLocation();
+      await AsyncStorage.setItem(
+        "keepUpdateLocation",
+        JSON.stringify(keepUpdate)
+      );
+
+      const now = new Date();
+      await AsyncStorage.setItem("todayPostDate", JSON.stringify(now));
+    }
+
     if (newValue === 1) {
-      createDrink(drinkData)
-        .then((res) => {
-          console.log("Successfully create a new drink log.", res);
+      await createDrink(drinkData)
+        .then(() => {
+          handleLogChange(selectedDrink.id, newValue);
+          // 최초기록일 때 시작 시간 추가
+          if (drinkToday.alcoholAmount === 0) {
+            const dataForUpdate = {
+              drinkTotal:
+                drinkToday.drinkTotal + selectedDrinkAlcoholInfo.drinkAmount,
+              alcoholAmount:
+                drinkToday.alcoholAmount +
+                selectedDrinkAlcoholInfo.alcoholAmount,
+              drinkStartTime: new Date().toString(),
+            };
+            const updatedDrinkToday = drinkToday.update(dataForUpdate);
+            setDrinkToday(updatedDrinkToday);
+
+            return;
+          }
         })
-        .catch((err) => {
-          console.log("Fail to create a new drink log.", err);
+        .catch((error) => {
+          setValue(newValue - 1);
+          Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
+            duration: Toast.durations.SHORT,
+          });
+          throw error;
         });
     } else {
-      updateDrink(drinkData)
-        .then((res) => {
-          console.log("Successfully update the drink log.", res);
+      await updateDrink(drinkData)
+        .then(() => {
+          handleLogChange(selectedDrink.id, newValue);
         })
-        .catch((err) => {
-          console.log("Fail to update the drink log.", err);
+        .catch((error) => {
+          setValue(newValue - 1);
+          Toast.show("음주 기록 저장에 실패했습니다. 다시 시도해주세요.", {
+            duration: Toast.durations.SHORT,
+          });
+          throw error;
         });
     }
-  };
+
+    const dataForUpdate = {
+      drinkTotal: drinkToday.drinkTotal + selectedDrinkAlcoholInfo.drinkAmount,
+      alcoholAmount:
+        drinkToday.alcoholAmount + selectedDrinkAlcoholInfo.alcoholAmount,
+    };
+    const updatedDrinkToday = drinkToday.update(dataForUpdate);
+    setDrinkToday(updatedDrinkToday);
+  }, 200);
 
   const getSelectedDrink = (drink: Drink) => {
     setSelectedDrink(drink);
@@ -184,29 +340,38 @@ function DrinkController() {
           onDismiss={handleModalClose}
           contentContainerStyle={styles.modalContainer}
         >
-          <DrinkCarousel data={drinksData} sendData={getSelectedDrink} />
+          <DrinkCarousel
+            data={drinksData}
+            sendData={getSelectedDrink}
+            onClose={handleModalClose}
+          />
         </Modal>
       </Portal>
 
       <View style={styles.rootContainer}>
-        {numberOfCurrentDrinks !== 0 ? (
+        {numberOfCurrentDrinkList !== 0 ? (
           <>
             <IconButton
               icon="refresh"
               size={20}
               onPress={handleLogReset}
-              iconColor="#6C6C6C"
+              iconColor="#FFFFFF"
               style={styles.iconContainer}
             />
-            <CurrentDrinks
-              currentDrinkData={currentDrinks}
-              allDrinkData={drinksData}
-              onClickItem={getSelectedDrink}
-            />
+            <View style={{ height: 68 }}>
+              <CurrentDrinks
+                currentDrinkData={currentDrinkList}
+                allDrinkData={drinksData}
+                onClickItem={getSelectedDrink}
+              />
+            </View>
             <View style={styles.divider} />
           </>
         ) : (
-          <></>
+          <>
+            <View style={styles.emptyContainer} />
+            <View style={styles.divider} />
+          </>
         )}
 
         <View style={styles.stepperContainer}>
@@ -214,6 +379,7 @@ function DrinkController() {
             icon="minus"
             onPress={handleDecrement}
             disabled={minIsDisabled}
+            iconColor="white"
             size={32}
           />
           <Pressable onPress={handleModalOpen}>
@@ -237,6 +403,7 @@ function DrinkController() {
             icon="plus"
             onPress={handleIncrement}
             disabled={maxIsDisabled}
+            iconColor="white"
             size={32}
           />
         </View>
@@ -248,31 +415,31 @@ function DrinkController() {
       </View>
     </>
   );
-}
+};
+
+const { width, height } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   rootContainer: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 15,
-    padding: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 8,
+    padding: 12,
     alignItems: "center",
   },
   iconContainer: {
-    width: "100%",
-    alignItems: "flex-end",
     position: "absolute",
-    top: 10,
+    right: 0,
+    zIndex: 1,
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: "#C6C6C6",
-    padding: 4,
-    marginBottom: 8,
+    marginBottom: 6,
     width: "100%",
   },
   imageContainer: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     resizeMode: "contain",
   },
   stepperContainer: {
@@ -290,12 +457,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   valueText: {
-    fontSize: 36,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 30,
+    fontFamily: "LineRegular",
   },
   nameText: {
-    fontSize: 24,
-    fontFamily: "Yeongdeok-Sea",
+    fontSize: 12,
+    marginTop: 5,
+    color: "white",
+  },
+  emptyContainer: {
+    height: 68,
   },
 });
 
