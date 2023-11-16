@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
+import { lastIndexOf } from "lodash";
 
 function SubwayRoute({ pathInfo }) {
   const {
     distance,
     endExitNo,
     endName,
-    lane: { name },
+    lane,
     passStopList: { stations },
     sectionTime, //왼쪽
     startExitNo,
@@ -55,8 +56,7 @@ function SubwayRoute({ pathInfo }) {
           </View>
 
           <View style={styles.infoContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.wayCode}>{wayCode}호선</Text>
+            <Text style={styles.wayCode}>{lane[0].name}</Text>
             <Text style={styles.way}>{way}역 방면</Text>
             <View>
               <Text style={styles.stationCount}>
@@ -64,7 +64,6 @@ function SubwayRoute({ pathInfo }) {
               </Text>
               <Text style={styles.concatenatedNames}>{concatenatedNames}</Text>
             </View>
-            ```````````````````````````````````````
             <Text style={styles.distance}>총 {distance}m 이동</Text>
           </View>
 

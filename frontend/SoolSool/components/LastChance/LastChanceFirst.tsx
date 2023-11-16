@@ -4,16 +4,49 @@ import {
   Text,
   ImageBackground,
   Dimensions,
+  Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { LCfirst } from "../../assets";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function LastChanceFirst({ navigation }) {
   const screenHeight = Dimensions.get("window").height;
 
-  const goToHome = () => {
-    console.log("여기는?");
-    navigation.navigate("HomeRoute");
+  const goToHome = async () => {
+    try {
+      const destLocation = await AsyncStorage.getItem("destLocation");
+      const alarmTime = await AsyncStorage.getItem("alarmTime");
+      const nowLocation = await AsyncStorage.getItem("nowLocation");
+
+      if (destLocation === '{"latitude":0,"longitude":0}') {
+        Alert.alert("알림", "도착지를 입력해주세요.", [
+          {
+            text: "입력하러 가기",
+            onPress: () => navigation.navigate("EditProfile"),
+          },
+        ]);
+        return;
+      }
+
+      if (alarmTime === null && alarmTime === "{}") {
+        Alert.alert("알림", "먼저 음주기록을 작성하세요.", [
+          { text: "입력하러 가기", onPress: () => navigation.navigate("Home") },
+        ]);
+        return;
+      }
+
+      if (nowLocation === null && nowLocation === "{}") {
+        Alert.alert("알림", "먼저 음주기록을 작성하세요.", [
+          { text: "입력하러 가기", onPress: () => navigation.navigate("Home") },
+        ]);
+        return;
+      }
+
+      navigation.navigate("HomeRoute");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

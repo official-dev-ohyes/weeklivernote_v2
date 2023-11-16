@@ -1,20 +1,30 @@
 import { Platform } from "react-native";
 import { isDevice } from "expo-device";
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
+// import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-root-toast";
 
 // const expoPushToken = AsyncStorage.getItem("expoPushToken");
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: true,
-		shouldSetBadge: true,
-	}),
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
 });
 
 export async function registerForPushNotificationsAsync() {
-  let token;
+  // let token;
+
+  if (Platform.OS === "android") {
+		await Notifications.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: "#FF231F7C",
+		});
+	}
 
   if (isDevice) {
     const { status: existingStatus } =
@@ -28,31 +38,24 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      Toast.show("알림을 차단했습니다.", {
+        duration: Toast.durations.SHORT,
+      });
       return;
     }
 
-    token = (
-      await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig.extra.eas.projectId,
-      })
-    ).data;
+    // // token = (
+    // //   await Notifications.getExpoPushTokenAsync({
+    // //     projectId: Constants.expoConfig.extra.eas.projectId,
+    // //   })
+    // ).data;
 
     // console.log(token);
   } else {
     alert("알림을 받기 위해서는 실제 기기를 이용해주세요.");
   }
 
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
-
-  return token;
+  // return token;
 }
 
 export async function scheduleAlcoholLimitLocalNotification(status: number) {
@@ -94,55 +97,55 @@ export async function scheduleAlcoholLimitLocalNotification(status: number) {
 
 export async function scheduleLastChanceNotification() {
   const drinkNotificationStatus = await AsyncStorage.getItem(
-		"isLastNotificationEnabled"
-	);
+    "isLastNotificationEnabled"
+  );
 
-	if (drinkNotificationStatus !== null) {
-		const isGranted = JSON.parse(drinkNotificationStatus);
-		if (!isGranted) {
-			return;
-		}
-	}
+  if (drinkNotificationStatus !== null) {
+    const isGranted = JSON.parse(drinkNotificationStatus);
+    if (!isGranted) {
+      return;
+    }
+  }
 
-	let alarmTime: string | null = null;
+  let alarmTime: string | null = null;
 
-	try {
-		alarmTime = await AsyncStorage.getItem("alarmTime");
-	} catch (err) {
-		console.error("alarmTime 값 조회에 실패했습니다 : ", err);
-		return;
-	}
+  try {
+    alarmTime = await AsyncStorage.getItem("alarmTime");
+  } catch (err) {
+    console.error("alarmTime 값 조회에 실패했습니다 : ", err);
+    return;
+  }
 
-	if (alarmTime) {
-		const [alarmHour, alarmMinute] = alarmTime.split(":").map(Number);
+  if (alarmTime) {
+    const [alarmHour, alarmMinute] = alarmTime.split(":").map(Number);
 
     const now = new Date();
-		const alarmDateTime = new Date(
-			now.getFullYear(),
-			now.getMonth(),
-			now.getDate(),
-			alarmHour,
-			alarmMinute
-		);
+    const alarmDateTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      alarmHour,
+      alarmMinute
+    );
 
-		const secondsUntilAlarm = Math.max(
-			Math.ceil((alarmDateTime.getTime() - now.getTime()) / 1000),
-			0
-		);
+    const secondsUntilAlarm = Math.max(
+      Math.ceil((alarmDateTime.getTime() - now.getTime()) / 1000),
+      0
+    );
 
-		await Notifications.scheduleNotificationAsync({
-			content: {
-				title: "막차 알림",
-				body: "지금 출발하실 시간이에요! 경로를 확인해 볼까요?😉",
-				data: { screen: "HomeRoute" },
-				priority: Notifications.AndroidNotificationPriority.MAX,
-			},
-			trigger: { seconds: secondsUntilAlarm },
-		});
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "라스트 찬스!!",
+        body: "지금 출발하실 시간이에요! 경로를 확인해 볼까요?😉",
+        data: { screen: "HomeRoute" },
+        priority: Notifications.AndroidNotificationPriority.MAX,
+      },
+      trigger: { seconds: secondsUntilAlarm },
+    });
 
-		console.log("막차 알림 시간: ", alarmDateTime.toLocaleString());
-	} else {
+    console.log("막차 알림 시간: ", alarmDateTime.toLocaleString());
+  } else {
     console.log("설정된 막차 알림 시간이 없습니다.");
-    return
+    return;
   }
 }

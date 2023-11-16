@@ -30,19 +30,19 @@ const HomeScreen = ({ navigation }) => {
   const [initialValue, setInitialValue] = useState(0);
 
   // 회원 정보 없을 시 로그인 화면으로 이동
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem("accessToken");
-        if (token === null) {
-          navigation.navigate("Login");
-        }
-      } catch (error) {
-        console.error("토큰을 가져오는 중에 오류가 발생했습니다:", error);
-      }
-    };
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem("accessToken");
+  //       if (token === null) {
+  //         navigation.navigate("Login");
+  //       }
+  //     } catch (error) {
+  //       console.error("토큰을 가져오는 중에 오류가 발생했습니다:", error);
+  //     }
+  //   };
+  //   fetchToken();
+  // }, []);
 
   // 메인에서 뒤로가기 방지
   useFocusEffect(

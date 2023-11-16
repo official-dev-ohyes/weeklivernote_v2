@@ -84,6 +84,11 @@ function AddInfoThird({
         console.log("제출 성공", res.tokenInfo.accessToken);
         const accessToken = res.tokenInfo.accessToken;
         await AsyncStorage.setItem("accessToken", accessToken);
+        const destLocation = res.gpsInfo;
+        await AsyncStorage.setItem("destLocation", JSON.stringify(destLocation));
+        const alcoholLimit: number = res.alcoholLimit;
+				const roundedAlcoholLimit = alcoholLimit.toFixed(1);
+				await AsyncStorage.setItem("alcoholLimit", roundedAlcoholLimit);
         // navigation.navigate("BottomTab");
         navigation.navigate("Welcome");
       })

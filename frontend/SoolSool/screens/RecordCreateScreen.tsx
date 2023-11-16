@@ -7,13 +7,12 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import { Button, TextInput, IconButton } from "react-native-paper";
+import { Button, TextInput, IconButton, MD3Colors } from "react-native-paper";
 import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
+// import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
@@ -315,7 +314,7 @@ function RecordCreateScreen({ route, navigation }) {
     }
   }, [isAlcohol, DailyDrinkData, DailyDetailData]);
 
-  const gotoDetailPage = () => {
+  const goToDetailPage = () => {
     navigation.navigate("Calendar");
   };
 
@@ -331,19 +330,15 @@ function RecordCreateScreen({ route, navigation }) {
       <ScrollView style={styles.scrollBox}>
         <View style={styles.mainTextBox}>
           <Text style={styles.headerText}>{day}</Text>
-          <View style={styles.light}>
-            <MaterialCommunityIcons
-              name="lightbulb-on-outline"
-              size={30}
-              color="black"
-              onPress={() => {
-                Alert.alert(
-                  "알림",
-                  "05시 이전의 기록은 어제 날짜에 추가됩니다."
-                );
-              }}
-            />
-          </View>
+          <IconButton
+            icon="help-circle-outline"
+            iconColor={MD3Colors.neutral70}
+            size={20}
+            onPress={() => {
+              Alert.alert("알림", "05시 이전의 기록은 어제 날짜에 추가됩니다.");
+            }}
+            style={{ marginLeft: "-2%" }}
+          />
         </View>
         <View style={styles.contents}>
           <View style={styles.tagArea}>
@@ -445,10 +440,12 @@ function RecordCreateScreen({ route, navigation }) {
               )}
             </TouchableOpacity>
           </View>
-          <View style={styles.photo}>
+
+          {/* <View style={styles.photo}>
             <Text style={styles.texts}>술자리 사진</Text>
             <CalendarImagePicker day={day} />
-          </View>
+          </View> */}
+
           <View style={styles.memo}>
             <Text style={styles.texts}>술자리 기록</Text>
             <TextInput
@@ -467,7 +464,7 @@ function RecordCreateScreen({ route, navigation }) {
               style={styles.button}
               mode="outlined"
               textColor={"#363C4B"}
-              onPress={gotoDetailPage}
+              onPress={goToDetailPage}
             >
               돌아가기
             </Button>
@@ -499,22 +496,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#F7F9FF",
   },
   mainTextBox: {
-    flex: 1,
-    // height: "13%",
-    padding: "5%",
+    paddingHorizontal: "5%",
+    marginTop: "5%",
     flexDirection: "row",
     alignItems: "center",
   },
   headerText: {
-    fontSize: 40,
-    verticalAlign: "bottom",
+    fontSize: 24,
     fontFamily: "LineRegular",
-  },
-  light: {
-    height: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: "2%",
   },
   contents: {
     display: "flex",
