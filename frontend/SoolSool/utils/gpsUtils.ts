@@ -139,6 +139,7 @@ export async function resetAsyncStorage() {
 		await AsyncStorage.setItem("keepUpdateLocation", JSON.stringify(true));
 		await AsyncStorage.removeItem("alarmTime");
 		await AsyncStorage.removeItem("todayPostDate");
+		await AsyncStorage.setItem("nowLocation", "{}");
 	}
 } 
 
