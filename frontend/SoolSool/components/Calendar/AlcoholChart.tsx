@@ -3,10 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 function AlcoholChart({ drinks }) {
   // 주종별 색상
   const categoryColors = {
-    소주: "#9FBA00",
-    맥주: "#CA6529",
-    와인: "#E7464B",
-    소맥: "#FFC808",
+    소주: "#009FFF",
+    맥주: "#93FCF8",
+    와인: "#BDB2FA",
+    소맥: "#FFA5BA",
     "칵테일(약)": "#FA6E68",
     "칵테일(강)": "#D5E794",
     막걸리: "#FDF2D9",
@@ -14,13 +14,14 @@ function AlcoholChart({ drinks }) {
     하이볼: "#53A5D7",
   };
 
+  console.log("@@", drinks);
   return (
     <View style={styles.total}>
       <View style={styles.header}>
         <Text style={styles.smallHeaderText}>음주 비율</Text>
       </View>
       <View style={styles.box}>
-        <Text>음주량 비율</Text>
+        <Text>음주량</Text>
         <View style={styles.chart}>
           {Object.keys(drinks).map((key, index) => (
             <View
@@ -41,7 +42,7 @@ function AlcoholChart({ drinks }) {
         </View>
       </View>
       <View style={styles.box}>
-        <Text>알코올양 비율</Text>
+        <Text>알코올양</Text>
         <View style={styles.chart}>
           {Object.keys(drinks).map((key, index) => (
             <View
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   smallHeaderText: {
-    fontSize: 17,
+    fontSize: 15,
     marginBottom: "2%",
   },
 });

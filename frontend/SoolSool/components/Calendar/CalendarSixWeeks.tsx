@@ -175,14 +175,7 @@ function CalendarSixWeeks({ navigation }) {
               <View style={styles.tempBox}>
                 <Text style={styles.headerText}>{selectDay}</Text>
                 {alcoholDays.includes(selectDay) && nowDate !== selectDay ? (
-                  <DailySummary
-                    navigation={navigation}
-                    summaryText={selectDay}
-                    alcoholDays={alcoholDays}
-                    // onRemove={() => {
-                    //   setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
-                    // }}
-                  />
+                  <DailySummary navigation={navigation} queryDate={selectDay} />
                 ) : nowDate === selectDay ? (
                   <Text style={styles.innerText}>
                     내일 새벽 5시에 업데이트 됩니다.
