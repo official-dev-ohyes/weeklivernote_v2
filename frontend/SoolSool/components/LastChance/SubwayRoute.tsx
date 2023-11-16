@@ -64,6 +64,7 @@ function SubwayRoute({ pathInfo }) {
               </Text>
               <Text style={styles.concatenatedNames}>{concatenatedNames}</Text>
             </View>
+            ```````````````````````````````````````
             <Text style={styles.distance}>총 {distance}m 이동</Text>
           </View>
 
