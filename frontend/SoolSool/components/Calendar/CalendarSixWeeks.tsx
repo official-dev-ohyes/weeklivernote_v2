@@ -178,6 +178,8 @@ function CalendarSixWeeks({ navigation }) {
           dayComponent={({ date, state }) => {
             const alcoholKey = date.dateString;
             const isDisabled = state === "disabled";
+            const isActive = alcoholKey === selectDay;
+            const isToday = alcoholKey === nowDate;
 
             return (
               <TouchableOpacity
@@ -186,11 +188,22 @@ function CalendarSixWeeks({ navigation }) {
                 }}
                 style={[
                   styles.calendarCell,
-                  isDisabled && { opacity: 0.65, paddingLeft: 0 },
+                  isDisabled && {
+                    opacity: 0.65,
+                    paddingLeft: 0,
+                  },
                 ]}
               >
                 <View style={styles.calendarCell}>
-                  <Text style={styles.calendarDate}>{date.day}</Text>
+                  <Text
+                    style={[
+                      styles.calendarDate,
+                      isToday && styles.todayDate,
+                      isActive && styles.selectDate,
+                    ]}
+                  >
+                    {date.day}
+                  </Text>
                   {alcoholDays.includes(alcoholKey) ? (
                     <ImageBackground
                       source={adaptiveIcon}
@@ -288,6 +301,12 @@ const styles = StyleSheet.create({
   },
   calendarDate: {
     color: "white", // @@@@@@@@@@@@@@@@@@@@@@@@달력 내부 글씨 색상@@@@@@@@@@@@@@@@@@@@@@@@
+  },
+  todayDate: {
+    color: "#CA77FF",
+  },
+  selectDate: {
+    color: "#FFDE68",
   },
   calendarStamp: {
     height: "83%", // @@@@@@@@@@@@@@@@@@@@@@@@술마신 날 도장@@@@@@@@@@@@@@@@@@@@@@@@
