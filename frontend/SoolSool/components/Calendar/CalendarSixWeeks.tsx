@@ -63,7 +63,7 @@ function CalendarSixWeeks({ navigation }) {
   const dynamicSnapPoints = useMemo(() => {
     const isToday = selectDay === nowDate;
     const snapPoints =
-      isToday || !alcoholDays[selectDay] ? ["25%"] : ["25%", "100%"];
+      isToday || !alcoholDays.includes(selectDay) ? ["25%"] : ["25%", "100%"];
     return snapPoints;
   }, [selectDay, alcoholDays]);
 
@@ -152,7 +152,7 @@ function CalendarSixWeeks({ navigation }) {
   const handleCreateRecordPressed = () => {
     navigation.navigate("RecordCreate", {
       date: selectDay,
-      isAlcohol: alcoholDays[selectDay],
+      isAlcohol: alcoholDays.includes(selectDay),
     });
   };
 
@@ -224,36 +224,32 @@ function CalendarSixWeeks({ navigation }) {
             onChange={handleSheetChanges}
           >
             <View style={styles.dailySummaryComponent}>
-              {alcoholDays[selectDay] ? (
-                <DailySummary
-                  navigation={navigation}
-                  summaryText={selectDay}
-                  alcoholDays={alcoholDays}
-                  onRemove={() => {
-                    setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
-                  }}
-                />
-              ) : (
-                <View style={styles.tempBox}>
-                  <Text style={styles.headerText}>{selectDay}</Text>
-                  {nowDate === selectDay ? (
-                    <Text style={styles.innerText}>
-                      내일 새벽 5시에 업데이트 됩니다.
-                    </Text>
-                  ) : isFuture ? (
-                    <Text style={styles.innerText}>
-                      아직은 기록할 수 없어요.
-                    </Text>
-                  ) : (
-                    <FAB
-                      icon="plus"
-                      style={styles.fab}
-                      color="white"
-                      onPress={handleCreateRecordPressed}
-                    />
-                  )}
-                </View>
-              )}
+              <View style={styles.tempBox}>
+                <Text style={styles.headerText}>{selectDay}</Text>
+                {alcoholDays.includes(selectDay) ? (
+                  <DailySummary
+                    navigation={navigation}
+                    summaryText={selectDay}
+                    alcoholDays={alcoholDays}
+                    onRemove={() => {
+                      setRenderFlag(true); // 상태 변경으로 인한 재렌더링을 유도
+                    }}
+                  />
+                ) : nowDate === selectDay ? (
+                  <Text style={styles.innerText}>
+                    내일 새벽 5시에 업데이트 됩니다.
+                  </Text>
+                ) : isFuture ? (
+                  <Text style={styles.innerText}>아직은 기록할 수 없어요.</Text>
+                ) : (
+                  <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    color="white"
+                    onPress={handleCreateRecordPressed}
+                  />
+                )}
+              </View>
             </View>
           </BottomSheetModal>
         ) : null}
@@ -314,6 +310,7 @@ const styles = StyleSheet.create({
   },
   dailySummaryComponent: {
     flex: 1,
+    height: "100%",
   },
   tempBox: {
     height: "90%",
