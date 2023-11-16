@@ -18,8 +18,14 @@ function BusRoute({ pathInfo }) {
     return station.stationName;
   });
 
-  const concatenatedNames = stationNames.join("-");
-  console.log("버스경유지", concatenatedNames);
+  const chunkedStationNames = [];
+  for (let i = 0; i < stationNames.length; i += 5) {
+    chunkedStationNames.push(stationNames.slice(i, i + 5).join(" - "));
+  }
+  const concatenatedNames = chunkedStationNames.join("\n");
+
+  // const concatenatedNames = stationNames.join("-");
+  // console.log("버스경유지", concatenatedNames);
 
   return (
     <View style={styles.mainContainer}>
@@ -154,6 +160,7 @@ const styles = StyleSheet.create({
     fontFamily: "LineRegular",
     fontSize: 12,
     color: "gray",
+    lineHeight: 15,
   },
 });
 

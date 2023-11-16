@@ -44,7 +44,7 @@ function Profile(props: UserProfileProps) {
 
   const { userData, navigation, setUserProfile } = props;
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  console.log("props로 받아온 userData", userData);
+  // console.log("props로 받아온 userData", userData);
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -159,7 +159,7 @@ function Profile(props: UserProfileProps) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(255,255,255,0.9)",
     flexDirection: "column",
     gap: 15,
     borderRadius: 10,

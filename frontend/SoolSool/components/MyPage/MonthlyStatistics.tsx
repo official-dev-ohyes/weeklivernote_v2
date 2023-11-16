@@ -5,29 +5,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { fetchYearlyStatistics } from "../../api/statisticsApi";
 
-interface MonthlyStatisticsProps {
-  // nonAlc:number;
-}
-
-function MonthlyStatistics(props: MonthlyStatisticsProps) {
-  const [barData, setBarData] = useState(null);
-
-  const {
-    data: monthlyStatisticsData,
-    isLoading: isLoading,
-    isError: isError,
-  } = useQuery(
-    "monthlyStatisticsData",
-    async () => await fetchYearlyStatistics()
-  );
-
-  useEffect(() => {
-    if (!isLoading && monthlyStatisticsData) {
-      // console.log("왜?", monthlyStatisticsData);
-      setBarData(monthlyStatisticsData.yearly);
-    }
-  }, [monthlyStatisticsData, isLoading]);
-
+function MonthlyStatistics({ barData }) {
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.text}>지난 12개월간 이만큼 마셨어요!</Text>
@@ -36,13 +14,13 @@ function MonthlyStatistics(props: MonthlyStatisticsProps) {
           <View style={styles.barchart}>
             <BarChart
               data={barData}
-              barWidth={10}
+              barWidth={12}
               height={180}
-              barBorderRadius={5}
               stepValue={500}
-              maxValue={2500}
-              initialSpacing={0}
+              maxValue={2000}
+              initialSpacing={5}
               yAxisLabelWidth={7}
+              spacing={16}
               hideAxesAndRules
               frontColor="#FFCC4A"
               isAnimated
@@ -66,7 +44,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 240,
     backgroundColor: "rgba(255,255,255,0.9)",
-    marginHorizontal: "auto",
+    marginRight: "auto",
+    marginLeft: "auto",
     borderRadius: 20,
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
@@ -87,9 +66,11 @@ const styles = StyleSheet.create({
   barchart: {
     position: "absolute",
     top: 0,
-    right: 10,
+    right: 7,
+    // left: "50%",
     width: "100%",
     height: "100%",
+    // transform: [{ translateX: -50 }],
   },
   linechart: {
     position: "absolute",

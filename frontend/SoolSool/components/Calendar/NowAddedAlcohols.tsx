@@ -8,7 +8,7 @@ function NowAddedAlcohols({ alcoholRecord, onDeleteRecord }) {
     setCount(alcoholRecord.length);
   }, [alcoholRecord]);
 
-  console.log(`지금 넘어온 술 기록 개수는 ${count}개`);
+  // console.log(`지금 넘어온 술 기록 개수는 ${count}개`);
 
   // 해당 인덱스의 주종 음주 기록 삭제
   const handleDelete = (index) => {

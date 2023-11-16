@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#121B33",
   },
   mainTextBox: {
-    height: "10%",
+    // height: "10%",
     padding: "5%",
     flexDirection: "row",
     alignItems: "center",
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     fontFamily: "LineRegular",
     verticalAlign: "bottom",
     color: "white",
+    marginTop: "5%",
   },
   calendar: {
     height: "87%",

@@ -85,6 +85,7 @@ export const fetchDailyDrink = async (day) => {
     console.log(`${day} 날짜의 요약 정보 조회 요청 성공!`, res.data);
     return res.data;
   } catch (err) {
+    console.log("왜실패할까?", err);
     throw new Error(`음주기록 요약 조회 실패! 실패한 날짜는 ${day}`);
   }
 };
@@ -106,25 +107,54 @@ function base64ToArrayBuffer(base64) {
 }
 
 // 사진 기록
-export const postImage = async (day, imageUri) => {
-  try {
-    const base64 = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    const arrayBuffer = base64ToArrayBuffer(base64);
-    let blob = new Blob([new Uint8Array(arrayBuffer)], { type: "image/jpeg" });
-    let formData = new FormData();
-    formData.append("image", blob, "image.jpg");
+// export const postImage = async (day, imageUri) => {
+//   try {
+//     const base64 = await FileSystem.readAsStringAsync(imageUri, {
+//       encoding: FileSystem.EncodingType.Base64,
+//     });
+//     const arrayBuffer = base64ToArrayBuffer(base64);
+//     let blob = new Blob([new Uint8Array(arrayBuffer)], { type: "image/jpeg" });
+//     let formData = new FormData();
+//     formData.append("image", blob, "image.jpg");
 
-    const res = await axiosInstance.post(`/v1/drink/photo/${day}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log("사진 post 요청 성공", res.data);
-    return res.data;
+//     const res = await axiosInstance.post(`/v1/drink/photo/${day}`, formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//     console.log("사진 post 요청 성공", res.data);
+//     return res.data;
+//   } catch (err) {
+//     console.error("Failed to upload the image:", err);
+//     throw new Error("사진 post 요청 실패");
+//   }
+// };
+
+export const postImage = async (body, token, day) => {
+  console.log("보내기 직전에 formData확인", body);
+  console.log("토큰 확인", token);
+  try {
+    const res = await fetch(
+      process.env.REACT_APP_BACK_URL + `/v1/drink/photo/${day}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "multipart/form-data; boundary=someArbitraryUniqueString",
+          Authorization: `Bearer ${token}`,
+        },
+        body: body,
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("사진 post 요청 실패");
+    }
+
+    const data = await res.json();
+    return data;
   } catch (err) {
-    console.error("Failed to upload the image:", err);
-    throw new Error("사진 post 요청 실패");
+    console.log("사진 포스트 안되는 이유", err);
+    throw new Error("이미지 저장 요청 실패");
   }
 };

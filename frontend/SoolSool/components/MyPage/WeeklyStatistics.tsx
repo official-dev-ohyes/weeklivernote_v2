@@ -2,33 +2,9 @@ import { Text, View, StyleSheet } from "react-native";
 import React from "react";
 import { BarChart, LineChart } from "react-native-gifted-charts";
 import { fetchWeeklyStatistics } from "../../api/statisticsApi";
-import { useState, useEffect } from "react";
-import { useQuery } from "react-query";
 
-interface WeeklyStatisticsProps {
-  // nonAlc:number;
-}
-
-function WeeklyStatistics(props: WeeklyStatisticsProps) {
-  const [barData, setBarData] = useState(null);
-  const [lineData, setLineData] = useState(null);
-
-  const {
-    data: weeklyStatisticsData,
-    isLoading: isLoading,
-    isError: isError,
-  } = useQuery(
-    "weeklyStatisticsData",
-    async () => await fetchWeeklyStatistics()
-  );
-
-  useEffect(() => {
-    if (!isLoading && weeklyStatisticsData) {
-      setBarData(weeklyStatisticsData.weekly.bar);
-      setLineData(weeklyStatisticsData.weekly.line);
-    }
-  }, [weeklyStatisticsData, isLoading]);
-
+function WeeklyStatistics({ lineData, barData }) {
+  // console.log("확인", lineData);
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.text}>지난 7일간 이만큼 마셨어요!</Text>
@@ -57,8 +33,8 @@ function WeeklyStatistics(props: WeeklyStatisticsProps) {
               // height={150}
               yAxisThickness={0}
               xAxisThickness={0}
-              stepValue={50}
-              maxValue={2500}
+              stepValue={10}
+              maxValue={200}
               yAxisLabelWidth={0}
               hideAxesAndRules
               color="#363C4B"

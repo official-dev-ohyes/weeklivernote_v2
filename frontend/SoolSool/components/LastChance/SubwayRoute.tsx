@@ -21,8 +21,13 @@ function SubwayRoute({ pathInfo }) {
     return station.stationName;
   });
 
-  const concatenatedNames = stationNames.join("-");
-  console.log("확인할거야", name);
+  const chunkedStationNames = [];
+  for (let i = 0; i < stationNames.length; i += 5) {
+    chunkedStationNames.push(stationNames.slice(i, i + 5).join(" - "));
+  }
+  const concatenatedNames = chunkedStationNames.join("\n");
+  // const concatenatedNames = stationNames.join(" - \n");
+  // console.log("확인할거야", name);
   return (
     <View style={styles.mainContainer}>
       <View
@@ -168,6 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: "LineRegular",
     fontSize: 12,
     color: "gray",
+    lineHeight: 15,
   },
 });
 

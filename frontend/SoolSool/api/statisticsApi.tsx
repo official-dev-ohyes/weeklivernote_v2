@@ -13,7 +13,6 @@ export const fetchWeeklyStatistics = async () => {
 export const fetchYearlyStatistics = async () => {
   try {
     const res = await axiosInstance.get(`/v1/user/stat-chart`);
-    console.log("연간통계잘불러옴");
     return res.data;
   } catch (err) {
     console.log("err", err);

@@ -12,7 +12,6 @@ import { useState, useEffect } from "react";
 import { Picker } from "@react-native-picker/picker";
 import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-// import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
@@ -21,12 +20,17 @@ import {
   fetchDailyDrink,
   fetchDailyDetail,
   removeDrink,
+  postImage,
 } from "../api/drinkRecordApi";
 
 import { getAmountByDrinkCount } from "../utils/drinkUtils";
+import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function RecordCreateScreen({ route, navigation }) {
   const queryClient = useQueryClient();
+  const [image, setImage] = useState<string | null>(null);
+  const [token, setToken] = useState(null);
   const day = route.params.date;
   const isAlcohol = route.params.isAlcohol; // create, update 구분
   const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
@@ -113,6 +117,15 @@ function RecordCreateScreen({ route, navigation }) {
   );
 
   useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const tempToken = await AsyncStorage.getItem("accessToken");
+        setToken(tempToken);
+      } catch (err) {
+        console.error("token을 꺼내오다 에러 발생", err);
+      }
+    };
+    fetchToken();
     // 초기 시간 설정
     if (currentHour >= 12) {
       setSelectedAmPm("PM");
@@ -124,7 +137,7 @@ function RecordCreateScreen({ route, navigation }) {
     setSelectedMinute(
       currentMinute < 10 ? `0${currentMinute}` : `${currentMinute}`
     );
-  }, []);
+  }, [token]);
   // 시간 선택 라이브러리
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -162,6 +175,7 @@ function RecordCreateScreen({ route, navigation }) {
 
   // 전체 기록 추가
   const saveRecord = async () => {
+    console.log("저장버튼을 클릭");
     if (selectedHour === "시" || selectedMinute === "분") {
       Alert.alert("알림", "음주 시작 시간을 입력해주세요.");
       return;
@@ -197,21 +211,40 @@ function RecordCreateScreen({ route, navigation }) {
     console.log(`저장 전 담긴 메모는 이렇습니다. ${memo}`);
 
     if (isAlcohol) {
-      updateDrink({
+      await updateDrink({
         drinks: [...alcoholRecord],
         drinkDate: date,
         startTime: time,
         memo: memo,
         hangover: "",
-      });
+      })
+        .then((res) => {
+          console.log("업데이트 성공");
+        })
+        .catch((err) => {
+          console.log("업데이트 실패");
+        });
     } else {
-      createDrink({
+      await createDrink({
         drinks: [...alcoholRecord],
         drinkDate: date,
         startTime: time,
         memo: memo,
         hangover: "",
-      });
+      })
+        .then(async (res) => {
+          console.log("작성 성공");
+          await postImage(image, token, day)
+            .then((res) => {
+              console.log("이미지도 저장 성공");
+            })
+            .catch(() => {
+              console.log("이미지는 저장 실패");
+            });
+        })
+        .catch((err) => {
+          console.log("작성 실패");
+        });
     }
 
     navigation.navigate("Calendar");
@@ -423,7 +456,7 @@ function RecordCreateScreen({ route, navigation }) {
             </View>
           </View>
           <View style={styles.time}>
-            <Text style={styles.timeText}>술자리 시작 시간</Text>
+            <Text style={styles.timeText}>술자리 시작</Text>
             <TouchableOpacity onPress={showMode} style={styles.timeInput}>
               <Text style={styles.timeInnerText}>
                 {selectedHour} : {selectedMinute} {selectedAmPm}
@@ -441,13 +474,9 @@ function RecordCreateScreen({ route, navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* <View style={styles.photo}>
-            <Text style={styles.texts}>술자리 사진</Text>
-            <CalendarImagePicker day={day} />
-          </View> */}
-
           <View style={styles.memo}>
-            <Text style={styles.texts}>술자리 기록</Text>
+            <Text style={styles.texts}>메모</Text>
+            <CalendarImagePicker image={image} setImage={setImage} />
             <TextInput
               label="술자리 기록을 남겨보세요"
               keyboardType="default"
@@ -462,14 +491,6 @@ function RecordCreateScreen({ route, navigation }) {
           <View style={styles.buttonContainer}>
             <Button
               style={styles.button}
-              mode="outlined"
-              textColor={"#363C4B"}
-              onPress={goToDetailPage}
-            >
-              돌아가기
-            </Button>
-            <Button
-              style={styles.button}
               mode="contained"
               onPress={() => {
                 saveRecord();
@@ -477,6 +498,14 @@ function RecordCreateScreen({ route, navigation }) {
               buttonColor={"#363C4B"}
             >
               {isAlcohol ? "수정" : "저장"}
+            </Button>
+            <Button
+              style={styles.button}
+              mode="outlined"
+              textColor={"#363C4B"}
+              onPress={goToDetailPage}
+            >
+              돌아가기
             </Button>
           </View>
         </View>
@@ -507,7 +536,7 @@ const styles = StyleSheet.create({
   },
   contents: {
     display: "flex",
-    height: 700,
+    height: 800,
     flexDirection: "column",
     justifyContent: "space-between",
     paddingHorizontal: 20,
@@ -587,6 +616,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 17,
     fontWeight: "bold",
+    flex: 1,
   },
   timeInput: {
     flexDirection: "row",
@@ -594,6 +624,7 @@ const styles = StyleSheet.create({
     width: "50%",
     alignItems: "center",
     borderRadius: 5,
+    flex: 2,
   },
   timeInnerText: {
     flex: 1,
