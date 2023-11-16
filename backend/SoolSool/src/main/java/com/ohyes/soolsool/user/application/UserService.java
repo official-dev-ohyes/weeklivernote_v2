@@ -262,7 +262,7 @@ public class UserService {
         // 주소 입력 했을 경우 위도/경도 데이터 저장
         if (!userRequestDto.getAddress().equals("주소지 미입력")) {
             Location location = user.getLocation();
-            gpsInfo = gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress());
+            gpsInfo = gpsService.getDestinationGpsInfo(location, userRequestDto.getAddress(), user);
         }
 
         TokenDto tokenDto = jwtProvider.createToken(user);
@@ -340,7 +340,10 @@ public class UserService {
             // 주소 입력 했을 경우 위도/경도 데이터 저장
             if (!userModifyDto.getAddress().equals("주소지 미입력")) {
                 Location location = user.getLocation();
-                gpsInfo =  gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress());
+                gpsInfo =  gpsService.getDestinationGpsInfo(location, userModifyDto.getAddress(),
+                    user);
+
+                // 주소지 변경  위도/경도 저장 후 다치 막차 조회 로직 추가
             }
         }
         if (userModifyDto.getGender() != null) {

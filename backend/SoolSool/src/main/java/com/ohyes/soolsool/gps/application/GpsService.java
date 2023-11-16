@@ -34,7 +34,7 @@ public class GpsService {
     private final LocationService locationService;
 
     // 주소에서 위도/경도 정보 조회 후 저장
-    public GpsInfo getDestinationGpsInfo(Location location, String address) {
+    public GpsInfo getDestinationGpsInfo(Location location, String address, User user) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -59,9 +59,6 @@ public class GpsService {
                 double latitude = documents.get(0).path("road_address").path("y").asDouble();
                 double longitude = documents.get(0).path("road_address").path("x").asDouble();
 
-                System.out.println("위도 : " + latitude);
-                System.out.println("경도 : " + longitude);
-
                 location.setHomeLat(latitude);
                 location.setHomeLong(longitude);
 
@@ -73,6 +70,16 @@ public class GpsService {
                     .longitude(longitude)
                     .build();
 
+                // 유저의 현재 위치 정보 갱신 될 때 마다 막차 경로 조회 및 저장
+                LocationRequestDto locationRequestDto = LocationRequestDto.builder()
+                    .homeLat(latitude)
+                    .homeLong(longitude)
+                    .nowLat(user.getLocation().getNowLat())
+                    .nowLong(user.getLocation().getNowLong())
+                    .build();
+
+                // 도착지 정보 변경시 막차 조회 다시 시작
+                locationService.saveLastChance(locationRequestDto, user.getSocialId());
                 return gpsInfo;
 
             } catch (Exception e) {

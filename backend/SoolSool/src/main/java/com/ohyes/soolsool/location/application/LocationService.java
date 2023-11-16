@@ -64,7 +64,7 @@ public class LocationService {
             .shortRoute(shortRoute)
             .subPaths(subPaths)
             .build();
-        log.error("뭐지뭐야 " + alarmTime);
+        log.error("유저 알람 시간 " + alarmTime);
         String jsonString = objectMapper.writeValueAsString(locationResponseDto);
 
         // Redis 저장 키는 socialId를 이용하기
