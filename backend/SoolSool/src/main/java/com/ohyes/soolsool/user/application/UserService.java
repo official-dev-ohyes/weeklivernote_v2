@@ -130,6 +130,10 @@ public class UserService {
             .get("profile_image_url").asText();
         String profileImg = "https://" + tempImg.substring(7);
 
+        if (profileImg.equals("https://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg")) {
+            profileImg = null;
+        }
+
         return new KakaoProfileDto(socialId, nickname, profileImg);
 
     }
