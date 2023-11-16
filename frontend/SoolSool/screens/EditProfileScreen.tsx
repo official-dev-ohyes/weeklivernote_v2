@@ -14,6 +14,7 @@ import { fetchUserProfile, updateUserProfile } from "../api/mypageApi";
 import Toast from "react-native-root-toast";
 import { showErrorAndRetry } from "../utils/showErrorUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Postcode from "@actbase/react-daum-postcode";
 
 function EditProfileScreen({ navigation }) {
   const [oldnickname, setOldNickname] = useState("");
@@ -117,10 +118,20 @@ function EditProfileScreen({ navigation }) {
       });
   };
 
-  // useEffect(() => {
-  //   console.log("??", amount);
-  //   // console.log("뭐야", oldheight);
-  // }, [amount]);
+  const getAddressData = (data) => {
+    let defaultAddress = "";
+
+    if (data.buildingName === "") {
+      defaultAddress = "";
+    } else if (data.buildingName === "N") {
+      defaultAddress = "(" + data.apartment + ")";
+    } else {
+      defaultAddress = "(" + data.buildingName + ")";
+    }
+    // this.props.navigation.navigate('Drawers',{screen:'Deliver', params:{zonecode:data.zonecode, address:data.address, defaultAddress:defaultAddress}});
+    // console.log("여기에 정보가 담기겠지?", data);
+    setAddress(data.address);
+  };
 
   return (
     <ScrollView>
@@ -128,11 +139,6 @@ function EditProfileScreen({ navigation }) {
         <View style={styles.mainContainer}>
           <Text style={styles.title}>회원정보수정</Text>
           <View style={styles.contentContainer}>
-            {/* <ProfileImagePicker
-              imageURL={oldimageURL}
-              newImageURL={imageURL}
-              setNewImageURL={setImageURL}
-            /> */}
             <Text>닉네임</Text>
             <TextInput
               placeholder={oldnickname.toString()}
@@ -142,10 +148,25 @@ function EditProfileScreen({ navigation }) {
             />
           </View>
           <View style={styles.contentContainer}>
+            <Text>주소</Text>
+            <TextInput
+              placeholder={oldaddress.toString()}
+              value={address}
+              style={styles.textInput}
+            />
+            <Postcode
+              style={{ width: "100%", height: 400 }}
+              jsOptions={{ animation: true }}
+              onSelected={(data) => getAddressData(data)}
+              onError={(error) => console.error(error)}
+            />
+          </View>
+          <View style={styles.contentContainer}>
             <Text>성별</Text>
             <View style={styles.genderContainer}>
               <Button
-                mode={gender === "남자" ? "contained" : "outlined"}
+                mode={gender === "남자" ? "contained" : "contained-tonal"}
+                // buttonColor="blue"
                 onPress={() => setGender("남자")}
                 style={styles.Button}
               >
@@ -153,7 +174,7 @@ function EditProfileScreen({ navigation }) {
               </Button>
               {/* 여자 버튼 */}
               <Button
-                mode={gender === "여자" ? "contained" : "outlined"}
+                mode={gender === "여자" ? "contained" : "contained-tonal"}
                 onPress={() => setGender("여자")}
                 style={styles.Button}
               >
@@ -216,15 +237,7 @@ function EditProfileScreen({ navigation }) {
               </View>
             </View>
           </View>
-          <View style={styles.contentContainer}>
-            <Text>주소</Text>
-            <TextInput
-              placeholder="주소지"
-              value={address}
-              style={styles.textInput}
-              onChangeText={(text) => setAddress(text)}
-            />
-          </View>
+
           <Divider />
           <Button
             mode="contained"
@@ -275,6 +288,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     // width: "100%",
+  },
+  addressText: {
+    backgroundColor: "#F6F6F6",
+    height: 50,
+    borderRadius: 10,
+    paddingTop: 13,
+    color: "gray",
   },
   kindTextInput: {
     backgroundColor: "#F6F6F6",

@@ -10,6 +10,7 @@ import { Button } from "react-native-paper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { mainbackground } from "../../assets";
 import AddressSearch from "./AddressSearch";
+import { ScrollView } from "react-native-gesture-handler";
 
 function AddInfoSecond({ address, setAddress, onNextClick }) {
   const screenHeight = Dimensions.get("window").height;
@@ -18,27 +19,29 @@ function AddInfoSecond({ address, setAddress, onNextClick }) {
       source={mainbackground}
       style={[{ height: screenHeight }, styles.mainContainer]}
     >
-      <View style={styles.subContainer}>
-        <View style={styles.questionContainer}>
-          <Text style={styles.titleText}>술자리 후</Text>
-          <Text style={styles.titleText}>어디로 길을 안내해드릴까요?</Text>
-        </View>
-        <View style={styles.AddressContainer}>
-          <View style={styles.rowContainer}>
-            <Text style={styles.AddressText}>{address}</Text>
-            <Text style={styles.text}>으로 갈래요!</Text>
+      <ScrollView>
+        <View style={styles.subContainer}>
+          <View style={styles.questionContainer}>
+            <Text style={styles.titleText}>술자리 후</Text>
+            <Text style={styles.titleText}>어디로 길을 안내해드릴까요?</Text>
           </View>
-          <AddressSearch setAddress={setAddress} />
+          <View style={styles.AddressContainer}>
+            <View style={styles.rowContainer}>
+              <Text style={styles.AddressText}>{address}</Text>
+              <Text style={styles.text}>으로 갈래요!</Text>
+            </View>
+            <AddressSearch setAddress={setAddress} />
+          </View>
+          <Button
+            mode="contained"
+            buttonColor={"#FFDE68"}
+            textColor={"#000000"}
+            onPress={onNextClick}
+          >
+            다음 단계로 가기
+          </Button>
         </View>
-        <Button
-          mode="contained"
-          buttonColor={"#FFDE68"}
-          textColor={"#000000"}
-          onPress={onNextClick}
-        >
-          다음 단계로 가기
-        </Button>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }

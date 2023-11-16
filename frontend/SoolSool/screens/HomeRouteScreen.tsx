@@ -13,6 +13,7 @@ import { useQuery } from "react-query";
 import { fetchHomeRoute } from "../api/mapApi";
 import { HomeMarker, NowMarker } from "../assets";
 import HomeRouteDetail from "../components/LastChance/HomeRouteDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function HomeRouteScreen({ navigation }) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -25,6 +26,8 @@ function HomeRouteScreen({ navigation }) {
   const [pathType, setPathType] = useState(null);
   const [info, setInfo] = useState(null);
   const [subPath, setSubPath] = useState(null);
+  const [passStops, setPassStops] = useState(null);
+  // const [locations, setLocations] = useState(null);
 
   // 지도의 영역이 변경될 때 실행되는 함수
   const onRegionChange = (newRegion) => {
@@ -41,17 +44,36 @@ function HomeRouteScreen({ navigation }) {
 
   useEffect(() => {
     if (!isLoading && RouteData) {
-      console.log("경로야 들어와줘", RouteData.shortRoute);
       setPathType(RouteData.shortRoute.pathType);
       setInfo(RouteData.shortRoute.info);
       setSubPath(RouteData.shortRoute.subPath);
+      setPassStops(RouteData.subPaths);
+
+      const fetchLocation = async () => {
+        try {
+          const tempLocation = await AsyncStorage.getItem("nowLocation");
+          console.log("위치확인", tempLocation);
+          console.log("위치확인", JSON.parse(tempLocation).latitude);
+          console.log("위치확인", JSON.parse(tempLocation).longitude);
+
+          setRegion((prev) => ({
+            ...prev,
+            latitude: JSON.parse(tempLocation).latitude,
+            longitude: JSON.parse(tempLocation).longitude,
+          }));
+        } catch (err) {
+          console.error("을 꺼내오다 에러 발생", err);
+        }
+      };
+      fetchLocation();
     }
   }, [RouteData, isLoading]);
 
   useEffect(() => {
     // 컴포넌트가 마운트되면 bottomSheet를 초기에 보이도록 설정
     bottomSheetModalRef.current?.present();
-  }, []);
+    console.log("지금 어디인지", region);
+  }, [region]);
 
   const snapPoints = useMemo(() => ["20%", "80%"], []);
 
@@ -59,10 +81,28 @@ function HomeRouteScreen({ navigation }) {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
+  const handleSheetChanges = useCallback((index: number) => {}, []);
 
+  const filteredData = passStops?.filter(
+    (item) => Object.keys(item).length !== 0
+  );
+
+  const processedCoordinates = filteredData?.map((item) => {
+    return Object.values(item).map(([longitude, latitude]) => ({
+      latitude,
+      longitude,
+    }));
+  });
+
+  const flattenedCoordinates = processedCoordinates?.flat();
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>잠시만 기다려주세요</Text>
+      </View>
+    );
+  }
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>
@@ -74,21 +114,14 @@ function HomeRouteScreen({ navigation }) {
         >
           <Marker
             coordinate={{
-              latitude: region.latitude,
-              longitude: region.longitude,
+              latitude: region?.latitude || 0,
+              longitude: region?.longitude || 0,
             }}
-            title="현재위치"
+            title="현재 위치"
             // image={{ uri: NowMarker }}
           />
-          {/* <Polyline
-            coordinates={[
-              { latitude: 35.1110783, longitude: 128.8798523 },
-              { latitude: 35.1110784, longitude: 128.8798524 },
-              { latitude: 35.1110774, longitude: 128.8798514 },
-              { latitude: 35.1110874, longitude: 128.8798414 },
-              { latitude: 35.7948605, longitude: 128.4596065 },
-              { latitude: 35.8025259, longitude: 128.4351431 },
-            ]}
+          <Polyline
+            coordinates={flattenedCoordinates}
             strokeColor="lightblue"
             strokeColors={[
               "#7F0000",
@@ -99,7 +132,7 @@ function HomeRouteScreen({ navigation }) {
               "#7F0000",
             ]}
             strokeWidth={6}
-          /> */}
+          />
         </MapView>
         <Button
           mode="elevated"
@@ -115,11 +148,11 @@ function HomeRouteScreen({ navigation }) {
           onChange={handleSheetChanges}
         >
           <View style={styles.contentContainer}>
-            {/* <HomeRouteDetail
+            <HomeRouteDetail
               pathType={pathType}
               info={info}
               subPath={subPath}
-            /> */}
+            />
           </View>
         </BottomSheetModal>
       </View>

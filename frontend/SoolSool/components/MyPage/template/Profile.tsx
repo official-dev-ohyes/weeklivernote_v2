@@ -14,6 +14,7 @@ import { defaultImage } from "../../../assets";
 import * as ImagePicker from "expo-image-picker";
 import { updateProfileImage } from "../../../api/mypageApi";
 import { showErrorAndRetry } from "../../../utils/showErrorUtils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface UserProfile {
   address: string;
@@ -39,8 +40,22 @@ interface UserProfileProps {
 }
 
 function Profile(props: UserProfileProps) {
+  const [token, setToken] = useState(null);
+
   const { userData, navigation, setUserProfile } = props;
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const tempToken = await AsyncStorage.getItem("accessToken");
+        setToken(tempToken);
+      } catch (err) {
+        console.error("token을 꺼내오다 에러 발생", err);
+      }
+    };
+    fetchToken();
+  }, [token, userData]);
 
   const handleEditImage = async () => {
     if (!status?.granted) {
@@ -87,7 +102,7 @@ function Profile(props: UserProfileProps) {
     // body.append("name", fileName);
     // body.append("uri", uri);
 
-    await updateProfileImage(body)
+    await updateProfileImage(body, token)
       .then(() => {
         console.log("이미지 업데이트 성공");
 
@@ -100,21 +115,6 @@ function Profile(props: UserProfileProps) {
         showErrorAndRetry("알림", "잠시 후 다시 시도해주세요");
       });
   };
-
-  useEffect(() => {
-    // console.log("이미지url", userData.profileImg);
-    // console.log("닉네임", userData.nickname);
-    // console.log("주소", userData.address);
-    // console.log("성별", userData.gender);
-    // console.log("신장", userData.height);
-    // console.log("체중", userData.weight);
-    // console.log(
-    //   "주량",
-    //   userData.drinkInfo.category,
-    //   userData.drinkInfo.drinkAmount,
-    //   userData.drinkInfo.drinkUnit
-    // );
-  }, [userData]);
 
   const handleEdit = () => {
     navigation.navigate("EditProfile");
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "column",
     gap: 15,
-    // borderRadius: 30,
+    borderRadius: 10,
     alignItems: "center",
     paddingVertical: 30,
     paddingHorizontal: 15,
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#363C4B",
     borderRadius: 50,
     position: "absolute",
-    top: 98,
-    right: 25,
+    top: 100,
+    right: 10,
   },
   profileContainer: {
     width: "40%",

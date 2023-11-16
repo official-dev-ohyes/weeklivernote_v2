@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 
 function SubwayRoute({ pathInfo }) {
-  console.log("지하철은 어떻게 내려오나", pathInfo);
   const {
     distance,
     endExitNo,
@@ -16,27 +15,47 @@ function SubwayRoute({ pathInfo }) {
     way,
     wayCode,
   } = pathInfo;
+
+  const stationNames = stations?.map(function (station) {
+    return station.stationName;
+  });
+
+  const concatenatedNames = stationNames.join("-");
+  // console.log("확인할거야", concatenatedNames);
   return (
-    <View style={styles.mainContainer}>
+    <View style={[styles.mainContainer, { height: sectionTime * 15 }]}>
       <View style={styles.leftContainer}>
         <View style={styles.leftmarginContainer}>
           <Text>{sectionTime}분</Text>
         </View>
       </View>
       <View
-        style={[styles.routhGraphContainer, { height: sectionTime * 20 }]}
+        style={[styles.routhGraphContainer, { height: sectionTime * 15 }]}
       ></View>
       <View style={styles.rightContainer}>
         <View style={styles.rightmarginContainer}>
-          <Text>{name}</Text>
-          <Text>{way}가는 지하철</Text>
-          <Text>{wayCode}호선</Text>
-          <Text>{distance}m</Text>
-          <Text>{stationCount}개 정류장</Text>
-          <Text>출발지 {startExitNo}번 출구</Text>
-          <Text>도착지 {endExitNo}번 출구</Text>
-          <Text>출발역 {startName}역</Text>
-          <Text>도착역 {endName}역</Text>
+          <View>
+            <Text style={styles.startName}>{startName}역</Text>
+            <Text style={styles.startExitNo}>{startExitNo}번 출구</Text>
+          </View>
+
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.wayCode}>{wayCode}호선</Text>
+            <Text style={styles.way}>{way}역 방면</Text>
+            <Text style={styles.distance}>총 {distance}m 이동</Text>
+            <View>
+              <Text style={styles.stationCount}>
+                {stationCount}개 정류장 경유
+              </Text>
+              <Text style={styles.concatenatedNames}>{concatenatedNames}</Text>
+            </View>
+          </View>
+
+          <View>
+            <Text style={styles.endName}>{endName}역</Text>
+            <Text style={styles.endExitNo}>{endExitNo}번 출구</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -63,6 +82,9 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     width: "75%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
     // backgroundColor: "green",
   },
   leftmarginContainer: {
@@ -73,14 +95,63 @@ const styles = StyleSheet.create({
   },
   rightmarginContainer: {
     width: "95%",
-    height: "auto",
+    height: "100%",
     marginRight: "auto",
     marginLeft: "auto",
-    // display: "flex",
-    // justifyContent: "center",
     // backgroundColor: "black",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   marginHorizonalContainer: {},
+  name: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  way: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  wayCode: {
+    fontFamily: "LineRegular",
+    fontSize: 20,
+    color: "#023758",
+  },
+  distance: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  stationCount: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  startExitNo: {
+    fontFamily: "LineRegular",
+    fontSize: 12,
+    color: "gray",
+  },
+  endExitNo: {
+    fontFamily: "LineRegular",
+    fontSize: 12,
+    color: "gray",
+  },
+  startName: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  endName: {
+    fontFamily: "LineRegular",
+    fontSize: 14,
+  },
+  infoContainer: {
+    display: "flex",
+    gap: 10,
+  },
+  concatenatedNames: {
+    fontFamily: "LineRegular",
+    fontSize: 12,
+    color: "gray",
+  },
 });
 
 export default SubwayRoute;

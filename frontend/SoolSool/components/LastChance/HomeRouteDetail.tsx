@@ -6,6 +6,16 @@ import RouteSummary from "./RouteSummary";
 import { ScrollView } from "react-native-gesture-handler";
 
 function HomeRouteDetail({ pathType, info, subPath }) {
+  // const {
+  //   totalWalk,
+  //   totalTime,
+  //   payment,
+  //   firstStartStation,
+  //   lastEndStation,
+  //   busStationCount,
+  //   subwayStationCount,
+  // } = info;
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.routeSummaryContainer}>
@@ -15,17 +25,14 @@ function HomeRouteDetail({ pathType, info, subPath }) {
         <ScrollView>
           {subPath?.map((pathInfo, index) => {
             if (pathInfo.trafficType == 1) {
-              console.log("지하철 경로가 렌더링");
               return <SubwayRoute key={index} pathInfo={pathInfo} />;
             }
 
             if (pathInfo.trafficType == 2) {
-              console.log("버스 경로가 렌더링");
               return <BusRoute key={index} pathInfo={pathInfo} />;
             }
 
             if (pathInfo.trafficType == 3) {
-              console.log("도보 경로가 렌더링");
               return <WalkRoute key={index} pathInfo={pathInfo} />;
             }
           })}

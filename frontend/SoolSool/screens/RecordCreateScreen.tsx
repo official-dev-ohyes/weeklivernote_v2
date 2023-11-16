@@ -445,10 +445,10 @@ function RecordCreateScreen({ route, navigation }) {
               )}
             </TouchableOpacity>
           </View>
-          {/* <View style={styles.photo}>
+          <View style={styles.photo}>
             <Text style={styles.texts}>술자리 사진</Text>
             <CalendarImagePicker day={day} />
-          </View> */}
+          </View>
           <View style={styles.memo}>
             <Text style={styles.texts}>술자리 기록</Text>
             <TextInput

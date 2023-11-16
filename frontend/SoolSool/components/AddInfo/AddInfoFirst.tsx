@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { mainbackground } from "../../assets";
 import BodyInfo from "./BodyInfo";
+import { ScrollView } from "react-native-gesture-handler";
 
 function AddInfoFirst({
   gender,
@@ -25,21 +26,23 @@ function AddInfoFirst({
       source={mainbackground}
       style={[{ height: screenHeight }, styles.mainContainer]}
     >
-      <View style={styles.subContainer}>
-        <View style={styles.columnContainer}>
-          <Text style={styles.infoText}>더 나은 주간일기를 위해</Text>
-          <Text style={styles.infoText}>회원님의 정보를 알려주세요🙂</Text>
+      <ScrollView>
+        <View style={styles.subContainer}>
+          <View style={styles.columnContainer}>
+            <Text style={styles.infoText}>더 나은 주간일기를 위해</Text>
+            <Text style={styles.infoText}>회원님의 정보를 알려주세요🙂</Text>
+          </View>
+          <BodyInfo
+            gender={gender}
+            setGender={setGender}
+            height={height}
+            setHeight={setHeight}
+            weight={weight}
+            setWeight={setWeight}
+            onNextClick={onNextClick}
+          />
         </View>
-        <BodyInfo
-          gender={gender}
-          setGender={setGender}
-          height={height}
-          setHeight={setHeight}
-          weight={weight}
-          setWeight={setWeight}
-          onNextClick={onNextClick}
-        />
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }

@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import RouteMotion from "./RouteMotion";
 
 function RouteSummary({ info, subPath }) {
-  const sectionTimeArr = subPath.map((path, index) => {
-    // console.log("시간만 가져올게요", path.sectionTime);
+  const sectionTimeArr = subPath?.map((path, index) => {
     return {
       trafficType: path.trafficType,
       sectionTime: path.sectionTime,
     };
   });
 
-  console.log("?", sectionTimeArr);
   const {
     totalWalk,
     totalTime,

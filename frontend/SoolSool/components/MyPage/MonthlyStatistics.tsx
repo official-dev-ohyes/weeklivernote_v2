@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   graphBox: {
     width: "100%",
     height: 240,
-    backgroundColor: "white",
+    backgroundColor: "rgba(255,255,255,0.9)",
     marginHorizontal: "auto",
     borderRadius: 20,
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   text: {
-    fontSize: 18,
+    fontSize: 15,
     fontFamily: "LineRegular",
     color: "white",
   },

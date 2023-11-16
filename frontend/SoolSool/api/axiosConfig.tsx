@@ -14,7 +14,7 @@ axiosInstance.interceptors.request.use(
   async (config) => {
     //AsyncStorage에서 accessToken을 불러옴
     const accessToken = await AsyncStorage.getItem("accessToken");
-
+    console.log("AccessToken", accessToken);
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

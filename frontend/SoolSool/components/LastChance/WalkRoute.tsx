@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 function WalkRoute({ pathInfo }) {
   const { trafficType, distance, sectionTime } = pathInfo;
 
-  console.log("파싱이 잘되나?", trafficType, distance, sectionTime);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.leftContainer}>
@@ -17,7 +16,7 @@ function WalkRoute({ pathInfo }) {
       </View>
       <View style={styles.rightContainer}>
         <View style={styles.rightmarginContainer}>
-          <Text>{distance}m</Text>
+          <Text>총 {distance}m 이동</Text>
         </View>
       </View>
     </View>

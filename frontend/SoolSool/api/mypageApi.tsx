@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "./axiosConfig";
+import { useState } from "react";
 
 export const fetchUserProfile = async () => {
   try {
@@ -60,16 +62,19 @@ export const updateUserProfile = async (
 //     throw new Error("이미지 변경 요청 실패");
 //   }
 // };
-
-export const updateProfileImage = async (body) => {
+//
+export const updateProfileImage = async (body, token) => {
   console.log("보내기 직전에 formData확인", body);
+  console.log("토큰 확인", token);
   try {
     const res = await fetch(
       process.env.REACT_APP_BACK_URL + `/v2/user/profile`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "multipart/form-data", // fetch는 자동으로 설정해주므로 주석 처리
+          "Content-Type":
+            "multipart/form-data; boundary=someArbitraryUniqueString",
+          Authorization: `Bearer ${token}`,
         },
         body: body,
       }
