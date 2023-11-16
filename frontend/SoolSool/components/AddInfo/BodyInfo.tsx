@@ -56,7 +56,7 @@ function BodyInfo({
           />
         </View>
         <Text style={styles.mainText}>
-          ※ 신체정보를 기준으로 알코올 농도를 계산합니다.
+          ※ 신체정보를 기준으로 혈중 알코올 농도를 계산합니다.
         </Text>
       </View>
       <View style={styles.columnContainer}>

@@ -7,7 +7,7 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { Button, Divider, Provider } from "react-native-paper";
+import { Button, Divider, Provider, Modal, Portal } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { useQuery } from "react-query";
 import { fetchUserProfile, updateUserProfile } from "../api/mypageApi";
@@ -26,6 +26,10 @@ function EditProfileScreen({ navigation }) {
   const [oldamount, setOldAmount] = useState("");
   const [oldunit, setOldUnit] = useState("");
   const [oldimageURL, setOldImageURL] = useState("");
+
+  const [visible, setVisible] = React.useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   const {
     data: userProfileData,
@@ -131,6 +135,7 @@ function EditProfileScreen({ navigation }) {
     // this.props.navigation.navigate('Drawers',{screen:'Deliver', params:{zonecode:data.zonecode, address:data.address, defaultAddress:defaultAddress}});
     // console.log("여기에 정보가 담기겠지?", data);
     setAddress(data.address);
+    hideModal();
   };
 
   return (
@@ -149,21 +154,24 @@ function EditProfileScreen({ navigation }) {
           </View>
           <View style={styles.contentContainer}>
             <Text>주소</Text>
-            <TextInput
-              placeholder={oldaddress.toString()}
-              value={address}
-              style={styles.textInput}
-            />
-            <Postcode
-              style={{ width: "100%", height: 400 }}
-              jsOptions={{ animation: true }}
-              onSelected={(data) => getAddressData(data)}
-              onError={(error) => console.error(error)}
-            />
+            <View style={styles.rowContainer}>
+              <TextInput
+                placeholder={oldaddress.toString()}
+                value={address}
+                style={styles.textInput}
+              />
+              <Button
+                mode="contained-tonal"
+                style={styles.searchButton}
+                onPress={showModal}
+              >
+                검색하기
+              </Button>
+            </View>
           </View>
           <View style={styles.contentContainer}>
             <Text>성별</Text>
-            <View style={styles.genderContainer}>
+            <View style={styles.rowContainer}>
               <Button
                 mode={gender === "남자" ? "contained" : "contained-tonal"}
                 // buttonColor="blue"
@@ -251,6 +259,29 @@ function EditProfileScreen({ navigation }) {
             취소
           </Button>
         </View>
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+              width: "90%",
+              borderRadius: 5,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <View style={styles.modalContainer}>
+              <Postcode
+                style={{ width: "100%", height: 400 }}
+                jsOptions={{ animation: true }}
+                onSelected={(data) => getAddressData(data)}
+                onError={(error) => console.error(error)}
+              />
+            </View>
+          </Modal>
+        </Portal>
       </Provider>
     </ScrollView>
   );
@@ -264,13 +295,11 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     gap: 15,
-    marginTop: 20,
+    marginTop: 40,
   },
-  genderContainer: {
+  rowContainer: {
     display: "flex",
     flexDirection: "row",
-    // borderWidth: 2,
-    // borderColor: "red",
   },
   alcLimitContainer: {
     // borderWidth: 2,
@@ -288,7 +317,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     height: 50,
     borderRadius: 10,
-    // width: "100%",
+    flex: 4,
   },
   addressText: {
     backgroundColor: "#F6F6F6",
@@ -308,6 +337,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 5,
   },
+  searchButton: {
+    flex: 1,
+    // backgroundColor: "lightgrey",
+  },
   Kind: {
     width: 120,
   },
@@ -316,6 +349,11 @@ const styles = StyleSheet.create({
   },
   Button: {
     flex: 1,
+  },
+  modalContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 15,
   },
 });
 

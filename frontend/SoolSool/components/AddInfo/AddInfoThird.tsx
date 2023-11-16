@@ -109,16 +109,16 @@ function AddInfoThird({
           <Image source={getImageURL()} style={styles.imageBox} />
           <View style={styles.drinkSelection}>
             <TouchableOpacity
-              style={getButtonStyle("소주")}
-              onPress={() => handleDrinkKindSelection("소주")}
-            >
-              <Text style={getButtonTextStyle("소주")}>소주</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               style={getButtonStyle("맥주")}
               onPress={() => handleDrinkKindSelection("맥주")}
             >
               <Text style={getButtonTextStyle("맥주")}>맥주</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={getButtonStyle("소주")}
+              onPress={() => handleDrinkKindSelection("소주")}
+            >
+              <Text style={getButtonTextStyle("소주")}>소주</Text>
             </TouchableOpacity>
           </View>
 

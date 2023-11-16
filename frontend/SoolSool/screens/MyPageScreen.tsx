@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import UserStatistics from "../components/MyPage/template/UserStatistics";
@@ -77,15 +77,19 @@ function MyPageScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      console.log("userProfile이 바뀌면", userProfile);
       queryClient.invalidateQueries("userProfileData");
-      if (!isProfileLoading && userProfileData) {
-        setUserProfile(userProfileData);
-      }
-      if (!isNonAlcLoading && userNonAlcData) {
-        setAlcoholStatistics(userNonAlcData);
-      }
-    }, [userProfileData, isProfileLoading, userProfile])
+    }, [userProfile])
   );
+
+  useEffect(() => {
+    if (!isProfileLoading && userProfileData) {
+      setUserProfile(userProfileData);
+    }
+    if (!isNonAlcLoading && userNonAlcData) {
+      setAlcoholStatistics(userNonAlcData);
+    }
+  }, [userProfileData, userNonAlcData]);
 
   return (
     <ScrollView>

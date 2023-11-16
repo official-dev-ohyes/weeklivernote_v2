@@ -44,7 +44,7 @@ function Profile(props: UserProfileProps) {
 
   const { userData, navigation, setUserProfile } = props;
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-
+  console.log("props로 받아온 userData", userData);
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -145,7 +145,13 @@ function Profile(props: UserProfileProps) {
           <Ionicons name="location" color={"white"} size={20} />
           <Text style={styles.addressText}>{userData.address}</Text>
         </View>
-        <FAB icon="pencil" style={styles.fab} onPress={handleEdit} />
+        <FAB
+          icon="pencil"
+          style={styles.fab}
+          onPress={handleEdit}
+          // color="white"
+          size="small"
+        />
       </View>
     </View>
   );
@@ -230,7 +236,9 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems: "center",
   },
-  fab: {},
+  fab: {
+    // backgroundColor: "#363C4B",
+  },
 });
 
 export default Profile;

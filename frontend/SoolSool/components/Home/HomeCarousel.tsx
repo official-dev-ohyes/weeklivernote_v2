@@ -102,10 +102,12 @@ export default function HomeCarousel() {
 
 const styles = StyleSheet.create({
   background: {
-    height: 420,
+    // backgroundColor: "red",
+    height: 480,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: "0%",
   },
 });

@@ -125,18 +125,20 @@ const HomeScreen = ({ navigation }) => {
       source={mainbackground}
       style={[{ height: screenHeight }, styles.mainContainer]}
     >
-      <View>
-        <HomeCarousel />
-      </View>
-      <View style={styles.controllerContainer}>
-        <SafeDriveInfo
-          bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
-          requiredTimeToDrive={drinkToday.cannotDriveFor}
-        />
-        <DrinkController
-          currentDrinks={currentDrinks}
-          initialValue={initialValue}
-        />
+      <View style={styles.subContainer}>
+        <View>
+          <HomeCarousel />
+        </View>
+        <View style={styles.controllerContainer}>
+          <SafeDriveInfo
+            bloodAlcoholContent={drinkToday.currentBloodAlcoholContent}
+            requiredTimeToDrive={drinkToday.cannotDriveFor}
+          />
+          <DrinkController
+            currentDrinks={currentDrinks}
+            initialValue={initialValue}
+          />
+        </View>
       </View>
     </ImageBackground>
   );
@@ -145,9 +147,15 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     height: "100%",
+  },
+  subContainer: {
     display: "flex",
+    height: "100%",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "space-between",
+    // backgroundColor: "green",
+    // marginTop: "10%",
     // justifyContent: "center",
   },
   loadingContainer: {

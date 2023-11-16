@@ -30,7 +30,7 @@ function LastChanceThird({ navigation }) {
           loading={true}
           onPress={goToHome}
         >
-          막차 조회하기
+          귀가 경로 조회하기
         </Button>
       </View>
     </ImageBackground>

@@ -13,23 +13,24 @@ function DrinkingStatus({
 }: DrinkingStatusProps) {
   return (
     <View style={styles.statusContainer}>
-      <Text style={styles.titleContainer}>
-        {drinkInVolume.toLocaleString()}ml
-      </Text>
-      {drinkingFor === undefined ? (
-        <Text style={styles.subtitleContainer}>
-          <Text style={styles.periodContainer}>
-            술을 마셨다면 기록해볼까요?
+      <View>
+        <Text style={styles.titleContainer}>
+          {drinkInVolume.toLocaleString()}ml
+        </Text>
+        {drinkingFor === undefined ? (
+          <Text style={styles.subtitleContainer}>
+            <Text style={styles.periodContainer}>
+              술을 마셨다면 기록해볼까요?
+            </Text>
           </Text>
-        </Text>
-      ) : (
-        <Text style={styles.subtitleContainer}>
-          마신 지{"  "}
-          <Text style={styles.periodContainer}>{drinkingFor}</Text>
-          시간 째
-        </Text>
-      )}
-
+        ) : (
+          <Text style={styles.subtitleContainer}>
+            마신 지{"  "}
+            <Text style={styles.periodContainer}>{drinkingFor}</Text>
+            시간 째
+          </Text>
+        )}
+      </View>
       <View style={styles.imageContainer}>
         <View style={styles.shadowContainer} />
         <Image source={imageSource} style={styles.image} />
@@ -41,17 +42,19 @@ function DrinkingStatus({
 const styles = StyleSheet.create({
   statusContainer: {
     width: "80%",
-    marginTop: "15%",
+    marginTop: "20%",
     marginVertical: 24,
     padding: 4,
     display: "flex",
     alignItems: "center",
-    gap: 10,
+    gap: 30,
   },
   titleContainer: {
     fontSize: 30,
     fontFamily: "LineRegular",
     color: "white",
+    textAlign: "center",
+    marginBottom: 5,
   },
   subtitleContainer: {
     fontSize: 20,

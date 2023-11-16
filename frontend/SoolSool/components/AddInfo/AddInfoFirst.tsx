@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 50,
-    marginTop: 130,
+    marginTop: 110,
     paddingHorizontal: 10,
   },
   columnContainer: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     // resizeMode: "contain",
   },
   infoText: {
-    fontSize: 28,
+    fontSize: 24,
     color: "white",
     fontFamily: "LineRegular",
     textAlign: "center",

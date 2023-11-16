@@ -21,7 +21,7 @@ function SubwayRoute({ pathInfo }) {
   });
 
   const concatenatedNames = stationNames.join("-");
-  // console.log("확인할거야", concatenatedNames);
+  console.log("확인할거야", name);
   return (
     <View style={styles.mainContainer}>
       <View

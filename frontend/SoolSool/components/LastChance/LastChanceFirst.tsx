@@ -15,6 +15,7 @@ function LastChanceFirst({ navigation }) {
     console.log("여기는?");
     navigation.navigate("HomeRoute");
   };
+
   return (
     <ImageBackground
       source={LCfirst}
@@ -31,7 +32,7 @@ function LastChanceFirst({ navigation }) {
           loading={true}
           onPress={goToHome}
         >
-          막차 조회하기
+          귀가 경로 조회하기
         </Button>
       </View>
     </ImageBackground>

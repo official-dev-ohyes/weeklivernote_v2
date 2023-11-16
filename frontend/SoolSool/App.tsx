@@ -301,7 +301,7 @@ export default function App() {
                         name="EditProfile"
                         component={EditProfileScreen}
                         options={{
-                          headerShown: true,
+                          headerShown: false,
                           headerStyle: { backgroundColor: "#363C4B" },
                           headerTintColor: "white",
                           headerTitleAlign: "center",
