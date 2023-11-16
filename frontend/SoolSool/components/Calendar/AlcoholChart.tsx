@@ -20,7 +20,7 @@ function AlcoholChart({ drinks }) {
         <Text style={styles.smallHeaderText}>음주 비율</Text>
       </View>
       <View style={styles.box}>
-        <Text>음주량 비율</Text>
+        <Text>음주량</Text>
         <View style={styles.chart}>
           {Object.keys(drinks).map((key, index) => (
             <View
@@ -41,7 +41,7 @@ function AlcoholChart({ drinks }) {
         </View>
       </View>
       <View style={styles.box}>
-        <Text>알코올양 비율</Text>
+        <Text>알코올양</Text>
         <View style={styles.chart}>
           {Object.keys(drinks).map((key, index) => (
             <View
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   smallHeaderText: {
-    fontSize: 17,
+    fontSize: 15,
     marginBottom: "2%",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
@@ -15,11 +15,26 @@ import { useQuery } from "react-query";
 import DailyDetail from "./DailyDetail";
 import Toast from "react-native-root-toast";
 
+interface DailyDrink {
+  count: number;
+  drink: string;
+}
+
+interface DailyInfo {
+  date: string;
+  drinks: DailyDrink[];
+  topConc: number;
+  totalDrink: number;
+}
+
 function DailySummary(props) {
-  const { summaryText, alcoholDays, onRemove, navigation } = props;
-  const [isAlcohol, setIsAlcohol] = useState<boolean>(false);
-  const [dailyInfo, setDailyInfo] = useState({ totalDrink: 0, topConc: 0 });
-  const [alcoholList, setAlcoholList] = useState([]);
+  const { queryDate, navigation } = props;
+  const [dailyInfo, setDailyInfo] = useState<DailyInfo>({
+    date: "",
+    drinks: [],
+    topConc: 0,
+    totalDrink: 0,
+  });
   const [isModal, setIsModal] = useState<boolean>(false);
 
   const {
@@ -27,27 +42,14 @@ function DailySummary(props) {
     isLoading: DailyDrinkLoading,
     isError: DailyDrinkError,
   } = useQuery(
-    ["DailyDrinkQuery", summaryText], // 두번째에 의존성 추가 가능
-    async () => await fetchDailyDrink(summaryText),
-    {
-      enabled: isAlcohol, // 조건부 활성화
-    }
+    ["DailyDrinkQuery", queryDate], // 두번째에 의존성 추가 가능
+    async () => await fetchDailyDrink(queryDate)
   );
 
   useFocusEffect(
     React.useCallback(() => {
-      setIsAlcohol(false);
-
-      if (alcoholDays.includes(summaryText)) {
-        setIsAlcohol(true);
-        if (DailyDrinkData) {
-          setDailyInfo(DailyDrinkData);
-          let alcohols = [];
-          for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
-            alcohols.push(DailyDrinkData.drinks[i]);
-          }
-          setAlcoholList(alcohols);
-        }
+      if (DailyDrinkData) {
+        setDailyInfo(DailyDrinkData);
       }
     }, [DailyDrinkData, navigation])
   );
@@ -64,9 +66,8 @@ function DailySummary(props) {
   // 삭제 실패의 경우, 일부 데이터만 삭제 됨
   const confirmDelete = async () => {
     try {
-      await removeDrink(summaryText);
+      await removeDrink(queryDate);
       hideDeleteModal();
-      onRemove();
       navigation.navigate("Calendar");
     } catch (error) {
       Toast.show("잠시후다시 시도해주세요.", {
@@ -84,7 +85,7 @@ function DailySummary(props) {
             style={styles.button}
             onPress={() => {
               navigation.navigate("RecordCreate", {
-                date: summaryText,
+                date: queryDate,
                 isAlcohol: true,
               });
             }}
@@ -102,7 +103,7 @@ function DailySummary(props) {
         <View style={styles.total}>
           <View style={styles.informations}>
             <View style={styles.category}>
-              {alcoholList.slice(0, 3).map((alcohol, index) => (
+              {dailyInfo.drinks.slice(0, 3).map((alcohol, index) => (
                 <View style={styles.eachAlcohol} key={index}>
                   <View style={styles.eachAlcoholIcon}>
                     <ImageBackground
@@ -140,12 +141,7 @@ function DailySummary(props) {
         </View>
       </View>
       <View style={styles.detail}>
-        <DailyDetail
-          summaryText={summaryText}
-          alcoholDays={alcoholDays}
-          isAlcohol={isAlcohol}
-          navigation={navigation}
-        />
+        <DailyDetail queryDate={queryDate} />
       </View>
 
       <Portal>
@@ -224,16 +220,8 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: "-5%",
-
-    // 그림자 추가 (Android 및 iOS 모두에서 동작)
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5, // 안드로이드에서 그림자 효과 추가
+    borderWidth: 1,
+    borderColor: "#d2d2d2",
   },
   informations: {
     height: "100%",

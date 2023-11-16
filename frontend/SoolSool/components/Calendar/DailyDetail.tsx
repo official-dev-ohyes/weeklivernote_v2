@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
 import { useQuery } from "react-query";
 import AlcoholChart from "../../components/Calendar/AlcoholChart";
 
-function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
+function DailyDetail({ queryDate }) {
   const [isImg, setIsImg] = useState<boolean>(false);
 
   const [info, setInfo] = useState({
@@ -21,8 +21,8 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
     isLoading: dailyDetailLoading,
     isError: dailyDetailError,
   } = useQuery(
-    ["DailyDetailQuery", summaryText],
-    async () => await fetchDailyDetail(summaryText)
+    ["DailyDetailQuery", queryDate],
+    async () => await fetchDailyDetail(queryDate)
   );
 
   // 해독시간
@@ -47,14 +47,14 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
         hangover: "",
         drinks: {},
       });
-  }, [DailyDetailData, summaryText]);
+  }, [DailyDetailData, queryDate]);
 
   const format12HourTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     const parsedHours = parseInt(hours, 10);
     const period = parsedHours >= 12 ? "PM" : "AM";
     const formattedHours = parsedHours % 12 || 12; // Convert 0 to 12
-    return `${period} ${formattedHours}:${minutes}`;
+    return `${formattedHours}:${minutes} ${period}`;
   };
 
   return (
@@ -64,14 +64,16 @@ function DailyDetail({ summaryText, alcoholDays, isAlcohol, navigation }) {
           <View style={styles.contents}>
             <View style={styles.time}>
               <View style={styles.house}>
-                <Text style={styles.smallHeaderText}>술 자리 시작 시간</Text>
-                <Text>
+                <Text style={styles.smallHeaderText}>시작 시간</Text>
+                <Text style={styles.valueText}>
                   {format12HourTime(info.startTime.substring(11, 16))}
                 </Text>
               </View>
               <View style={styles.house}>
-                <Text style={styles.smallHeaderText}>해독까지 걸린 시간</Text>
-                <Text>{formatDetoxTime(info.detoxTime)}</Text>
+                <Text style={styles.smallHeaderText}>해독 시간</Text>
+                <Text style={styles.valueText}>
+                  {formatDetoxTime(info.detoxTime)}
+                </Text>
               </View>
             </View>
             <View style={styles.house}>
@@ -104,22 +106,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: "3%",
   },
-  mainBackground: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "black",
-  },
-  mainTextBox: {
-    height: "15%",
-    padding: "5%",
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  headerText: {
-    fontSize: 40,
-    fontFamily: "Yeongdeok-Sea",
-    verticalAlign: "bottom",
-  },
   light: {
     height: "80%",
     // backgroundColor: "blue",
@@ -131,10 +117,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
-  },
-  summ: {
-    height: "20%",
-    // backgroundColor: "pink",
   },
   contents: {
     height: "64%",
@@ -149,21 +131,13 @@ const styles = StyleSheet.create({
   },
   house: {
     flex: 1,
-    // borderWidth: 2,
-    // borderColor: "#363C4B",
+    borderWidth: 1,
+    borderColor: "#d2d2d2",
     backgroundColor: "#ffffff",
     borderRadius: 5,
     margin: 5,
     marginTop: "5%",
     padding: "3%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
   containerStyle: {
     flex: 1,
@@ -173,11 +147,15 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   smallHeaderText: {
-    fontSize: 17,
+    fontSize: 15,
     marginBottom: "2%",
   },
+  valueText: {
+    fontSize: 20,
+    textAlign: "center",
+  },
   innerText: {
-    fontSize: 15,
+    fontSize: 20,
   },
   deleteText: {
     fontSize: 17,
