@@ -53,32 +53,36 @@ const TermsScreen = ({ navigation, route }) => {
         source={mainbackground}
         style={[{ height: screenHeight }, styles.mainContainer]}
       >
-        <View style={styles.container}>
-          {terms.map((term, index) => (
-            <View key={term.id} style={styles.termContainer}>
-              <Text style={styles.termTitle}>{term.title}</Text>
-              <ScrollView style={styles.scrollView}>
-                <Text style={styles.termContent}>{term.content}</Text>
-              </ScrollView>
-              <Checkbox.Item
-                status={isTermsChecked[index] ? "checked" : "unchecked"}
-                onPress={() => toggleCheckbox(index)}
-                label={`${term.title}에 동의합니다.`}
-                labelStyle={{ color: "white" }}
-              />
-            </View>
-          ))}
-          <Button
-            mode="contained"
-            onPress={handleAgree}
-            buttonColor={
-              isTermsChecked.every((checked) => checked) ? "#FFDE68" : "#9E9E9E"
-            }
-            textColor={"#000000"}
-          >
-            모든 약관에 동의합니다.
-          </Button>
-        </View>
+        <ScrollView>
+          <View style={styles.container}>
+            {terms.map((term, index) => (
+              <View key={term.id} style={styles.termContainer}>
+                <Text style={styles.termTitle}>{term.title}</Text>
+                <ScrollView style={styles.scrollView}>
+                  <Text style={styles.termContent}>{term.content}</Text>
+                </ScrollView>
+                <Checkbox.Item
+                  status={isTermsChecked[index] ? "checked" : "unchecked"}
+                  onPress={() => toggleCheckbox(index)}
+                  label={`${term.title}에 동의합니다.`}
+                  labelStyle={{ color: "white" }}
+                />
+              </View>
+            ))}
+            <Button
+              mode="contained"
+              onPress={handleAgree}
+              buttonColor={
+                isTermsChecked.every((checked) => checked)
+                  ? "#FFDE68"
+                  : "#9E9E9E"
+              }
+              textColor={"#000000"}
+            >
+              모든 약관에 동의합니다.
+            </Button>
+          </View>
+        </ScrollView>
       </ImageBackground>
     </PaperProvider>
   );
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   scrollView: {
-    height: "35%",
+    height: 280,
     borderWidth: 1,
     borderColor: "#9E9E9E",
     borderRadius: 15,
