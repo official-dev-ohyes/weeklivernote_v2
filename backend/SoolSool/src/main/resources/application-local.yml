@@ -1,0 +1,20 @@
+server:
+  address: localhost
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${LOCAL_DB_URL}
+    username: ${LOCAL_DB_USERNAME}
+    password: ${LOCAL_DB_PASSWORD}
+
+kakao:
+  redirect-uri: https://kauth.kakao.com/oauth/token
+
+cloud:
+  aws:
+    s3:
+      directory: local

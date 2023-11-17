@@ -1,0 +1,79 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  profiles:
+    active: local
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  main:
+    log-startup-info: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD}
+
+management:
+  endpoint:
+  endpoints:
+    web:
+      base-path: /soolsool
+
+kakao:
+  client-id: ${CLIENT_ID}   # REST API 키
+  client-secret: ${CLIENT_SECRET}
+  admin-key: ${ADMIN_KEY}
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+
+springdoc:
+  packages-to-scan: com.ohyes.soolsool
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    disable-swagger-default-url: true
+    display-request-duration: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: soolsool
+    stack:
+      auto: false
+
+odsay:
+  api-key: ${ODSAY_API_KEY}
