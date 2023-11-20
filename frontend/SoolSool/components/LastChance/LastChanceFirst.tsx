@@ -29,14 +29,14 @@ function LastChanceFirst({ navigation }) {
         return;
       }
 
-      if (alarmTime === null && alarmTime === "{}") {
+      if (alarmTime === null || alarmTime === "{}") {
         Alert.alert("알림", "먼저 음주기록을 작성하세요.", [
           { text: "입력하러 가기", onPress: () => navigation.navigate("Home") },
         ]);
         return;
       }
 
-      if (nowLocation === null && nowLocation === "{}") {
+      if (nowLocation === null || nowLocation === "{}") {
         Alert.alert("알림", "먼저 음주기록을 작성하세요.", [
           { text: "입력하러 가기", onPress: () => navigation.navigate("Home") },
         ]);
