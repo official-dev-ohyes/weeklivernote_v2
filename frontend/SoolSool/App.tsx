@@ -207,6 +207,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
+
+  useEffect(() => {
     // AsyncStorage.setItem("alarmTime", "17:56");
 
     getFirstLocationPermission();
@@ -243,9 +247,9 @@ export default function App() {
     }
   }, [fontsLoaded, fontError]);
 
-  // if (!fontsLoaded && !fontError) {
-  //   return null;
-  // }
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
 
   // 알림 관련..?
   // const notificationListener = useRef<Subscription>();
@@ -281,10 +285,6 @@ export default function App() {
   //     }
   //   };
   // }, []);
-
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
