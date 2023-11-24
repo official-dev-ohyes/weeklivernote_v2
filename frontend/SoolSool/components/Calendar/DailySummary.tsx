@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
@@ -62,8 +62,6 @@ function DailySummary(props) {
     setIsModal(false);
   };
 
-  // @@@@@@@@@@@@@@@@@@@@@@현재 문제 있음@@@@@@@@@@@@@@@@@@@@@@
-  // 삭제 실패의 경우, 일부 데이터만 삭제 됨
   const confirmDelete = async () => {
     try {
       await removeDrink(queryDate);

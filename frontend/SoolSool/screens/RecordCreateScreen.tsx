@@ -19,7 +19,6 @@ import {
   updateDrink,
   fetchDailyDrink,
   fetchDailyDetail,
-  removeDrink,
   postImage,
 } from "../api/drinkRecordApi";
 
@@ -257,7 +256,10 @@ function RecordCreateScreen({ route, navigation }) {
     isError: dailyError,
   } = useQuery(
     ["DailyDrinkQuery", day],
-    async () => await fetchDailyDrink(day)
+    async () => await fetchDailyDrink(day),
+    {
+      enabled: isAlcohol,
+    }
   );
   // console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
 
@@ -267,7 +269,10 @@ function RecordCreateScreen({ route, navigation }) {
     isError: detailError,
   } = useQuery(
     ["DailyDetailQuery", day],
-    async () => await fetchDailyDetail(day)
+    async () => await fetchDailyDetail(day),
+    {
+      enabled: isAlcohol,
+    }
   );
   // console.log(`요약조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
