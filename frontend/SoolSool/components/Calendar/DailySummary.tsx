@@ -76,7 +76,7 @@ function DailySummary(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.all}>
       <View style={styles.box}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -184,6 +184,10 @@ function DailySummary(props) {
 }
 
 const styles = StyleSheet.create({
+  all: {
+    // flex: 1,
+    height: "107.5%", // 이게 맞는지 생각해봐야 함....
+  },
   box: {
     height: "20%",
   },
@@ -211,15 +215,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   total: {
-    height: "80%",
+    height: "65%",
     borderRadius: 5,
     backgroundColor: "#ffffff",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: "-5%",
-    borderWidth: 1,
-    borderColor: "#d2d2d2",
+    // borderWidth: 1,
+    // borderColor: "#d2d2d2",
   },
   informations: {
     height: "100%",
