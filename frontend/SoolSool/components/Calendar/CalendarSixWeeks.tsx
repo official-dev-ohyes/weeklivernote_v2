@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { FAB } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
@@ -99,6 +99,12 @@ function CalendarSixWeeks({ navigation }) {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
+  useEffect(() => {
+    if (bottomSheetModalRef.current && selectDay !== "") {
+      handlePresentModalPress();
+    }
+  }, [selectDay]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("Sheet Index:", index);
