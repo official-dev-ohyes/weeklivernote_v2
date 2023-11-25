@@ -104,6 +104,7 @@ function CalendarSixWeeks({ navigation }) {
     if (bottomSheetModalRef.current && selectDay !== "") {
       handlePresentModalPress();
     }
+    console.log(`지금 렌더링 했다!`); // 몇 번 렌더링 하는지 궁금했음
   }, [selectDay]);
 
   const handleSheetChanges = useCallback((index: number) => {

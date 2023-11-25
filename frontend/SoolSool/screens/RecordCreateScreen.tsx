@@ -26,6 +26,8 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import TimeInput from "../components/Calendar/TimeInput";
+
 function RecordCreateScreen({ route, navigation }) {
   const queryClient = useQueryClient();
   const [image, setImage] = useState<string | null>(null);
@@ -460,7 +462,7 @@ function RecordCreateScreen({ route, navigation }) {
               </Button>
             </View>
           </View>
-          <View style={styles.time}>
+          {/* <View style={styles.time}>
             <Text style={styles.timeText}>술자리 시작</Text>
             <TouchableOpacity onPress={showMode} style={styles.timeInput}>
               <Text style={styles.timeInnerText}>
@@ -477,6 +479,18 @@ function RecordCreateScreen({ route, navigation }) {
                 />
               )}
             </TouchableOpacity>
+          </View> */}
+          <View style={styles.time}>
+            <Text style={styles.timeText}>술자리 시작</Text>
+            <TimeInput
+              selectedHour={selectedHour}
+              selectedMinute={selectedMinute}
+              selectedAmPm={selectedAmPm}
+              show={show}
+              setShow={setShow}
+              date={date}
+              onChange={onChange}
+            />
           </View>
 
           <View style={styles.memo}>
