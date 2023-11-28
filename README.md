@@ -159,7 +159,7 @@
 
 - 아키텍쳐 구조도
 
-![주간일기 참고 (1).png](assets/%25EC%25A3%25BC%25EA%25B0%2584%25EC%259D%25BC%25EA%25B8%25B0_%25EC%25B0%25B8%25EA%25B3%25A0_(1).png)
+![주간일기 참고 (1).png](assets/architecture.png)
 
 - ERD
 
@@ -167,7 +167,7 @@
 
 ## API 명세서
 
-[제목 없는 데이터베이스](assets/%E1%84%8C%E1%85%A6%E1%84%86%E1%85%A9%E1%86%A8%20%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%E1%84%87%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%89%E1%85%B3%20c4a6b2d673ea49f2858d71b6d9c64437.csv)
+[API](assets/api.csv)
 
 ## Directory 구조도
 
@@ -356,7 +356,7 @@
 <aside>
 📌 **서이현(팀장)**
 
-![이현.jpg](assets/%25EC%259D%25B4%25ED%2598%2584.jpg)
+![이현.jpg](assets/ihyeon.jpg)
 
 - Front-end
 - tjwn1408@naver.com
@@ -366,7 +366,7 @@
 <aside>
 📌 **김은비**
 
-![은비.JPG](assets/%25EC%259D%2580%25EB%25B9%2584.jpg)
+![은비.JPG](assets/yoonb.jpg)
 
 - Front-end
 - eunbi.kim.kor@gmail.com
@@ -376,7 +376,7 @@
 <aside>
 📌 **박하윤**
 
-![증사(흰배).jpg](assets/%25EC%25A6%259D%25EC%2582%25AC(%25ED%259D%25B0%25EB%25B0%25B0).jpg)
+![증사(흰배).jpg](assets/hyoon.jpg)
 
 - Back-end
 - the.day0619@gmail.com
@@ -386,7 +386,7 @@
 <aside>
 📌 **신세영(부팀장)**
 
-![세영.jpg](assets/%25EC%2584%25B8%25EC%2598%2581.jpg)
+![세영.jpg](assets/syoung.jpg)
 
 - Back-end
 - ssy07312@gmail.com
@@ -396,7 +396,7 @@
 <aside>
 📌 **유혜민**
 
-![혜민.jpg](assets/%25ED%2598%259C%25EB%25AF%25BC.jpg)
+![혜민.jpg](assets/hyemco.jpg)
 
 - Infra, Back-end
 - hyemco@gmail.com
@@ -406,7 +406,7 @@
 <aside>
 📌 **이소정**
 
-![소정.jpeg](assets/%25EC%2586%258C%25EC%25A0%2595.jpeg)
+![소정.jpeg](assets/sjung.jpeg)
 
 - Front-end
 - chadireoroonu@gmail.com
