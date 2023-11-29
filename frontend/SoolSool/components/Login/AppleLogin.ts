@@ -9,7 +9,7 @@ export const appleLogin = async () => {
         AppleAuthentication.AppleAuthenticationScope.EMAIL,
       ],
     });
-    console.log("@components/login/applelogin.ts", credential);
+    console.log("@components/login/applelogin.ts: ", credential);
   } catch (e) {
     console.log(e);
   }

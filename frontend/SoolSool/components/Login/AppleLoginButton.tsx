@@ -1,7 +1,7 @@
 import * as AppleAuthentication from "expo-apple-authentication";
 import { appleLogin } from "./AppleLogin";
 
-export const AppleLoginButton = () => {
+const AppleLoginButton = () => {
   return (
     <AppleAuthentication.AppleAuthenticationButton
       buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
@@ -12,3 +12,5 @@ export const AppleLoginButton = () => {
     />
   );
 };
+
+export default AppleLoginButton;

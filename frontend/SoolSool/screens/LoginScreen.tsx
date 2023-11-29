@@ -9,7 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { characterSet, kakaoLoginButton, mainbackground } from "../assets";
-import { AppleLoginButton } from "../components/Login/AppleLoginButton";
+import AppleLoginButton from "../components/Login/AppleLoginButton";
 // import * as SecureStore from "expo-secure-store";
 
 function LoginScreen({ navigation }) {
