@@ -57,6 +57,7 @@ springdoc:
 
 logging:
   level:
+    com.example.apple.util: DEBUG
     org:
       hibernate:
         type:

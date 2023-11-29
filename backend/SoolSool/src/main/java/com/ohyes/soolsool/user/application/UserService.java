@@ -29,6 +29,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Slf4j
+@EnableFeignClients
 @Service
 public class UserService {
 
@@ -212,6 +214,9 @@ public class UserService {
 
         return data;
     }
+
+    // 애플 로그인
+
 
     // 회원 추가 정보 등록
     public Map<String, Object> userInfoAdd(UserRequestDto userRequestDto) {
