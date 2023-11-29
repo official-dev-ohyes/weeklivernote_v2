@@ -15,7 +15,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.official_ohyes.weeklivernote",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -53,11 +54,12 @@
         }
       ],
       [
-				"expo-location",
-				{
-					"locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-				}
-			]
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      "expo-apple-authentication"
     ]
   }
 }

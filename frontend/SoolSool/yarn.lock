@@ -4501,6 +4501,11 @@ execa@^5.0.0:
     signal-exit "^3.0.3"
     strip-final-newline "^2.0.0"
 
+expo-apple-authentication@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/expo-apple-authentication/-/expo-apple-authentication-6.1.2.tgz#46150a41988550a491c321effaf3d6cdaaf12be9"
+  integrity sha512-wXGrltitAu/MncQ7F16uQIZO5Uva2tof7pBa3pbEg1g6TAp4YQhJ1iwEeit0Jlk9J64R9c+kKzbyuRquWMzyyA==
+
 expo-application@~5.3.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/expo-application/-/expo-application-5.3.1.tgz#074bbfc6bb5d65ae74a67f5288fa3eb582237e53"
@@ -4685,6 +4690,11 @@ expo-notifications@~0.20.1:
     expo-constants "~14.4.2"
     fs-extra "^9.1.0"
     uuid "^3.4.0"
+
+expo-secure-store@^12.5.0:
+  version "12.5.0"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-12.5.0.tgz#f52456e15315d64d1e9000384d4a837eea9dbb1f"
+  integrity sha512-Ow2ei+SB1w4zPLxmOg2PVPf2i45Eii0T9KUaER5iRLJAMcBWN4nyGCxzESOoN3OrvxVadP0hAn6RVE1G3gdD+Q==
 
 expo-splash-screen@~0.20.5:
   version "0.20.5"
