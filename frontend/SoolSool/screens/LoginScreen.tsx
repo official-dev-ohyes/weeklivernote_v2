@@ -6,17 +6,19 @@ import {
   Text,
   ImageBackground,
   Dimensions,
+  Platform,
 } from "react-native";
-import { Button } from "react-native-paper";
 import { characterSet, kakaoLoginButton, mainbackground } from "../assets";
+import { AppleLoginButton } from "../components/Login/AppleLoginButton";
+// import * as SecureStore from "expo-secure-store";
 
 function LoginScreen({ navigation }) {
+  const screenHeight = Dimensions.get("window").height;
+
   const handleLogin = () => {
     console.log("카카오버튼을 클릭했습니다");
     navigation.navigate("KakaoLoginScreen");
   };
-
-  const screenHeight = Dimensions.get("window").height;
 
   return (
     <ImageBackground
@@ -36,6 +38,7 @@ function LoginScreen({ navigation }) {
           <TouchableOpacity onPress={handleLogin}>
             <Image source={kakaoLoginButton} style={styles.kakaoLoginButton} />
           </TouchableOpacity>
+          {Platform.OS === "ios" && <AppleLoginButton />}
         </View>
       </View>
     </ImageBackground>
@@ -51,13 +54,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 50,
     height: "100%",
-    // backgroundColor: "red",
   },
   ImageContainer: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    // backgroundColor: "green",
   },
   textContainer: {
     display: "flex",

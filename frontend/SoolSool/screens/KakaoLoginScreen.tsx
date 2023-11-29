@@ -1,11 +1,10 @@
-import { StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-root-toast";
 
 const RESTAPI_KEY = process.env.RESTAPI_KEY;
-const REDIRECT_URI = "https://soolsool.site/kakao/callback";
+const REDIRECT_URI = "https://soolsool.life/kakao/callback";
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 function KakaoLoginScreen({ navigation }) {
@@ -84,7 +83,5 @@ function KakaoLoginScreen({ navigation }) {
     />
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default KakaoLoginScreen;
