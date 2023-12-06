@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { fetchDailyDetail, removeDrink } from "../../api/drinkRecordApi";
+import { fetchDailyDetail } from "../../api/drinkRecordApi";
 import { useQuery } from "react-query";
-// import AlcoholChart from "../../components/Calendar/AlcoholChart";
 import AlcoholPieChart from "./AlcoholPieChart";
 import { NativeViewGestureHandler } from "react-native-gesture-handler";
 
@@ -66,11 +65,6 @@ function DailyDetail({ queryDate }) {
           {info.startTime && (
             <View style={styles.contents}>
               <AlcoholPieChart data={info.drinks} />
-              {/* <View style={styles.house}>
-              <View style={styles.chart}>
-                <AlcoholChart drinks={info.drinks} />
-              </View>
-            </View> */}
               <View style={styles.time}>
                 <View style={styles.timeContainer}>
                   <Text style={styles.smallHeaderText}>시작 시간</Text>
@@ -111,7 +105,9 @@ function DailyDetail({ queryDate }) {
 const styles = StyleSheet.create({
   total: {
     flex: 1,
-    marginTop: "5%",
+    // marginTop: "5%",
+    marginTop: "-2%",
+    height: "100%",
   },
   light: {
     height: "80%",

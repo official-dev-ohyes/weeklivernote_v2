@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { fetchDailyDrink, removeDrink } from "../../api/drinkRecordApi";
 import { useFocusEffect } from "@react-navigation/native";
+import { useQueryClient } from "react-query";
 
 import {
   getDrinkImageById,
@@ -36,6 +37,7 @@ function DailySummary(props) {
     totalDrink: 0,
   });
   const [isModal, setIsModal] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const {
     data: DailyDrinkData,
@@ -62,13 +64,13 @@ function DailySummary(props) {
     setIsModal(false);
   };
 
-  // @@@@@@@@@@@@@@@@@@@@@@현재 문제 있음@@@@@@@@@@@@@@@@@@@@@@
-  // 삭제 실패의 경우, 일부 데이터만 삭제 됨
   const confirmDelete = async () => {
     try {
       await removeDrink(queryDate);
       hideDeleteModal();
       navigation.navigate("Calendar");
+      queryClient.invalidateQueries("DailyDrinkQuery");
+      queryClient.invalidateQueries("monthlyDrinkLogs");
     } catch (error) {
       Toast.show("잠시후다시 시도해주세요.", {
         duration: Toast.durations.SHORT,
@@ -78,7 +80,7 @@ function DailySummary(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.all}>
       <View style={styles.box}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -186,6 +188,10 @@ function DailySummary(props) {
 }
 
 const styles = StyleSheet.create({
+  all: {
+    // flex: 1,
+    height: "107.5%", // 이게 맞는지 생각해봐야 함....
+  },
   box: {
     height: "20%",
   },
@@ -213,15 +219,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   total: {
-    height: "80%",
+    height: "65%",
     borderRadius: 5,
     backgroundColor: "#ffffff",
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: "-5%",
-    borderWidth: 1,
-    borderColor: "#d2d2d2",
+    // borderWidth: 1,
+    // borderColor: "#d2d2d2",
   },
   informations: {
     height: "100%",

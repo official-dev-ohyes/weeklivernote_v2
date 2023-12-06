@@ -5,21 +5,16 @@ import {
   ScrollView,
   Alert,
   Platform,
-  TouchableOpacity,
 } from "react-native";
 import { Button, TextInput, IconButton, MD3Colors } from "react-native-paper";
 import { useState, useEffect } from "react";
-import { Picker } from "@react-native-picker/picker";
-import NowAddedAlcohols from "../components/Calendar/NowAddedAlcohols";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 import {
   createDrink,
   updateDrink,
   fetchDailyDrink,
   fetchDailyDetail,
-  removeDrink,
   postImage,
 } from "../api/drinkRecordApi";
 
@@ -27,13 +22,15 @@ import { getAmountByDrinkCount } from "../utils/drinkUtils";
 import CalendarImagePicker from "../components/Calendar/CalendarImagePicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AlcoholInput from "../components/Calendar/AlcoholInput";
+import TimeInput from "../components/Calendar/TimeInput";
+
 function RecordCreateScreen({ route, navigation }) {
   const queryClient = useQueryClient();
   const [image, setImage] = useState<string | null>(null);
   const [token, setToken] = useState(null);
   const day = route.params.date;
   const isAlcohol = route.params.isAlcohol; // create, update 구분
-  const onlyShotDrinks = ["소맥", "하이볼", "칵테일(약)", "칵테일(강)"];
   const [alcoholRecord, setAlcoholRecord] = useState([]);
   const [selectedAlcohol, setSelectedAlcohol] = useState("소주");
   const [value, setValue] = useState(0); // 음주량
@@ -41,17 +38,6 @@ function RecordCreateScreen({ route, navigation }) {
   const [memo, setMemo] = useState("");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const alcoholCategory = [
-    "소주",
-    "맥주",
-    "소맥",
-    "와인",
-    "하이볼",
-    "막걸리",
-    "칵테일(약)",
-    "칵테일(강)",
-    "위스키",
-  ];
 
   interface DrinkData {
     drinks: Array<Record<string, unknown>>;
@@ -60,48 +46,6 @@ function RecordCreateScreen({ route, navigation }) {
     memo: string;
     hangover: string;
   }
-
-  // 음주량 수정
-  const handleDecrement = () => {
-    if (value > 0) {
-      const newValue = value - 0.5;
-      setValue(newValue);
-    }
-  };
-  const handleIncrement = () => {
-    const newValue = value + 0.5;
-    setValue(newValue);
-  };
-
-  // 주종별 음주 기록 추가
-  const handleAdd = () => {
-    const newRecord = {
-      category: selectedAlcohol,
-      drinkUnit: selectedUnit,
-      drinkAmount: value,
-    };
-
-    const existingRecordIndex = alcoholRecord.findIndex(
-      (record) =>
-        record.category === selectedAlcohol && record.drinkUnit === selectedUnit
-    );
-
-    if (existingRecordIndex >= 0) {
-      const updatedRecords = [...alcoholRecord];
-      updatedRecords[existingRecordIndex].drinkAmount += value;
-      setAlcoholRecord(updatedRecords);
-    } else {
-      if (newRecord.drinkAmount > 0) {
-        setAlcoholRecord((prevRecords) => [...prevRecords, newRecord]);
-      } else {
-        Alert.alert("알림", "수량을 조절하세요.");
-      }
-    }
-
-    setValue(0);
-    setSelectedAlcohol("소주");
-    setSelectedUnit("잔");
-  };
 
   // 시간 관련
   const currentDate = new Date();
@@ -196,19 +140,22 @@ function RecordCreateScreen({ route, navigation }) {
           currentDate.getMonth() + 1
         ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
 
-        const dailyDrink = await fetchDailyDrink(date);
+        try {
+          const dailyDrink = await fetchDailyDrink(date);
 
-        if (dailyDrink) {
-          // 추후 업데이트 기능으로 자동 연결 구현
-          Alert.alert("알림", "어제 날짜에 이미 음주 기록이 있습니다.");
-          return;
+          if (dailyDrink) {
+            // 추후 업데이트 기능으로 자동 연결 구현
+            Alert.alert("알림", "어제 날짜에 이미 음주 기록이 있습니다.");
+            return;
+          }
+        } catch (error) {
+          Alert.alert("알림", "새벽 5시 이전 음주는 전일에 기록됩니다.");
+          console.error("전날 음주기록이 없으므로 무시하고 진행", error);
         }
       }
     } else {
       time = `${parseInt(selectedHour, 10) + 12}:${selectedMinute}`;
     }
-
-    console.log(`저장 전 담긴 메모는 이렇습니다. ${memo}`);
 
     if (isAlcohol) {
       await updateDrink({
@@ -247,7 +194,7 @@ function RecordCreateScreen({ route, navigation }) {
         });
     }
 
-    navigation.navigate("Calendar");
+    navigation.navigate("Calendar", { date: date, refresh: true });
   };
 
   // [업데이트] 기존 요약/상세 정보 불러오기
@@ -257,7 +204,10 @@ function RecordCreateScreen({ route, navigation }) {
     isError: dailyError,
   } = useQuery(
     ["DailyDrinkQuery", day],
-    async () => await fetchDailyDrink(day)
+    async () => await fetchDailyDrink(day),
+    {
+      enabled: isAlcohol,
+    }
   );
   // console.log(`요약조회 ${JSON.stringify(DailyDrinkData, null, 2)}`);
 
@@ -267,80 +217,77 @@ function RecordCreateScreen({ route, navigation }) {
     isError: detailError,
   } = useQuery(
     ["DailyDetailQuery", day],
-    async () => await fetchDailyDetail(day)
+    async () => await fetchDailyDetail(day),
+    {
+      enabled: isAlcohol,
+    }
   );
   // console.log(`요약조회 ${JSON.stringify(DailyDetailData, null, 2)}`);
 
   useEffect(() => {
-    if (isAlcohol) {
-      // 술자리 시작 시간, 메모, 사진 불러오기
-      if (DailyDetailData) {
-        const tempHour = parseInt(
-          DailyDetailData.startTime.substring(11, 13),
-          10
-        );
-        if (tempHour < 12) {
-          setSelectedAmPm("AM");
-          setSelectedHour(tempHour < 10 ? `0${tempHour}` : `${tempHour}`);
-        } else if (tempHour === 12) {
-          setSelectedAmPm("PM");
-          setSelectedHour("12");
-        } else {
-          setSelectedAmPm("PM");
-          setSelectedHour(
-            tempHour - 12 < 10 ? `0${tempHour - 12}` : `${tempHour - 12}`
-          );
-        }
-        setSelectedMinute(
-          `${parseInt(DailyDetailData.startTime.substring(14, 16), 10)
-            .toString()
-            .padStart(2, "0")}`
-        );
-        if (DailyDetailData.memo) {
-          setMemo(DailyDetailData.memo);
-        }
+    if (isAlcohol && DailyDetailData) {
+      // 시간 불러오기
+      const startTime = DailyDetailData.startTime;
+      let hour = parseInt(startTime.substring(11, 13), 10);
+      let minute = startTime.substring(14, 16);
+
+      if (hour >= 12) {
+        setSelectedAmPm("PM");
+        if (hour > 12) hour -= 12;
+      } else {
+        setSelectedAmPm("AM");
       }
+      setSelectedHour(hour < 10 ? `0${hour}` : `${hour}`);
+      setSelectedMinute(minute);
+    } else {
+      if (currentHour >= 12) {
+        setSelectedAmPm("PM");
+        currentHour -= 12;
+      } else {
+        setSelectedAmPm("AM");
+      }
+      setSelectedHour(currentHour < 10 ? `0${currentHour}` : `${currentHour}`);
+      setSelectedMinute(
+        currentMinute < 10 ? `0${currentMinute}` : `${currentMinute}`
+      );
+    }
 
-      // 주종 별 음주량 불러오기
-      if (DailyDrinkData) {
-        for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
-          const category = DailyDrinkData.drinks[i].drink;
-          const drinkCount = DailyDrinkData.drinks[i].count;
-          const result = getAmountByDrinkCount(category, drinkCount);
+    // 주종 별 음주량 불러오기
+    if (DailyDrinkData && Array.isArray(DailyDrinkData.drinks)) {
+      for (let i = 0; i < DailyDrinkData.drinks.length; i++) {
+        const category = DailyDrinkData.drinks[i].drink;
+        const drinkCount = DailyDrinkData.drinks[i].count;
+        const result = getAmountByDrinkCount(category, drinkCount);
 
-          const newBottleRecord = {
-            category: category,
-            drinkUnit: "병",
-            drinkAmount: result[0],
-          };
-          const newShotRecord = {
-            category: category,
-            drinkUnit: "잔",
-            drinkAmount: result[1],
-          };
-          const existingRecordIndex = alcoholRecord.findIndex((record) => {
-            return (
-              record.category === selectedAlcohol &&
-              record.drinkUnit === selectedUnit
-            );
-          });
+        const newBottleRecord = {
+          category: category,
+          drinkUnit: "병",
+          drinkAmount: result[0],
+        };
+        const newShotRecord = {
+          category: category,
+          drinkUnit: "잔",
+          drinkAmount: result[1],
+        };
+        const existingRecordIndex = alcoholRecord.findIndex((record) => {
+          return (
+            record.category === selectedAlcohol &&
+            record.drinkUnit === selectedUnit
+          );
+        });
 
-          if (existingRecordIndex >= 0) {
-            alcoholRecord[existingRecordIndex].drinkAmount += value;
-            return;
+        if (existingRecordIndex >= 0) {
+          alcoholRecord[existingRecordIndex].drinkAmount += value;
+          return;
+        } else {
+          if (newBottleRecord.drinkAmount) {
+            setAlcoholRecord((prevRecords) => [
+              ...prevRecords,
+              newBottleRecord,
+              newShotRecord,
+            ]);
           } else {
-            if (newBottleRecord.drinkAmount) {
-              setAlcoholRecord((prevRecords) => [
-                ...prevRecords,
-                newBottleRecord,
-                newShotRecord,
-              ]);
-            } else {
-              setAlcoholRecord((prevRecords) => [
-                ...prevRecords,
-                newShotRecord,
-              ]);
-            }
+            setAlcoholRecord((prevRecords) => [...prevRecords, newShotRecord]);
           }
         }
       }
@@ -351,127 +298,39 @@ function RecordCreateScreen({ route, navigation }) {
     navigation.navigate("Calendar");
   };
 
-  // 주종별 음주 기록 삭제
-  const handleDeleteRecord = (index) => {
-    const updatedRecords = [...alcoholRecord];
-    updatedRecords.splice(index, 1);
-    setAlcoholRecord(updatedRecords);
-  };
-
   return (
     <View style={styles.total}>
+      <View style={styles.mainTextBox}>
+        <Text style={styles.headerText}>{day}</Text>
+        <IconButton
+          icon="help-circle-outline"
+          iconColor={MD3Colors.neutral70}
+          size={20}
+          onPress={() => {
+            Alert.alert("알림", "05시 이전의 기록은 어제 날짜에 추가됩니다.");
+          }}
+          style={{ marginLeft: "-2%" }}
+        />
+      </View>
       <ScrollView style={styles.scrollBox}>
-        <View style={styles.mainTextBox}>
-          <Text style={styles.headerText}>{day}</Text>
-          <IconButton
-            icon="help-circle-outline"
-            iconColor={MD3Colors.neutral70}
-            size={20}
-            onPress={() => {
-              Alert.alert("알림", "05시 이전의 기록은 어제 날짜에 추가됩니다.");
-            }}
-            style={{ marginLeft: "-2%" }}
-          />
-        </View>
         <View style={styles.contents}>
-          <View style={styles.tagArea}>
-            <View style={styles.tag}>
-              <NowAddedAlcohols
-                alcoholRecord={alcoholRecord}
-                onDeleteRecord={handleDeleteRecord}
-              />
-            </View>
-          </View>
-          <View style={styles.alcoholArea}>
-            <View style={styles.alcoholInput}>
-              <Text style={styles.word}>술</Text>
-              <View style={styles.category}>
-                <View style={styles.alcoholInput}>
-                  <View style={styles.category}>
-                    <Picker
-                      mode="dropdown"
-                      selectedValue={selectedAlcohol}
-                      onValueChange={(itemValue, itemIndex) =>
-                        setSelectedAlcohol(itemValue)
-                      }
-                    >
-                      {alcoholCategory.map((category, index) => (
-                        <Picker.Item
-                          key={index}
-                          label={category}
-                          value={category}
-                        />
-                      ))}
-                    </Picker>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.alcoholInput}>
-              <Text style={styles.word}>양</Text>
-              <View style={styles.alcoholAmount}>
-                <IconButton icon="minus" onPress={handleDecrement} size={15} />
-                <Text>{value}</Text>
-                <IconButton icon="plus" onPress={handleIncrement} size={15} />
-              </View>
-              <View style={styles.alcoholUnit}>
-                <Picker
-                  mode="dropdown"
-                  selectedValue={selectedUnit}
-                  onValueChange={(itemValue, itemIndex) => {
-                    if (onlyShotDrinks.includes(selectedAlcohol)) {
-                      setSelectedUnit("잔");
-                    } else {
-                      setSelectedUnit(itemValue);
-                    }
-                  }}
-                >
-                  <Picker.Item label="잔" value="잔" />
-                  {!onlyShotDrinks.includes(selectedAlcohol) && (
-                    <Picker.Item label="병" value="병" />
-                  )}
-                </Picker>
-              </View>
-            </View>
-            <View style={styles.buttons}>
-              <Button
-                style={styles.button}
-                textColor={"#363C4B"}
-                mode="outlined"
-                onPress={() => {
-                  setAlcoholRecord([]);
-                  setValue(0);
-                }}
-              >
-                초기화
-              </Button>
-              <Button
-                style={styles.button}
-                mode="contained"
-                onPress={handleAdd}
-                buttonColor={"#363C4B"}
-              >
-                추가
-              </Button>
-            </View>
+          <View style={styles.alcohol}>
+            <AlcoholInput
+              alcoholRecord={alcoholRecord}
+              setAlcoholRecord={setAlcoholRecord}
+            />
           </View>
           <View style={styles.time}>
             <Text style={styles.timeText}>술자리 시작</Text>
-            <TouchableOpacity onPress={showMode} style={styles.timeInput}>
-              <Text style={styles.timeInnerText}>
-                {selectedHour} : {selectedMinute} {selectedAmPm}
-              </Text>
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={"time"}
-                  is24Hour={false}
-                  display="spinner"
-                  onChange={onChange}
-                />
-              )}
-            </TouchableOpacity>
+            <TimeInput
+              selectedHour={selectedHour}
+              selectedMinute={selectedMinute}
+              selectedAmPm={selectedAmPm}
+              show={show}
+              setShow={setShow}
+              date={date}
+              onChange={onChange}
+            />
           </View>
 
           <View style={styles.memo}>
@@ -518,11 +377,7 @@ const styles = StyleSheet.create({
   total: {
     flex: 1,
     height: "100%",
-  },
-  scrollBox: {
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "#F7F9FF",
+    // flexDirection: "column",
   },
   mainTextBox: {
     paddingHorizontal: "5%",
@@ -534,15 +389,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "LineRegular",
   },
+  scrollBox: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    // backgroundColor: "#F7F9FF",
+  },
   contents: {
     display: "flex",
-    height: 800,
+    height: 750,
+    // height: "100%",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     paddingHorizontal: 20,
     margin: "3%",
     borderRadius: 5,
     backgroundColor: "#ffffff",
+    // backgroundColor: "blue",
     // 그림자 추가 (Android 및 iOS 모두에서 동작)
     shadowColor: "#000",
     shadowOffset: {
@@ -553,53 +416,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // 안드로이드에서 그림자 효과 추가
   },
-  tagArea: {
-    height: "auto",
-    marginVertical: 10,
-  },
-  tag: {
-    height: 70,
-  },
-  alcoholArea: {
-    height: "20%",
-    borderRadius: 5,
-    justifyContent: "space-around",
-    backgroundColor: "white",
-  },
-  alcoholInput: {
-    height: "25%",
-    margin: "1%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  word: {
-    flex: 0.5,
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  category: {
-    flex: 2,
-    height: "90%",
-    // margin: "1%",
-    justifyContent: "center",
-  },
-  alcoholAmount: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: "90%",
-  },
-  alcoholUnit: {
-    flex: 1,
-    height: "90%",
-    justifyContent: "center",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingBottom: "3%",
+  alcohol: {
+    height: "30%",
   },
   button: {
     flex: 2,
@@ -610,25 +428,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     height: "5%",
-    marginTop: "1%",
+    marginTop: "15%",
   },
   timeText: {
     alignSelf: "center",
     fontSize: 17,
     fontWeight: "bold",
     flex: 1,
-  },
-  timeInput: {
-    flexDirection: "row",
-    backgroundColor: "#f6f6f6",
-    width: "50%",
-    alignItems: "center",
-    borderRadius: 5,
-    flex: 2,
-  },
-  timeInnerText: {
-    flex: 1,
-    textAlign: "center",
   },
   photo: {
     marginTop: "1%",
@@ -653,6 +459,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: 100,
     gap: 0,
+    marginBottom: "5%",
   },
 });
 
