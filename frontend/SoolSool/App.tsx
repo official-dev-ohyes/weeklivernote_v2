@@ -27,7 +27,6 @@ import AddInfoScreen from "./screens/AddInfoScreen";
 import HomeScreen from "./screens/HomeScreen";
 
 import CalendarScreen from "./screens/CalendarScreen";
-import DailyDetailScreen from "./screens/DailyDetailScreen";
 import RecordCreateScreen from "./screens/RecordCreateScreen";
 
 import MyPageScreen from "./screens/MyPageScreen";
@@ -382,16 +381,6 @@ export default function App() {
                           headerTintColor: "white",
                           headerTitleAlign: "center",
                           title: "개인정보 처리방침",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="DailyDetail"
-                        component={DailyDetailScreen}
-                        options={{
-                          headerShown: false,
-                          headerStyle: { backgroundColor: "#363C4B" },
-                          headerTintColor: "white",
-                          title: "Calendar",
                         }}
                       />
                       <Stack.Screen
