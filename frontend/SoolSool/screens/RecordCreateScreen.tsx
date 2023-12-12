@@ -36,6 +36,7 @@ function RecordCreateScreen({ route, navigation }) {
   const [value, setValue] = useState(0); // 음주량
   const [selectedUnit, setSelectedUnit] = useState("잔");
   const [memo, setMemo] = useState("");
+  const [hangover, setHangover] = useState("");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
@@ -347,6 +348,20 @@ function RecordCreateScreen({ route, navigation }) {
               outlineColor="#363C4B"
             />
           </View>
+
+          <View style={styles.memo}>
+            <Text style={styles.texts}>숙취 증상</Text>
+            <TextInput
+              label="숙취 증상을 입력해보세요"
+              keyboardType="default"
+              mode="outlined"
+              value={hangover}
+              onChangeText={(hangover) => setHangover(hangover)}
+              multiline={true}
+              outlineColor="#363C4B"
+            />
+          </View>
+
           <View style={styles.buttonContainer}>
             <Button
               style={styles.button}

@@ -94,6 +94,15 @@ function DailyDetail({ queryDate }) {
                   <Text style={styles.innerText}>작성된 메모가 없어요</Text>
                 )}
               </View>
+
+              <View style={styles.house}>
+                <Text style={styles.smallHeaderText}>숙취 증상</Text>
+                {info.hangover ? (
+                  <Text style={styles.innerText}>{info.hangover}</Text>
+                ) : (
+                  <Text style={styles.innerText}>저장된 숙취 증상이 없어요</Text>
+                )}
+              </View>
             </View>
           )}
         </View>
