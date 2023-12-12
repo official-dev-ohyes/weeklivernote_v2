@@ -190,7 +190,7 @@ function DailySummary(props) {
 const styles = StyleSheet.create({
   all: {
     // flex: 1,
-    height: "107.5%", // 이게 맞는지 생각해봐야 함....
+    height: "105%" // 이게 맞나 생각해보기. 100%로 하면 메모 아래쪽이 조금 짤려보임
   },
   box: {
     height: "20%",
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     width: "95%",
     marginRight: "auto",
     marginLeft: "auto",
-    marginTop: "-5%",
+    marginTop: "-6%",
     // borderWidth: 1,
     // borderColor: "#d2d2d2",
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   textInformations: {
     width: "50%",
-    height: "90%",
+    height: "100%",
     padding: 5,
     flexDirection: "column",
     justifyContent: "space-around",
